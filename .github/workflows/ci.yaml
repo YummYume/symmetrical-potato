@@ -38,7 +38,7 @@ jobs:
 
       - name: Validate composer.json and composer.lock
         working-directory: ./api
-        run: composer validate --no-check-all --strict
+        run: composer validate --no-check-all --strict --no-check-publish
 
       - name: Install dependencies
         working-directory: ./api
