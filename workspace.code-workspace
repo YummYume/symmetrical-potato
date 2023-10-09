@@ -24,8 +24,12 @@
             "api": true,
             "front": true
         },
+        "editor.insertSpaces": true,
         "[dockercompose]": {
             "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+        },
+        "[php]": {
+            "editor.tabSize": 4
         },
         "[dockerfile]": {
             "editor.defaultFormatter": "ms-azuretools.vscode-docker"

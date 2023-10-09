@@ -151,4 +151,4 @@ format-api:
 	$(EXECPHP) sh -c "./vendor/bin/php-cs-fixer fix src"
 
 format-front:
-	$(EXECENCORE) bun run format
+	$(EXECFRONT) bun run format
