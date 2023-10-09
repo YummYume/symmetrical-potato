@@ -13,12 +13,12 @@ NextJS + API Platform.
 
 ## Installation
 
-- 1. Clone the repository
-- 2. Add the required hosts to your `/etc/hosts` file (see [#hosts](#hosts))
-- 3. (Optional) Add `.env.local` files to override the various default environment variables
-- 4. (Optional) Add `compose.override.yml` to override the default compose configuration
-- 5. Run `make start`
-- 6. Go to [http://symmetrical-potato.com](http://symmetrical-potato.com)
+1. Clone the repository
+2. Add the required hosts to your `/etc/hosts` file (see [#hosts](#hosts))
+3. (Optional) Add `.env.local` files to override the various default environment variables
+4. (Optional) Add `compose.override.yml` to override the default compose configuration
+5. Run `make start`
+6. Go to [http://symmetrical-potato.com](http://symmetrical-potato.com)
 
 After the first run, you can use `make stop` & `make up` to quickly stop and start the containers.
 All the available commands are listed in the `Makefile`.
