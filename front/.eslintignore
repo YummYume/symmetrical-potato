@@ -16,4 +16,4 @@ yarn.lock
 bun.lockb
 
 # Auto generated types
-/src/lib/interfaces
+/src/lib/api/interfaces
