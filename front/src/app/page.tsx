@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 async function getData() {
-  const res = await fetch(`${process.env.API_HOST}/api`);
+  const res = await fetch(`${process.env.API_HOST}`);
 
   return res.status;
 }

@@ -44,6 +44,12 @@ module.exports = {
         },
         groups: ['external', 'builtin', 'internal', 'sibling', 'parent', 'index', 'object', 'type'],
         'newlines-between': 'always',
+        pathGroups: [
+          {
+            group: 'internal',
+            pattern: '@(lib|api|client-components|server-components)?/*'
+          }
+        ]
       },
     ],
     'import/prefer-default-export': 'off',
