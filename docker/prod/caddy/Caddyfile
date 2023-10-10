@@ -1,0 +1,25 @@
+{
+    email {$ACME_EMAIL}
+    admin off
+}
+
+# TODO change routes
+api.symmetrical-potato.com, http://api:9000 {
+    root * /www/app/public
+    encode zstd gzip
+    file_server
+
+    php_fastcgi php:9000 {
+        resolve_root_symlink
+    }
+
+    @phpFile {
+        path *.php*
+    }
+
+    error @phpFile "Not found" 404
+}
+
+symmetrical-potato.com {
+    reverse_proxy * front:3000
+}

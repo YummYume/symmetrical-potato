@@ -1,1 +1,6 @@
+# Local data
 data/
+
+# Overrides
+.env.local
+compose.override.yml
