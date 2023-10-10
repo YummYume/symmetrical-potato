@@ -41,11 +41,11 @@ Which will allow you to access the different services for the project.
 
 | Service             | URL                                                                      |
 | ------------------- | ------------------------------------------------------------------------ |
-| NextJS app (front)  | [symmetrical-potato.com](symmetrical-potato.com)                         |
-| API Platform (back) | [api.symmetrical-potato.com](api.symmetrical-potato.com)                 |
-| phpMyAdmin          | [pmp.symmetrical-potato.com](pmp.symmetrical-potato.com)                 |
-| MailCatcher         | [mailcatcher.symmetrical-potato.com](mailcatcher.symmetrical-potato.com) |
-| RabbitMQ            | [rabbitmq.symmetrical-potato.com](rabbitmq.symmetrical-potato.com)       |
+| NextJS app (front)  | [symmetrical-potato.com](http://symmetrical-potato.com)                         |
+| API Platform (back) | [api.symmetrical-potato.com](http://api.symmetrical-potato.com)                 |
+| phpMyAdmin          | [pmp.symmetrical-potato.com](http://pmp.symmetrical-potato.com)                 |
+| MailCatcher         | [mailcatcher.symmetrical-potato.com](http://mailcatcher.symmetrical-potato.com) |
+| RabbitMQ            | [rabbitmq.symmetrical-potato.com](http://rabbitmq.symmetrical-potato.com)       |
 
 ## Services
 
