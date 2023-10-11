@@ -1,0 +1,94 @@
+version: '3.9'
+
+# TODO make prod config
+services:
+  caddy:
+    image: caddy:2.7.4-alpine
+    restart: unless-stopped
+    container_name: sp-caddy
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    expose:
+      - 9000
+    environment:
+      ACME_EMAIL: "${ACME_EMAIL:?err}"
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./api/public:/www/app/public
+      - ./data/caddy/data:/data
+      - ./data/caddy/config:/config
+    depends_on:
+      front:
+        condition: service_healthy
+      php:
+        condition: service_healthy
+    networks:
+      webserver:
+        aliases:
+          - api
+
+  front:
+    image: oven/bun:1.0-alpine
+    working_dir: /home/bun/app
+    container_name: sp-front
+    user: bun
+    entrypoint: [ "./scripts/bun.sh" ]
+    volumes:
+      - ./front:/home/bun/app
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3000/api/healthz || exit 1
+      interval: 10s
+      timeout: 20s
+      retries: 5
+      start_period: 60s
+    networks:
+      - webserver
+
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    restart: unless-stopped
+    container_name: sp-php
+    volumes:
+      - ./api:/www/app
+      - ./docker/php/overrides.ini:/usr/local/etc/php/conf.d/overrides.ini
+      - ./docker/php/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "php", "-v" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+      start_period: 60s
+    networks:
+      - webserver
+      - database
+
+  mariadb:
+    image: mariadb:11.1.2
+    restart: unless-stopped
+    container_name: sp-mariadb
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: "yes"
+      MARIADB_USER: "${MARIADB_USER:?err}"
+      MARIADB_PASSWORD_HASH: "${MARIADB_PASSWORD_HASH:?err}"
+    healthcheck:
+      test: [ "CMD", "mariadb-admin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+      start_period: 60s
+    networks:
+      - database
