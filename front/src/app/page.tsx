@@ -1,5 +1,7 @@
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic';
+
 async function getData() {
   const res = await fetch(`${process.env.API_HOST}`);
 
