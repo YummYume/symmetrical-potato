@@ -74,7 +74,7 @@ db-drop:
 	$(EXECPHP) php bin/console d:d:d --if-exists --force
 
 schema:
-	$(EXECPHP) php bin/console d:s:u --force
+	$(EXECPHP) php bin/console d:s:u --force --complete
 
 migration:
 	$(EXECPHP) php bin/console d:m:m -n --allow-no-migration --all-or-nothing
