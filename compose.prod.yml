@@ -1,6 +1,5 @@
 version: '3.9'
 
-# TODO make prod config
 services:
   caddy:
     image: caddy:2.7.4-alpine
@@ -22,7 +21,7 @@ services:
     depends_on:
       front:
         condition: service_healthy
-      php:
+      api:
         condition: service_healthy
     networks:
       webserver:
@@ -30,13 +29,8 @@ services:
           - api
 
   front:
-    image: oven/bun:1.0-alpine
-    working_dir: /home/bun/app
+    image: spacelocust/sp-front:latest
     container_name: sp-front
-    user: bun
-    entrypoint: [ "./scripts/bun.sh" ]
-    volumes:
-      - ./front:/home/bun/app
     stdin_open: true
     tty: true
     restart: unless-stopped
@@ -49,16 +43,12 @@ services:
     networks:
       - webserver
 
-  php:
-    build:
-      context: .
-      dockerfile: ./docker/php/Dockerfile
+  api:
+    image: spacelocust/sp-api:latest
     restart: unless-stopped
-    container_name: sp-php
+    container_name: sp-api
     volumes:
-      - ./api:/www/app
-      - ./docker/php/overrides.ini:/usr/local/etc/php/conf.d/overrides.ini
-      - ./docker/php/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./api/public:/www/app/public
     depends_on:
       mariadb:
         condition: service_healthy

@@ -5,6 +5,9 @@ const { withSentryConfig } = require('@sentry/nextjs');
 
 module.exports = withSentryConfig(
   {
+    output: 'standalone',
+  },
+  {
     sentry: {
       disableServerWebpackPlugin: true,
       disableClientWebpackPlugin: true,

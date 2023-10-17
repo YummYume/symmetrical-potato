@@ -1,0 +1,42 @@
+---
+- hosts: prod
+  name: Create env files
+  no_log: true
+  tasks:
+    - name: Check if a compose.prod.yml already exists
+      ansible.builtin.stat:
+        path: /home/symmetrical-potato/app/compose.prod.yml
+      register: found_compose
+
+    - name: Get compose.prod.yml
+      ansible.builtin.get_url:
+        url: https://github.com/YummYume/symmetrical-potato/blob/master/compose.prod.yml
+        dest: /home/symmetrical-potato/app/compose.prod.yml
+        mode: "0440"
+
+    - name: Create .env file
+      ansible.builtin.copy:
+        content: ""
+        dest: /home/symmetrical-potato/app/.env
+        force: true
+        group: symmetrical-potato
+        owner: symmetrical-potato
+        mode: "0440"
+
+    - name: Create .env file Front
+      ansible.builtin.copy:
+        content: ""
+        dest: /home/symmetrical-potato/app/front/.env
+        force: true
+        group: symmetrical-potato
+        owner: symmetrical-potato
+        mode: "0440"
+
+    - name: Create .env.prod file API
+      ansible.builtin.copy:
+        content: ""
+        dest: /home/symmetrical-potato/app/api/.env.prod
+        force: true
+        group: symmetrical-potato
+        owner: symmetrical-potato
+        mode: "0440"
