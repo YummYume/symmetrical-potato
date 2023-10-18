@@ -11,15 +11,15 @@ RUN apk add --no-cache --update \
     deluser www-data && \
     adduser -DH -h /home/www-data -s /sbin/nologin -u 1000 www-data
 
-COPY ../docker/prod/php/overrides.ini ../docker/prod/php/supervisord.conf /
+COPY docker/prod/php/overrides.ini docker/prod/php/supervisord.conf /
 
-COPY composer.* symfony.lock /
+COPY api/composer.json api/composer.lock api/symfony.lock /
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 RUN composer install --no-dev --optimize-autoloader
 
-COPY . ./
+COPY api ./
 
 RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear && \
     php bin/console d:d:c --if-not-exists && \

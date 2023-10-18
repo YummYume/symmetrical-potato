@@ -1,42 +1,51 @@
 ---
 - hosts: prod
-  name: Create env files
-  no_log: true
+  name: Deploy on VPS
   tasks:
+    - name: Install docker & docker-compose for Python
+      ansible.builtin.import_tasks:
+        file: docker-python.yaml
+
+    - name: Create all .env file
+      ansible.builtin.import_tasks:
+        file: create-env.yaml
+
     - name: Check if a compose.prod.yml already exists
       ansible.builtin.stat:
-        path: /home/symmetrical-potato/app/compose.prod.yml
+        path: ./app/compose.prod.yml
       register: found_compose
+
+    - name: Stop all services
+      community.docker.docker_compose:
+        project_src: ./app/compose.prod.yml
+        build: false
+        stopped: true
+      when: found_compose.stat.exists
+
+    - name: Clear previous deploy
+      community.docker.docker_prune:
+        containers: true
+        images: true
+        images_filters:
+          dangling: true
+      when: found_compose.stat.exists
 
     - name: Get compose.prod.yml
       ansible.builtin.get_url:
         url: https://github.com/YummYume/symmetrical-potato/blob/master/compose.prod.yml
-        dest: /home/symmetrical-potato/app/compose.prod.yml
-        mode: "0440"
-
-    - name: Create .env file
-      ansible.builtin.copy:
-        content: ""
-        dest: /home/symmetrical-potato/app/.env
+        dest: ./app/compose.prod.yml
         force: true
-        group: symmetrical-potato
-        owner: symmetrical-potato
-        mode: "0440"
+        mode: "0660"
 
-    - name: Create .env file Front
-      ansible.builtin.copy:
-        content: ""
-        dest: /home/symmetrical-potato/app/front/.env
+    - name: Get Caddyfile
+      ansible.builtin.get_url:
+        url: https://github.com/YummYume/symmetrical-potato/blob/master/docker/prod/caddy/Caddyfile
+        dest: ./app/Caddyfile
         force: true
-        group: symmetrical-potato
-        owner: symmetrical-potato
-        mode: "0440"
+        mode: "0660"
 
-    - name: Create .env.prod file API
-      ansible.builtin.copy:
-        content: ""
-        dest: /home/symmetrical-potato/app/api/.env.prod
-        force: true
-        group: symmetrical-potato
-        owner: symmetrical-potato
-        mode: "0440"
+    - name: Create and pull compose services
+      community.docker.docker_compose:
+        project_src: ./app/compose.prod.yml
+        pull: true
+        state: present

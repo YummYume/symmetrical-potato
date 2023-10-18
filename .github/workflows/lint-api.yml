@@ -1,0 +1,32 @@
+name: Linting API
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - "api/**.ts"
+
+jobs:
+  lint-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Validate composer.json and composer.lock
+        working-directory: ./api
+        run: composer validate --no-check-all --strict --no-check-publish
+
+      - name: Install dependencies
+        working-directory: ./api
+        run: composer install
+
+      - name: Run linter
+        working-directory: ./api
+        run: ./vendor/bin/php-cs-fixer fix src -v --dry-run

@@ -1,0 +1,32 @@
+---
+- name: Create .env file Compose
+  ansible.builtin.copy:
+    dest: ./app/.env
+    force: true
+    mode: "0660"
+    content: |
+      MARIADB_ROOT_PASSWORD={{ mariadb_root_password }}
+
+- name: Create .env file Front
+  ansible.builtin.copy:
+    dest: ./app/front/.env
+    force: true
+    mode: "0660"
+    content: |
+      API_HOST={{ api_host }}
+      API_GRAPHQL_ENDPOINT={{ api_graphql_endpoint }}
+
+- name: Create .env.prod file API
+  ansible.builtin.copy:
+    dest: ./app/api/.env.prod
+    force: true
+    mode: "0660"
+    content: |
+      APP_ENV={{ app_env }}
+      APP_SECRET={{ app_secret }}
+      DATABASE_URL={{ database_url }}
+      MAILER_DSN={{ mailer_dsn }}
+      MAILER_NOREPLY_EMAIL={{ mailer_noreply_email }}
+      MAILER_NOREPLY_NAME={{ mailer_noreply_name }}
+      MESSENGER_TRANSPORT_DSN={{ messenger_transport_dsn }}
+      CORS_ALLOW_ORIGIN={{ cors_allow_origin }}

@@ -1,33 +1,22 @@
-name: Deploy
+name: Deploy on VPS
 
 on: workflow_dispatch
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: kielabokkie/ssh-key-and-known-hosts-action@v1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-host: ${{ secrets.VPS_IP }}
-          ssh-port: ${{ secrets.VPS_PORT }}
+      # - name: webfactory/ssh-agent
+      #   uses: webfactory/ssh-agent@v0.8.0
+      #   with:
+      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Install docker & docker-compose for python
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          playbook: docker-python.yml
-          directory: ./ansible
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          vault_password: ${{ secrets.VAULT_PASSWORD }}
-          inventory: |
-            [prod]
-            ${{ secrets.VPS_IP }}:${{ secrets.VPS_PORT }} ansible_user=symmetrical-potato
-
-            [prod:vars]
-            ansible_python_interpreter=/usr/bin/python3
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
 
       - name: Deploy on vps
         uses: dawidd6/action-ansible-playbook@v2
@@ -38,7 +27,8 @@ jobs:
           vault_password: ${{ secrets.VAULT_PASSWORD }}
           inventory: |
             [prod]
-            ${{ secrets.VPS_IP }}:${{ secrets.VPS_PORT }} ansible_user=symmetrical-potato
+            ${{ secrets.VPS_HOST }} ansible_port=${{ secrets.VPS_PORT }} ansible_user=${{ secrets.VPS_USERNAME }}
 
             [prod:vars]
             ansible_python_interpreter=/usr/bin/python3
+            
