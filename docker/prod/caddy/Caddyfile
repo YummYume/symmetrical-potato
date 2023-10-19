@@ -3,8 +3,7 @@
     admin off
 }
 
-# TODO change routes
-api.symmetrical-potato.com, http://api:9000 {
+api.yam-yam.dev, http://api:9000 {
     root * /www/app/public
     encode zstd gzip
     file_server
@@ -20,6 +19,6 @@ api.symmetrical-potato.com, http://api:9000 {
     error @phpFile "Not found" 404
 }
 
-symmetrical-potato.com {
+yam-yam.dev {
     reverse_proxy * front:3000
 }

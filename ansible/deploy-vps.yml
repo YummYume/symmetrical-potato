@@ -1,6 +1,7 @@
 ---
 - hosts: prod
   name: Deploy on VPS
+  no_log: true
   tasks:
     - name: Install docker & docker-compose for Python
       ansible.builtin.import_tasks:

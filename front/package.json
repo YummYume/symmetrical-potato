@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "build": "ENV=prod next build",
+    "build": "next build",
     "start": "next start",
     "lint:next": "next lint",
     "lint": "prettier --check . && eslint . && next lint",
