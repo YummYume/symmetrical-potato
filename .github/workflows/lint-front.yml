@@ -20,7 +20,15 @@ jobs:
         with:
           bun-version: 1.0.2
 
+      - name: Caching dependencies
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./front/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/bun.lockb') }}
+
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         working-directory: ./front
         run: bun install --frozen-lockfile
 

@@ -5,7 +5,7 @@ on:
     branches:
       - '**'
     paths:
-      - "api/**.ts"
+      - "api/**.php"
 
 jobs:
   lint-api:
@@ -19,11 +19,20 @@ jobs:
         with:
           php-version: '8.2'
 
+      - name: Caching dependencies
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./api/vendor
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.*') }}
+
       - name: Validate composer.json and composer.lock
+        if: steps.cache.outputs.cache-hit != 'true'
         working-directory: ./api
         run: composer validate --no-check-all --strict --no-check-publish
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         working-directory: ./api
         run: composer install
 

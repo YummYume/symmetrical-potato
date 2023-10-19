@@ -11,18 +11,16 @@ RUN apk add --no-cache --update \
     deluser www-data && \
     adduser -DH -h /home/www-data -s /sbin/nologin -u 1000 www-data
 
-COPY docker/prod/php/overrides.ini docker/prod/php/supervisord.conf /
-
-COPY api/composer.json api/composer.lock api/symfony.lock /
-
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-RUN composer install --no-dev --optimize-autoloader
+COPY docker/prod/php/overrides.ini docker/prod/php/supervisord.conf ./
+
+COPY api/composer.* api/symfony.lock ./
+
+RUN composer install --no-cache --prefer-dist --no-dev --no-scripts --no-progress --optimize-autoloader
 
 COPY api ./
 
-RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear && \
-    php bin/console d:d:c --if-not-exists && \
-    php bin/console d:m:m
+RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

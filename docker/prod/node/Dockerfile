@@ -1,35 +1,38 @@
 FROM oven/bun:1.0-alpine AS base
 
-# Step 1. Rebuild the source code only when needed
-FROM base AS builder
+# # Step 1. Install dependencies
+# FROM base AS deps
 
-WORKDIR /home/bun/app
+# WORKDIR /home/bun/app
 
-USER bun
+# COPY package.json bun.lockb postcss.config.js next.config.js tsconfig.json tailwind.config.ts sentry.** ./
 
-# Install dependencies based on the preferred package manager
-COPY package.json bun.lockb postcss.config.js next.config.js tsconfig.json tailwind.config.ts sentry.** /
-# Omit --production flag for TypeScript devDependencies
-RUN bun install --frozen-lockfile
+# RUN bun install --frozen-lockfile
 
-COPY src ./src
-COPY public ./public
+# # Step 2. Rebuild the source code only when needed
+# FROM base AS builder
 
-# Build Next.js based on the preferred package manager
-RUN bun run build
+# WORKDIR /home/bun/app
 
-# Step 2. Production image, copy all the files and run next
+# COPY --from=deps /home/bun/app/ ./
+
+# COPY .env ./
+# COPY src ./src
+# COPY public ./public
+
+# RUN bun run build
+
+# Step 3. Production image, copy all the files and run next
 FROM base AS runner
 
 WORKDIR /home/bun/app
 
 USER bun
 
-COPY --from=builder /home/bun/app/public ./public
+COPY public ./public
 
 # Automatically leverage output traces to reduce image size
-COPY --from=builder --chown=nextjs:nodejs /home/bun/app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /home/bun/app/.next/static ./.next/static
-
+COPY .next/standalone ./
+COPY .next/static ./.next/static
 
 CMD ["bun", "server.js"]
