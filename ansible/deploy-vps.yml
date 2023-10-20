@@ -1,0 +1,59 @@
+---
+- hosts: prod
+  name: Deploy on VPS
+  no_log: true
+  tasks:
+    - name: Install docker & docker-compose for Python
+      ansible.builtin.import_tasks:
+        file: docker-python.yaml
+
+    - name: Create all .env file
+      ansible.builtin.import_tasks:
+        file: create-env.yaml
+
+    - name: Check if a compose.prod.yml already exists
+      ansible.builtin.stat:
+        path: ./app/compose.prod.yml
+      register: found_compose
+
+    - name: Stop all services
+      community.docker.docker_compose:
+        project_src: ./app/compose.prod.yml
+        build: false
+        stopped: true
+      when: found_compose.stat.exists
+
+    - name: Clear previous deploy
+      community.docker.docker_prune:
+        containers: true
+        images: true
+        images_filters:
+          dangling: true
+      when: found_compose.stat.exists
+
+    - name: Get compose.prod.yml
+      ansible.builtin.get_url:
+        url: https://github.com/YummYume/symmetrical-potato/blob/master/compose.prod.yml
+        dest: ./app/compose.prod.yml
+        force: true
+        mode: "0660"
+
+    - name: Get Caddyfile
+      ansible.builtin.get_url:
+        url: https://github.com/YummYume/symmetrical-potato/blob/master/docker/prod/caddy/Caddyfile
+        dest: ./app/Caddyfile
+        force: true
+        mode: "0660"
+
+    - name: Create and pull compose services
+      community.docker.docker_compose:
+        project_src: ./app/compose.prod.yml
+        pull: true
+        state: present
+
+    - name: Commands to create or update database
+      command:
+        cmd: "{{ item }}"
+      loop:
+        - docker-compose -f ./app/compose.prod.yml exec php php bin/console d:d:c --if-not-exists
+        - docker-compose -f ./app/compose.prod.yml exec php php bin/console d:m:m -n

@@ -4,3 +4,5 @@ data/
 # Overrides
 .env.local
 compose.override.yml
+my.secrets
+secret-key

@@ -1,3 +1,4 @@
+PWD=$(shell pwd)
 COMPOSE=docker compose
 COMPOSECI=$(COMPOSE) -f docker-compose.ci.yml
 COMPOSEPROD=$(COMPOSE) -f docker-compose.prod.yml --env-file .env.prod
@@ -152,3 +153,6 @@ format-api:
 
 format-front:
 	$(EXECFRONT) bun run format
+
+edit-vault: 
+	docker run --rm -it -v $(PWD):/app -w /app/ansible/group_vars/prod -e EDITOR=nano uhligit/ansible /bin/sh -c "apk add nano && ansible-vault edit vault.yml && chmod a+rw vault.yml"

@@ -1,6 +1,5 @@
 version: '3.9'
 
-# TODO make prod config
 services:
   caddy:
     image: caddy:2.7.4-alpine
@@ -30,16 +29,13 @@ services:
           - api
 
   front:
-    image: oven/bun:1.0-alpine
-    working_dir: /home/bun/app
+    image: spacelocust/sp-front:latest
     container_name: sp-front
-    user: bun
-    entrypoint: [ "./scripts/bun.sh" ]
-    volumes:
-      - ./front:/home/bun/app
     stdin_open: true
     tty: true
     restart: unless-stopped
+    volumes:
+      - ./front/.env:/home/bun/app/.env
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:3000/api/healthz || exit 1
       interval: 10s
@@ -50,15 +46,12 @@ services:
       - webserver
 
   php:
-    build:
-      context: .
-      dockerfile: ./docker/php/Dockerfile
+    image: spacelocust/sp-api:latest
     restart: unless-stopped
-    container_name: sp-php
+    container_name: sp-api
     volumes:
-      - ./api:/www/app
-      - ./docker/php/overrides.ini:/usr/local/etc/php/conf.d/overrides.ini
-      - ./docker/php/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./api/public:/www/app/public
+      - ./api/.env.prod:/www/app/.env.prod
     depends_on:
       mariadb:
         condition: service_healthy

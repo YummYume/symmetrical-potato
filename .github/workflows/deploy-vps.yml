@@ -1,0 +1,40 @@
+name: Deploy on VPS
+
+on: workflow_dispatch
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Cache APT packages
+        uses: actions/cache@v2
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/apt.lock') }}
+          restore-keys: ${{ runner.os }}-apt-
+
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Deploy on vps
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: deploy-vps.yml
+          directory: ./ansible
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          vault_password: ${{ secrets.VAULT_PASSWORD }}
+          inventory: |
+            [prod]
+            ${{ secrets.VPS_HOST }} ansible_port=${{ secrets.VPS_PORT }} ansible_user=${{ secrets.VPS_USERNAME }}
+
+            [prod:vars]
+            ansible_python_interpreter=/usr/bin/python3

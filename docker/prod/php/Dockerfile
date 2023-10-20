@@ -13,4 +13,14 @@ RUN apk add --no-cache --update \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+COPY docker/prod/php/overrides.ini docker/prod/php/supervisord.conf ./
+
+COPY api/composer.* api/symfony.lock ./
+
+RUN composer install --no-cache --prefer-dist --no-dev --no-scripts --no-progress --optimize-autoloader
+
+COPY api ./
+
+RUN APP_DEBUG=0 php bin/console cache:clear
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

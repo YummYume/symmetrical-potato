@@ -1,0 +1,17 @@
+node_modules
+scripts
+**/.docker
+README.md
+LICENSE
+
+**/.dockerignore
+**/.DS_Store
+**/.git/
+**/.gitkeep/
+**/.gitattributes
+**/.gitignore
+**/.gitmodules
+**/.editorconfig
+**/.env.*.local
+**/.env.local
+**/.env.test
