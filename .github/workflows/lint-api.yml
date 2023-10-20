@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - '**'
+    paths:
+      - "api/**"
+      - ".github/workflows/docker-api.yml"
 
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}

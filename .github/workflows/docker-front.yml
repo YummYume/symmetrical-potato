@@ -5,11 +5,6 @@ on:
     workflows: [Linting Front]
     types: [completed]
     branches: ["master"]
-    
-  push:
-    branches: ["master"]
-    paths:
-        - "front/**"
   
   workflow_dispatch:
 
