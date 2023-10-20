@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows: [Linting Front]
     types: [completed]
+    branches: ["master"]
     
   push:
     branches: ["master"]

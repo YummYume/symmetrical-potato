@@ -4,14 +4,15 @@ on:
   workflow_run:
     workflows: [Linting API]
     types: [completed]
-
+    branches: ["master"]
+    
   push:
     branches: ["master"]
     paths:
         - "api/**"
 
   workflow_dispatch:
-    
+
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
