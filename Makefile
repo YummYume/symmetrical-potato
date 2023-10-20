@@ -154,14 +154,5 @@ format-api:
 format-front:
 	$(EXECFRONT) bun run format
 
-create-vault: 
-	docker run --rm -it -v $(PWD):/app -w /app/ansible/group_vars/prod -e EDITOR=nano uhligit/ansible /bin/sh -c "apk add nano && ansible-vault create vault.yml && chmod a+rw vault.yml"
-
 edit-vault: 
 	docker run --rm -it -v $(PWD):/app -w /app/ansible/group_vars/prod -e EDITOR=nano uhligit/ansible /bin/sh -c "apk add nano && ansible-vault edit vault.yml && chmod a+rw vault.yml"
-
-decrypt-vault: 
-	docker run --rm -it -v $(PWD):/app -w /app/ansible/group_vars/prod -e EDITOR=nano uhligit/ansible /bin/sh -c "apk add nano && ansible-vault decrypt vault.yml && chmod a+rw vault.yml"
-
-encrypt-vault: 
-	docker run --rm -it -v $(PWD):/app -w /app/ansible/group_vars/prod -e EDITOR=nano uhligit/ansible /bin/sh -c "apk add nano && ansible-vault encrypt vault.yml && chmod a+rw vault.yml"
