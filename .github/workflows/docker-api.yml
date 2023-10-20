@@ -9,8 +9,9 @@ on:
     branches: ["master"]
     paths:
         - "api/**"
-        - ".github/workflows/docker-api.yml"
 
+  workflow_dispatch:
+    
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
