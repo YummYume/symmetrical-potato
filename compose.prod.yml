@@ -21,7 +21,7 @@ services:
     depends_on:
       front:
         condition: service_healthy
-      api:
+      php:
         condition: service_healthy
     networks:
       webserver:
@@ -45,10 +45,11 @@ services:
     networks:
       - webserver
 
-  api:
+  php:
     image: spacelocust/sp-api:latest
     restart: unless-stopped
     container_name: sp-api
+    command: ["/bin/sh", "-c", "php bin/console d:d:c --if-not-exists && bin/console d:m:m -n"]
     volumes:
       - ./api/public:/www/app/public
       - ./api/.env.prod:/www/app/.env.prod
