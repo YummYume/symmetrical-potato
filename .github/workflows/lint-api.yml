@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - '**'
-    paths:
-      - "api/**.php"
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint-api:

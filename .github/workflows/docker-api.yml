@@ -11,6 +11,10 @@ on:
         - "api/**"
         - ".github/workflows/docker-api.yml"
 
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_and_push_api:
     name: Push Docker image API
@@ -47,4 +51,3 @@ jobs:
           cache-to: type=gha,mode=max
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

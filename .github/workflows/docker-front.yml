@@ -11,6 +11,10 @@ on:
         - "front/**"
         - ".github/workflows/docker-front.yml"
 
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_and_push_front:
     name: Push Docker image Front
@@ -74,4 +78,3 @@ jobs:
           cache-to: type=gha,mode=max
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
