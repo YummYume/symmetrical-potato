@@ -28,6 +28,7 @@
     content: |
       APP_ENV={{ app_env }}
       APP_SECRET={{ app_secret }}
+      APP_DEBUG={{ app_debug }}
       DATABASE_URL={{ database_url }}
       MAILER_DSN={{ mailer_dsn }}
       MAILER_NOREPLY_EMAIL={{ mailer_noreply_email }}

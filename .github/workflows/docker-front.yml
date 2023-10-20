@@ -4,12 +4,9 @@ on:
   workflow_run:
     workflows: [Linting Front]
     types: [completed]
-    
-  push:
     branches: ["master"]
-    paths:
-        - "front/**"
-        - ".github/workflows/docker-front.yml"
+  
+  workflow_dispatch:
 
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
