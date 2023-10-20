@@ -56,6 +56,5 @@
         cmd: "{{ item }}"
       loop:
         - docker-compose -f ./app/compose.prod.yml exec php php bin/console cache:clear
-        - docker-compose -f ./app/compose.prod.yml exec php php bin/console cache:warmup
         - docker-compose -f ./app/compose.prod.yml exec php php bin/console d:d:c --if-not-exists
         - docker-compose -f ./app/compose.prod.yml exec php php bin/console d:m:m -n
