@@ -13,6 +13,7 @@ next_public_sentry_dsn: {{ vault_next_public_sentry_dsn }}
 # api
 app_env: {{ vault_app_env }}
 app_secret: {{ vault_app_secret }}
+app_debug: 0
 
 database_url: {{ vault_database_url }}
 
