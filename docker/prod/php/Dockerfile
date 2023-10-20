@@ -21,6 +21,8 @@ RUN composer install --no-cache --prefer-dist --no-dev --no-scripts --no-progres
 
 COPY api ./
 
-RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
+RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear && \
+    php bin/console d:d:c --if-not-exists && \
+    bin/console d:m:m -n 
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
