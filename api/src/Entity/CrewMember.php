@@ -26,13 +26,13 @@ class CrewMember
     private ?Uuid $id = null;
 
     #[ORM\Column]
-    private ?int $civilianCasualties = null;
+    private int $civilianCasualties = 0;
 
     #[ORM\Column]
-    private ?int $kills = null;
+    private int $kills = 0;
 
     #[ORM\Column]
-    private ?int $objectivesCompleted = null;
+    private int $objectivesCompleted = 0;
 
     #[ORM\Column]
     private ?float $payout = null;
@@ -61,7 +61,7 @@ class CrewMember
         return $this->id;
     }
 
-    public function getCivilianCasualties(): ?int
+    public function getCivilianCasualties(): int
     {
         return $this->civilianCasualties;
     }
@@ -73,7 +73,7 @@ class CrewMember
         return $this;
     }
 
-    public function getKills(): ?int
+    public function getKills(): int
     {
         return $this->kills;
     }
@@ -85,7 +85,7 @@ class CrewMember
         return $this;
     }
 
-    public function getObjectivesCompleted(): ?int
+    public function getObjectivesCompleted(): int
     {
         return $this->objectivesCompleted;
     }

@@ -34,8 +34,8 @@ class Establishment
     #[ORM\Column]
     private ?float $minimumWage = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $minimumWorkTimePerWeek = null;
+    #[ORM\Column]
+    private ?int $minimumWorkTimePerWeek = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -98,12 +98,12 @@ class Establishment
         return $this;
     }
 
-    public function getMinimumWorkTimePerWeek(): ?\DateTimeInterface
+    public function getMinimumWorkTimePerWeek(): ?int
     {
         return $this->minimumWorkTimePerWeek;
     }
 
-    public function setMinimumWorkTimePerWeek(\DateTimeInterface $minimumWorkTimePerWeek): static
+    public function setMinimumWorkTimePerWeek(?int $minimumWorkTimePerWeek): static
     {
         $this->minimumWorkTimePerWeek = $minimumWorkTimePerWeek;
 

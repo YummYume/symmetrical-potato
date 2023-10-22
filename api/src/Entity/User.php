@@ -54,6 +54,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private float $balance = 0.0;
 
+    // This will be calculated by a cron job
+    #[ORM\Column(nullable: true)]
+    private ?float $globalRating = null;
+
     #[ORM\Column(length: 5, enumType: UserLocaleEnum::class)]
     private UserLocaleEnum $locale = UserLocaleEnum::En;
 
@@ -252,10 +256,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // TODO: Implement this based on the user's crew members' ratings
-    public function getGlobalRating(): float
+    public function getGlobalRating(): ?float
     {
-        return 0.0;
+        return $this->globalRating;
+    }
+
+    public function setGlobalRating(?float $globalRating): static
+    {
+        $this->globalRating = $globalRating;
+
+        return $this;
     }
 
     public function getLocale(): UserLocaleEnum

@@ -34,8 +34,20 @@ class Heist
     #[ORM\Column]
     private ?float $maximumPayout = null;
 
+    #[ORM\Column]
+    private ?string $name = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $startAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $shouldEndAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $endedAt = null;
 
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
     private HeistPreferedTacticEnum $preferedTactic = HeistPreferedTacticEnum::Unknown;
@@ -107,6 +119,18 @@ class Heist
         return $this;
     }
 
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
@@ -115,6 +139,42 @@ class Heist
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getStartAt(): ?\DateTimeInterface
+    {
+        return $this->startAt;
+    }
+
+    public function setStartAt(?\DateTimeInterface $startAt): static
+    {
+        $this->startAt = $startAt;
+
+        return $this;
+    }
+
+    public function getShouldEndAt(): ?\DateTimeInterface
+    {
+        return $this->shouldEndAt;
+    }
+
+    public function setShouldEndAt(?\DateTimeInterface $shouldEndAt): static
+    {
+        $this->shouldEndAt = $shouldEndAt;
+
+        return $this;
+    }
+
+    public function getEndedAt(): ?\DateTimeInterface
+    {
+        return $this->endedAt;
+    }
+
+    public function setEndedAt(?\DateTimeInterface $endedAt): static
+    {
+        $this->endedAt = $endedAt;
 
         return $this;
     }

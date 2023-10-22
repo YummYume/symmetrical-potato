@@ -32,7 +32,7 @@ Add the following to your `/etc/hosts` file:
 ```bash
 127.0.0.1 symmetrical-potato.com
 127.0.0.1 api.symmetrical-potato.com
-127.0.0.1 pmp.symmetrical-potato.com
+127.0.0.1 pma.symmetrical-potato.com
 127.0.0.1 mailcatcher.symmetrical-potato.com
 127.0.0.1 rabbitmq.symmetrical-potato.com
 ```
@@ -43,7 +43,7 @@ Which will allow you to access the different services for the project.
 | ------------------- | ------------------------------------------------------------------------ |
 | NextJS app (front)  | [symmetrical-potato.com](http://symmetrical-potato.com)                         |
 | API Platform (back) | [api.symmetrical-potato.com](http://api.symmetrical-potato.com)                 |
-| phpMyAdmin          | [pmp.symmetrical-potato.com](http://pmp.symmetrical-potato.com)                 |
+| phpMyAdmin          | [pma.symmetrical-potato.com](http://pma.symmetrical-potato.com)                 |
 | MailCatcher         | [mailcatcher.symmetrical-potato.com](http://mailcatcher.symmetrical-potato.com) |
 | RabbitMQ            | [rabbitmq.symmetrical-potato.com](http://rabbitmq.symmetrical-potato.com)       |
 
@@ -60,7 +60,7 @@ All the services used by the project.
 | `front`       | `symmetrical-potato.com`                                             | `sp-front`        |             | The NextJS app.                                                                                              |
 | `php`         | `api.symmetrical-potato.com`, `api:9000` (within the Docker network) | `sp-php`          |             | Symfony API with API Platform.                                                                               |
 | `mariadb`     |                                                                      | `sp-mariadb`      |             | The database used by the API.                                                                                |
-| `phpmyadmin`  | `pmp.symmetrical-potato.com`                                         | `sp-phpmyadmin`   |             | Used to manage MariaDB easily. Only available in dev.                                                        |
+| `phpmyadmin`  | `pma.symmetrical-potato.com`                                         | `sp-phpmyadmin`   |             | Used to manage MariaDB easily. Only available in dev.                                                        |
 | `mailcatcher` | `mailcatcher.symmetrical-potato.com`                                 | `sp-mailcatcher`  |             | Catches all mails sent by the API. Only available in dev.                                                    |
 | `rabbitmq`    | `rabbitmq.symmetrical-potato.com`                                    | `sp-rabbitmq`     |             | Queue system for the API (such as mails).                                                                    |
 

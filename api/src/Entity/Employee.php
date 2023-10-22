@@ -20,6 +20,14 @@ class Employee
     use BlameableTrait;
     use TimestampableTrait;
 
+    public const DAY_MONDAY = 'monday';
+    public const DAY_TUESDAY = 'tuesday';
+    public const DAY_WEDNESDAY = 'wednesday';
+    public const DAY_THURSDAY = 'thursday';
+    public const DAY_FRIDAY = 'friday';
+    public const DAY_SATURDAY = 'saturday';
+    public const DAY_SUNDAY = 'sunday';
+
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -47,6 +55,9 @@ class Employee
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $motivation = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
     #[ORM\ManyToMany(targetEntity: Heist::class, mappedBy: 'allowedEmployees')]
     private Collection $allowedHeists;
@@ -83,7 +94,7 @@ class Employee
         return $this->codeName;
     }
 
-    public function setCodeName(string $codeName): static
+    public function setCodeName(?string $codeName): static
     {
         $this->codeName = $codeName;
 
@@ -174,6 +185,18 @@ class Employee
     public function setMotivation(?string $motivation): static
     {
         $this->motivation = $motivation;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

@@ -23,8 +23,12 @@ final class UserFixtures extends Fixture
     public const EMPLOYEE_BILE = 'bile';
     public const EMPLOYEE_BOB = 'bob';
     public const EMPLOYEE_INFILTRATED_CIVILIAN = 'infiltrated_civilian';
+    public const EMPLOYEE_FAKE_COP = 'fake_cop';
+    public const EMPLOYEE_FAKE_GUARD = 'fake_guard';
+    public const EMPLOYEE_POLLING_MAN = 'polling_man';
+    public const EMPLOYEE_GANG_MEMBER = 'gang_member';
     // Pending
-    public const EMPLOYEE_PENDING = 'pending';
+    public const EMPLOYEE_PENDING = 'pending_employee';
 
     // Contractors
     // Accepted
@@ -36,9 +40,9 @@ final class UserFixtures extends Fixture
     public const CONTRACTOR_MAC = 'mac';
     public const CONTRACTOR_KEEGAN = 'keegan';
     // Pending
-    public const CONTRACTOR_PENDING = 'pending';
+    public const CONTRACTOR_PENDING = 'pending_contractor';
     // Rejected
-    public const CONTRACTOR_REJECTED = 'rejected';
+    public const CONTRACTOR_REJECTED = 'rejected_contractor';
 
     // Admin
     // RIP Bain :(
@@ -56,6 +60,10 @@ final class UserFixtures extends Fixture
         self::EMPLOYEE_BILE => ['role' => User::ROLE_EMPLOYEE],
         self::EMPLOYEE_BOB => ['role' => User::ROLE_EMPLOYEE],
         self::EMPLOYEE_INFILTRATED_CIVILIAN => ['role' => User::ROLE_EMPLOYEE],
+        self::EMPLOYEE_FAKE_COP => ['role' => User::ROLE_EMPLOYEE],
+        self::EMPLOYEE_FAKE_GUARD => ['role' => User::ROLE_EMPLOYEE],
+        self::EMPLOYEE_POLLING_MAN => ['role' => User::ROLE_EMPLOYEE],
+        self::EMPLOYEE_GANG_MEMBER => ['role' => User::ROLE_EMPLOYEE],
         self::EMPLOYEE_PENDING => ['role' => User::ROLE_EMPLOYEE],
         self::CONTRACTOR_SHADE => ['role' => User::ROLE_CONTRACTOR],
         self::CONTRACTOR_SHAYU => ['role' => User::ROLE_CONTRACTOR],
@@ -83,6 +91,7 @@ final class UserFixtures extends Fixture
                 ->setPassword($this->passwordHasher->hashPassword($newUser, self::DEFAULT_PASSWORD))
                 ->addRole($user['role'])
                 ->setLocale(UserLocaleEnum::random())
+                ->setBalance(random_int(0, 100000) * 0.75)
             ;
 
             $manager->persist($newUser);

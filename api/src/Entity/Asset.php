@@ -42,7 +42,7 @@ class Asset
     private ?int $maxQuantity = null;
 
     #[ORM\Column]
-    private ?bool $teamAsset = null;
+    private bool $teamAsset = true;
 
     #[ORM\ManyToOne(inversedBy: 'assets')]
     private ?Heist $heist = null;
@@ -124,7 +124,7 @@ class Asset
         return $this;
     }
 
-    public function isTeamAsset(): ?bool
+    public function isTeamAsset(): bool
     {
         return $this->teamAsset;
     }

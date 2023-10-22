@@ -12,6 +12,7 @@ enum HeistPhaseEnum: string
     case InProgress = 'in_progress';
     case Succeeded = 'succeeded';
     case Failed = 'failed';
+    case Cancelled = 'cancelled';
 
     public static function isFinished(self $phase): bool
     {
