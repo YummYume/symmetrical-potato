@@ -3,13 +3,8 @@
   name: Deploy on VPS
   no_log: true
   tasks:
-    - name: Install docker & docker-compose for Python
-      ansible.builtin.import_tasks:
-        file: docker-python.yaml
-
     - name: Create all .env file
-      ansible.builtin.import_tasks:
-        file: create-env.yaml
+      ansible.builtin.import_tasks: create-env.yml
 
     - name: Check if a compose.prod.yml already exists
       ansible.builtin.stat:
