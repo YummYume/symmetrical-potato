@@ -9,7 +9,8 @@ RUN apk add --update \
     chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions amqp intl pdo_mysql pcntl && \
     deluser www-data && \
-    adduser -DH -h /home/www-data -s /sbin/nologin -u 1000 www-data
+    adduser -DH -h /home/www-data -s /sbin/nologin -u 1000 www-data && \
+    rm -rf /usr/local/bin/install-php-extensions
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
