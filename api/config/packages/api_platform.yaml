@@ -8,6 +8,9 @@ api_platform:
             vary: ['Content-Type', 'Authorization', 'Origin']
         extra_properties:
             standard_put: true
+        # Disable operations (only use GraphQL) by default
+        item_operations: []
+        collection_operations: []
     formats:
         jsonld:
             mime_types: ['application/ld+json']

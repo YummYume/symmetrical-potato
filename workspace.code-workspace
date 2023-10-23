@@ -63,6 +63,7 @@
         "[scss]": {
             "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
-        "php.suggest.basic": false
+        "php.suggest.basic": false,
+        "twiggy.phpBinConsoleCommand": "docker compose exec php php bin/console"
     }
 }

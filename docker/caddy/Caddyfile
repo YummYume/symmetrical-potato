@@ -18,7 +18,7 @@ http://api.symmetrical-potato.com, http://api:9000 {
     error @phpFile "Not found" 404
 }
 
-http://pmp.symmetrical-potato.com {
+http://pma.symmetrical-potato.com {
     reverse_proxy * phpmyadmin:80
 }
 
