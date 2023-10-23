@@ -358,4 +358,16 @@ class Heist
 
         return $this;
     }
+
+    public function getHeistAssets(): Collection
+    {
+        return array_reduce(
+            $this->crewMembers->toArray(),
+            static fn (Collection $carry, CrewMember $crewMember): Collection => new ArrayCollection([
+                ...$carry->toArray(),
+                ...$crewMember->getHeistAssets()->toArray(),
+            ]),
+            new ArrayCollection()
+        );
+    }
 }

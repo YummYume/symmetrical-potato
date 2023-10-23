@@ -19,27 +19,27 @@ final class ContractorRequestFixtures extends Fixture implements DependentFixtur
         ],
         UserFixtures::CONTRACTOR_SHAYU => [
             'status' => ContractorRequestStatusEnum::Accepted,
-            'reason' => 'Experienced contractor from New York.',
+            'reason' => 'Ready to earn some money? I still owe you a favor.',
         ],
         UserFixtures::CONTRACTOR_BUTCHER => [
             'status' => ContractorRequestStatusEnum::Accepted,
-            'reason' => 'Experienced contractor from New York.',
+            'reason' => 'So the Payday gang is back? I have a job for you.',
         ],
         UserFixtures::CONTRACTOR_VLAD => [
             'status' => ContractorRequestStatusEnum::Accepted,
-            'reason' => 'Experienced contractor from New York.',
+            'reason' => 'Hey my friends, Vlad is always ready to help you.',
         ],
         UserFixtures::CONTRACTOR_BECKETT => [
             'status' => ContractorRequestStatusEnum::Accepted,
-            'reason' => 'Experienced contractor from New York.',
+            'reason' => 'Specialist in the art of stealth. New York is my playground.',
         ],
         UserFixtures::CONTRACTOR_MAC => [
             'status' => ContractorRequestStatusEnum::Accepted,
-            'reason' => 'Experienced contractor from New York.',
+            'reason' => 'So you want to earn some money? I know a place for you.',
         ],
         UserFixtures::CONTRACTOR_KEEGAN => [
             'status' => ContractorRequestStatusEnum::Accepted,
-            'reason' => 'Experienced contractor from New York.',
+            'reason' => "I'm ready to help you, but you better do the job right.",
         ],
         UserFixtures::CONTRACTOR_PENDING => [
             'status' => ContractorRequestStatusEnum::Pending,
