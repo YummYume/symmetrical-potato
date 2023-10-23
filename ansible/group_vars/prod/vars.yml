@@ -1,27 +1,27 @@
 # db
-mariadb_user: {{ vault_mariadb_user }}
-mariadb_password_hash: {{ vault_mariadb_password_hash }}
+mariadb_user: "{{ vault_mariadb_user }}"
+mariadb_password_hash: "{{ vault_mariadb_password_hash }}"
 
-rabbitmq_default_user: {{ vault_rabbitmq_default_user }}
-rabbitmq_default_pass: {{ vault_rabbitmq_default_pass }}
+rabbitmq_default_user: "{{ vault_rabbitmq_default_user }}"
+rabbitmq_default_pass: "{{ vault_rabbitmq_default_pass }}"
 
 # front
-api_host: {{ vault_api_host }}
-api_graphql_endpoint: {{ vault_api_graphql_endpoint }}
-next_public_sentry_dsn: {{ vault_next_public_sentry_dsn }}
+api_host: "{{ vault_api_host }}"
+api_graphql_endpoint: "{{ vault_api_graphql_endpoint }}"
+next_public_sentry_dsn: "{{ vault_next_public_sentry_dsn }}"
 
 # api
-app_env: {{ vault_app_env }}
-app_secret: {{ vault_app_secret }}
+app_env: "{{ vault_app_env }}"
+app_secret: "{{ vault_app_secret }}"
 app_debug: 0
 
-database_url: {{ vault_database_url }}
+database_url: "{{ vault_database_url }}"
 
-mailer_dsn: {{ vault_mailer_dsn }}
-mailer_noreply_email: {{ vault_mailer_noreply_email }}
-mailer_noreply_name: {{ vault_mailer_noreply_name }}
+mailer_dsn: "{{ vault_mailer_dsn }}"
+mailer_noreply_email: "{{ vault_mailer_noreply_email }}"
+mailer_noreply_name: "{{ vault_mailer_noreply_name }}"
 
-messenger_transport_dsn: {{ vault_messenger_transport_dsn }}
+messenger_transport_dsn: "{{ vault_messenger_transport_dsn }}"
 
-cors_allow_origin: {{ vault_cors_allow_origin }}
-sentry_dsn: {{ vault_sentry_dsn }}
+cors_allow_origin: "{{ vault_cors_allow_origin }}"
+sentry_dsn: "{{ vault_sentry_dsn }}"
