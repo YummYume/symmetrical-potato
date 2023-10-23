@@ -14,7 +14,7 @@ services:
     environment:
       ACME_EMAIL: "${ACME_EMAIL:?err}"
     volumes:
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./app/Caddyfile:/etc/caddy/Caddyfile
       - ./api/public:/www/app/public
       - ./data/caddy/data:/data
       - ./data/caddy/config:/config
