@@ -9,4 +9,4 @@ COPY public ./public
 COPY .next/standalone ./
 COPY .next/static ./.next/static
 
-CMD ["bun", "server.js"]
+CMD ["/bin/sh", "-c", "HOSTNAME=0.0.0.0 bun server.js"]

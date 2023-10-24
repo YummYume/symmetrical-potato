@@ -3,7 +3,7 @@
   ansible.builtin.copy:
     dest: ./app/.env
     force: true
-    mode: "0664"
+    mode: "0660"
     content: |
       MARIADB_USER={{ mariadb_user }}
       MARIADB_PASSWORD_HASH={{ mariadb_password_hash }}
@@ -15,7 +15,7 @@
   ansible.builtin.copy:
     dest: ./app/front/.env
     force: true
-    mode: "0664"
+    mode: "0660"
     content: |
       API_HOST={{ api_host }}
       API_GRAPHQL_ENDPOINT={{ api_graphql_endpoint }}
@@ -25,7 +25,7 @@
   ansible.builtin.copy:
     dest: ./app/api/.env.prod
     force: true
-    mode: "0664"
+    mode: "0660"
     content: |
       APP_ENV={{ app_env }}
       APP_SECRET={{ app_secret }}
