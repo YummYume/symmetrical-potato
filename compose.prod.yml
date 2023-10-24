@@ -14,8 +14,8 @@ services:
     environment:
       ACME_EMAIL: "${ACME_EMAIL:?err}"
     volumes:
-      - ./app/Caddyfile:/etc/caddy/Caddyfile
-      - ./api/public:/www/app/public
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - public:/www/app/public:ro
       - ./data/caddy/data:/data
       - ./data/caddy/config:/config
     depends_on:
@@ -34,8 +34,8 @@ services:
     stdin_open: true
     tty: true
     restart: unless-stopped
-    volumes:
-      - ./front/.env:/home/bun/app/.env
+    env_file:
+      - ./front/.env
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:3000/api/healthz || exit 1
       interval: 10s
@@ -50,8 +50,9 @@ services:
     restart: unless-stopped
     container_name: sp-api
     volumes:
-      - ./api/public:/www/app/public
+      - public:/www/app/public
       - ./api/.env.prod:/www/app/.env.prod
+      - ./api/.env.local:/www/app/.env.local
     depends_on:
       mariadb:
         condition: service_healthy
@@ -104,6 +105,9 @@ services:
       start_period: 60s
     networks:
       - rabbitmq
+
+volumes:
+  public:
 
 networks:
   webserver:

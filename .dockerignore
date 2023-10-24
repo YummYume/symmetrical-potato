@@ -21,6 +21,7 @@
 .github/
 docs/
 public/bundles/
+**/DataFixtures/
 tests/
 var/
 vendor/
@@ -29,4 +30,3 @@ vendor/
 **/.env.local
 **/.env.local.php
 **/.env.test
-**/.env
