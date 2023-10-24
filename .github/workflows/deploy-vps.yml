@@ -13,12 +13,12 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Cache APT packages
-        uses: actions/cache@v2
-        with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/apt.lock') }}
-          restore-keys: ${{ runner.os }}-apt-
+      # - name: Cache APT packages
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: /var/cache/apt/archives
+      #     key: ${{ runner.os }}-apt-${{ hashFiles('**/apt.lock') }}
+      #     restore-keys: ${{ runner.os }}-apt-
 
       - name: Install Ansible
         run: |
@@ -38,3 +38,5 @@ jobs:
 
             [prod:vars]
             ansible_python_interpreter=/usr/bin/python3
+          options: |
+            -vv

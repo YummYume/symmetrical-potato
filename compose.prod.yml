@@ -104,3 +104,8 @@ services:
       start_period: 60s
     networks:
       - rabbitmq
+
+networks:
+  webserver:
+  rabbitmq:
+  database:
