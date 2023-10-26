@@ -3,11 +3,7 @@ import Image from 'next/image';
 export const dynamic = 'force-dynamic';
 
 async function getData() {
-  const res = await fetch(`${process.env.API_HOST}`);
-
-  if (!res.ok) {
-    throw new Error(`Status code for API is ${res.status}.`);
-  }
+  const res = await fetch(`${process.env.API_HOST}/graphql`);
 
   return res.status;
 }

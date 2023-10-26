@@ -45,3 +45,4 @@
       MESSENGER_TRANSPORT_DSN={{ messenger_transport_dsn }}
       CORS_ALLOW_ORIGIN={{ cors_allow_origin }}
       SENTRY_DSN={{ sentry_dsn }}
+      JWT_PASSPHRASE={{ jwt_passphrase }}
