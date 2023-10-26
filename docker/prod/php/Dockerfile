@@ -22,6 +22,6 @@ COPY docker/prod/php/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY api ./
 
-RUN composer install --no-cache --no-dev --optimize-autoloader && rm -rf /usr/bin/composer
+RUN composer install --no-cache --no-dev --optimize-autoloader
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
