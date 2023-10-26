@@ -27,3 +27,5 @@ messenger_transport_dsn: "{{ vault_messenger_transport_dsn }}"
 
 cors_allow_origin: "{{ vault_cors_allow_origin }}"
 sentry_dsn: "{{ vault_sentry_dsn }}"
+
+jwt_passphrase: "{{ vault_jwt_passphrase }}"
