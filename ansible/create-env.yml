@@ -9,6 +9,7 @@
       MARIADB_PASSWORD_HASH={{ mariadb_password_hash }}
       RABBITMQ_DEFAULT_USER={{ rabbitmq_default_user }}
       RABBITMQ_DEFAULT_PASS={{ rabbitmq_default_pass }}
+      ACME_EMAIL={{ acme_email }}
 
 - name: Create .env file Front
   ansible.builtin.copy:
@@ -19,6 +20,14 @@
       API_HOST={{ api_host }}
       API_GRAPHQL_ENDPOINT={{ api_graphql_endpoint }}
       NEXT_PUBLIC_SENTRY_DSN={{ next_public_sentry_dsn }}
+
+- name: Create .env.local file API
+  ansible.builtin.copy:
+    dest: ./app/api/.env.local
+    force: true
+    mode: "0660"
+    content: |
+      APP_ENV={{ app_env }}
 
 - name: Create .env.prod file API
   ansible.builtin.copy:

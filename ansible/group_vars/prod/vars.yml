@@ -5,6 +5,8 @@ mariadb_password_hash: "{{ vault_mariadb_password_hash }}"
 rabbitmq_default_user: "{{ vault_rabbitmq_default_user }}"
 rabbitmq_default_pass: "{{ vault_rabbitmq_default_pass }}"
 
+acme_email: "{{ vault_acme_email }}"
+
 # front
 api_host: "{{ vault_api_host }}"
 api_graphql_endpoint: "{{ vault_api_graphql_endpoint }}"

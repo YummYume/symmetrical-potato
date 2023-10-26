@@ -13,10 +13,42 @@
 
     - name: Stop all services
       community.docker.docker_compose:
-        project_src: ./app/compose.prod.yml
+        project_src: ./app
+        files: compose.prod.yml
         build: false
         stopped: true
       when: found_compose.stat.exists
+
+    - name: Get compose.prod.yml
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/YummYume/symmetrical-potato/master/compose.prod.yml
+        dest: ./app/compose.prod.yml
+        force: true
+        mode: "0660"
+
+    - name: Get Caddyfile
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/YummYume/symmetrical-potato/master/docker/prod/caddy/Caddyfile
+        dest: ./app/Caddyfile
+        force: true
+        mode: "0660"
+
+    - name: Create and pull compose services
+      community.docker.docker_compose:
+        project_src: ./app
+        files: compose.prod.yml
+        pull: true
+        state: present
+
+    - name: Required Symfony Commands
+      command:
+        cmd: "{{ item }}"
+      loop:
+        - docker compose -f ./app/compose.prod.yml exec php chown www-data:root .env .env.local .env.prod
+        - docker compose -f ./app/compose.prod.yml exec php composer dump-env prod
+        - docker compose -f ./app/compose.prod.yml exec php php bin/console cache:clear
+        - docker compose -f ./app/compose.prod.yml exec php php bin/console d:d:c --if-not-exists
+        - docker compose -f ./app/compose.prod.yml exec php php bin/console d:m:m -n --allow-no-migration
 
     - name: Clear previous deploy
       community.docker.docker_prune:
@@ -24,32 +56,3 @@
         images: true
         images_filters:
           dangling: true
-      when: found_compose.stat.exists
-
-    - name: Get compose.prod.yml
-      ansible.builtin.get_url:
-        url: https://github.com/YummYume/symmetrical-potato/blob/master/compose.prod.yml
-        dest: ./app/compose.prod.yml
-        force: true
-        mode: "0660"
-
-    - name: Get Caddyfile
-      ansible.builtin.get_url:
-        url: https://github.com/YummYume/symmetrical-potato/blob/master/docker/prod/caddy/Caddyfile
-        dest: ./app/Caddyfile
-        force: true
-        mode: "0660"
-
-    - name: Create and pull compose services
-      community.docker.docker_compose:
-        project_src: ./app/compose.prod.yml
-        pull: true
-        state: present
-
-    - name: Commands to create or update database
-      command:
-        cmd: "{{ item }}"
-      loop:
-        - docker-compose -f ./app/compose.prod.yml exec php php bin/console cache:clear
-        - docker-compose -f ./app/compose.prod.yml exec php php bin/console d:d:c --if-not-exists
-        - docker-compose -f ./app/compose.prod.yml exec php php bin/console d:m:m -n
