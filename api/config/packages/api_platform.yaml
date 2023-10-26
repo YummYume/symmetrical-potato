@@ -20,6 +20,9 @@ api_platform:
             mime_types: ['application/graphql']
         html:
             mime_types: ['text/html']
+    graphql:
+        graphql_playground:
+            enabled: false
 
 when@prod:
     api_platform:
@@ -35,5 +38,5 @@ when@prod:
             graphql:
                 mime_types: ['application/graphql']
         graphql:
-            graphql_playground:
+            graphiql:
                 enabled: false

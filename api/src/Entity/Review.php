@@ -27,7 +27,7 @@ class Review
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
-    #[ORM\Column(type: Types::FLOAT, length: 20, enumType: ReviewRatingEnum::class)]
+    #[ORM\Column(length: 20, enumType: ReviewRatingEnum::class)]
     private ?ReviewRatingEnum $rating = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]

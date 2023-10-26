@@ -2,10 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\DeleteMutation;
+use ApiPlatform\Metadata\GraphQl\Mutation;
+use ApiPlatform\Metadata\GraphQl\Query;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\UserLocaleEnum;
 use App\Repository\UserRepository;
+use App\Resolver\UserMutationResolver;
+use App\Resolver\UserQueryResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,6 +24,37 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource(
+    operations: [],
+    graphQlOperations: [
+        new Query(read: false, write: false),
+        new QueryCollection(read: false, write: false),
+        new Mutation(name: 'create', read: false, write: false),
+        new Mutation(name: 'update', read: false, write: false),
+        new DeleteMutation(name: 'delete', read: false, write: false),
+        new Query(
+            name: 'me',
+            resolver: UserQueryResolver::class,
+            args: [],
+        ),
+        new Mutation(
+            name: 'login',
+            resolver: UserMutationResolver::class,
+            write: false,
+            validate: false,
+            args: [
+                'username' => [
+                    'type' => 'String!',
+                    'description' => 'The username of the user to authenticate.',
+                ],
+                'password' => [
+                    'type' => 'String!',
+                    'description' => 'The password of the user to authenticate.',
+                ],
+            ]
+        ),
+    ]
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use BlameableTrait;
@@ -79,6 +117,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'contractor', targetEntity: Establishment::class)]
     private Collection $establishments;
+
+    private ?string $token = null;
 
     public function __construct()
     {
@@ -415,6 +455,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $establishment->setContractor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): static
+    {
+        $this->token = $token;
 
         return $this;
     }

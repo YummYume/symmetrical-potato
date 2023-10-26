@@ -13,7 +13,7 @@ else
 endif
 
 # Starting/stopping the project
-start: build up-recreate composer db perm
+start: build up-recreate composer db generate-jwt perm
 
 build:
 	$(COMPOSE) build --force-rm
@@ -85,6 +85,10 @@ migration-diff:
 fixtures:
 	$(EXECPHP) php bin/console d:f:l -n
 
+# JWT
+generate-jwt:
+	$(EXECPHP) php bin/console lexik:jwt:generate-keypair --skip-if-exists
+
 # Rabbitmq
 rabbitmq-consume:
 	$(EXECPHP) php bin/console messenger:consume -vv
@@ -154,5 +158,5 @@ format-api:
 format-front:
 	$(EXECFRONT) bun run format
 
-edit-vault: 
+edit-vault:
 	docker run --rm -it -v $(PWD):/app -w /app/ansible/group_vars/prod -e EDITOR=nano uhligit/ansible /bin/sh -c "apk add nano && ansible-vault edit vault.yml && chmod a+rw vault.yml"
