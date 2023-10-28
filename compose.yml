@@ -27,13 +27,14 @@ services:
           - api
 
   front:
-    image: oven/bun:1.0-alpine
-    working_dir: /home/bun/app
+    build:
+      context: .
+      dockerfile: ./docker/front/Dockerfile
     container_name: sp-front
-    user: bun
-    entrypoint: [ "./scripts/bun.sh" ]
     volumes:
       - ./front:/home/bun/app
+    ports:
+      - 3001:3001
     stdin_open: true
     tty: true
     restart: unless-stopped

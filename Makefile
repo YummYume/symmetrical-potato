@@ -62,7 +62,7 @@ bun:
 
 # Generate types from API
 generate-types:
-	$(EXECFRONT) bunx @api-platform/create-client http://api:9000 src/lib/api/ --generator typescript
+	$(EXECFRONT) bunx @api-platform/create-client http://api:9000 app/lib/api/ --generator typescript
 
 # DB
 db: db-drop db-create schema fixtures

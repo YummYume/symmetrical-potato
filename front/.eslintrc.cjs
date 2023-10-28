@@ -1,15 +1,14 @@
 module.exports = {
   root: true,
   extends: [
-    'next/core-web-vitals',
+    '@remix-run/eslint-config',
+    '@remix-run/eslint-config/node',
     'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
     'plugin:import/recommended',
     'plugin:import/typescript',
     'prettier',
   ],
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'import', 'prettier'],
+  plugins: ['import', 'prettier'],
   ignorePatterns: ['*.cjs'],
   rules: {
     'prettier/prettier': 'warn',
@@ -47,17 +46,11 @@ module.exports = {
         pathGroups: [
           {
             group: 'internal',
-            pattern: '@(lib|api|client-components|server-components)?/*',
+            pattern: '~(lib|api|components)?/*',
           },
         ],
       },
     ],
     'import/prefer-default-export': 'off',
-  },
-  settings: {
-    'import/resolver': {
-      node: true,
-      typescript: true,
-    },
-  },
+  }
 };
