@@ -6,6 +6,7 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
+    "module": "ESNext",
     "resolveJsonModule": true,
     "target": "ES2022",
     "strict": true,
@@ -17,7 +18,8 @@
       "~styles/*": ["./app/styles/*"],
       "~lib/*": ["./app/lib/*"],
       "~api/*": ["./app/lib/api/*"],
-      "~components/*": ["./app/lib/components/*"]
+      "~components/*": ["./app/lib/components/*"],
+      "~utils/*": ["./app/lib/utils/*"]
     },
 
     // Remix takes care of building everything in `remix build`.

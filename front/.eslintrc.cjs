@@ -11,6 +11,7 @@ module.exports = {
   plugins: ['import', 'prettier'],
   ignorePatterns: ['*.cjs'],
   rules: {
+    'no-undef': 'off',
     'prettier/prettier': 'warn',
     '@typescript-eslint/no-throw-literal': 'off',
     '@typescript-eslint/no-unused-vars': ['warn'],
@@ -46,11 +47,11 @@ module.exports = {
         pathGroups: [
           {
             group: 'internal',
-            pattern: '~(lib|api|components)?/*',
+            pattern: '~(lib|api|components|utils)?/*',
           },
         ],
       },
     ],
     'import/prefer-default-export': 'off',
-  }
+  },
 };

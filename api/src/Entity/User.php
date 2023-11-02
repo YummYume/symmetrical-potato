@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
 use ApiPlatform\Metadata\GraphQl\Mutation;
@@ -20,6 +21,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -27,15 +29,22 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     operations: [],
     graphQlOperations: [
-        new Query(read: false, write: false),
-        new QueryCollection(read: false, write: false),
-        new Mutation(name: 'create', read: false, write: false),
-        new Mutation(name: 'update', read: false, write: false),
-        new DeleteMutation(name: 'delete', read: false, write: false),
+        new Query(
+            normalizationContext: [
+                'groups' => ['user:read:public'],
+            ]
+        ),
+        new QueryCollection(),
+        new Mutation(name: 'create'),
+        new Mutation(name: 'update'),
+        new DeleteMutation(name: 'delete'),
         new Query(
             name: 'me',
             resolver: UserQueryResolver::class,
             args: [],
+            normalizationContext: [
+                'groups' => ['user:read'],
+            ],
         ),
         new Mutation(
             name: 'login',
@@ -51,7 +60,10 @@ use Symfony\Component\Uid\Uuid;
                     'type' => 'String!',
                     'description' => 'The password of the user to authenticate.',
                 ],
-            ]
+            ],
+            normalizationContext: [
+                'groups' => ['user:login'],
+            ],
         ),
     ]
 )]
@@ -70,9 +82,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[ApiProperty]
+    #[Groups(['user:read', 'user:read:public'])]
     private ?string $username = null;
 
     #[ORM\Column]
@@ -87,16 +102,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255)]
+    #[ApiProperty]
+    #[Groups(['user:read'])]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['user:read'])]
     private float $balance = 0.0;
 
     // This will be calculated by a cron job
     #[ORM\Column(nullable: true)]
+    #[ApiProperty]
+    #[Groups(['user:read'])]
     private ?float $globalRating = null;
 
     #[ORM\Column(length: 5, enumType: UserLocaleEnum::class)]
+    #[ApiProperty]
+    #[Groups(['user:read'])]
     private UserLocaleEnum $locale = UserLocaleEnum::En;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
@@ -118,7 +141,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'contractor', targetEntity: Establishment::class)]
     private Collection $establishments;
 
+    #[ApiProperty]
+    #[Groups(['user:login'])]
     private ?string $token = null;
+
+    #[ApiProperty]
+    #[Groups(['user:login'])]
+    private ?int $tokenTtl = null;
 
     public function __construct()
     {
@@ -467,6 +496,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setToken(?string $token): static
     {
         $this->token = $token;
+
+        return $this;
+    }
+
+    public function getTokenTtl(): ?int
+    {
+        return $this->tokenTtl;
+    }
+
+    public function setTokenTtl(?int $tokenTtl): static
+    {
+        $this->tokenTtl = $tokenTtl;
 
         return $this;
     }

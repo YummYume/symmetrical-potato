@@ -62,7 +62,9 @@ bun:
 
 # Generate types from API
 generate-types:
-	$(EXECFRONT) bunx @api-platform/create-client http://api:9000 app/lib/api/ --generator typescript
+	$(EXECFRONT) bun run generate:types
+	$(EXECFRONT) bunx prettier --write ./app/lib/api/types/index.ts
+	$(EXECFRONT) bunx eslint ./app/lib/api/types/index.ts --fix
 
 # DB
 db: db-drop db-create schema fixtures

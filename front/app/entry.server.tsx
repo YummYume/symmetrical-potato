@@ -6,12 +6,26 @@
 
 import { createReadableStreamFromReadable } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
+import * as Sentry from '@sentry/remix';
 import isbot from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 
 import { PassThrough } from 'node:stream';
 
 import type { AppLoadContext, EntryContext } from '@remix-run/node';
+
+export function handleError(error: unknown, { request }: { request: Request }) {
+  if (process.env.NODE_ENV === 'production') {
+    Sentry.captureRemixServerException(error, 'remix.server', request);
+  }
+}
+
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN ?? '',
+    tracesSampleRate: 1,
+  });
+}
 
 const ABORT_DELAY = 5_000;
 
