@@ -1,31 +1,35 @@
-# db
-mariadb_user: "{{ vault_mariadb_user }}"
-mariadb_password_hash: "{{ vault_mariadb_password_hash }}"
+# Docker
+docker_mariadb_user: "{{ vault_docker_mariadb_user }}"
+docker_mariadb_password_hash: "{{ vault_docker_mariadb_password_hash }}"
 
-rabbitmq_default_user: "{{ vault_rabbitmq_default_user }}"
-rabbitmq_default_pass: "{{ vault_rabbitmq_default_pass }}"
+docker_rabbitmq_default_user: "{{ vault_docker_rabbitmq_default_user }}"
+docker_rabbitmq_default_pass: "{{ vault_docker_rabbitmq_default_pass }}"
 
-acme_email: "{{ vault_acme_email }}"
+docker_acme_email: "{{ vault_docker_acme_email }}"
 
-# front
-api_host: "{{ vault_api_host }}"
-api_graphql_endpoint: "{{ vault_api_graphql_endpoint }}"
-next_public_sentry_dsn: "{{ vault_next_public_sentry_dsn }}"
+# Front
+front_api_host: "{{ vault_front_api_host }}"
+front_public_api_host: "{{ vault_front_public_api_host }}"
+front_api_graphql_endpoint: "{{ vault_front_api_graphql_endpoint }}"
+front_cookie_secret: "{{ vault_front_cookie_secret }}"
+front_site_host: "{{ vault_front_site_host }}"
+front_sentry_dsn: "{{ vault_front_sentry_dsn }}"
+front_sentry_token: "{{ vault_front_sentry_token }}"
 
-# api
-app_env: "{{ vault_app_env }}"
-app_secret: "{{ vault_app_secret }}"
-app_debug: 0
+# API
+api_app_env: "{{ vault_api_app_env }}"
+api_app_secret: "{{ vault_api_app_secret }}"
+api_app_debug: 0
 
-database_url: "{{ vault_database_url }}"
+api_database_url: "{{ vault_api_database_url }}"
 
-mailer_dsn: "{{ vault_mailer_dsn }}"
-mailer_noreply_email: "{{ vault_mailer_noreply_email }}"
-mailer_noreply_name: "{{ vault_mailer_noreply_name }}"
+api_mailer_dsn: "{{ vault_api_mailer_dsn }}"
+api_mailer_noreply_email: "{{ vault_api_mailer_noreply_email }}"
+api_mailer_noreply_name: "{{ vault_api_mailer_noreply_name }}"
 
-messenger_transport_dsn: "{{ vault_messenger_transport_dsn }}"
+api_messenger_transport_dsn: "{{ vault_api_messenger_transport_dsn }}"
 
-cors_allow_origin: "{{ vault_cors_allow_origin }}"
-sentry_dsn: "{{ vault_sentry_dsn }}"
+api_cors_allow_origin: "{{ vault_api_cors_allow_origin }}"
+api_sentry_dsn: "{{ vault_api_sentry_dsn }}"
 
-jwt_passphrase: "{{ vault_jwt_passphrase }}"
+api_jwt_passphrase: "{{ vault_api_jwt_passphrase }}"

@@ -5,11 +5,11 @@
     force: true
     mode: "0660"
     content: |
-      MARIADB_USER={{ mariadb_user }}
-      MARIADB_PASSWORD_HASH={{ mariadb_password_hash }}
-      RABBITMQ_DEFAULT_USER={{ rabbitmq_default_user }}
-      RABBITMQ_DEFAULT_PASS={{ rabbitmq_default_pass }}
-      ACME_EMAIL={{ acme_email }}
+      MARIADB_USER={{ docker_mariadb_user }}
+      MARIADB_PASSWORD_HASH={{ docker_mariadb_password_hash }}
+      RABBITMQ_DEFAULT_USER={{ docker_rabbitmq_default_user }}
+      RABBITMQ_DEFAULT_PASS={{ docker_rabbitmq_default_pass }}
+      ACME_EMAIL={{ docker_acme_email }}
 
 - name: Create .env file Front
   ansible.builtin.copy:
@@ -17,9 +17,21 @@
     force: true
     mode: "0660"
     content: |
-      API_HOST={{ api_host }}
-      API_GRAPHQL_ENDPOINT={{ api_graphql_endpoint }}
-      NEXT_PUBLIC_SENTRY_DSN={{ next_public_sentry_dsn }}
+      API_HOST={{ front_api_host }}
+      PUBLIC_API_HOST={{ front_public_api_host }}
+      API_GRAPHQL_ENDPOINT={{ front_api_graphql_endpoint }}
+      COOKIE_SECRET={{ front_cookie_secret }}
+      SITE_HOST={{ front_site_host }}
+      SENTRY_DSN={{ front_sentry_dsn }}
+
+- name: Create .sentryclirc file Front
+  ansible.builtin.copy:
+    dest: ./app/front/.sentryclirc
+    force: true
+    mode: "0660"
+    content: |
+      [auth]
+      token={{ front_sentry_token }}
 
 - name: Create .env.local file API
   ansible.builtin.copy:
@@ -27,7 +39,7 @@
     force: true
     mode: "0660"
     content: |
-      APP_ENV={{ app_env }}
+      APP_ENV={{ api_app_env }}
 
 - name: Create .env.prod file API
   ansible.builtin.copy:
@@ -35,14 +47,13 @@
     force: true
     mode: "0660"
     content: |
-      APP_ENV={{ app_env }}
-      APP_SECRET={{ app_secret }}
-      APP_DEBUG={{ app_debug }}
-      DATABASE_URL={{ database_url }}
-      MAILER_DSN={{ mailer_dsn }}
-      MAILER_NOREPLY_EMAIL={{ mailer_noreply_email }}
-      MAILER_NOREPLY_NAME={{ mailer_noreply_name }}
-      MESSENGER_TRANSPORT_DSN={{ messenger_transport_dsn }}
-      CORS_ALLOW_ORIGIN={{ cors_allow_origin }}
-      SENTRY_DSN={{ sentry_dsn }}
-      JWT_PASSPHRASE={{ jwt_passphrase }}
+      APP_SECRET={{ api_app_secret }}
+      APP_DEBUG={{ api_app_debug }}
+      DATABASE_URL={{ api_database_url }}
+      MAILER_DSN={{ vault_api_mailer_dsn }}
+      MAILER_NOREPLY_EMAIL={{ vault_api_mailer_noreply_email }}
+      MAILER_NOREPLY_NAME={{ vault_api_mailer_noreply_name }}
+      MESSENGER_TRANSPORT_DSN={{ vault_api_messenger_transport_dsn }}
+      CORS_ALLOW_ORIGIN={{ vault_api_cors_allow_origin }}
+      SENTRY_DSN={{ vault_api_sentry_dsn }}
+      JWT_PASSPHRASE={{ vault_api_jwt_passphrase }}
