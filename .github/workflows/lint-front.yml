@@ -40,7 +40,7 @@ jobs:
         id: cache-css
         with:
           path: ./front/app/styles
-          key: ${{ runner.os }}-remix-css-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('tailwind.config.ts', '**/*.css', '**/*.scss') }}
+          key: ${{ runner.os }}-remix-css-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('front/tailwind.config.ts', 'front/styles/**/*.css', 'front/styles/**/*.scss') }}
 
       - name: Cache client build
         uses: actions/cache@v3
