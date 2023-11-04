@@ -10,38 +10,56 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as url from 'node:url';
 
-import { getCurrentUser } from '~/lib/api/user';
+import { AUTHORIZATION_COOKIE_PREFIX, bearerCookie } from '~/lib/cookies.server';
+import { getCurrentUser } from '~api/user';
 
 import type { GetLoadContextFunction } from '@remix-run/express';
-import type { User } from '~/lib/api/types';
+import type { User } from '~api/types';
 
 sourceMapSupport.install();
 installGlobals();
 
 const BUILD_PATH = path.resolve('build/index.js');
 const VERSION_PATH = path.resolve('build/version.txt');
+const PUBLIC_PATHS = [
+  '/',
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
+  '/api/healthz',
+];
 
 const initialBuild = await reimportServer();
+/**
+ * Load context to be used before passing the request to Remix.
+ */
 const getLoadContext = (async (req, res) => {
-  const cookieHeader = req.headers.cookie;
-
-  // TODO: Grab "Authorization" cookie if it exists and add it to the client's defaults
-  console.log('cookieHeader', cookieHeader);
-
+  const authorizationToken = await bearerCookie.parse(req.headers.cookie ?? '');
   const client = new GraphQLClient(`${process.env.API_HOST}${process.env.API_GRAPHQL_ENDPOINT}`, {
     credentials: 'include',
+    headers: {
+      Authorization: authorizationToken
+        ? `${AUTHORIZATION_COOKIE_PREFIX} ${authorizationToken}`
+        : '',
+    },
   });
   let user: User | null = null;
 
   try {
     const userResponse = await getCurrentUser(client);
 
-    if (userResponse) {
-      user = userResponse;
+    if (userResponse && userResponse.meUser) {
+      user = userResponse.meUser;
     }
   } catch (error) {
     // TODO use refresh token?
     user = null;
+  }
+
+  // Protect all routes except public ones
+  if (null === user && !PUBLIC_PATHS.includes(req.path)) {
+    res.redirect('/login');
   }
 
   return { client, user };
@@ -104,7 +122,8 @@ async function createDevRequestHandler(
   const chokidar = await import('chokidar');
 
   chokidar
-    .watch(VERSION_PATH, { ignoreInitial: true })
+    // see https://github.com/remix-run/remix/issues/6919
+    .watch(VERSION_PATH, { ignoreInitial: true, awaitWriteFinish: { stabilityThreshold: 200 } })
     .on('add', handleServerUpdate)
     .on('change', handleServerUpdate);
 

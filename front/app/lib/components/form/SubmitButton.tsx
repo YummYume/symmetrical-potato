@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 export type BaseSubmitButtonProps = {
   text: string;
-  submittingText: string;
+  submittingText?: string;
 };
 
 export type SubmitButtonContent = (props: BaseSubmitButtonProps) => JSX.Element;
@@ -23,7 +23,7 @@ export const SubmitButton = ({
   return (
     <button type="submit" disabled={isSubmitting} {...rest}>
       {Content && <Content text={text} submittingText={submittingText} />}
-      {!Content && (isSubmitting ? submittingText : text)}
+      {!Content && (isSubmitting && submittingText ? submittingText : text)}
     </button>
   );
 };

@@ -8,14 +8,14 @@
     "build:remix": "remix build",
     "build:css": "bun run generate:css --style=compressed",
     "dev": "concurrently \"bun run dev:remix\" \"bun run dev:css\"",
-    "dev:remix": "remix dev --manual -c \"bunx tsx watch server.ts\"",
+    "dev:remix": "remix dev --manual -c \"bunx tsx watch --ignore ./build/* --ignore ./public/build/* server.ts\"",
     "dev:css": "bun run generate:css --watch",
     "start": "cross-env NODE_ENV=production bun ./server.js",
     "generate:css": "sass styles/:app/styles/",
     "generate:types": "graphql-codegen",
     "typecheck": "tsc",
-    "lint": "prettier --check . && eslint . && tsc",
-    "format": "prettier --write . && eslint . --fix"
+    "lint": "eslint . && tsc",
+    "format": "eslint . --fix"
   },
   "dependencies": {
     "@radix-ui/react-toast": "^1.1.5",

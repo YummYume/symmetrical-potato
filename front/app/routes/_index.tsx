@@ -1,35 +1,16 @@
-import { json, type LoaderArgs, type MetaFunction } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import { type MetaFunction } from '@remix-run/node';
 
-import { commitSession, getSession } from '~/lib/session.server';
-
-export const loader = async ({ request, context }: LoaderArgs) => {
-  const session = await getSession(request.headers.get('Cookie'));
-
-  return json(
-    {
-      user: context.user,
-      flashes: session.flash,
-    },
-    {
-      headers: {
-        'Set-Cookie': await commitSession(session),
-      },
-    },
-  );
-};
+import { Link } from '~components/Link';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'New Remix App' }, { name: 'description', content: 'Welcome to Remix!' }];
 };
 
 export default function Index() {
-  const { user } = useLoaderData<typeof loader>();
-
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', lineHeight: '1.8' }}>
+    <div className="font-sans leading-3">
       <h1 className="text-2xl">Welcome to Remix</h1>
-      <ul>
+      <ul className="flex flex-col gap-4">
         <li>
           <a target="_blank" href="https://remix.run/tutorials/blog" rel="noreferrer">
             15m Quickstart Blog Tutorial
@@ -45,15 +26,22 @@ export default function Index() {
             Remix Docs
           </a>
         </li>
-        {user && <li>Logged in as {user.username}</li>}
-        {!user && (
-          <li>
-            <Link to="/login" prefetch="intent">
-              Login
-            </Link>
-          </li>
-        )}
       </ul>
+
+      <img
+        className="my-8"
+        src="/favicon.ico"
+        alt="Remix Logo"
+        style={{
+          viewTransitionName: 'logo',
+        }}
+      />
+
+      <p className="mb-2 font-bold">
+        {/* Maybe linked to https://github.com/remix-run/remix/issues/4183 ? */}
+        BUG: This link should redirect to /login when not logged in :
+      </p>
+      <Link to="/dashboard">To dashboard</Link>
     </div>
   );
 }

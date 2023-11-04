@@ -5,12 +5,12 @@ namespace App\Resolver;
 use ApiPlatform\GraphQl\Resolver\QueryItemResolverInterface;
 use App\Entity\User;
 use App\Helper\ExceptionHelper;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Bundle\SecurityBundle\Security;
 
 final class UserQueryResolver implements QueryItemResolverInterface
 {
     public function __construct(
-        #[CurrentUser] private readonly ?User $user,
+        private readonly Security $security,
         private readonly ExceptionHelper $exceptionHelper
     ) {
     }
@@ -25,10 +25,12 @@ final class UserQueryResolver implements QueryItemResolverInterface
 
     public function me(): User
     {
-        if (null === $this->user) {
+        $user = $this->security->getUser();
+
+        if (null === $user) {
             throw $this->exceptionHelper->createTranslatableHttpException(401, 'user.not_authenticated');
         }
 
-        return $this->user;
+        return $user;
     }
 }

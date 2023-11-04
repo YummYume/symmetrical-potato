@@ -1,11 +1,7 @@
-import { redirect, type LoaderArgs } from '@remix-run/node';
+import { type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 export async function loader({ context }: LoaderArgs) {
-  if (!context.user) {
-    throw redirect('/login');
-  }
-
   return {
     user: context.user,
   };
@@ -14,5 +10,17 @@ export async function loader({ context }: LoaderArgs) {
 export default function Dashboard() {
   const { user } = useLoaderData<typeof loader>();
 
-  return <h1>Hi {user.username}</h1>;
+  return (
+    <div className="relative w-full">
+      <h1>Hi {user.username}</h1>
+      <img
+        className="absolute right-0 top-20"
+        src="/favicon.ico"
+        alt="Remix Logo"
+        style={{
+          viewTransitionName: 'logo',
+        }}
+      />
+    </div>
+  );
 }

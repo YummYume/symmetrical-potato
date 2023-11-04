@@ -3,10 +3,14 @@ import { type GraphQLClient, gql } from 'graphql-request';
 import type { Query, Mutation } from '~api/types';
 
 export const getCurrentUser = async (client: GraphQLClient) => {
-  return client.request<Query['meUser']>(gql`
+  return client.request<Query>(gql`
     query Me {
       meUser {
+        id
         username
+        email
+        balance
+        globalRating
       }
     }
   `);
