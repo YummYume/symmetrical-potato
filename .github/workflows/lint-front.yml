@@ -9,7 +9,7 @@ on:
       - ".github/workflows/docker-front.yml"
       - "docker/prod/node/**"
 
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -25,18 +25,24 @@ jobs:
         with:
           bun-version: 1.0.2
 
-      - name: Caching dependencies
+      - name: Cache dependencies
         uses: actions/cache@v3
         id: cache
         with:
           path: ./front/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/bun.lockb') }}
 
-      - name: Caching build
+      - name: Cache client build
         uses: actions/cache@v3
         with:
-          path: ./front/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          path: ./front/public/build
+          key: ${{ runner.os }}-remix-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.css', '**/*.scss', '**/*.json') }}
+
+      - name: Cache server build
+        uses: actions/cache@v3
+        with:
+          path: ./front/build
+          key: ${{ runner.os }}-remix-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.css', '**/*.scss', '**/*.json') }}
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'

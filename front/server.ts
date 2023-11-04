@@ -59,6 +59,12 @@ const getLoadContext = (async (req, res) => {
 
   // Protect all routes except public ones
   if (null === user && !PUBLIC_PATHS.includes(req.path)) {
+    const isDataRequest = req.originalUrl.includes('_data');
+
+    if (isDataRequest) {
+      res.status(204).set('x-remix-redirect', '/login').send();
+    }
+
     res.redirect('/login');
   }
 
