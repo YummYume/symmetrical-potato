@@ -40,19 +40,19 @@ jobs:
         id: cache-css
         with:
           path: ./front/app/styles
-          key: ${{ runner.os }}-remix-css-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('front/tailwind.config.ts', 'front/styles/**/*.css', 'front/styles/**/*.scss') }}
+          key: ${{ runner.os }}-remix-css-${{ hashFiles('front/tailwind.config.ts', 'front/styles/**/*.css', 'front/styles/**/*.scss') }}
 
       - name: Cache client build
         uses: actions/cache@v3
         with:
           path: ./front/public/build
-          key: ${{ runner.os }}-remix-client-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.css', '**/*.scss', '**/*.json') }}
+          key: ${{ runner.os }}-remix-client-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('front/**/*.js', 'front/**/*.jsx', 'front/**/*.ts', 'front/**/*.tsx', 'front/**/*.css', 'front/**/*.scss', 'front/**/*.json', '!front/public/build/**', '!front/build/**') }}
 
       - name: Cache server build
         uses: actions/cache@v3
         with:
           path: ./front/build
-          key: ${{ runner.os }}-remix-server-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx', '**/*.css', '**/*.scss', '**/*.json') }}
+          key: ${{ runner.os }}-remix-server-${{ hashFiles('front/**/bun.lockb') }}-${{ hashFiles('front/**/*.js', 'front/**/*.jsx', 'front/**/*.ts', 'front/**/*.tsx', 'front/**/*.css', 'front/**/*.scss', 'front/**/*.json', '!front/public/build/**', '!front/build/**') }}
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
