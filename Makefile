@@ -63,7 +63,6 @@ bun:
 # Generate types from API
 generate-types:
 	$(EXECFRONT) bun run generate:types
-	$(EXECFRONT) bunx prettier --write ./app/lib/api/types/index.ts
 	$(EXECFRONT) bunx eslint ./app/lib/api/types/index.ts --fix
 
 # DB
