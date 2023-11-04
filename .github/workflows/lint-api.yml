@@ -9,6 +9,8 @@ on:
       - ".github/workflows/docker-api.yml"
       - "docker/prod/php/**"
 
+  workflow_dispatch:
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

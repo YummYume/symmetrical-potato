@@ -9,6 +9,8 @@ on:
       - ".github/workflows/docker-front.yml"
       - "docker/prod/node/**"
 
+  workflow_dispatch:
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
