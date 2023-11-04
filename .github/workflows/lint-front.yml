@@ -32,6 +32,13 @@ jobs:
           path: ./front/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/bun.lockb') }}
 
+      - name: Cache CSS build
+        uses: actions/cache@v3
+        id: cache-css
+        with:
+          path: ./front/app/styles
+          key: ${{ runner.os }}-remix-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('tailwind.config.ts', '**/*.css', '**/*.scss') }}
+
       - name: Cache client build
         uses: actions/cache@v3
         with:
@@ -49,10 +56,15 @@ jobs:
         working-directory: ./front
         run: bun install --frozen-lockfile
 
+      - name: Build CSS
+        if: steps.cache-css.outputs.cache-hit != 'true'
+        working-directory: ./front
+        run: bun run build:css
+
       - name: Run linter
         working-directory: ./front
         run: bun run lint
 
       - name: Check building phase
         working-directory: ./front
-        run: bun run build
+        run: bun run build:remix
