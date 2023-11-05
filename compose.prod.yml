@@ -36,6 +36,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./front/.env
+    volumes:
+      - ./front/.sentryclirc:/home/bun/app/.sentryclirc
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:3000/api/healthz || exit 1
       interval: 10s
