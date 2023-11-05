@@ -32,20 +32,41 @@ jobs:
           path: ./front/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/bun.lockb') }}-node-modules
 
-      - name: Caching build
+      - name: Cache CSS build
         uses: actions/cache@v3
+        id: cache-css
         with:
-          path: ./front/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-
+          path: ./front/app/styles
+          key: ${{ runner.os }}-remix-css-${{ hashFiles('front/tailwind.config.ts', 'front/styles/**/*.css', 'front/styles/**/*.scss') }}
+  
+      - name: Cache client build
+        uses: actions/cache@v3
+        id: cache-client
+        with:
+          path: ./front/public/build
+          key: ${{ runner.os }}-remix-client-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('front/**/*.js', 'front/**/*.jsx', 'front/**/*.ts', 'front/**/*.tsx', 'front/**/*.css', 'front/**/*.scss', 'front/**/*.json', '!front/public/build/**', '!front/build/**') }}
+  
+      - name: Cache server build
+        uses: actions/cache@v3
+        id: cache-server
+        with:
+          path: ./front/build
+          key: ${{ runner.os }}-remix-server-${{ hashFiles('front/**/bun.lockb') }}-${{ hashFiles('front/**/*.js', 'front/**/*.jsx', 'front/**/*.ts', 'front/**/*.tsx', 'front/**/*.css', 'front/**/*.scss', 'front/**/*.json', '!front/public/build/**', '!front/build/**') }}
+  
       - name: Install dependencies
         if: steps.cache-modules.outputs.cache-hit != 'true'
         working-directory: ./front
         run: bun install --frozen-lockfile
 
-      - name: Build next app
+      - name: Build CSS
+        if: steps.cache-css.outputs.cache-hit != 'true'
         working-directory: ./front
-        run: bun run build
+        run: bun run build:css
+
+      - name: Check building phase
+        if: steps.cache-client.outputs.cache-hit != 'true' || steps.cache-server.outputs.cache-hit != 'true' || steps.cache-css.outputs.cache-hit != 'true'
+        working-directory: ./front
+        run: bun run build:remix
       
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
