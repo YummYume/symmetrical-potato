@@ -7,7 +7,7 @@ on:
     paths:
       - "api/**"
       - ".github/workflows/docker-api.yml"
-      - ".github/workflows/lint-api.yml"
+      - ".github/workflows/test-api.yml"
       - "docker/prod/php/**"
 
   workflow_dispatch:
