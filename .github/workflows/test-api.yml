@@ -1,0 +1,93 @@
+name: Testing API
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - "api/**"
+      - ".github/workflows/docker-api.yml"
+      - ".github/workflows/test-api.yml"
+      - "docker/prod/php/**"
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+
+    container: ubuntu:latest
+
+    services:
+      mariadb:
+        image: mariadb:11.1.2
+        env:
+          MARIADB_ROOT_PASSWORD: root
+
+      mailcatcher:
+        image: schickling/mailcatcher:latest
+
+      rabbitmq:
+        image: rabbitmq:management-alpine
+
+    env:
+      extensions: amqp, intl, pdo_mysql, pcntl
+      php_version: '8.2'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install cURL
+        run: apt-get update && apt-get install -y curl
+
+      - name: Setup cache environment
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ env.php_version }}
+          extensions: ${{ env.extensions }}
+          key: ${{ runner.os }}-cache-ext
+
+      - name: Cache extensions
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php_version }}
+          extensions: ${{ env.extensions }}
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Copy .env.ci to .env.local
+        run: cp ./api/.env.ci ./api/.env.local
+
+      - name: Install dependencies
+        working-directory: ./api
+        run: composer install --prefer-dist
+
+      - name: Run tests
+        working-directory: ./api
+        run: php bin/phpunit
+
+      - name: Validate Doctrine schema
+        working-directory: ./api
+        run: php bin/console doctrine:schema:validate --skip-sync

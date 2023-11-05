@@ -13,6 +13,24 @@
             "path": "./",
         }
     ],
+    "extensions": {
+        "recommendations": [
+            // Global
+            "gruntfuggly.todo-tree",
+            // Root
+            "matthewpi.caddyfile-support",
+            "ms-azuretools.vscode-docker",
+            // API
+            "mansoorkhan96.php-cs-fixer",
+            "bmewburn.vscode-intelephense-client",
+            // Front
+            "graphql.vscode-graphql-syntax",
+            "dbaeumer.vscode-eslint",
+            "esbenp.prettier-vscode",
+            "yoavbls.pretty-ts-errors",
+            "bradlc.vscode-tailwindcss"
+        ]
+    },
     "settings": {
         "files.exclude": {
             "**/.git": true,
@@ -26,28 +44,39 @@
         },
         "editor.insertSpaces": true,
         "[dockercompose]": {
-            "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+            "editor.defaultFormatter": "ms-azuretools.vscode-docker",
+            "editor.tabSize": 2
         },
         "[php]": {
             "editor.tabSize": 4
         },
         "[dockerfile]": {
-            "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+            "editor.defaultFormatter": "ms-azuretools.vscode-docker",
+            "editor.tabSize": 4
         },
         "[html]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.tabSize": 4
         },
         "[javascript]": {
-            "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+            "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+            "editor.tabSize": 2
         },
         "[typescript]": {
-            "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+            "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+            "editor.tabSize": 2
         },
         "[typescriptreact]": {
-            "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+            "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+            "editor.tabSize": 2,
+            "javascript.preferences.jsxAttributeCompletionStyle": "auto",
+            "typescript.preferences.jsxAttributeCompletionStyle": "auto",
+            "javascript.preferences.quoteStyle": "double",
+            "typescript.preferences.quoteStyle": "double"
         },
         "[json]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.tabSize": 2
         },
         "[jsonc]": {
             "editor.defaultFormatter": "esbenp.prettier-vscode"

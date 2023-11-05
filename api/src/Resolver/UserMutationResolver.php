@@ -4,9 +4,9 @@ namespace App\Resolver;
 
 use ApiPlatform\GraphQl\Resolver\MutationResolverInterface;
 use App\Entity\User;
+use App\Helper\ExceptionHelper;
 use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserMutationResolver implements MutationResolverInterface
@@ -14,7 +14,8 @@ final class UserMutationResolver implements MutationResolverInterface
     public function __construct(
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly JWTTokenManagerInterface $JWTManager,
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly ExceptionHelper $exceptionHelper
     ) {
     }
 
@@ -30,7 +31,7 @@ final class UserMutationResolver implements MutationResolverInterface
     {
         $username = $context['args']['input']['username'] ?? null;
         $password = $context['args']['input']['password'] ?? null;
-        $invalidCredentialsException = new HttpException(401, 'Invalid credentials.');
+        $invalidCredentialsException = $this->exceptionHelper->createTranslatableHttpException(401, 'user.invalid_credentials');
 
         if (empty($username) || empty($password)) {
             throw $invalidCredentialsException;
@@ -42,6 +43,12 @@ final class UserMutationResolver implements MutationResolverInterface
             throw $invalidCredentialsException;
         }
 
-        return $user->setToken($this->JWTManager->create($user));
+        $jwt = $this->JWTManager->create($user);
+        $expires = $this->JWTManager->parse($jwt)['exp'];
+
+        return $user
+            ->setToken($jwt)
+            ->setTokenTtl($expires - time())
+        ;
     }
 }

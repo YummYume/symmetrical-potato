@@ -1,0 +1,7 @@
+# Common
+common.not_found: La ressource demandée n'a pas été trouvée.
+common.unauthorized: Vous n'êtes pas autorisé à effectuer cette action.
+
+# User
+user.not_authenticated: Vous n'êtes pas authentifié.
+user.invalid_credentials: Les informations d'identification fournies sont invalides.

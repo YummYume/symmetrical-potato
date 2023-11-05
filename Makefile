@@ -62,7 +62,8 @@ bun:
 
 # Generate types from API
 generate-types:
-	$(EXECFRONT) bunx @api-platform/create-client http://api:9000 src/lib/api/ --generator typescript
+	$(EXECFRONT) bun run generate:types
+	$(EXECFRONT) bunx eslint ./app/lib/api/types/index.ts --fix
 
 # DB
 db: db-drop db-create schema fixtures
@@ -140,6 +141,15 @@ cc:
 	$(EXECPHP) bin/console c:cl --no-warmup
 	$(EXECPHP) bin/console c:warmup
 
+# Testing
+test: test-api
+
+test-api:
+	$(EXECPHP) php bin/phpunit
+
+create-api-test:
+	$(EXECPHP) php bin/console make:test
+
 # Linting
 lint: lint-api lint-front
 
@@ -158,5 +168,6 @@ format-api:
 format-front:
 	$(EXECFRONT) bun run format
 
+# Vault
 edit-vault:
 	docker run --rm -it -v $(PWD):/app -w /app/ansible/group_vars/prod -e EDITOR=nano uhligit/ansible /bin/sh -c "apk add nano && ansible-vault edit vault.yml && chmod a+rw vault.yml"
