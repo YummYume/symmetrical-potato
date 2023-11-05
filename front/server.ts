@@ -74,7 +74,6 @@ const remixHandler =
   process.env.NODE_ENV === 'development'
     ? await createDevRequestHandler(initialBuild, getLoadContext)
     : createRequestHandler({
-        // @ts-expect-error - Type mismatch between remix-run and @remix-run/node
         build: initialBuild,
         mode: initialBuild.mode,
         getLoadContext,
@@ -137,7 +136,6 @@ async function createDevRequestHandler(
   return async (req, res, next) => {
     try {
       return createRequestHandler({
-        // @ts-expect-error - Type mismatch between remix-run and @remix-run/node
         build,
         mode: 'development',
         getLoadContext,
