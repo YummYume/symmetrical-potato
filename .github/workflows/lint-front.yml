@@ -26,14 +26,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.0.2
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: ./front/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/bun.lockb') }}
+          bun-version: 1.0.9
 
       - name: Cache CSS build
         uses: actions/cache@v3
@@ -57,7 +50,6 @@ jobs:
           key: ${{ runner.os }}-remix-server-${{ hashFiles('front/**/bun.lockb') }}-${{ hashFiles('front/**/*.js', 'front/**/*.jsx', 'front/**/*.ts', 'front/**/*.tsx', 'front/**/*.css', 'front/**/*.scss', 'front/**/*.json', '!front/public/build/**', '!front/build/**') }}
 
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         working-directory: ./front
         run: bun install --frozen-lockfile
 
