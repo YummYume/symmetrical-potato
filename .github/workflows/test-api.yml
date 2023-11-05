@@ -62,9 +62,9 @@ jobs:
           write-mode: overwrite
           contents: |
             APP_ENV=test
-            DATABASE_URL=mysql://root:root@${{ job.services.mariadb.ports[3306] }}/test?serverVersion=11.1.2-MariaDB-1&charset=utf8mb4"
-            MAILER_DSN=smtp://${{ job.services.mailcatcher.ports[1025] }}
-            MESSENGER_TRANSPORT_DSN=amqp://guest:guest@${{ job.services.rabbitmq.ports[5672] }}/%2f/messages
+            DATABASE_URL=mysql://root:root@${{ job.services.mariadb.ports[3306] }}:3306/test?serverVersion=11.1.2-MariaDB-1&charset=utf8mb4"
+            MAILER_DSN=smtp://${{ job.services.mailcatcher.ports[1025] }}:1025
+            MESSENGER_TRANSPORT_DSN=amqp://guest:guest@${{ job.services.rabbitmq.ports[5672] }}:5672/%2f/messages
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
