@@ -37,11 +37,7 @@ export default function Index() {
         }}
       />
 
-      <p className="mb-2 font-bold">
-        {/* Maybe linked to https://github.com/remix-run/remix/issues/4183 ? */}
-        BUG: This link should redirect to /login when not logged in :
-      </p>
-      <Link to="/dashboard">To dashboard</Link>
+      <Link to="/dashboard">To dashboard (redirect to login if not logged in)</Link>
     </div>
   );
 }
