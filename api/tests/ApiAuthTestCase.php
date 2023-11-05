@@ -28,13 +28,17 @@ abstract class ApiAuthTestCase extends ApiTestCase
             ],
         ]);
 
-        $data = json_decode($client->getResponse()->getContent(), true);
+        try {
+            $data = json_decode($client->getResponse()->getContent(), true);
 
-        $client->setDefaultOptions([
-            'headers' => [
-                'Authorization' => 'Bearer '.$data['data']['loginUser']['user']['token'],
-            ],
-        ]);
+            $client->setDefaultOptions([
+                'headers' => [
+                    'Authorization' => 'Bearer '.$data['data']['loginUser']['user']['token'],
+                ],
+            ]);
+        } catch (\Exception $e) {
+            printf('Could not login user "%s" with password "%s".', $username, $password);
+        }
 
         return $client;
     }
