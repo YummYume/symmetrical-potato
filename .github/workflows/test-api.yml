@@ -62,6 +62,9 @@ jobs:
           write-mode: overwrite
           contents: |
             APP_ENV=test
+            DATABASE_URL="mysql://root:root@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/test?serverVersion=11.1.2-MariaDB-1&charset=utf8mb4"
+            MAILER_DSN="smtp://127.0.0.1:${{ job.services.rabbitmq.ports[5672] }}"
+            MESSENGER_TRANSPORT_DSN="amqp://guest:guest@127.0.0.1:${{ job.services.rabbitmq.ports[5672] }}/%2f/messages"
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
