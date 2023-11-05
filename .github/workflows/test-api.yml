@@ -34,30 +34,55 @@ jobs:
       rabbitmq:
         image: rabbitmq:management-alpine
 
+    env:
+      extensions: amqp, intl, pdo_mysql, pcntl
+      php_version: '8.2'
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install cURL
+        run: apt-get update && apt-get install -y curl
+
+      - name: Setup cache environment
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ env.php_version }}
+          extensions: ${{ env.extensions }}
+          key: ${{ runner.os }}-cache-ext
+
+      - name: Cache extensions
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-          extensions: amqp, intl, pdo_mysql, pcntl
+          php-version: ${{ env.php_version }}
+          extensions: ${{ env.extensions }}
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
         uses: actions/cache@v3
-        id: cache
         with:
-          path: ./vendor
-          key: ${{ runner.os }}-${{ hashFiles('**/composer.*') }}
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Copy .env.ci to .env.local
         run: cp ./api/.env.ci ./api/.env.local
 
       - name: Install dependencies
         working-directory: ./api
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: composer install
+        run: composer install --prefer-dist
 
       - name: Run tests
         working-directory: ./api
