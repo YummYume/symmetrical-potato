@@ -20,6 +20,8 @@ jobs:
   test-api:
     runs-on: ubuntu-latest
 
+    container: ubuntu:latest
+
     services:
       mariadb:
         image: mariadb:11.1.2
@@ -52,24 +54,16 @@ jobs:
         uses: actions/cache@v3
         id: cache
         with:
-          path: ./api/vendor
+          path: ./vendor
           key: ${{ runner.os }}-${{ hashFiles('**/composer.*') }}
 
-      - name: Create .env.local
-        uses: "DamianReeves/write-file-action@master"
-        with:
-          path: "./api/.env.local"
-          write-mode: overwrite
-          contents: |
-            APP_ENV=test
-            DATABASE_URL="mysql://root:root@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/test?serverVersion=11.1.2-MariaDB-1&charset=utf8mb4"
-            MAILER_DSN="smtp://127.0.0.1:${{ job.services.rabbitmq.ports[5672] }}"
-            MESSENGER_TRANSPORT_DSN="amqp://guest:guest@127.0.0.1:${{ job.services.rabbitmq.ports[5672] }}/%2f/messages"
+      - name: Copy .env.ci to .env.local
+        run: cp ./api/.env.ci ./api/.env.local
 
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         working-directory: ./api
-        run: composer install --prefer-dist --no-progress --no-suggest --ansi
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: composer install
 
       - name: Run tests
         working-directory: ./api
