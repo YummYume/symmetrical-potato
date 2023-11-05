@@ -1,6 +1,8 @@
 # Symmetrical Potato
 
-NextJS + API Platform.
+Payday 3 inspired project to plan your heists in New York City.
+
+Remix + API Platform + GraphQL.
 
 ## Content
 
@@ -20,7 +22,7 @@ NextJS + API Platform.
 3. (Optional) Add `.env.local` files to override the various default environment variables
 4. (Optional) Add `compose.override.yml` to override the default compose configuration
 5. Run `make start`
-6. Go to [http://symmetrical-potato.com](http://symmetrical-potato.com) to access the NextJS app
+6. Go to [http://symmetrical-potato.com](http://symmetrical-potato.com) to access the Remix app
 
 After the first run, you can use `make stop` & `make up` to quickly stop and start the containers.
 All the available commands are listed in the `Makefile`.
@@ -39,9 +41,9 @@ Add the following to your `/etc/hosts` file:
 
 Which will allow you to access the different services for the project.
 
-| Service             | URL                                                                      |
-| ------------------- | ------------------------------------------------------------------------ |
-| NextJS app (front)  | [symmetrical-potato.com](http://symmetrical-potato.com)                         |
+| Service             | URL                                                                             |
+| ------------------- | ------------------------------------------------------------------------------- |
+| Remix app (front)   | [symmetrical-potato.com](http://symmetrical-potato.com)                         |
 | API Platform (back) | [api.symmetrical-potato.com](http://api.symmetrical-potato.com)                 |
 | phpMyAdmin          | [pma.symmetrical-potato.com](http://pma.symmetrical-potato.com)                 |
 | MailCatcher         | [mailcatcher.symmetrical-potato.com](http://mailcatcher.symmetrical-potato.com) |
@@ -57,7 +59,7 @@ All the services used by the project.
 | Service name  | Host                                                                 | Aliases           | Ports       | Description                                                                                                  |
 | ------------- | -------------------------------------------------------------------- | ----------------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
 | `caddy`       |                                                                      | `sp-caddy`, `api` | `80`, `443` | Caddy is used as the proxy entry to any of the running services. It also services static files from the API. |
-| `front`       | `symmetrical-potato.com`                                             | `sp-front`        |             | The NextJS app.                                                                                              |
+| `front`       | `symmetrical-potato.com`                                             | `sp-front`        |             | The Remix app.                                                                                               |
 | `php`         | `api.symmetrical-potato.com`, `api:9000` (within the Docker network) | `sp-php`          |             | Symfony API with API Platform.                                                                               |
 | `mariadb`     |                                                                      | `sp-mariadb`      |             | The database used by the API.                                                                                |
 | `phpmyadmin`  | `pma.symmetrical-potato.com`                                         | `sp-phpmyadmin`   |             | Used to manage MariaDB easily. Only available in dev.                                                        |
@@ -67,7 +69,7 @@ All the services used by the project.
 ## Generating TypeScript types from the API
 
 Use the `make generate-types` command to generate the TypeScript types from the API.
-The types will be generated in the `src/lib/api/interfaces` folder.
+The types will be generated in the `front/app/lib/api/types/index.ts` file.
 
 > [!NOTE]  
 > For convenience, this folder is ignored by ESLint and Prettier.
@@ -84,14 +86,15 @@ We use simple username/password for development purposes.
 ## Structure
 
 > [!NOTE]  
-> The API uses the classic Symfony structure. This will only describe the NextJS app structure.
+> The API uses the classic Symfony structure. This will only describe the Remix app structure.
 
-The NextJS app uses the `app` folder for routing, along with the following structure :
+The Remix app uses the `app/routes` folder for routing, along with the following structure :
 
-| Path                     | Alias                 | Description                                                                                     |
-| ------------------------ | --------------------- | ----------------------------------------------------------------------------------------------- |
-| `src/`                   | `@/`                  | The base `src` folder where all the files for the app are contained.                            |
-| `src/lib/`               | `@lib/`               | The `lib` folder which contains all reusable code (such as utils, API calls, etc...).           |
-| `src/lib/api/`           | `@api/`               | The `lib/api` folder which contains calls to the API (for reusability) and the generated types. |
-| `src/components/client/` | `@client-components/` | The `components` folder for client-side components.                                             |
-| `src/components/server/` | `@server-components/` | The `components` folder for server-side components.                                             |
+| Path                 | Alias          | Description                                                                                     |
+| -------------------- | -------------- | ----------------------------------------------------------------------------------------------- |
+| `app/`               | `~/`           | The base `app` folder where all the files for the app are contained.                            |
+| `app/styles/`        | `~styles/`     | The `styles` folder which contains all SCSS/CSS style for the app.                              |
+| `app/lib/`           | `~lib/`        | The `lib` folder which contains all reusable code (such as utils, API calls, etc...).           |
+| `app/lib/api/`       | `~api/`        | The `lib/api` folder which contains calls to the API (for reusability) and the generated types. |
+| `app/lib/components` | `~components/` | The `lib/components` folder which contains all the reusable components.                         |
+| `app/lib/utils/`     | `~utils/`      | The `lib/utils` folder containing all the reusable utils.                                       |
