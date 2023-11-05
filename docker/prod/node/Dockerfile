@@ -6,7 +6,6 @@ USER bun
 
 COPY public ./public
 
-COPY .next/standalone ./
-COPY .next/static ./.next/static
+COPY build ./build
 
-CMD ["/bin/sh", "-c", "HOSTNAME=0.0.0.0 bun server.js"]
+CMD ["/bin/sh", "-c", "HOST=0.0.0.0 bun run start"]
