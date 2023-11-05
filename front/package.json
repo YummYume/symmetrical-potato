@@ -10,7 +10,7 @@
     "dev": "concurrently \"bun run dev:remix\" \"bun run dev:css\"",
     "dev:remix": "remix dev --manual -c \"bunx tsx watch --ignore ./build/* --ignore ./public/build/* server.ts\"",
     "dev:css": "bun run generate:css --watch",
-    "start": "cross-env NODE_ENV=production bun ./server.js",
+    "start": "cross-env NODE_ENV=production bunx tsx ./server.ts",
     "generate:css": "sass styles/:app/styles/",
     "generate:types": "graphql-codegen",
     "typecheck": "tsc",
