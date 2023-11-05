@@ -27,18 +27,12 @@ jobs:
         image: mariadb:11.1.2
         env:
           MARIADB_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
 
       mailcatcher:
         image: schickling/mailcatcher:latest
-        ports:
-          - 1025:1025
 
       rabbitmq:
         image: rabbitmq:management-alpine
-        ports:
-          - 5672:5672
 
     steps:
       - name: Checkout
