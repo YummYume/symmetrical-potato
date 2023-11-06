@@ -1,3 +1,5 @@
+import * as esbuild from 'esbuild';
+
 import packageJson from './package.json';
 
 // From https://github.com/oven-sh/bun/issues/6351#issuecomment-1760508292
@@ -18,13 +20,13 @@ function getExternalsFromPackageJson(): string[] {
 async function buildWithExternals(): Promise<void> {
   const externalDeps = getExternalsFromPackageJson();
 
-  // @ts-expect-error Bun types conflict
-  await Bun.build({
-    entrypoints: ['./server.ts'],
+  await esbuild.build({
+    entryPoints: ['./server.ts'],
     outdir: './',
-    target: 'node',
+    platform: 'node',
     external: externalDeps,
     format: 'esm',
+    bundle: true,
   });
 }
 
