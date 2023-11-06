@@ -6,7 +6,7 @@
   "scripts": {
     "build": "bun run build:css && bun run build:remix && bun run build:server",
     "build:remix": "remix build",
-    "build:server": "bunx esbuild --platform=node --format=esm ./server.ts --bundle --external:compression --external:@remix-run/express --external:@remix-run/node --external:express --external:graphql-request --external:morgan --external:source-map-support --external:chokidar --outdir=./",
+    "build:server": "bun run server-build.ts",
     "build:css": "bun run generate:css --style=compressed",
     "dev": "concurrently \"bun run dev:remix\" \"bun run dev:css\"",
     "dev:remix": "remix dev --manual -c \"bunx tsx watch --clear-screen=false --ignore 'app/**' --ignore 'build/**' --ignore 'node_modules/**' --inspect ./server.ts\"",
@@ -19,8 +19,11 @@
     "format": "eslint . --fix"
   },
   "dependencies": {
+    "@radix-ui/react-toast": "^1.1.5",
     "@remix-run/express": "^2.2.0",
     "@remix-run/node": "^2.2.0",
+    "@remix-run/react": "^2.2.0",
+    "@sentry/remix": "^7.77.0",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "express": "^4.18.2",
@@ -28,18 +31,18 @@
     "graphql-request": "^6.1.0",
     "isbot": "^3.6.8",
     "morgan": "^1.10.0",
-    "source-map-support": "^0.5.21"
+    "react": "^18.2.0",
+    "source-map-support": "^0.5.21",
+    "zod": "^3.22.4",
+    "zod-form-data": "^2.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^8.52.0",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/typescript": "^4.0.1",
-    "@radix-ui/react-toast": "^1.1.5",
     "@remix-run/css-bundle": "^2.2.0",
     "@remix-run/dev": "^2.1.0",
     "@remix-run/eslint-config": "^2.1.0",
-    "@remix-run/react": "^2.2.0",
-    "@sentry/remix": "^7.77.0",
     "@types/compression": "^1.7.4",
     "@types/express": "^4.17.20",
     "@types/morgan": "^1.9.7",
@@ -55,15 +58,12 @@
     "eslint-plugin-prettier": "^5.0.1",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "0.4.1",
-    "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remix-flat-routes": "^0.6.1",
     "sass": "^1.69.5",
     "tailwindcss": "^3.3.5",
     "tsx": "^3.14.0",
-    "typescript": "^5.2.2",
-    "zod": "^3.22.4",
-    "zod-form-data": "^2.0.2"
+    "typescript": "^5.2.2"
   },
   "engines": {
     "node": ">=18.0.0"
