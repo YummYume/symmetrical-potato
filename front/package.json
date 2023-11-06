@@ -6,7 +6,7 @@
   "scripts": {
     "build": "bun run build:css && bun run build:remix && bun run build:server",
     "build:remix": "remix build",
-    "build:server": "bunx esbuild --platform=node --format=esm ./server.ts --bundle --external:compression --external:@remix-run/express --external:@remix-run/node --external:express --external:graphql-request --external:morgan --external:source-map-support --external:chokidar --outdir=./",
+    "build:server": "bun run server-build.ts",
     "build:css": "bun run generate:css --style=compressed",
     "dev": "concurrently \"bun run dev:remix\" \"bun run dev:css\"",
     "dev:remix": "remix dev --manual -c \"bunx tsx watch --clear-screen=false --ignore 'app/**' --ignore 'build/**' --ignore 'node_modules/**' --inspect ./server.ts\"",
