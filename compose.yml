@@ -54,6 +54,7 @@ services:
     volumes:
       - ./api:/www/app
       - ./docker/php/overrides.ini:/usr/local/etc/php/conf.d/overrides.ini
+      - ./docker/php/php-fpm-override.conf:/usr/local/etc/php-fpm.d/php-fpm-override.conf
       - ./docker/php/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
     depends_on:
       mariadb:

@@ -20,6 +20,8 @@ COPY docker/prod/php/overrides.ini /usr/local/etc/php/conf.d/overrides.ini
 
 COPY docker/prod/php/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+COPY docker/prod/php/php-fpm-override.conf /usr/local/etc/php-fpm.d/php-fpm-override.conf
+
 COPY api ./
 
 RUN composer install --no-cache --no-dev --optimize-autoloader
