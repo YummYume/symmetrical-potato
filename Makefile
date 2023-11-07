@@ -66,7 +66,7 @@ generate-types:
 	$(EXECFRONT) bunx eslint ./app/lib/api/types/index.ts --fix
 
 # DB
-db: db-drop db-create schema fixtures
+db: db-drop db-create migration fixtures
 
 db-create:
 	$(EXECPHP) php bin/console d:d:c --if-not-exists

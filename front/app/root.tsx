@@ -3,6 +3,7 @@ import { cssBundleHref } from '@remix-run/css-bundle';
 import { json, type LinksFunction, type PublicLoaderArgs } from '@remix-run/node';
 import {
   Form,
+  isRouteErrorResponse,
   Links,
   LiveReload,
   Meta,
@@ -10,6 +11,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useNavigation,
   useRouteError,
 } from '@remix-run/react';
 import { captureRemixErrorBoundaryError } from '@sentry/remix';
@@ -19,6 +21,7 @@ import { Link } from '~components/Link';
 import { Toast } from '~components/Toast';
 import { commitSession, getSession } from '~lib/session.server';
 
+import { ProgressBar } from './lib/components/ProgressBar';
 import { SubmitButton } from './lib/components/form/SubmitButton';
 
 export type FlashMessage = {
@@ -57,10 +60,20 @@ export const links: LinksFunction = () => [
 export const ErrorBoundary = () => {
   const error = useRouteError();
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production' && isRouteErrorResponse(error) && error.status >= 500) {
     captureRemixErrorBoundaryError(error);
   } else if (process.env.NODE_ENV === 'development') {
     console.error(error);
+  }
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        <h1>{error.status}</h1>
+        <p>{error.statusText}</p>
+        <Link to="/">Go home</Link>
+      </div>
+    );
   }
 
   // TODO: Render a custom error page here
@@ -69,6 +82,7 @@ export const ErrorBoundary = () => {
 
 export default function App() {
   const { flashMessage, user } = useLoaderData<typeof loader>();
+  const navigation = useNavigation();
 
   return (
     <html lang="en">
@@ -79,6 +93,11 @@ export default function App() {
         <Links />
       </head>
       <body className="min-h-full min-w-full">
+        <ProgressBar
+          active={navigation.state !== 'idle'}
+          loadingMessage="Page is loading..."
+          timeToIncrement={1500}
+        />
         <RadixToast.Provider swipeDirection="right">
           <header className="flex flex-col justify-between border-b border-b-slate-700 p-4 lg:flex-row lg:items-center">
             <Link to="/">Symmetrical Potato</Link>

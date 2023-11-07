@@ -1,6 +1,6 @@
-import { RemixBrowser, useLocation, useMatches } from '@remix-run/react';
+import { RemixBrowser } from '@remix-run/react';
 import * as Sentry from '@sentry/remix';
-import { startTransition, StrictMode, useEffect } from 'react';
+import { startTransition, StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 
 import { getEnv, setEnv } from '~utils/env.client';
@@ -30,17 +30,7 @@ if (process.env.NODE_ENV === 'production') {
     tracesSampleRate: 1,
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1,
-
-    integrations: [
-      new Sentry.BrowserTracing({
-        routingInstrumentation: Sentry.remixRouterInstrumentation(
-          useEffect,
-          useLocation,
-          useMatches,
-        ),
-      }),
-      new Sentry.Replay(),
-    ],
+    integrations: [new Sentry.Replay()],
   });
 }
 

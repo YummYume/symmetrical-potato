@@ -23,6 +23,22 @@ services:
 
     App\Error\ErrorHandler:
         decorates: api_platform.graphql.error_handler
-        
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+when@prod:
+    services:
+        Sentry\Integration\IgnoreErrorsIntegration:
+            arguments:
+                $options:
+                    ignore_exceptions:
+                        - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+                        - Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+                        - Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+                        - Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+                        - Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException
+                        - Symfony\Component\HttpKernel\Exception\ConflictHttpException
+                        - Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException
+                        - Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
+                        - Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException
