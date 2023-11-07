@@ -25,7 +25,6 @@ final class ErrorHandler implements ErrorHandlerInterface
             if ($exception instanceof HttpException) {
                 $logMethod = $exception->getStatusCode() >= 500 ? 'critical' : 'info';
 
-
                 $this->logger->$logMethod($exception);
             } else {
                 $this->logger->critical($error);
