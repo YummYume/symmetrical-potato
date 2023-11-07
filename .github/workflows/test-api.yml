@@ -45,21 +45,6 @@ jobs:
       - name: Install cURL
         run: apt-get update && apt-get install -y curl
 
-      - name: Setup cache environment
-        id: extcache
-        uses: shivammathur/cache-extensions@v1
-        with:
-          php-version: ${{ env.php_version }}
-          extensions: ${{ env.extensions }}
-          key: ${{ runner.os }}-cache-ext
-
-      - name: Cache extensions
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.extcache.outputs.dir }}
-          key: ${{ steps.extcache.outputs.key }}
-          restore-keys: ${{ steps.extcache.outputs.key }}
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
