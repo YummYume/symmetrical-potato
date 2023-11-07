@@ -8,8 +8,12 @@ when@dev:
             main:
                 type: stream
                 path: php://stderr
-                level: debug
+                level: !php/enum Monolog\Level::Error->value
                 channels: ["!event"]
+            nested:
+                type: stream
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                level: !php/enum Monolog\Level::Debug->value
             console:
                 type: console
                 process_psr_3_messages: false
@@ -27,7 +31,7 @@ when@test:
             nested:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
-                level: debug
+                level: !php/enum Monolog\Level::Debug->value
 
 when@prod:
     monolog:
@@ -41,7 +45,7 @@ when@prod:
             nested:
                 type: stream
                 path: php://stderr
-                level: debug
+                level: !php/enum Monolog\Level::Info->value
                 formatter: monolog.formatter.json
             console:
                 type: console
@@ -53,5 +57,5 @@ when@prod:
                 path: php://stderr
             sentry:
                 type: sentry
-                level: !php/const Monolog\Logger::ERROR
+                level: !php/enum Monolog\Level::Error->value
                 hub_id: Sentry\State\HubInterface

@@ -6,3 +6,6 @@ when@prod:
         # https://docs.sentry.io/platforms/php/guides/symfony/#monolog-integration
         register_error_listener: false
         register_error_handler: false
+        options:
+            integrations:
+                - 'Sentry\Integration\IgnoreErrorsIntegration'

@@ -14,9 +14,6 @@ final class ErrorHandler implements ErrorHandlerInterface
     ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __invoke(array $errors, callable $formatter): array
     {
         foreach ($errors as $error) {
@@ -27,7 +24,7 @@ final class ErrorHandler implements ErrorHandlerInterface
 
                 $this->logger->$logMethod($exception);
             } else {
-                $this->logger->critical($error);
+                $this->logger->error($error);
             }
         }
 
