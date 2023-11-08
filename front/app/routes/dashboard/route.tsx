@@ -1,7 +1,11 @@
 import { type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
+import { denyAccessUnlessGranted } from '~utils/security';
+
 export async function loader({ context }: LoaderArgs) {
+  denyAccessUnlessGranted(context.user);
+
   return {
     user: context.user,
   };

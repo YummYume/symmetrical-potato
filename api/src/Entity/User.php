@@ -91,6 +91,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['user:read'])]
     private array $roles = [];
 
     /**

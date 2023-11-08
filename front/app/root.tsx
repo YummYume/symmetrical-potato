@@ -11,6 +11,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useLocation,
   useNavigation,
   useRouteError,
 } from '@remix-run/react';
@@ -18,11 +19,10 @@ import { captureRemixErrorBoundaryError } from '@sentry/remix';
 
 import tailwindStylesheet from '~/styles/tailwind.css';
 import { Link } from '~components/Link';
+import { ProgressBar } from '~components/ProgressBar';
 import { Toast } from '~components/Toast';
+import { SubmitButton } from '~components/form/SubmitButton';
 import { commitSession, getSession } from '~lib/session.server';
-
-import { ProgressBar } from './lib/components/ProgressBar';
-import { SubmitButton } from './lib/components/form/SubmitButton';
 
 export type FlashMessage = {
   type: 'success' | 'error' | 'info' | 'warning';
@@ -83,6 +83,7 @@ export const ErrorBoundary = () => {
 export default function App() {
   const { flashMessage, user } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
+  const location = useLocation();
 
   return (
     <html lang="en">
@@ -94,9 +95,11 @@ export default function App() {
       </head>
       <body className="min-h-full min-w-full">
         <ProgressBar
-          active={navigation.state !== 'idle'}
+          id="global-progress-bar"
+          key={location.key}
+          active={navigation.state === 'loading'}
           loadingMessage="Page is loading..."
-          timeToIncrement={1500}
+          className="fixed left-0 top-0 z-50 h-0.5 w-full rounded-b-full bg-transparent"
         />
         <RadixToast.Provider swipeDirection="right">
           <header className="flex flex-col justify-between border-b border-b-slate-700 p-4 lg:flex-row lg:items-center">
