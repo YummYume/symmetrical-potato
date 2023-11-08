@@ -64,8 +64,11 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
+      - name: Change APP_ENV 
+        run: echo 'APP_ENV=test' > ./api/.env.local
+
       - name: Copy .env.ci to .env.local
-        run: cp ./api/.env.ci ./api/.env.local
+        run: cp ./api/.env.ci ./api/.env.test.local
 
       - name: Install dependencies
         working-directory: ./api
