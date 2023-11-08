@@ -23,11 +23,8 @@ import tailwindStylesheet from '~/styles/tailwind.css';
 import { Link } from '~components/Link';
 import { ProgressBar } from '~components/ProgressBar';
 import { Toast } from '~components/Toast';
-<<<<<<< Updated upstream
 import { SubmitButton } from '~components/form/SubmitButton';
-=======
-import i18next from '~lib/i18n/i18n.server';
->>>>>>> Stashed changes
+import { i18next } from '~lib/i18n/index.server';
 import { commitSession, getSession } from '~lib/session.server';
 
 export type FlashMessage = {
@@ -92,7 +89,6 @@ export default function App() {
   const { flashMessage, user, locale } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const location = useLocation();
-
   const { i18n } = useTranslation();
 
   useChangeLanguage(locale);

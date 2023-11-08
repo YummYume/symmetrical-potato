@@ -15,20 +15,17 @@
     ],
     "extensions": {
         "recommendations": [
-            // Global
             "gruntfuggly.todo-tree",
-            // Root
             "matthewpi.caddyfile-support",
             "ms-azuretools.vscode-docker",
-            // API
             "mansoorkhan96.php-cs-fixer",
             "bmewburn.vscode-intelephense-client",
-            // Front
             "graphql.vscode-graphql-syntax",
             "dbaeumer.vscode-eslint",
             "esbenp.prettier-vscode",
             "yoavbls.pretty-ts-errors",
-            "bradlc.vscode-tailwindcss"
+            "bradlc.vscode-tailwindcss",
+            "lokalise.i18n-ally"
         ]
     },
     "settings": {
@@ -93,6 +90,10 @@
             "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
         "php.suggest.basic": false,
-        "twiggy.phpBinConsoleCommand": "docker compose exec php php bin/console"
+        "twiggy.phpBinConsoleCommand": "docker compose exec php php bin/console",
+        "i18n-ally.localesPaths": [
+            "public/locales",
+            "app/lib/i18n"
+        ]
     }
 }

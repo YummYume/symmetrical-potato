@@ -16,8 +16,8 @@ import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { resolve } from 'node:path';
 import { PassThrough } from 'node:stream';
 
-import i18next from '~lib/i18n/i18n.server';
-import i18nConfig from '~lib/i18n/i18nConfig';
+import { config } from '~lib/i18n/config';
+import { i18next } from '~lib/i18n/index.server';
 
 import type { AppLoadContext, EntryContext } from '@remix-run/node';
 import type { i18n } from 'i18next';
@@ -48,18 +48,16 @@ export default async function handleRequest(
   const lng = await i18next.getLocale(request);
   const ns = i18next.getRouteNamespaces(remixContext);
 
-  console.log('lng: ', lng);
-
   await i18nInstance
     .use(initReactI18next)
     .use(I18NextFsBackend)
     .init({
-      ...i18nConfig,
+      ...config,
       lng,
       ns,
       backend: { loadPath: resolve('./public/locales/{{lng}}/{{ns}}.json') },
     });
-  console.log(i18nInstance.dir(), i18nInstance.getDataByLanguage(lng));
+
   return isbot(request.headers.get('user-agent'))
     ? handleBotRequest(request, responseStatusCode, responseHeaders, remixContext, i18nInstance)
     : handleBrowserRequest(

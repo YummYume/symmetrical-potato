@@ -87,6 +87,10 @@ export async function action({ request, context }: PublicActionArgs) {
   );
 }
 
+export let handle = {
+  i18n: 'common',
+};
+
 export default function Login() {
   const actionData = useActionData<typeof action>();
   const fieldErrors = useMemo(() => actionData?.fieldErrors ?? [], [actionData]);
