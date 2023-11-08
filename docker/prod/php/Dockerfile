@@ -1,10 +1,14 @@
+FROM alpine AS downloader
+
+RUN wget https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
 FROM php:8.2-fpm-alpine
 
 WORKDIR /www/app
 
 ENV APP_ENV=prod
 
-COPY docker/prod/php/install-php-extensions /usr/local/bin/
+COPY --from=downloader /usr/local/bin/install-php-extensions /usr/local/bin/
 
 RUN apk add --update \
   icu-dev supervisor && \
