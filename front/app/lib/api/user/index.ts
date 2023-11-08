@@ -11,6 +11,7 @@ export const getCurrentUser = async (client: GraphQLClient) => {
         email
         balance
         globalRating
+        roles
       }
     }
   `);

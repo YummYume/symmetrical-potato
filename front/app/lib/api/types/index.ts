@@ -83,6 +83,7 @@ export type User = Node & {
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: UserLocaleEnum;
+  roles: Scalars['Iterable']['output'];
   username: Scalars['String']['output'];
 };
 

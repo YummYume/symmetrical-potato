@@ -7,6 +7,9 @@ const config: CodegenConfig = {
       plugins: ['typescript'],
     },
   },
+  hooks: {
+    afterAllFileWrite: ['bunx eslint ./app/lib/api/types/index.ts --fix'],
+  },
 };
 
 export default config;

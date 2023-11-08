@@ -21,14 +21,6 @@ installGlobals();
 
 const BUILD_PATH = path.resolve('build/index.js');
 const VERSION_PATH = path.resolve('build/version.txt');
-const PUBLIC_PATHS = [
-  '/',
-  '/login',
-  '/register',
-  '/forgot-password',
-  '/reset-password',
-  '/api/healthz',
-];
 
 const initialBuild = await reimportServer();
 /**
@@ -55,17 +47,6 @@ const getLoadContext = (async (req, res) => {
   } catch (error) {
     // TODO use refresh token?
     user = null;
-  }
-
-  // Protect all routes except public ones
-  if (null === user && !PUBLIC_PATHS.includes(req.path)) {
-    const isDataRequest = req.originalUrl.includes('_data');
-
-    if (isDataRequest) {
-      res.status(204).set('x-remix-redirect', '/login').send();
-    }
-
-    res.redirect('/login');
   }
 
   return { client, user };
