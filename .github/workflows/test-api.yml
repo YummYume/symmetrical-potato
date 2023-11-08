@@ -23,18 +23,21 @@ jobs:
     services:
       mariadb:
         image: mariadb:11.1.2
-        network_mode: host
+        ports:
+          - 3306:3306
         env:
           MARIADB_ROOT_PASSWORD: root
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
       mailcatcher:
         image: schickling/mailcatcher:latest
-        network_mode: host
+        ports:
+          - 1025:1025
 
       rabbitmq:
         image: rabbitmq:management-alpine
-        network_mode: host
+        ports:
+          - 5672:5672
 
     env:
       extensions: amqp, intl, pdo_mysql, pcntl
