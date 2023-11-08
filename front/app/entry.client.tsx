@@ -1,8 +1,14 @@
 import { RemixBrowser } from '@remix-run/react';
 import * as Sentry from '@sentry/remix';
+import i18next from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import HttpBackend from 'i18next-http-backend';
 import { startTransition, StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
+import { getInitialNamespaces } from 'remix-i18next';
 
+import i18nConfig from '~lib/i18n/i18nConfig';
 import { getEnv, setEnv } from '~utils/env.client';
 
 import type { loader as rootLoader } from './root';
@@ -34,11 +40,27 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+await i18next
+  .use(initReactI18next)
+  .use(LanguageDetector)
+  .use(HttpBackend)
+  .init({
+    ...i18nConfig,
+    ns: getInitialNamespaces(),
+    backend: { loadPath: '/locales/{{lng}}/{{ns}}.json' },
+    detection: {
+      order: ['htmlTag'],
+      caches: [],
+    },
+  });
+
 startTransition(() => {
   hydrateRoot(
     document,
-    <StrictMode>
-      <RemixBrowser />
-    </StrictMode>,
+    <I18nextProvider i18n={i18next}>
+      <StrictMode>
+        <RemixBrowser />
+      </StrictMode>
+    </I18nextProvider>,
   );
 });

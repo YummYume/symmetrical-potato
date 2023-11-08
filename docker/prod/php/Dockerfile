@@ -4,7 +4,7 @@ WORKDIR /www/app
 
 ENV APP_ENV=prod
 
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+COPY docker/prod/php/install-php-extensions /usr/local/bin/
 
 RUN apk add --update \
   icu-dev supervisor && \

@@ -16,12 +16,18 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import { captureRemixErrorBoundaryError } from '@sentry/remix';
+import { useTranslation } from 'react-i18next';
+import { useChangeLanguage } from 'remix-i18next';
 
 import tailwindStylesheet from '~/styles/tailwind.css';
 import { Link } from '~components/Link';
 import { ProgressBar } from '~components/ProgressBar';
 import { Toast } from '~components/Toast';
+<<<<<<< Updated upstream
 import { SubmitButton } from '~components/form/SubmitButton';
+=======
+import i18next from '~lib/i18n/i18n.server';
+>>>>>>> Stashed changes
 import { commitSession, getSession } from '~lib/session.server';
 
 export type FlashMessage = {
@@ -35,6 +41,7 @@ export const FLASH_MESSAGE_KEY = 'flash-message' as const;
 export async function loader({ request, context }: PublicLoaderArgs) {
   const session = await getSession(request.headers.get('Cookie'));
   const flashMessage = session.get(FLASH_MESSAGE_KEY) as FlashMessage | undefined;
+  const locale = await i18next.getLocale(request);
 
   return json(
     {
@@ -43,6 +50,7 @@ export async function loader({ request, context }: PublicLoaderArgs) {
       },
       flashMessage,
       user: context.user,
+      locale,
     },
     {
       headers: {
@@ -81,12 +89,16 @@ export const ErrorBoundary = () => {
 };
 
 export default function App() {
-  const { flashMessage, user } = useLoaderData<typeof loader>();
+  const { flashMessage, user, locale } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const location = useLocation();
 
+  const { i18n } = useTranslation();
+
+  useChangeLanguage(locale);
+
   return (
-    <html lang="en">
+    <html lang={locale} dir={i18n.dir()}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
