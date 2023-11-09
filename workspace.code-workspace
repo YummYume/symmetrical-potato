@@ -94,6 +94,9 @@
         "i18n-ally.localesPaths": [
             "public/locales",
             "app/lib/i18n"
-        ]
+        ],
+        "i18n-ally.keystyle": "flat",
+        "i18n-ally.defaultNamespace": "common",
+        "i18n-ally.namespace": true
     }
 }

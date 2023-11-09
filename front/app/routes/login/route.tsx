@@ -1,7 +1,6 @@
 import { redirect, json } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
@@ -93,8 +92,8 @@ export let handle = {
 
 export default function Login() {
   const actionData = useActionData<typeof action>();
-  const fieldErrors = useMemo(() => actionData?.fieldErrors ?? [], [actionData]);
-  let { t } = useTranslation();
+  const fieldErrors = actionData?.fieldErrors ?? [];
+  const { t } = useTranslation();
 
   return (
     <Form method="post" className="flex flex-col gap-2">
