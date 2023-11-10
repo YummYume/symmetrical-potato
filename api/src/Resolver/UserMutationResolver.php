@@ -19,6 +19,9 @@ final class UserMutationResolver implements MutationResolverInterface
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function __invoke(?object $item, array $context): ?object
     {
         return match ($context['info']->fieldName) {
@@ -27,6 +30,9 @@ final class UserMutationResolver implements MutationResolverInterface
         };
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function login(array $context): ?User
     {
         $username = $context['args']['input']['username'] ?? null;

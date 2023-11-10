@@ -36,9 +36,11 @@ class Location
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
 
+    /** @var ArrayCollection<int, Review> */
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Review::class)]
     private Collection $reviews;
 
+    /** @var ArrayCollection<int, Heist> */
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Heist::class)]
     private Collection $heist;
 

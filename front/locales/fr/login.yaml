@@ -1,0 +1,7 @@
+# Meta
+meta.title: Se connecter
+meta.description: >-
+  Entrez votre nom d'utilisateur et votre mot de passe pour vous connecter à
+  Symmetrical Potato.
+
+invalid_credentials: Les informations d'identification sont invalides.

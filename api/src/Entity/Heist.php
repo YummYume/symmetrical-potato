@@ -55,9 +55,10 @@ class Heist
     #[ORM\Column(length: 50, enumType: HeistDifficultyEnum::class)]
     private HeistDifficultyEnum $difficulty = HeistDifficultyEnum::Normal;
 
-    #[ORM\Column(length: 50, enumType: HeistStatusEnum::class)]
+    #[ORM\Column(length: 50, enumType: HeistPhaseEnum::class)]
     private HeistPhaseEnum $phase = HeistPhaseEnum::Planning;
 
+    /** @var ArrayCollection<int, CrewMember> */
     #[ORM\OneToMany(mappedBy: 'heist', targetEntity: CrewMember::class, orphanRemoval: true)]
     private Collection $crewMembers;
 
@@ -65,6 +66,7 @@ class Heist
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
 
+    /** @var ArrayCollection<int, Employee> */
     #[ORM\ManyToMany(targetEntity: Employee::class, inversedBy: 'allowedHeists')]
     private Collection $allowedEmployees;
 
@@ -75,10 +77,12 @@ class Heist
     #[ORM\JoinColumn(nullable: false)]
     private ?Establishment $establishment = null;
 
+    /** @var ArrayCollection<int, Asset> */
     #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'forbiddenHeists')]
     #[ORM\JoinTable(name: 'heist_forbidden_assets')]
     private Collection $forbiddenAssets;
 
+    /** @var ArrayCollection<int, Asset> */
     #[ORM\OneToMany(mappedBy: 'heist', targetEntity: Asset::class)]
     private Collection $assets;
 
@@ -359,6 +363,9 @@ class Heist
         return $this;
     }
 
+    /**
+     * @return ArrayCollection<int, Asset>
+     */
     public function getHeistAssets(): Collection
     {
         return array_reduce(

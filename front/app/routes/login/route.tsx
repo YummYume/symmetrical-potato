@@ -1,42 +1,55 @@
 import { redirect, json } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
-import { zfd } from 'zod-form-data';
 
 import { bearerCookie } from '~/lib/cookies.server';
+import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { requestAuthToken } from '~api/user';
 import { FieldInput } from '~components/form/FieldInput';
 import { SubmitButton } from '~components/form/SubmitButton';
+import { getLoginValidationSchema } from '~lib/validators/login';
 import { getMessageForErrorStatusCode, hasErrorStatusCode } from '~utils/api';
 import { getMessageErrorForPath, parseZodErrorsToFieldErrors } from '~utils/error';
 
-import type { CookieSerializeOptions, PublicActionArgs, PublicLoaderArgs } from '@remix-run/node';
+import type {
+  ActionFunctionArgs,
+  CookieSerializeOptions,
+  DataFunctionArgs,
+  MetaFunction,
+} from '@remix-run/node';
 import type { FlashMessage } from '~/root';
 
-export const loginValidator = zfd.formData({
-  username: zfd.text(z.string({ required_error: 'Please enter your username.' })),
-  password: zfd.text(z.string({ required_error: 'Please enter your password.' })),
-});
-
-export async function loader({ context }: PublicLoaderArgs) {
+export async function loader({ context, request }: DataFunctionArgs) {
   if (context.user) {
     throw redirect('/dashboard');
   }
 
-  return null;
+  const t = await i18next.getFixedT(request, 'login');
+
+  return json({
+    meta: {
+      title: t('meta.title', {
+        ns: 'login',
+      }),
+      description: t('meta.description', {
+        ns: 'login',
+      }),
+    },
+  });
 }
 
-export async function action({ request, context }: PublicActionArgs) {
+export type Loader = typeof loader;
+
+export async function action({ request, context }: ActionFunctionArgs) {
   if (context.user) {
     throw redirect('/dashboard');
   }
 
-  const result = loginValidator.safeParse(await request.formData());
+  const t = await i18next.getFixedT(request, ['login', 'validators']);
+  const result = getLoginValidationSchema(t).safeParse(await request.formData());
 
   if (!result.success) {
     return json({ fieldErrors: parseZodErrorsToFieldErrors(result.error.issues) }, { status: 400 });
@@ -63,7 +76,9 @@ export async function action({ request, context }: PublicActionArgs) {
       });
     }
 
-    errorMessage = 'Invalid credentials.';
+    errorMessage = t('invalid_credentials', {
+      ns: 'login',
+    });
   } catch (error) {
     if (error instanceof ClientError && hasErrorStatusCode(error, 401)) {
       errorMessage = getMessageForErrorStatusCode(error, 401);
@@ -87,27 +102,43 @@ export async function action({ request, context }: PublicActionArgs) {
   );
 }
 
+export type Action = typeof action;
+
+export let handle = {
+  i18n: ['common'],
+};
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [{ title: data.meta.title }, { name: 'description', content: data.meta.description }];
+};
+
 export default function Login() {
-  const actionData = useActionData<typeof action>();
-  const fieldErrors = useMemo(() => actionData?.fieldErrors ?? [], [actionData]);
-  let { t } = useTranslation();
+  const actionData = useActionData<Action>();
+  const fieldErrors = actionData?.fieldErrors ?? [];
+  const { t } = useTranslation();
 
   return (
     <Form method="post" className="flex flex-col gap-2">
       <h1>{t('login')}</h1>
       <FieldInput
         name="username"
-        label="Username"
+        label={t('username')}
         type="text"
         error={getMessageErrorForPath(fieldErrors, 'username')}
+        required
       />
       <FieldInput
         name="password"
-        label="Password"
+        label={t('password')}
         type="password"
         error={getMessageErrorForPath(fieldErrors, 'password')}
+        required
       />
-      <SubmitButton text="Login" submittingText="Logging in..." />
+      <SubmitButton text={t('login')} submittingText={t('logging_in')} />
     </Form>
   );
 }

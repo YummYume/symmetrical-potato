@@ -48,6 +48,7 @@ class CrewMember
     #[ORM\JoinColumn(nullable: false)]
     private ?Heist $heist = null;
 
+    /** @var ArrayCollection<int, HeistAsset> */
     #[ORM\OneToMany(mappedBy: 'crewMember', targetEntity: HeistAsset::class, orphanRemoval: true)]
     private Collection $heistAssets;
 

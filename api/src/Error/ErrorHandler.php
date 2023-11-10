@@ -3,6 +3,7 @@
 namespace App\Error;
 
 use ApiPlatform\GraphQl\Error\ErrorHandlerInterface;
+use GraphQL\Error\Error;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -14,6 +15,9 @@ final class ErrorHandler implements ErrorHandlerInterface
     ) {
     }
 
+    /**
+     * @return array<Error>
+     */
     public function __invoke(array $errors, callable $formatter): array
     {
         foreach ($errors as $error) {

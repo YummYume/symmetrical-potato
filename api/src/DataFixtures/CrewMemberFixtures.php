@@ -263,9 +263,9 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
             $heist = $this->getReference(HeistFixtures::REFERENCE_IDENTIFIER.$crewMember['heist'], Heist::class);
 
             $newCrewMember = (new CrewMember())
-                ->setCivilianCasualties($crewMember['civilianCasualties'] ?? null)
-                ->setKills($crewMember['kills'] ?? 0)
-                ->setObjectivesCompleted($crewMember['objectivesCompleted'] ?? 0)
+                ->setCivilianCasualties($crewMember['civilianCasualties'])
+                ->setKills($crewMember['kills'])
+                ->setObjectivesCompleted($crewMember['objectivesCompleted'])
                 ->setPayout($crewMember['payout'] ?? 0.0)
                 ->setStatus($crewMember['status'])
                 ->setUser($user)
