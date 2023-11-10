@@ -20,19 +20,24 @@ jobs:
   test-api:
     runs-on: ubuntu-latest
 
-    container: ubuntu:latest
-
     services:
       mariadb:
         image: mariadb:11.1.2
+        ports:
+          - 3306:3306
         env:
           MARIADB_ROOT_PASSWORD: root
+        options: --health-cmd="healthcheck.sh --su-mysql --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
 
       mailcatcher:
         image: schickling/mailcatcher:latest
+        ports:
+          - 1025:1025
 
       rabbitmq:
         image: rabbitmq:management-alpine
+        ports:
+          - 5672:5672
 
     env:
       extensions: amqp, intl, pdo_mysql, pcntl
@@ -41,9 +46,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Install cURL
-        run: apt-get update && apt-get install -y curl
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -62,8 +64,11 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
+      - name: Change APP_ENV 
+        run: echo 'APP_ENV=test' > ./api/.env.local
+
       - name: Copy .env.ci to .env.local
-        run: cp ./api/.env.ci ./api/.env.local
+        run: cp ./api/.env.ci ./api/.env.test.local
 
       - name: Install dependencies
         working-directory: ./api

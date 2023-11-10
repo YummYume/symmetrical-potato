@@ -43,7 +43,7 @@ final class EmployeeTimeOffFixtures extends Fixture implements DependentFixtureI
             /** @var Employee $employee */
             $employee = $this->getReference(EmployeeFixtures::REFERENCE_IDENTIFIER.$employeeTimeOff['employee'], Employee::class);
             $newEmployeeTimeOff = (new EmployeeTimeOff())
-                ->setDescription($employeeTimeOff['description'] ?? null)
+                ->setDescription($employeeTimeOff['description'])
                 ->setEmployee($employee)
                 ->setReason($employeeTimeOff['reason'])
                 ->setStartAt(new \DateTime($employeeTimeOff['startAt']))

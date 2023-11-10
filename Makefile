@@ -154,6 +154,7 @@ lint: lint-api lint-front
 
 lint-api:
 	$(EXECPHP) sh -c "./vendor/bin/php-cs-fixer fix src -v --dry-run"
+	$(EXECPHP) sh -c "./vendor/bin/phpstan analyse"
 
 lint-front:
 	$(EXECFRONT) bun run lint

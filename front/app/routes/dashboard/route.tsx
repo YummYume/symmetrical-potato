@@ -1,18 +1,25 @@
-import { type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import { denyAccessUnlessGranted } from '~utils/security';
+import { denyAccessUnlessGranted } from '~utils/security.server';
 
-export async function loader({ context }: LoaderArgs) {
-  denyAccessUnlessGranted(context.user);
+import type { DataFunctionArgs } from '@remix-run/node';
+
+export async function loader({ context }: DataFunctionArgs) {
+  const user = denyAccessUnlessGranted(context.user);
 
   return {
-    user: context.user,
+    user,
   };
 }
 
+export type Loader = typeof loader;
+
+export let handle = {
+  i18n: ['common'],
+};
+
 export default function Dashboard() {
-  const { user } = useLoaderData<typeof loader>();
+  const { user } = useLoaderData<Loader>();
 
   return (
     <div className="relative w-full">

@@ -1,0 +1,8 @@
+homepage: Homepage
+login: Login
+username: Username
+password: Password
+logging_in: Logging in...
+page_loading: Page is loading...
+logout: Logout
+change_locale: Change language

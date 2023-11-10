@@ -47,9 +47,11 @@ class Asset
     #[ORM\ManyToOne(inversedBy: 'assets')]
     private ?Heist $heist = null;
 
+    /** @var ArrayCollection<int, HeistAsset> */
     #[ORM\OneToMany(mappedBy: 'asset', targetEntity: HeistAsset::class, orphanRemoval: true)]
     private Collection $heistAssets;
 
+    /** @var ArrayCollection<int, Heist> */
     #[ORM\ManyToMany(targetEntity: Heist::class, mappedBy: 'forbiddenAssets')]
     private Collection $forbiddenHeists;
 

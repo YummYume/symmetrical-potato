@@ -2,6 +2,7 @@ import { createCookie } from '@remix-run/node';
 
 export const AUTHORIZATION_COOKIE_NAME = 'BEARER' as const;
 export const AUTHORIZATION_COOKIE_PREFIX = 'Bearer' as const;
+export const LOCALE_COOKIE_NAME = 'LOCALE' as const;
 
 /**
  * Generic function to get a cookie from a cookie string.
@@ -34,4 +35,23 @@ export const parseBearerCookie = async (request: Request) => {
   const cookieHeader = request.headers.get('Cookie');
 
   return (await bearerCookie.parse(cookieHeader)) || '';
+};
+
+/**
+ * Locale cookie for storing the user's locale.
+ */
+export const localeCookie = createCookie(LOCALE_COOKIE_NAME, {
+  httpOnly: true,
+  path: process.env.SITE_HOST ?? '/',
+  sameSite: 'lax',
+  secure: process.env.NODE_ENV === 'production',
+});
+
+/**
+ * Parse the locale cookie from the request.
+ */
+export const parseLocaleCookie = async (request: Request) => {
+  const cookieHeader = request.headers.get('Cookie');
+
+  return (await localeCookie.parse(cookieHeader)) || '';
 };

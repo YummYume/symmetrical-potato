@@ -7,7 +7,7 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 
 abstract class ApiAuthTestCase extends ApiTestCase
 {
-    protected static function createAuthenticatedClient($username = 'dallas', $password = 'xxx'): Client
+    protected static function createAuthenticatedClient(string $username = 'dallas', string $password = 'xxx'): Client
     {
         $client = static::createClient();
         $client->request('POST', '/graphql', [

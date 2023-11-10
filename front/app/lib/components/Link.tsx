@@ -4,7 +4,7 @@ import type { RemixLinkProps } from '@remix-run/react/dist/components';
 
 export type LinkProps = {
   to: string;
-  children?: JSX.Element | string;
+  children?: React.ReactNode;
 } & RemixLinkProps &
   React.RefAttributes<HTMLAnchorElement>;
 

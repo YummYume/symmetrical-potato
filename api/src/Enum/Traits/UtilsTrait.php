@@ -4,11 +4,14 @@ namespace App\Enum\Traits;
 
 trait UtilsTrait
 {
+    /**
+     * @return array<int|string, int|string>
+     */
     public static function toArray(bool $reversed = false): array
     {
         return array_combine(
-            array_map(static fn ($item): string|int => $reversed ? $item->value : $item->name, self::cases()),
-            array_map(static fn ($item): string|int => $reversed ? $item->name : $item->value, self::cases())
+            array_map(static fn ($item): string => $reversed ? $item->value : $item->name, self::cases()),
+            array_map(static fn ($item): string => $reversed ? $item->name : $item->value, self::cases())
         );
     }
 

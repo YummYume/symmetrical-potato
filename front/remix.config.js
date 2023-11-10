@@ -6,6 +6,13 @@ const config = {
   routes: async (defineRoutes) => {
     return flatRoutes('routes', defineRoutes);
   },
+  browserNodeBuiltinsPolyfill: {
+    modules: {
+      path: true,
+      fs: true,
+    },
+  },
+  serverDependenciesToBundle: ['remix-i18next'],
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // publicPath: "/build/",
