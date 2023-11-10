@@ -24,9 +24,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
-/**
- * @phpstan-type UserRole 'ROLE_USER'|'ROLE_HEISTER'|'ROLE_EMPLOYEE'|'ROLE_CONTRACTOR'|'ROLE_ADMIN'
- */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
@@ -93,7 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:read:public'])]
     private ?string $username = null;
 
-    /** @var array<UserRole> */
+    /** @var array<string> */
     #[ORM\Column]
     #[ApiProperty]
     #[Groups(['user:read'])]
@@ -224,7 +221,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param UserRole[] $roles
+     * @param array<string> $roles
      */
     public function setRoles(array $roles): static
     {
@@ -233,9 +230,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @param UserRole $role
-     */
     public function addRole(string $role): static
     {
         if (\in_array($role, self::getAllowedRoles(), true)) {
@@ -254,9 +248,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @param UserRole $role
-     */
     public function removeRole(string $role): static
     {
         $this->roles = array_filter($this->roles, static fn (string $existingRole): bool => $role !== $existingRole);
@@ -265,7 +256,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return array<UserRole>
+     * @return array<string>
      */
     public static function getAllowedRoles(): array
     {
@@ -279,7 +270,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return array<UserRole, array<UserRole>>
+     * @return array<string, array<string>>
      */
     public static function getMutuallyExclusiveRoles(): array
     {
