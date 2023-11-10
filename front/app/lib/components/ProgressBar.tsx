@@ -137,7 +137,7 @@ export const ProgressBar = ({
   loadingMessage = 'Loading...',
   animationDuration = 300,
   incrementDuration = 750,
-  minimum = 0.5,
+  minimum = 0.2,
   barProps = {
     className:
       'h-full bg-blue-600 transition-all motion-reduce:transition-none ease-in-out dark:bg-blue-500',
