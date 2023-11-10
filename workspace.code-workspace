@@ -100,5 +100,6 @@
         "i18n-ally.defaultNamespace": "common",
         "i18n-ally.namespace": true,
         "phpstan.configFile": "phpstan.neon,phpstan.dist.neon",
+        "phpstan.suppressWorkspaceMessage": true,
     }
 }
