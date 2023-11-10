@@ -9,6 +9,7 @@ import { RemixServer } from '@remix-run/react';
 import * as Sentry from '@sentry/remix';
 import { createInstance } from 'i18next';
 import I18NextFsBackend from 'i18next-fs-backend';
+import ICU from 'i18next-icu';
 import isbot from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
@@ -45,15 +46,15 @@ export default async function handleRequest(
   loadContext: AppLoadContext,
 ) {
   const i18nInstance = createInstance();
-  const lng = await i18next.getLocale(request);
   const ns = i18next.getRouteNamespaces(remixContext);
 
   await i18nInstance
     .use(initReactI18next)
     .use(I18NextFsBackend)
+    .use(ICU)
     .init({
       ...config,
-      lng,
+      lng: loadContext.locale,
       ns,
       backend: { loadPath: resolve('./public/locales/{{lng}}/{{ns}}.json') },
     });

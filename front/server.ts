@@ -12,6 +12,7 @@ import * as url from 'node:url';
 
 import { AUTHORIZATION_COOKIE_PREFIX, bearerCookie } from '~/lib/cookies.server';
 import { getCurrentUser } from '~api/user';
+import { getLocale } from '~utils/locale';
 
 import type { GetLoadContextFunction } from '@remix-run/express';
 import type { User } from '~api/types';
@@ -28,12 +29,14 @@ const initialBuild = await reimportServer();
  */
 const getLoadContext = (async (req, res) => {
   const authorizationToken = await bearerCookie.parse(req.headers.cookie ?? '');
+  const locale = await getLocale(req.headers.cookie ?? '', req.headers['accept-language'] ?? '');
   const client = new GraphQLClient(`${process.env.API_HOST}${process.env.API_GRAPHQL_ENDPOINT}`, {
     credentials: 'include',
     headers: {
-      Authorization: authorizationToken
+      'Authorization': authorizationToken
         ? `${AUTHORIZATION_COOKIE_PREFIX} ${authorizationToken}`
         : '',
+      'Accept-Language': locale,
     },
   });
   let user: User | null = null;
@@ -49,7 +52,7 @@ const getLoadContext = (async (req, res) => {
     user = null;
   }
 
-  return { client, user };
+  return { client, user, locale };
 }) satisfies GetLoadContextFunction;
 const remixHandler =
   process.env.NODE_ENV === 'development'
@@ -68,10 +71,25 @@ app
   // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
   .disable('x-powered-by')
   // Remix fingerprints its assets so we can cache forever.
-  .use('/build', express.static('public/build', { immutable: true, maxAge: '1y' }))
-  // Everything else (like favicon.ico) is cached for an hour. You may want to be
+  .use('/build', express.static('public/build', { immutable: true, maxAge: '1y' }));
+
+// We want to disable asset caching in development
+if (process.env.NODE_ENV !== 'development') {
+  // Everything else (like favicon.ico) is cached for 24 hours. You may want to be
   // more aggressive with this caching.
-  .use(express.static('public', { maxAge: '1h' }))
+  app.use(express.static('public', { maxAge: '24h' }));
+} else {
+  app.use(
+    express.static('public', {
+      maxAge: '0',
+      setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'no-cache');
+      },
+    }),
+  );
+}
+
+app
   .use(morgan('tiny'))
   .all('*', remixHandler)
   .listen(port, async () => {

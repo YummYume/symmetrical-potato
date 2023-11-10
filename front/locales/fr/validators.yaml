@@ -1,0 +1,7 @@
+# Login
+login.username.required: Veuillez saisir votre nom d'utilisateur.
+login.password.required: Veuillez saisir votre mot de passe.
+
+# Locale
+locale.locale.required: Veuillez sélectionner votre langue.
+locale.locale.invalid: La langue sélectionnée est invalide.

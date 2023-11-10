@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/remix';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend from 'i18next-http-backend';
+import ICU from 'i18next-icu';
 import { startTransition, StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
@@ -11,7 +12,7 @@ import { getInitialNamespaces } from 'remix-i18next';
 import { config } from '~lib/i18n/config';
 import { getEnv, setEnv } from '~utils/env.client';
 
-import type { loader as rootLoader } from './root';
+import type { Loader as RootLoader } from './root';
 import type { SerializeFrom } from '@remix-run/node';
 
 /**
@@ -21,9 +22,7 @@ import type { SerializeFrom } from '@remix-run/node';
  */
 
 const hydrate = async () => {
-  const rootData = __remixContext.state.loaderData?.root as
-    | SerializeFrom<typeof rootLoader>
-    | undefined;
+  const rootData = __remixContext.state.loaderData?.root as SerializeFrom<RootLoader> | undefined;
 
   if (rootData) {
     Object.entries(rootData.env).forEach(([key, value]) => {
@@ -45,6 +44,7 @@ const hydrate = async () => {
     .use(initReactI18next)
     .use(LanguageDetector)
     .use(HttpBackend)
+    .use(ICU)
     .init({
       ...config,
       ns: getInitialNamespaces(),

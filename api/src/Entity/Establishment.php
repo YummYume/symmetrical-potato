@@ -41,12 +41,15 @@ class Establishment
     #[ORM\JoinColumn(nullable: false)]
     private ?User $contractor = null;
 
+    /** @var ArrayCollection<int, Employee> */
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Employee::class)]
     private Collection $employees;
 
+    /** @var ArrayCollection<int, Review> */
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Review::class)]
     private Collection $reviews;
 
+    /** @var ArrayCollection<int, Heist> */
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Heist::class, orphanRemoval: true)]
     private Collection $heists;
 

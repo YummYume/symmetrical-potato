@@ -209,9 +209,9 @@ final class AssetFixtures extends Fixture
                 ->setName($asset['name'])
                 ->setPrice($asset['price'])
                 ->setType($asset['type'])
-                ->setDescription($asset['description'] ?? null)
-                ->setMaxQuantity($asset['maxQuantity'] ?? 1)
-                ->setTeamAsset($asset['teamAsset'] ?? false)
+                ->setDescription($asset['description'])
+                ->setMaxQuantity($asset['maxQuantity'])
+                ->setTeamAsset($asset['teamAsset'])
             ;
 
             $manager->persist($newAsset);

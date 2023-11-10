@@ -34,6 +34,9 @@ class Employee
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     private ?Uuid $id = null;
 
+    /**
+     * @var array<string, array<string, string>>
+     */
     #[ORM\Column(type: Types::JSON)]
     private array $weeklySchedule = [];
 
@@ -43,6 +46,7 @@ class Employee
     #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
+    /** @var ArrayCollection<int, EmployeeTimeOff> */
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: EmployeeTimeOff::class, orphanRemoval: true)]
     private Collection $timeOffs;
 
@@ -59,9 +63,11 @@ class Employee
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    /** @var ArrayCollection<int, Heist> */
     #[ORM\ManyToMany(targetEntity: Heist::class, mappedBy: 'allowedEmployees')]
     private Collection $allowedHeists;
 
+    /** @var ArrayCollection<int, Heist> */
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: Heist::class)]
     private Collection $heists;
 
@@ -77,11 +83,17 @@ class Employee
         return $this->id;
     }
 
+    /**
+     * @return array<string, array<string, string>>
+     */
     public function getWeeklySchedule(): array
     {
         return $this->weeklySchedule;
     }
 
+    /**
+     * @param array<string, array<string, string>> $weeklySchedule
+     */
     public function setWeeklySchedule(array $weeklySchedule): static
     {
         $this->weeklySchedule = $weeklySchedule;

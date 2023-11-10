@@ -13,3 +13,5 @@ export const action = async () => {
     },
   });
 };
+
+export type Action = typeof action;

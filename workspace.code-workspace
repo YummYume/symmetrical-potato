@@ -1,12 +1,12 @@
 {
     "folders": [
         {
-            "name": "Front",
-            "path": "front"
-        },
-        {
             "name": "API",
             "path": "api"
+        },
+        {
+            "name": "Front",
+            "path": "front"
         },
         {
             "name": "Root",
@@ -25,7 +25,8 @@
             "esbenp.prettier-vscode",
             "yoavbls.pretty-ts-errors",
             "bradlc.vscode-tailwindcss",
-            "lokalise.i18n-ally"
+            "lokalise.i18n-ally",
+            "sanderronde.phpstan-vscode"
         ]
     },
     "settings": {
@@ -92,11 +93,12 @@
         "php.suggest.basic": false,
         "twiggy.phpBinConsoleCommand": "docker compose exec php php bin/console",
         "i18n-ally.localesPaths": [
-            "public/locales",
+            "locales",
             "app/lib/i18n"
         ],
         "i18n-ally.keystyle": "flat",
         "i18n-ally.defaultNamespace": "common",
-        "i18n-ally.namespace": true
+        "i18n-ally.namespace": true,
+        "phpstan.configFile": "phpstan.neon,phpstan.dist.neon",
     }
 }

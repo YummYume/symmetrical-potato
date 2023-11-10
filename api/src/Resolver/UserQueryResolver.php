@@ -15,6 +15,9 @@ final class UserQueryResolver implements QueryItemResolverInterface
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function __invoke(?object $item, array $context): object
     {
         return match ($context['info']->fieldName) {
@@ -27,7 +30,7 @@ final class UserQueryResolver implements QueryItemResolverInterface
     {
         $user = $this->security->getUser();
 
-        if (null === $user) {
+        if (null === $user || !$user instanceof User) {
             throw $this->exceptionHelper->createTranslatableHttpException(401, 'user.not_authenticated');
         }
 

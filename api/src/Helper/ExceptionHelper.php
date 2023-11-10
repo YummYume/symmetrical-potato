@@ -11,6 +11,9 @@ final class ExceptionHelper
     {
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     public function createTranslatableHttpException(
         int $status,
         string $message,
