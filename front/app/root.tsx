@@ -11,7 +11,6 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  useLocation,
   useNavigation,
   useRouteError,
   useSubmit,
@@ -132,7 +131,6 @@ export let handle = {
 export default function App() {
   const { flashMessage, user, locale } = useLoaderData<Loader>();
   const navigation = useNavigation();
-  const location = useLocation();
   const { t, i18n } = useTranslation();
   const submit = useSubmit();
 
@@ -149,7 +147,6 @@ export default function App() {
       <body className="min-h-full min-w-full">
         <ProgressBar
           id="global-progress-bar"
-          key={location.key}
           active={navigation.state === 'loading'}
           loadingMessage={t('page_loading')}
           className="fixed left-0 top-0 z-50 h-0.5 w-full rounded-b-full bg-transparent"
