@@ -89,6 +89,7 @@ export type User = Node & {
 
 export type UserCollection = Node & {
   __typename?: 'UserCollection';
+  allowedRoles: Scalars['Iterable']['output'];
   balance: Scalars['Float']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserCollection>;
@@ -96,6 +97,7 @@ export type UserCollection = Node & {
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: UserLocaleEnum;
+  mutuallyExclusiveRoles: Scalars['Iterable']['output'];
   /** The hashed password */
   password: Scalars['String']['output'];
   plainPassword: Scalars['String']['output'];
@@ -167,6 +169,7 @@ export type CreateUserInput = {
 /** Creates a User. */
 export type CreateUserNestedPayload = Node & {
   __typename?: 'createUserNestedPayload';
+  allowedRoles: Scalars['Iterable']['output'];
   balance: Scalars['Float']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<CreateUserNestedPayload>;
@@ -174,6 +177,7 @@ export type CreateUserNestedPayload = Node & {
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: UserLocaleEnum;
+  mutuallyExclusiveRoles: Scalars['Iterable']['output'];
   /** The hashed password */
   password: Scalars['String']['output'];
   plainPassword: Scalars['String']['output'];
@@ -197,6 +201,7 @@ export type CreateUserPayload = {
 /** Creates a User. */
 export type CreateUserPayloadData = Node & {
   __typename?: 'createUserPayloadData';
+  allowedRoles: Scalars['Iterable']['output'];
   balance: Scalars['Float']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<CreateUserNestedPayload>;
@@ -204,6 +209,7 @@ export type CreateUserPayloadData = Node & {
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: UserLocaleEnum;
+  mutuallyExclusiveRoles: Scalars['Iterable']['output'];
   /** The hashed password */
   password: Scalars['String']['output'];
   plainPassword: Scalars['String']['output'];
@@ -284,6 +290,7 @@ export type UpdateUserInput = {
 /** Updates a User. */
 export type UpdateUserNestedPayload = Node & {
   __typename?: 'updateUserNestedPayload';
+  allowedRoles?: Maybe<Scalars['Iterable']['output']>;
   balance?: Maybe<Scalars['Float']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UpdateUserNestedPayload>;
@@ -291,6 +298,7 @@ export type UpdateUserNestedPayload = Node & {
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale?: Maybe<UserLocaleEnum>;
+  mutuallyExclusiveRoles?: Maybe<Scalars['Iterable']['output']>;
   /** The hashed password */
   password?: Maybe<Scalars['String']['output']>;
   plainPassword?: Maybe<Scalars['String']['output']>;
@@ -314,6 +322,7 @@ export type UpdateUserPayload = {
 /** Updates a User. */
 export type UpdateUserPayloadData = Node & {
   __typename?: 'updateUserPayloadData';
+  allowedRoles?: Maybe<Scalars['Iterable']['output']>;
   balance?: Maybe<Scalars['Float']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UpdateUserNestedPayload>;
@@ -321,6 +330,7 @@ export type UpdateUserPayloadData = Node & {
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale?: Maybe<UserLocaleEnum>;
+  mutuallyExclusiveRoles?: Maybe<Scalars['Iterable']['output']>;
   /** The hashed password */
   password?: Maybe<Scalars['String']['output']>;
   plainPassword?: Maybe<Scalars['String']['output']>;

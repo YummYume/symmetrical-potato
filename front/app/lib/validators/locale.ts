@@ -3,15 +3,11 @@ import { zfd } from 'zod-form-data';
 
 import { ALLOWED_LOCALES } from '~utils/locale';
 
-import type { TFunction } from 'i18next';
-
-export const getLocaleValidationSchema = (t: TFunction) => {
-  return zfd.formData({
-    locale: zfd.text(
-      z.enum(ALLOWED_LOCALES, {
-        required_error: t('locale.locale.required', { ns: 'validators' }),
-        invalid_type_error: t('locale.locale.invalid', { ns: 'validators' }),
-      }),
-    ),
-  });
-};
+export const localeValidationSchema = zfd.formData({
+  locale: zfd.text(
+    z.enum(ALLOWED_LOCALES, {
+      required_error: 'locale.locale.required',
+      invalid_type_error: 'locale.locale.invalid',
+    }),
+  ),
+});

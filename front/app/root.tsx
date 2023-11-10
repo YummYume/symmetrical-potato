@@ -28,7 +28,7 @@ import { SubmitButton } from '~components/form/SubmitButton';
 import { localeCookie } from '~lib/cookies.server';
 import { i18next } from '~lib/i18n/index.server';
 import { commitSession, getSession } from '~lib/session.server';
-import { getLocaleValidationSchema } from '~lib/validators/locale';
+import { localeValidationSchema } from '~lib/validators/locale';
 import { ALLOWED_LOCALES, getLocaleLabel } from '~utils/locale';
 
 import type { ActionFunctionArgs, DataFunctionArgs } from '@remix-run/node';
@@ -66,12 +66,12 @@ export type Loader = typeof loader;
 
 export async function action({ request }: ActionFunctionArgs) {
   const t = await i18next.getFixedT(request, ['login', 'validators']);
-  const result = getLocaleValidationSchema(t).safeParse(await request.formData());
+  const result = localeValidationSchema.safeParse(await request.formData());
   const session = await getSession(request.headers.get('Cookie'));
 
   if (!result.success) {
     session.flash(FLASH_MESSAGE_KEY, {
-      content: result.error.message,
+      content: t(result.error.message, { ns: 'validators' }),
       type: 'error',
     } as FlashMessage);
 

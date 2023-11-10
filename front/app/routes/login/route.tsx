@@ -10,7 +10,7 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { requestAuthToken } from '~api/user';
 import { FieldInput } from '~components/form/FieldInput';
 import { SubmitButton } from '~components/form/SubmitButton';
-import { getLoginValidationSchema } from '~lib/validators/login';
+import { loginValidationSchema } from '~lib/validators/login';
 import { getMessageForErrorStatusCode, hasErrorStatusCode } from '~utils/api';
 import { getMessageErrorForPath, parseZodErrorsToFieldErrors } from '~utils/error';
 
@@ -49,7 +49,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   const t = await i18next.getFixedT(request, ['login', 'validators']);
-  const result = getLoginValidationSchema(t).safeParse(await request.formData());
+  const result = loginValidationSchema.safeParse(await request.formData());
 
   if (!result.success) {
     return json({ fieldErrors: parseZodErrorsToFieldErrors(result.error.issues) }, { status: 400 });
@@ -117,9 +117,11 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
 };
 
 export default function Login() {
+  const { t } = useTranslation();
   const actionData = useActionData<Action>();
   const fieldErrors = actionData?.fieldErrors ?? [];
-  const { t } = useTranslation();
+  const usernameError = getMessageErrorForPath(fieldErrors, 'username');
+  const passwordError = getMessageErrorForPath(fieldErrors, 'password');
 
   return (
     <Form method="post" className="flex flex-col gap-2">
@@ -128,14 +130,14 @@ export default function Login() {
         name="username"
         label={t('username')}
         type="text"
-        error={getMessageErrorForPath(fieldErrors, 'username')}
+        error={usernameError ? t(usernameError, { ns: 'validators' }) : undefined}
         required
       />
       <FieldInput
         name="password"
         label={t('password')}
         type="password"
-        error={getMessageErrorForPath(fieldErrors, 'password')}
+        error={passwordError ? t(passwordError, { ns: 'validators' }) : undefined}
         required
       />
       <SubmitButton text={t('login')} submittingText={t('logging_in')} />
