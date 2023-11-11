@@ -75,7 +75,7 @@ jobs:
         run: bun run lint
 
       - name: Check building phase
-        if: steps.cache-client.outputs.cache-hit != 'true' || steps.cache-server.outputs.cache-hit != 'true'
+        if: steps.cache-client.outputs.cache-hit != 'true' || steps.cache-server.outputs.cache-hit != 'true' || steps.cache-css.outputs.cache-hit != 'true'
         working-directory: ./front
         run: bun run build:remix
 

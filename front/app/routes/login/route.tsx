@@ -1,3 +1,4 @@
+import { Heading } from '@radix-ui/themes';
 import { redirect, json } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -125,7 +126,7 @@ export default function Login() {
 
   return (
     <Form method="post" className="flex flex-col gap-2">
-      <h1>{t('login')}</h1>
+      <Heading as="h1">{t('login')}</Heading>
       <FieldInput
         name="username"
         label={t('username')}

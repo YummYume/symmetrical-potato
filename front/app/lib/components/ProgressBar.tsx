@@ -139,8 +139,7 @@ export const ProgressBar = ({
   incrementDuration = 750,
   minimum = 0.2,
   barProps = {
-    className:
-      'h-full bg-blue-600 transition-all motion-reduce:transition-none ease-in-out dark:bg-blue-500',
+    className: 'h-full bg-accent-9 transition-all motion-reduce:transition-none ease-out',
   },
   container: ContainerComponent = Container,
   bar: BarComponent = Bar,
