@@ -1,0 +1,55 @@
+name: Workflow Notify
+
+on:
+  workflow_run:
+    workflows: ["Testing API", "Linting Front", "Linting API", "Publish Front", "Publish API", "Deploy on VPS"]
+    types: [completed, requested]
+
+jobs:
+  on-request:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.event == 'requested' }}
+    steps:
+      - name: Notify Discord
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          content: "Listen up, this is a workflow_run request! Workflow ${{ github.event.workflow_run.name }} has been requested by ${{ github.event.workflow_run.triggering_actor }}!"
+          title: "Workflow Run Request"
+          description: "Workflow ${{ github.event.workflow_run.name }} requested."
+          color: 0x0000ff
+          url: ${{ github.event.workflow_run.html_url }}
+
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.event == 'completed' }} && ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Notify Discord
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          content: "Workflow ${{ github.event.workflow_run.name }} has been robbed successfully!"
+          title: "Workflow Run Success"
+          description: "Workflow ${{ github.event.workflow_run.name }} completed successfully."
+          color: 0x00ff00
+          url: ${{ github.event.workflow_run.html_url }}
+
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.event == 'completed' }} && ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Notify Discord
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          content: "Workflow ${{ github.event.workflow_run.name }} is in custody."
+          title: "Workflow Run Failure"
+          description: "Workflow ${{ github.event.workflow_run.name }} failed."
+          color: 0xff0000
+          url: ${{ github.event.workflow_run.html_url }}
