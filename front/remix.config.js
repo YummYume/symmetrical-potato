@@ -12,7 +12,7 @@ const config = {
       fs: true,
     },
   },
-  serverDependenciesToBundle: ['remix-i18next'],
+  serverDependenciesToBundle: ['remix-i18next', '@radix-ui/themes'],
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // publicPath: "/build/",

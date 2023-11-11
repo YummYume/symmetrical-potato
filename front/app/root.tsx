@@ -1,4 +1,5 @@
 import * as RadixToast from '@radix-ui/react-toast';
+import { Select, Switch, Theme } from '@radix-ui/themes';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import { json, type LinksFunction } from '@remix-run/node';
 import {
@@ -16,18 +17,21 @@ import {
   useSubmit,
 } from '@remix-run/react';
 import { captureRemixErrorBoundaryError } from '@sentry/remix';
+import cl from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { useChangeLanguage } from 'remix-i18next';
 
 import tailwindStylesheet from '~/styles/tailwind.css';
+import themeStylesheet from '~/styles/theme.css';
 import { Link } from '~components/Link';
 import { ProgressBar } from '~components/ProgressBar';
 import { Toast } from '~components/Toast';
+import { FieldSelect } from '~components/form/FieldSelect';
 import { SubmitButton } from '~components/form/SubmitButton';
-import { localeCookie } from '~lib/cookies.server';
+import { darkModeCookie, localeCookie } from '~lib/cookies.server';
 import { i18next } from '~lib/i18n/index.server';
 import { commitSession, getSession } from '~lib/session.server';
-import { localeValidationSchema } from '~lib/validators/locale';
+import { preferencesValidationSchema } from '~lib/validators/locale';
 import { ALLOWED_LOCALES, getLocaleLabel } from '~utils/locale';
 
 import type { ActionFunctionArgs, DataFunctionArgs } from '@remix-run/node';
@@ -52,6 +56,7 @@ export async function loader({ request, context }: DataFunctionArgs) {
       flashMessage,
       user: context.user,
       locale: context.locale,
+      useDarkMode: context.useDarkMode,
     },
     {
       headers: {
@@ -65,7 +70,7 @@ export type Loader = typeof loader;
 
 export async function action({ request }: ActionFunctionArgs) {
   const t = await i18next.getFixedT(request, ['login', 'validators']);
-  const result = localeValidationSchema.safeParse(await request.formData());
+  const result = preferencesValidationSchema.safeParse(await request.formData());
   const session = await getSession(request.headers.get('Cookie'));
 
   if (!result.success) {
@@ -84,14 +89,15 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  return json(
-    {},
-    {
-      headers: {
-        'Set-Cookie': await localeCookie.serialize(result.data.locale),
-      },
-    },
+  const headers = new Headers();
+
+  headers.append('Set-Cookie', await localeCookie.serialize(result.data.locale));
+  headers.append(
+    'Set-Cookie',
+    await darkModeCookie.serialize(result.data.darkMode ? 'true' : 'false'),
   );
+
+  return json({}, { headers });
 }
 
 export type Action = typeof action;
@@ -99,7 +105,12 @@ export type Action = typeof action;
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
   { rel: 'stylesheet', href: tailwindStylesheet },
+  { rel: 'stylesheet', href: themeStylesheet },
 ];
+
+export let handle = {
+  i18n: ['common'],
+};
 
 export const ErrorBoundary = () => {
   const error = useRouteError();
@@ -124,20 +135,22 @@ export const ErrorBoundary = () => {
   return <div>Something went wrong</div>;
 };
 
-export let handle = {
-  i18n: ['common'],
-};
-
 export default function App() {
-  const { flashMessage, user, locale } = useLoaderData<Loader>();
+  const { flashMessage, user, locale, useDarkMode } = useLoaderData<Loader>();
   const navigation = useNavigation();
   const { t, i18n } = useTranslation();
   const submit = useSubmit();
 
+  // Automatically reload t when the locale changes
   useChangeLanguage(locale);
 
   return (
-    <html lang={locale} dir={i18n.dir()}>
+    <html
+      lang={locale}
+      dir={i18n.dir()}
+      className={cl({ dark: useDarkMode })}
+      suppressHydrationWarning
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -145,68 +158,87 @@ export default function App() {
         <Links />
       </head>
       <body className="min-h-full min-w-full">
-        <ProgressBar
-          id="global-progress-bar"
-          active={navigation.state === 'loading'}
-          loadingMessage={t('page_loading')}
-          className="fixed left-0 top-0 z-50 h-0.5 w-full rounded-b-full bg-transparent"
-        />
-        <RadixToast.Provider swipeDirection="right">
-          <header className="flex flex-col justify-between border-b border-b-slate-700 p-4 lg:flex-row lg:items-center">
-            <Link to="/">Symmetrical Potato</Link>
-            <nav className="flex flex-col gap-2 lg:flex-row lg:gap-4">
-              <Form
-                method="post"
-                navigate={false}
-                className="flex flex-col gap-2 lg:flex-row"
-                onChange={(event) => {
-                  submit(event.currentTarget, {
-                    navigate: false,
-                  });
-                }}
-              >
-                <select name="locale" defaultValue={locale}>
-                  {ALLOWED_LOCALES.map((locale) => (
-                    <option key={locale} value={locale}>
-                      {getLocaleLabel(locale)}
-                    </option>
-                  ))}
-                </select>
-                <noscript>
-                  <SubmitButton text={t('change_locale')} />
-                </noscript>
-              </Form>
-              <ul className="flex flex-col gap-2 lg:flex-row">
-                {user && (
-                  <>
-                    <li>Logged in as {user.username}</li>
+        <Theme accentColor="sky" grayColor="slate" appearance={useDarkMode ? 'dark' : 'light'}>
+          <ProgressBar
+            id="global-progress-bar"
+            active={navigation.state === 'loading'}
+            loadingMessage={t('page_loading')}
+            className="fixed left-0 top-0 z-50 h-0.5 w-full rounded-b-6 bg-transparent"
+          />
+          <RadixToast.Provider swipeDirection="right">
+            <header className="flex flex-col justify-between border-b border-b-gray-10 p-4 lg:flex-row lg:items-center">
+              <Link to="/" className="text-7" unstyled>
+                Symmetrical Potato
+              </Link>
+              <nav className="flex flex-col gap-2 lg:flex-row lg:gap-4">
+                <Form
+                  method="post"
+                  className="flex flex-col items-center gap-2 lg:flex-row"
+                  onChange={(event) => {
+                    submit(event.currentTarget, {
+                      navigate: false,
+                    });
+                  }}
+                >
+                  <Switch
+                    name="darkMode"
+                    size="2"
+                    defaultChecked={useDarkMode}
+                    aria-label={t('enable_dark_mode')}
+                    value="true"
+                  />
+                  <FieldSelect
+                    name="locale"
+                    required
+                    label={t('change_locale')}
+                    hideLabel
+                    defaultValue={locale}
+                    containerClassName="w-40"
+                  >
+                    <Select.Content>
+                      {ALLOWED_LOCALES.map((allowedLocale) => (
+                        <Select.Item key={allowedLocale} value={allowedLocale}>
+                          {getLocaleLabel(allowedLocale)}
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </FieldSelect>
+                  <noscript>
+                    <SubmitButton text={t('submit')} />
+                  </noscript>
+                </Form>
+                <ul className="flex flex-col items-center gap-2 lg:flex-row">
+                  {user && (
+                    <>
+                      <li>Logged in as {user.username}</li>
+                      <li>
+                        <Link to="/dashboard" prefetch="intent">
+                          Dashboard
+                        </Link>
+                      </li>
+                      <li>
+                        <Form method="post" action="/logout">
+                          <SubmitButton text={t('logout')} />
+                        </Form>
+                      </li>
+                    </>
+                  )}
+                  {!user && (
                     <li>
-                      <Link to="/dashboard" prefetch="intent">
-                        Dashboard
+                      <Link to="/login" prefetch="intent">
+                        {t('login')}
                       </Link>
                     </li>
-                    <li>
-                      <Form method="post" action="/logout">
-                        <SubmitButton text={t('logout')} />
-                      </Form>
-                    </li>
-                  </>
-                )}
-                {!user && (
-                  <li>
-                    <Link to="/login" prefetch="intent">
-                      {t('login')}
-                    </Link>
-                  </li>
-                )}
-              </ul>
-            </nav>
-          </header>
-          {flashMessage && <Toast content={flashMessage.content} title={flashMessage.title} />}
-          {/* TODO look at this for better toasts */}
-          <RadixToast.Viewport />
-          <Outlet />
-        </RadixToast.Provider>
+                  )}
+                </ul>
+              </nav>
+            </header>
+            {flashMessage && <Toast content={flashMessage.content} title={flashMessage.title} />}
+            {/* TODO look at this for better toasts */}
+            <RadixToast.Viewport />
+            <Outlet />
+          </RadixToast.Provider>
+        </Theme>
         <ScrollRestoration />
         <Scripts />
         <LiveReload port={3001} />

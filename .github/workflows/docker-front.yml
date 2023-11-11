@@ -39,6 +39,13 @@ jobs:
           path: ./front/app/styles
           key: ${{ runner.os }}-remix-css-${{ hashFiles('front/tailwind.config.ts', 'front/styles/**/*.css', 'front/styles/**/*.scss') }}
 
+      - name: Cache translations build
+        uses: actions/cache@v3
+        id: cache-translations
+        with:
+          path: ./front/public/locales
+          key: ${{ runner.os }}-remix-translations-${{ hashFiles('front/locales/**/*') }}
+
       - name: Cache client build
         uses: actions/cache@v3
         id: cache-client
@@ -62,6 +69,11 @@ jobs:
         if: steps.cache-css.outputs.cache-hit != 'true'
         working-directory: ./front
         run: bun run build:css
+
+      - name: Build translations
+        if: steps.cache-translations.outputs.cache-hit != 'true'
+        working-directory: ./front
+        run: bun run build:translations
 
       - name: Front building phase
         if: steps.cache-client.outputs.cache-hit != 'true' || steps.cache-server.outputs.cache-hit != 'true' || steps.cache-css.outputs.cache-hit != 'true'

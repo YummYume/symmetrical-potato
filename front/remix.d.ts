@@ -9,5 +9,6 @@ declare module '@remix-run/node' {
     client: GraphQLClient;
     user: User | null;
     locale: Locale;
+    useDarkMode: boolean;
   }
 }

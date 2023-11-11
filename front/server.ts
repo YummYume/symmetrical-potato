@@ -10,7 +10,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as url from 'node:url';
 
-import { AUTHORIZATION_COOKIE_PREFIX, bearerCookie } from '~/lib/cookies.server';
+import { AUTHORIZATION_COOKIE_PREFIX, bearerCookie, darkModeCookie } from '~/lib/cookies.server';
 import { getCurrentUser } from '~api/user';
 import { getLocale } from '~utils/locale';
 
@@ -39,6 +39,7 @@ const getLoadContext = (async (req, res) => {
       'Accept-Language': locale,
     },
   });
+  const darkMode = await darkModeCookie.parse(req.headers.cookie ?? '');
   let user: User | null = null;
 
   try {
@@ -52,7 +53,7 @@ const getLoadContext = (async (req, res) => {
     user = null;
   }
 
-  return { client, user, locale };
+  return { client, user, locale, useDarkMode: darkMode === 'true' };
 }) satisfies GetLoadContextFunction;
 const remixHandler =
   process.env.NODE_ENV === 'development'

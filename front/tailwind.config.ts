@@ -1,3 +1,5 @@
+import { radixThemePreset } from 'radix-themes-tw';
+
 import type { Config } from 'tailwindcss';
 
 export default {
@@ -6,4 +8,6 @@ export default {
     extend: {},
   },
   plugins: [],
+  presets: [radixThemePreset],
+  darkMode: 'class',
 } satisfies Config;

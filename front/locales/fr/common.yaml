@@ -5,3 +5,5 @@ password: Mot de passe
 logging_in: Connexion...
 logout: Se déconnecter
 change_locale: Changer la langue
+enable_dark_mode: Activer le mode sombre
+submit: Envoyer

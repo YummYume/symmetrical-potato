@@ -1,3 +1,4 @@
+import { Heading } from '@radix-ui/themes';
 import { useLoaderData } from '@remix-run/react';
 
 import { denyAccessUnlessGranted } from '~utils/security.server';
@@ -23,7 +24,7 @@ export default function Dashboard() {
 
   return (
     <div className="relative w-full">
-      <h1>Hi {user.username}</h1>
+      <Heading as="h1">Hi {user.username}</Heading>
       <img
         className="absolute right-0 top-20"
         src="/favicon.ico"

@@ -1,25 +1,47 @@
-import { useMemo } from 'react';
+import { Text, TextField } from '@radix-ui/themes';
+import cn from 'classnames';
 
 export type FieldInputProps = {
   name: string;
   label: string;
   error?: string;
+  leftSlot?: JSX.Element;
+  rightSlot?: JSX.Element;
   hideLabel?: boolean;
-} & React.InputHTMLAttributes<HTMLInputElement>;
+  containerClassName?: string;
+  inputContainerClassName?: string;
+  errorClassName?: string;
+} & React.ComponentProps<typeof TextField.Input> &
+  React.RefAttributes<HTMLInputElement>;
 
-export const FieldInput = ({ name, label, error, hideLabel = false, ...rest }: FieldInputProps) => {
-  const ariaDescribedBy = useMemo(() => `${name}-error`, [name]);
+export const FieldInput = ({
+  name,
+  label,
+  error,
+  leftSlot,
+  rightSlot,
+  hideLabel = false,
+  containerClassName = '',
+  inputContainerClassName = '',
+  errorClassName = 'text-accent-6',
+  ...rest
+}: FieldInputProps) => {
+  const ariaDescribedBy = `${name}-error`;
 
   return (
-    <div>
-      <label htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
+    <div className={cn('flex flex-col gap-2', containerClassName)}>
+      <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
         {label}
-      </label>
-      <input id={name} name={name} aria-describedby={ariaDescribedBy} {...rest} />
+      </Text>
+      <TextField.Root className={inputContainerClassName}>
+        {leftSlot && leftSlot}
+        <TextField.Input id={name} name={name} aria-describedby={ariaDescribedBy} {...rest} />
+        {rightSlot && rightSlot}
+      </TextField.Root>
       {error && (
-        <span id={ariaDescribedBy} className="text-red-500">
+        <Text as="p" id={ariaDescribedBy} className={errorClassName}>
           {error}
-        </span>
+        </Text>
       )}
     </div>
   );
