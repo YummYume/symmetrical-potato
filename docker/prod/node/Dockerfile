@@ -22,7 +22,7 @@ COPY build ./build
 
 COPY server.js package.json ./
 
-COPY --from=builder /home/bun/app/node_modules ./node_modules
+COPY --chown=bun:bun --from=builder /home/bun/app/node_modules ./node_modules
 
 USER bun
 
