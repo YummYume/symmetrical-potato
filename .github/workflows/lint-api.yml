@@ -18,7 +18,10 @@ concurrency:
 
 jobs:
   lint-api:
+    name: Lint API
+
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3

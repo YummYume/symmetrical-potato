@@ -18,6 +18,7 @@ import {
 } from '@remix-run/react';
 import { captureRemixErrorBoundaryError } from '@sentry/remix';
 import cl from 'classnames';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChangeLanguage } from 'remix-i18next';
 
@@ -140,9 +141,21 @@ export default function App() {
   const navigation = useNavigation();
   const { t, i18n } = useTranslation();
   const submit = useSubmit();
+  const [toastOpen, setToastOpen] = useState(false);
+  const [isChangingPreferences, setIsChangingPreferences] = useState(false);
 
   // Automatically reload t when the locale changes
   useChangeLanguage(locale);
+
+  useEffect(() => {
+    if (flashMessage && flashMessage.content.trim() !== '') {
+      setToastOpen(true);
+    }
+  }, [flashMessage]);
+
+  useEffect(() => {
+    setIsChangingPreferences(false);
+  }, [locale, useDarkMode]);
 
   return (
     <html
@@ -175,8 +188,10 @@ export default function App() {
                   method="post"
                   className="flex flex-col items-center gap-2 lg:flex-row"
                   onChange={(event) => {
+                    setIsChangingPreferences(true);
                     submit(event.currentTarget, {
                       navigate: false,
+                      unstable_viewTransition: true,
                     });
                   }}
                 >
@@ -186,6 +201,7 @@ export default function App() {
                     defaultChecked={useDarkMode}
                     aria-label={t('enable_dark_mode')}
                     value="true"
+                    disabled={isChangingPreferences}
                   />
                   <FieldSelect
                     name="locale"
@@ -194,6 +210,7 @@ export default function App() {
                     hideLabel
                     defaultValue={locale}
                     containerClassName="w-40"
+                    disabled={isChangingPreferences}
                   >
                     <Select.Content>
                       {ALLOWED_LOCALES.map((allowedLocale) => (
@@ -233,7 +250,16 @@ export default function App() {
                 </ul>
               </nav>
             </header>
-            {flashMessage && <Toast content={flashMessage.content} title={flashMessage.title} />}
+            {flashMessage && (
+              <Toast
+                content={flashMessage.content}
+                title={flashMessage.title}
+                open={toastOpen}
+                onOpenChange={(open) => {
+                  setToastOpen(open);
+                }}
+              />
+            )}
             {/* TODO look at this for better toasts */}
             <RadixToast.Viewport />
             <Outlet />
