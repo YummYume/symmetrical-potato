@@ -15,7 +15,9 @@ concurrency:
 jobs:
   build-and-push-front:
     name: Push Docker image Front
+
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4

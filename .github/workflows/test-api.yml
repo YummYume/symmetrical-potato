@@ -18,6 +18,8 @@ concurrency:
 
 jobs:
   test-api:
+    name: Test API
+
     runs-on: ubuntu-latest
 
     services:
@@ -65,10 +67,10 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Change APP_ENV 
+      - name: Change APP_ENV
         run: echo 'APP_ENV=test' > ./api/.env.local
 
-      - name: Copy .env.ci to .env.local
+      - name: Copy .env.ci to .env.test.local
         run: cp ./api/.env.ci ./api/.env.test.local
 
       - name: Install dependencies

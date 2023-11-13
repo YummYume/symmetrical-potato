@@ -125,7 +125,7 @@ export default function Login() {
   const passwordError = getMessageErrorForPath(fieldErrors, 'password');
 
   return (
-    <Form method="post" className="flex flex-col gap-2">
+    <Form method="post" className="flex flex-col gap-2" unstable_viewTransition>
       <Heading as="h1">{t('login')}</Heading>
       <FieldInput
         name="username"

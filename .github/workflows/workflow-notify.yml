@@ -7,8 +7,12 @@ on:
 
 jobs:
   on-success:
+    name: Notify successfull workflow run
+
     runs-on: ubuntu-latest
+
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     steps:
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
@@ -28,8 +32,12 @@ jobs:
           url: ${{ github.event.workflow_run.html_url }}
 
   on-failure:
+    name: Notify failed workflow run
+
     runs-on: ubuntu-latest
+
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+
     steps:
       - name: Notify Discord
         uses: sarisia/actions-status-discord@v1
