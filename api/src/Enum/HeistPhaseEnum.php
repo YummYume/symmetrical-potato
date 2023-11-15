@@ -16,6 +16,6 @@ enum HeistPhaseEnum: string
 
     public static function isFinished(self $phase): bool
     {
-        return \in_array($phase, [self::Succeeded, self::Failed], true);
+        return \in_array($phase, [self::Succeeded, self::Failed, self::Cancelled], true);
     }
 }

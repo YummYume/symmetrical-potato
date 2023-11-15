@@ -22,6 +22,8 @@ class Heist
     use BlameableTrait;
     use TimestampableTrait;
 
+    public const MAX_ALLOWED_CREW_MEMBERS = 4;
+
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]

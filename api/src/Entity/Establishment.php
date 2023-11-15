@@ -37,6 +37,15 @@ class Establishment
     #[ORM\Column]
     private ?int $minimumWorkTimePerWeek = null;
 
+    #[ORM\Column]
+    private float $contractorCut = 15.0;
+
+    #[ORM\Column]
+    private float $employeeCut = 05.0;
+
+    #[ORM\Column]
+    private float $crewCut = 80.0;
+
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $contractor = null;
@@ -111,6 +120,47 @@ class Establishment
         $this->minimumWorkTimePerWeek = $minimumWorkTimePerWeek;
 
         return $this;
+    }
+
+    public function getContractorCut(): float
+    {
+        return $this->contractorCut;
+    }
+
+    public function setContractorCut(float $contractorCut): static
+    {
+        $this->contractorCut = $contractorCut;
+
+        return $this;
+    }
+
+    public function getEmployeeCut(): float
+    {
+        return $this->employeeCut;
+    }
+
+    public function setEmployeeCut(float $employeeCut): static
+    {
+        $this->employeeCut = $employeeCut;
+
+        return $this;
+    }
+
+    public function getCrewCut(): float
+    {
+        return $this->crewCut;
+    }
+
+    public function setCrewCut(float $crewCut): static
+    {
+        $this->crewCut = $crewCut;
+
+        return $this;
+    }
+
+    public function getHeisterCut(): float
+    {
+        return $this->getCrewCut() / Heist::MAX_ALLOWED_CREW_MEMBERS;
     }
 
     public function getContractor(): ?User

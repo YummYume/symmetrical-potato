@@ -19,6 +19,8 @@ class CrewMember
     use BlameableTrait;
     use TimestampableTrait;
 
+    public const REVIVE_COST = 5_000_000;
+
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
