@@ -16,17 +16,24 @@ class GetHeistExtension implements QueryCollectionExtensionInterface, QueryItemE
     {
     }
 
+    /**
+     * @param array<string> $context
+     */
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
         $this->addWhere($queryBuilder, $resourceClass);
     }
 
+    /**
+     * @param array<string> $context
+     * @param array<mixed>  $identifiers
+     */
     public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, array $identifiers, Operation $operation = null, array $context = []): void
     {
         $this->addWhere($queryBuilder, $resourceClass);
     }
 
-    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass)
+    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
         /* @var User */
         if (Heist::class !== $resourceClass || null === $user = $this->security->getUser()) {

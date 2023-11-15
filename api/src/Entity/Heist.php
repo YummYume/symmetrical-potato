@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
@@ -87,7 +88,7 @@ class Heist
     #[ORM\Column(length: 50, enumType: HeistPhaseEnum::class)]
     private HeistPhaseEnum $phase = HeistPhaseEnum::Planning;
 
-    #[ORM\Column(length: 10, enumType: HeistStateEnum::class)]
+    #[ORM\Column(length: 10, enumType: HeistVisibilityEnum::class)]
     private HeistVisibilityEnum $visibility = HeistVisibilityEnum::Draft;
 
     /** @var ArrayCollection<int, CrewMember> */
