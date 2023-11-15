@@ -2,11 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\DeleteMutation;
+use ApiPlatform\Metadata\GraphQl\Mutation;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\HeistDifficultyEnum;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\HeistPreferedTacticEnum;
+use App\Enum\HeistVisibilityEnum;
 use App\Repository\HeistRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,6 +23,16 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: HeistRepository::class)]
+#[ApiResource(
+    operations: [],
+    graphQlOperations: [
+        new QueryCollection(),
+        new Mutation(name: 'create'),
+        new Mutation(name: 'update'),
+        new DeleteMutation(name: 'delete'),
+    ]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['phase' => 'exact'])]
 class Heist
 {
     use BlameableTrait;
@@ -70,6 +86,9 @@ class Heist
 
     #[ORM\Column(length: 50, enumType: HeistPhaseEnum::class)]
     private HeistPhaseEnum $phase = HeistPhaseEnum::Planning;
+
+    #[ORM\Column(length: 10, enumType: HeistStateEnum::class)]
+    private HeistVisibilityEnum $visibility = HeistVisibilityEnum::Draft;
 
     /** @var ArrayCollection<int, CrewMember> */
     #[ORM\OneToMany(mappedBy: 'heist', targetEntity: CrewMember::class, orphanRemoval: true)]

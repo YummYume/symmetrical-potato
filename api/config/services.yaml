@@ -24,6 +24,11 @@ services:
     App\Error\ErrorHandler:
         decorates: api_platform.graphql.error_handler
 
+    App\Doctrine\GetHeistExtension:
+        tags:
+            - { name: api_platform.doctrine.orm.query_extension.collection }
+            - { name: api_platform.doctrine.orm.query_extension.item }
+
 when@prod:
     services:
         Sentry\Integration\IgnoreErrorsIntegration:
