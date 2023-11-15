@@ -1,5 +1,6 @@
 # Local data
 data/
+.history
 
 # Overrides
 .env.local

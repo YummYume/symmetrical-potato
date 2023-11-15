@@ -36,7 +36,7 @@ export const FieldSelect = ({
       <Select.Root name={name} {...rest}>
         <Select.Trigger
           aria-labelledby={ariaLabelledBy}
-          aria-describedby={ariaDescribedBy}
+          aria-describedby={error ? ariaDescribedBy : undefined}
           {...triggerProps}
         />
         {children}

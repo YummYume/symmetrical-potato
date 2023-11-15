@@ -21,6 +21,7 @@
     "format": "eslint . --fix"
   },
   "dependencies": {
+    "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/themes": "^2.0.0",
     "@remix-run/express": "^2.2.0",
@@ -46,6 +47,7 @@
     "remix-i18next": "^5.4.0",
     "resolve-accept-language": "^2.1.5",
     "source-map-support": "^0.5.21",
+    "tailwindcss-radix": "^2.8.0",
     "zod": "^3.22.4",
     "zod-form-data": "^2.0.2"
   },
