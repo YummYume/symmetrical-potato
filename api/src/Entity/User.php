@@ -120,6 +120,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read'])]
     private ?float $globalRating = null;
 
+    #[ORM\Column]
+    private bool $isVerified = false;
+
+    #[ORM\Column]
+    private bool $isDead = false;
+
     #[ORM\Column(length: 5, enumType: UserLocaleEnum::class)]
     #[ApiProperty]
     #[Groups(['user:read'])]
@@ -348,6 +354,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGlobalRating(?float $globalRating): static
     {
         $this->globalRating = $globalRating;
+
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function isDead(): bool
+    {
+        return $this->isDead;
+    }
+
+    public function setIsDead(bool $isDead): static
+    {
+        $this->isDead = $isDead;
 
         return $this;
     }

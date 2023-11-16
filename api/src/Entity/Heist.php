@@ -23,6 +23,9 @@ class Heist
     use TimestampableTrait;
 
     public const MAX_ALLOWED_CREW_MEMBERS = 4;
+    public const MAX_OBJECTIVES_PER_HEIST = 20;
+    public const MAX_CIVILIAN_CASUALTIES_PER_HEIST = 50;
+    public const MAX_COP_KILLS_PER_HEIST = 1000;
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -50,6 +53,13 @@ class Heist
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endedAt = null;
+
+    /** @var array<int, string> */
+    #[ORM\Column(type: Types::JSON)]
+    private array $objectives = [];
+
+    #[ORM\Column(nullable: true)]
+    private ?int $maxObjectives = null;
 
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
     private HeistPreferedTacticEnum $preferedTactic = HeistPreferedTacticEnum::Unknown;
@@ -181,6 +191,36 @@ class Heist
     public function setEndedAt(?\DateTimeInterface $endedAt): static
     {
         $this->endedAt = $endedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getObjectives(): array
+    {
+        return $this->objectives;
+    }
+
+    /**
+     * @param array<int, string> $objectives
+     */
+    public function setObjectives(array $objectives): static
+    {
+        $this->objectives = $objectives;
+
+        return $this;
+    }
+
+    public function getMaxObjectives(): ?int
+    {
+        return $this->maxObjectives;
+    }
+
+    public function setMaxObjectives(?int $maxObjectives): static
+    {
+        $this->maxObjectives = $maxObjectives;
 
         return $this;
     }
