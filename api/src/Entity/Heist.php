@@ -43,7 +43,7 @@ use Symfony\Component\Uid\Uuid;
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['phase' => 'exact', 'createdBy.id' => 'exact'])]
-#[ApiFilter(UuidFilter::class, properties: ['employee.user'])]
+#[ApiFilter(UuidFilter::class, properties: ['createdBy'])]
 class Heist
 {
     use BlameableTrait;
