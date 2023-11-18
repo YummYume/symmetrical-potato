@@ -36,7 +36,11 @@ use Symfony\Component\Uid\Uuid;
                 'groups' => ['user:read:public'],
             ]
         ),
-        new QueryCollection(),
+        new QueryCollection(
+            normalizationContext: [
+                'groups' => ['user:read'],
+            ],
+        ),
         new Mutation(name: 'create'),
         new Mutation(name: 'update'),
         new DeleteMutation(name: 'delete'),
@@ -85,6 +89,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
+    #[Groups(['user:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]

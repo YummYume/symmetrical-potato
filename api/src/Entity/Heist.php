@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
 use ApiPlatform\Metadata\GraphQl\Mutation;
+use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
@@ -14,6 +16,7 @@ use App\Enum\HeistDifficultyEnum;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\HeistPreferedTacticEnum;
 use App\Enum\HeistVisibilityEnum;
+use App\Filter\UuidFilter;
 use App\Repository\HeistRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,19 +24,26 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: HeistRepository::class)]
 #[ApiResource(
     operations: [],
     graphQlOperations: [
+        new Query(
+            normalizationContext: [
+                'groups' => ['heist:read', 'blameable'],
+            ]
+        ),
         new QueryCollection(),
         new Mutation(name: 'create'),
         new Mutation(name: 'update'),
         new DeleteMutation(name: 'delete'),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['phase' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['phase' => 'exact', 'createdBy.id' => 'exact'])]
+#[ApiFilter(UuidFilter::class, properties: ['employee.user'])]
 class Heist
 {
     use BlameableTrait;
@@ -49,27 +59,43 @@ class Heist
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[ApiProperty(identifier: true)]
+    #[Groups(['heist:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private ?float $minimumPayout = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private ?float $maximumPayout = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private ?\DateTimeInterface $startAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private ?\DateTimeInterface $shouldEndAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private ?\DateTimeInterface $endedAt = null;
 
     /** @var array<int, array<string, string|bool>> */
@@ -80,15 +106,23 @@ class Heist
     private ?float $minimumRequiredRating = null;
 
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private HeistPreferedTacticEnum $preferedTactic = HeistPreferedTacticEnum::Unknown;
 
     #[ORM\Column(length: 50, enumType: HeistDifficultyEnum::class)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private HeistDifficultyEnum $difficulty = HeistDifficultyEnum::Normal;
 
     #[ORM\Column(length: 50, enumType: HeistPhaseEnum::class)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private HeistPhaseEnum $phase = HeistPhaseEnum::Planning;
 
     #[ORM\Column(length: 10, enumType: HeistVisibilityEnum::class)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private HeistVisibilityEnum $visibility = HeistVisibilityEnum::Draft;
 
     /** @var ArrayCollection<int, CrewMember> */
@@ -104,6 +138,8 @@ class Heist
     private Collection $allowedEmployees;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]
@@ -304,6 +340,18 @@ class Heist
     public function setPhase(HeistPhaseEnum $phase): static
     {
         $this->phase = $phase;
+
+        return $this;
+    }
+
+    public function getVisibility(): HeistVisibilityEnum
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(HeistVisibilityEnum $visibility): static
+    {
+        $this->visibility = $visibility;
 
         return $this;
     }

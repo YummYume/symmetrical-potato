@@ -2,20 +2,26 @@
 
 namespace App\Entity\Traits;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 trait BlameableTrait
 {
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'created_by_id', referencedColumnName: 'id', nullable: true)]
     #[Gedmo\Blameable(on: 'create')]
+    #[ApiProperty]
+    #[Groups(['blameable'])]
     private ?User $createdBy = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'updated_by_id', referencedColumnName: 'id', nullable: true)]
     #[Gedmo\Blameable(on: 'update')]
+    #[ApiProperty]
+    #[Groups(['blameable'])]
     private ?User $updatedBy = null;
 
     public function getCreatedBy(): ?User
