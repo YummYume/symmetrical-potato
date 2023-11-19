@@ -181,8 +181,8 @@ export default function App() {
             className="fixed left-0 top-0 z-50 h-0.5 w-full rounded-b-6 bg-transparent"
           />
           <RadixToast.Provider swipeDirection="right">
-            <header className="grid grid-cols-[max-content_auto] items-center justify-between gap-x-4 gap-y-2 p-4 sm:grid-cols-[auto_max-content_max-content] sm:justify-normal">
-              <Link to="/" className="text-7" unstyled>
+            <header className="sticky top-0 z-10 grid grid-cols-[max-content_auto] items-center justify-between gap-x-4 gap-y-2 bg-slate-1 p-4 shadow-6 sm:grid-cols-[auto_max-content_max-content] sm:justify-normal">
+              <Link to="/" className="w-fit text-7" unstyled>
                 Symmetrical Potato
               </Link>
               <nav>

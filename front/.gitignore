@@ -11,3 +11,5 @@ server.js
 
 # Sentry Config File
 .sentryclirc
+
+.history
