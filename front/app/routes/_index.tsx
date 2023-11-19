@@ -22,7 +22,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="relative hidden h-[441px] items-center overflow-hidden lg:flex">
+      <div className="relative hidden items-center overflow-hidden rem:h-[441px] lg:flex">
         <img
           src="/img/potatoes.jpg"
           alt=""
