@@ -26,6 +26,7 @@ class Heist
     public const MAX_OBJECTIVES_PER_HEIST = 20;
     public const MAX_CIVILIAN_CASUALTIES_PER_HEIST = 50;
     public const MAX_COP_KILLS_PER_HEIST = 1000;
+    public const CIVILIAN_CLEANUP_COST = 1000;
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -54,12 +55,12 @@ class Heist
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endedAt = null;
 
-    /** @var array<int, string> */
+    /** @var array<int, array<string, string|bool>> */
     #[ORM\Column(type: Types::JSON)]
     private array $objectives = [];
 
-    #[ORM\Column(nullable: true)]
-    private ?int $maxObjectives = null;
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $minimumRequiredRating = null;
 
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
     private HeistPreferedTacticEnum $preferedTactic = HeistPreferedTacticEnum::Unknown;
@@ -98,12 +99,17 @@ class Heist
     #[ORM\OneToMany(mappedBy: 'heist', targetEntity: Asset::class)]
     private Collection $assets;
 
+    /** @var ArrayCollection<int, User> */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'forbiddenHeists')]
+    private Collection $forbiddenUsers;
+
     public function __construct()
     {
         $this->crewMembers = new ArrayCollection();
         $this->allowedEmployees = new ArrayCollection();
         $this->forbiddenAssets = new ArrayCollection();
         $this->assets = new ArrayCollection();
+        $this->forbiddenUsers = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -196,7 +202,7 @@ class Heist
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, array<string, string|bool>>
      */
     public function getObjectives(): array
     {
@@ -204,7 +210,28 @@ class Heist
     }
 
     /**
-     * @param array<int, string> $objectives
+     * @return array<int, array<string, string|bool>>
+     */
+    public function getRequiredObjectives(): array
+    {
+        return array_filter(
+            $this->objectives,
+            static fn (array $objective): bool => !isset($objective['optional']) || !$objective['optional']
+        );
+    }
+
+    public function getObjectiveCount(): int
+    {
+        return \count($this->objectives);
+    }
+
+    public function getRequiredObjectiveCount(): int
+    {
+        return \count($this->getRequiredObjectives());
+    }
+
+    /**
+     * @param array<int, array<string, string|bool>> $objectives
      */
     public function setObjectives(array $objectives): static
     {
@@ -213,14 +240,14 @@ class Heist
         return $this;
     }
 
-    public function getMaxObjectives(): ?int
+    public function getMinimumRequiredRating(): ?float
     {
-        return $this->maxObjectives;
+        return $this->minimumRequiredRating;
     }
 
-    public function setMaxObjectives(?int $maxObjectives): static
+    public function setMinimumRequiredRating(?float $minimumRequiredRating): static
     {
-        $this->maxObjectives = $maxObjectives;
+        $this->minimumRequiredRating = $minimumRequiredRating;
 
         return $this;
     }
@@ -418,5 +445,29 @@ class Heist
             ]),
             new ArrayCollection()
         );
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getForbiddenUsers(): Collection
+    {
+        return $this->forbiddenUsers;
+    }
+
+    public function addForbiddenUser(User $forbiddenUser): static
+    {
+        if (!$this->forbiddenUsers->contains($forbiddenUser)) {
+            $this->forbiddenUsers->add($forbiddenUser);
+        }
+
+        return $this;
+    }
+
+    public function removeForbiddenUser(User $forbiddenUser): static
+    {
+        $this->forbiddenUsers->removeElement($forbiddenUser);
+
+        return $this;
     }
 }

@@ -80,6 +80,7 @@ export type User = Node & {
   __typename?: 'User';
   balance: Scalars['Float']['output'];
   email: Scalars['String']['output'];
+  /** WARNING: You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: UserLocaleEnum;
@@ -94,6 +95,7 @@ export type UserCollection = Node & {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserCollection>;
   email: Scalars['String']['output'];
+  /** WARNING: You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: UserLocaleEnum;
@@ -102,6 +104,7 @@ export type UserCollection = Node & {
   password: Scalars['String']['output'];
   plainPassword: Scalars['String']['output'];
   roles: Scalars['Iterable']['output'];
+  status: UserStatusEnum;
   token?: Maybe<Scalars['String']['output']>;
   tokenTtl?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -146,6 +149,12 @@ export enum UserLocaleEnum {
   Fr = 'Fr',
 }
 
+export enum UserStatusEnum {
+  Dead = 'Dead',
+  Unverified = 'Unverified',
+  Verified = 'Verified',
+}
+
 /** Creates a User. */
 export type CreateUserInput = {
   balance: Scalars['Float']['input'];
@@ -153,12 +162,14 @@ export type CreateUserInput = {
   createdAt?: InputMaybe<Scalars['String']['input']>;
   createdBy?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
+  /** WARNING: You should probably not use this method directly unless necessary. */
   globalRating?: InputMaybe<Scalars['Float']['input']>;
   locale: UserLocaleEnum;
   /** The hashed password */
   password: Scalars['String']['input'];
   plainPassword: Scalars['String']['input'];
   roles: Scalars['Iterable']['input'];
+  status: UserStatusEnum;
   token?: InputMaybe<Scalars['String']['input']>;
   tokenTtl?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['String']['input']>;
@@ -174,6 +185,7 @@ export type CreateUserNestedPayload = Node & {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<CreateUserNestedPayload>;
   email: Scalars['String']['output'];
+  /** WARNING: You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: UserLocaleEnum;
@@ -182,6 +194,7 @@ export type CreateUserNestedPayload = Node & {
   password: Scalars['String']['output'];
   plainPassword: Scalars['String']['output'];
   roles: Scalars['Iterable']['output'];
+  status: UserStatusEnum;
   token?: Maybe<Scalars['String']['output']>;
   tokenTtl?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -206,6 +219,7 @@ export type CreateUserPayloadData = Node & {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<CreateUserNestedPayload>;
   email: Scalars['String']['output'];
+  /** WARNING: You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: UserLocaleEnum;
@@ -214,6 +228,7 @@ export type CreateUserPayloadData = Node & {
   password: Scalars['String']['output'];
   plainPassword: Scalars['String']['output'];
   roles: Scalars['Iterable']['output'];
+  status: UserStatusEnum;
   token?: Maybe<Scalars['String']['output']>;
   tokenTtl?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -273,6 +288,7 @@ export type UpdateUserInput = {
   createdAt?: InputMaybe<Scalars['String']['input']>;
   createdBy?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  /** WARNING: You should probably not use this method directly unless necessary. */
   globalRating?: InputMaybe<Scalars['Float']['input']>;
   id: Scalars['ID']['input'];
   locale?: InputMaybe<UserLocaleEnum>;
@@ -280,6 +296,7 @@ export type UpdateUserInput = {
   password?: InputMaybe<Scalars['String']['input']>;
   plainPassword?: InputMaybe<Scalars['String']['input']>;
   roles?: InputMaybe<Scalars['Iterable']['input']>;
+  status?: InputMaybe<UserStatusEnum>;
   token?: InputMaybe<Scalars['String']['input']>;
   tokenTtl?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['String']['input']>;
@@ -295,6 +312,7 @@ export type UpdateUserNestedPayload = Node & {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UpdateUserNestedPayload>;
   email?: Maybe<Scalars['String']['output']>;
+  /** WARNING: You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale?: Maybe<UserLocaleEnum>;
@@ -303,6 +321,7 @@ export type UpdateUserNestedPayload = Node & {
   password?: Maybe<Scalars['String']['output']>;
   plainPassword?: Maybe<Scalars['String']['output']>;
   roles?: Maybe<Scalars['Iterable']['output']>;
+  status?: Maybe<UserStatusEnum>;
   token?: Maybe<Scalars['String']['output']>;
   tokenTtl?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -327,6 +346,7 @@ export type UpdateUserPayloadData = Node & {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UpdateUserNestedPayload>;
   email?: Maybe<Scalars['String']['output']>;
+  /** WARNING: You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale?: Maybe<UserLocaleEnum>;
@@ -335,6 +355,7 @@ export type UpdateUserPayloadData = Node & {
   password?: Maybe<Scalars['String']['output']>;
   plainPassword?: Maybe<Scalars['String']['output']>;
   roles?: Maybe<Scalars['Iterable']['output']>;
+  status?: Maybe<UserStatusEnum>;
   token?: Maybe<Scalars['String']['output']>;
   tokenTtl?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;

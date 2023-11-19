@@ -4,6 +4,7 @@ namespace App\Resolver;
 
 use ApiPlatform\GraphQl\Resolver\QueryItemResolverInterface;
 use App\Entity\User;
+use App\Enum\UserStatusEnum;
 use App\Helper\ExceptionHelper;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -30,7 +31,7 @@ final class UserQueryResolver implements QueryItemResolverInterface
     {
         $user = $this->security->getUser();
 
-        if (null === $user || !$user instanceof User) {
+        if (null === $user || !$user instanceof User || UserStatusEnum::Verified !== $user->getStatus()) {
             throw $this->exceptionHelper->createTranslatableHttpException(401, 'user.not_authenticated');
         }
 

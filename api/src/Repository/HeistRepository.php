@@ -31,8 +31,8 @@ final class HeistRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('h')
             ->where('h.phase = :phase')
-            ->andWhere('h.startAt >= :now')
-            ->andWhere('h.shouldEndAt <= :now')
+            ->andWhere('h.startAt <= :now')
+            ->andWhere('h.shouldEndAt > :now')
             ->andWhere('h.endedAt IS NULL')
             ->setParameters([
                 'phase' => HeistPhaseEnum::Planning,
@@ -57,7 +57,8 @@ final class HeistRepository extends ServiceEntityRepository
                 'h.phase = :planning',
                 'h.phase = :inProgress',
             ))
-            ->andWhere('h.shouldEndAt >= :now')
+            ->andWhere('h.startAt < :now')
+            ->andWhere('h.shouldEndAt <= :now')
             ->andWhere('h.endedAt IS NULL')
             ->setParameters([
                 'planning' => HeistPhaseEnum::Planning,

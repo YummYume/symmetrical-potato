@@ -10,24 +10,24 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20231116221416 extends AbstractMigration
+final class Version20231118132139 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Add objectives to heist and is_verified and is_dead to user.';
+        return 'Add objectives to heist and status to user.';
     }
 
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE heist ADD objectives JSON NOT NULL COMMENT \'(DC2Type:json)\', ADD max_objectives INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE user ADD is_verified TINYINT(1) NOT NULL, ADD is_dead TINYINT(1) NOT NULL');
+        $this->addSql('ALTER TABLE heist ADD objectives JSON NOT NULL COMMENT \'(DC2Type:json)\'');
+        $this->addSql('ALTER TABLE user ADD status VARCHAR(20) NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE user DROP is_verified, DROP is_dead');
-        $this->addSql('ALTER TABLE heist DROP objectives, DROP max_objectives');
+        $this->addSql('ALTER TABLE user DROP status');
+        $this->addSql('ALTER TABLE heist DROP objectives');
     }
 }

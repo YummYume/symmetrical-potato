@@ -20,6 +20,9 @@ class CrewMember
     use TimestampableTrait;
 
     public const REVIVE_COST = 5_000_000;
+    public const MAX_RATING = 5;
+    public const KILL_RATIO_FACTOR = 0.01;
+    public const CIVILIAN_CASUALTIES_RATIO_FACTOR = 0.15;
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -100,10 +103,24 @@ class CrewMember
         return $this;
     }
 
-    // TODO: Return some rating based on the crew member's stats (kills, civilian casualties and objectives completed)
+    /**
+     * Will calculate the rating of the crew member for the heist depending on multiple factors.
+     * We first calculate the score for the objectives (based on the number of required objectives).
+     * Then we add the score for the number of kills, but we limit it to 1.
+     * Finally, we remove the score for the number of civilian casualties, up to a maximum of 4.
+     * Civilian casualties are way more penalizing than the rewards for kills.
+     *
+     * @return float between 0 and CrewMember::MAX_RATING (5)
+     */
     public function getRating(): float
     {
-        return 0.0;
+        $totalObjectives = $this->heist->getObjectiveCount() < 1 ? Heist::MAX_OBJECTIVES_PER_HEIST : $this->heist->getRequiredObjectiveCount();
+        $objectivesScore = (self::MAX_RATING * $this->objectivesCompleted) / $totalObjectives;
+        $killsScore = min($this->kills * self::KILL_RATIO_FACTOR, 1);
+        $civilianCasualtiesPenalty = min($this->civilianCasualties * self::CIVILIAN_CASUALTIES_RATIO_FACTOR, 4);
+        $rating = round($objectivesScore + $killsScore - $civilianCasualtiesPenalty, 2);
+
+        return max(0, min(self::MAX_RATING, $rating));
     }
 
     public function getPayout(): ?float

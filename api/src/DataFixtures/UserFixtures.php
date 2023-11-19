@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use App\Enum\UserLocaleEnum;
+use App\Enum\UserStatusEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -92,6 +93,7 @@ final class UserFixtures extends Fixture
                 ->addRole($user['role'])
                 ->setLocale(UserLocaleEnum::random())
                 ->setBalance(random_int(0, 100000) * 0.75)
+                ->setStatus(UserStatusEnum::Verified)
             ;
 
             $manager->persist($newUser);
