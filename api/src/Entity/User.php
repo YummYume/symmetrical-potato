@@ -10,7 +10,9 @@ use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
+use App\Enum\HeistPhaseEnum;
 use App\Enum\UserLocaleEnum;
+use App\Enum\UserStatusEnum;
 use App\Repository\UserRepository;
 use App\Resolver\UserMutationResolver;
 use App\Resolver\UserQueryResolver;
@@ -114,11 +116,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read'])]
     private float $balance = 0.0;
 
-    // This will be calculated by a cron job
     #[ORM\Column(nullable: true)]
     #[ApiProperty]
     #[Groups(['user:read'])]
     private ?float $globalRating = null;
+
+    #[ORM\Column(length: 20, enumType: UserStatusEnum::class)]
+    private UserStatusEnum $status = UserStatusEnum::Unverified;
 
     #[ORM\Column(length: 5, enumType: UserLocaleEnum::class)]
     #[ApiProperty]
@@ -155,11 +159,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:login'])]
     private ?int $tokenTtl = null;
 
+    /** @var ArrayCollection<int, Heist> */
+    #[ORM\ManyToMany(targetEntity: Heist::class, mappedBy: 'forbiddenUsers')]
+    private Collection $forbiddenHeists;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->crewMembers = new ArrayCollection();
         $this->establishments = new ArrayCollection();
+        $this->forbiddenHeists = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -345,9 +354,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->globalRating;
     }
 
+    /**
+     * WARNING: You should probably not use this method directly unless necessary.
+     * The user's global rating is automatically computed on a regular basis.
+     * @see User::computeGlobalRating()
+     */
     public function setGlobalRating(?float $globalRating): static
     {
         $this->globalRating = $globalRating;
+
+        return $this;
+    }
+
+    /**
+     * Computes the global rating of the user based on the ratings of all their completed heists (success or failure).
+     * This method can be resource intensive if the user has a lot of completed heists.
+     * Typically, this method should only be called in an external command that will do the computation in the background.
+     */
+    public function computeGlobalRating(): static
+    {
+        $crewMembers = $this->getCrewMembers()->filter(static function (CrewMember $crewMember): bool {
+            return HeistPhaseEnum::isFinished($crewMember->getHeist()->getPhase());
+        });
+
+        if (0 === $crewMembers->count()) {
+            $this->globalRating = null;
+
+            return $this;
+        }
+
+        $totalRating = array_reduce(
+            $crewMembers->toArray(),
+            static fn (float $totalRating, CrewMember $crewMember): float => $totalRating + $crewMember->getRating(),
+            0.0
+        );
+
+        $this->globalRating = round($totalRating / $crewMembers->count(), 2);
+
+        return $this;
+    }
+
+    public function getStatus(): UserStatusEnum
+    {
+        return $this->status;
+    }
+
+    public function setStatus(UserStatusEnum $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
@@ -523,6 +577,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTokenTtl(?int $tokenTtl): static
     {
         $this->tokenTtl = $tokenTtl;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Heist>
+     */
+    public function getForbiddenHeists(): Collection
+    {
+        return $this->forbiddenHeists;
+    }
+
+    public function addForbiddenHeist(Heist $forbiddenHeist): static
+    {
+        if (!$this->forbiddenHeists->contains($forbiddenHeist)) {
+            $this->forbiddenHeists->add($forbiddenHeist);
+            $forbiddenHeist->addForbiddenUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForbiddenHeist(Heist $forbiddenHeist): static
+    {
+        if ($this->forbiddenHeists->removeElement($forbiddenHeist)) {
+            $forbiddenHeist->removeForbiddenUser($this);
+        }
 
         return $this;
     }

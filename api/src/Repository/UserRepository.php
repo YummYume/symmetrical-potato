@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Enum\HeistPhaseEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -38,5 +39,28 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return User[]
+     */
+    public function findUsersWithHeists(): array
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        return $qb
+            ->leftJoin('u.crewMembers', 'cm')
+            ->leftJoin('cm.heist', 'h')
+            ->where($qb->expr()->orX(
+                'h.phase = :success',
+                'h.phase = :failure',
+            ))
+            ->setParameters([
+                'success' => HeistPhaseEnum::Succeeded,
+                'failure' => HeistPhaseEnum::Failed,
+            ])
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }

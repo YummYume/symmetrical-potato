@@ -168,6 +168,13 @@ format-api:
 format-front:
 	$(EXECFRONT) bun run format
 
+# Commands
+process-heists:
+	$(EXECPHP) php bin/console app:heist:process
+
+compute-ratings:
+	$(EXECPHP) php bin/console app:user-rating:compute
+
 # Vault
 edit-vault:
 	docker run --rm -it -v $(PWD):/app -w /app/ansible/group_vars/prod -e EDITOR=nano uhligit/ansible /bin/sh -c "apk add nano && ansible-vault edit vault.yml && chmod a+rw vault.yml"

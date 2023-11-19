@@ -48,6 +48,327 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
     public const HEIST_TOUCH_THE_SKY_SUCCESS = 'touch_the_sky_success';
     public const HEIST_TOUCH_THE_SKY_FAILED = 'touch_the_sky_failed';
 
+    // Objectives
+    public const HEIST_NO_REST_FOR_THE_WICKED_OBJECTIVES = [
+        [
+            'name' => 'Enter the bank',
+            'description' => 'Enter the bank. How you do it is up to you.',
+        ],
+        [
+            'name' => 'Disable the security or go loud',
+            'description' => 'Disable the security or secure the bank and go loud.',
+        ],
+        [
+            'name' => 'Secure the thermite',
+            'description' => 'Secure the thermite delivered by Bile.',
+        ],
+        [
+            'name' => 'Wait for the thermite',
+            'description' => 'Wait for the thermite to burn through the floor.',
+        ],
+        [
+            'name' => 'Secure the money bags',
+            'description' => 'Secure the money bags and make sure the die packs do not explode.',
+        ],
+        [
+            'name' => 'Prepare the escape',
+            'description' => 'Prepare the escape for the van by lowering the bollards.',
+        ],
+        [
+            'name' => 'Escape',
+            'description' => 'Escape with the money.',
+        ],
+    ];
+    public const HEIST_ROAD_RAGE_OBJECTIVES = [
+        [
+            'name' => 'Prepare the intercept',
+            'description' => 'Prepare the intercept by using the EMP device. Make sure no civilian escapes.',
+        ],
+        [
+            'name' => 'Intercept the truck',
+            'description' => 'Intercept the truck and use the device to control it.',
+        ],
+        [
+            'name' => 'Lead the truck to the ramp',
+            'description' => 'Lead the truck to the ramp by staying near it.',
+        ],
+        [
+            'name' => 'Drill the truck',
+            'description' => 'Drill below the truck to get access to the loot.',
+        ],
+        [
+            'name' => 'Secure the loot',
+            'description' => 'Lockpick the boxes and secure the loot.',
+        ],
+        [
+            'name' => 'Escape',
+            'description' => "Escape after securing the loot. Don't look back.",
+        ],
+    ];
+    public const HEIST_DIRTY_ICE_OBJECTIVES = [
+        [
+            'name' => 'Enter the jewelry store',
+            'description' => 'Enter the jewelry store. Preferably by entering on the roof.',
+        ],
+        [
+            'name' => 'Disable the security',
+            'description' => 'Disable the security to be able to open the display cases.',
+        ],
+        [
+            'name' => 'Disable the cameras',
+            'description' => 'Take out the cameras to avoid being detected.',
+            'optional' => true,
+        ],
+        [
+            'name' => 'Secure the jewelry',
+            'description' => 'Secure the jewelry in the front and back store.',
+        ],
+        [
+            'name' => 'Scan the jewelry',
+            'description' => 'Scan the jewelry to increase their value.',
+            'optional' => true,
+        ],
+        [
+            'name' => 'Grab the big diamond',
+            'description' => 'Grab the big diamond by opening the vault. You will need a red keycard and someone to press the button in the office.',
+        ],
+        [
+            'name' => 'Secure & escape',
+            'description' => 'Escape with the loot.',
+        ],
+    ];
+    public const HEIST_ROCK_THE_CRADLE_OBJECTIVES = [
+        [
+            'name' => 'Enter the nightclub',
+            'description' => 'Enter the nightclub. Be aware of guards.',
+        ],
+        [
+            'name' => 'Enter the VIP area',
+            'description' => 'Enter the VIP area. You have many ways to do so, VIP pass, messing with the DJ or simply stealing the blue keycard.',
+        ],
+        [
+            'name' => 'Disable the cameras',
+            'description' => 'Take out the cameras to avoid being detected.',
+            'optional' => true,
+        ],
+        [
+            'name' => 'Unlock the crypto wallet',
+            'description' => 'Find a way to unlock the crypto wallet.',
+        ],
+        [
+            'name' => 'Secure the crypto wallet',
+            'description' => 'Secure the crypto wallet. DO NOT trigger the alarm.',
+        ],
+        [
+            'name' => 'Open the vault',
+            'description' => 'Open the vault to get access to more loot.',
+            'optional' => true,
+        ],
+        [
+            'name' => 'Secure the loot',
+            'description' => 'Secure the loot you found in the vault and in crates.',
+            'optional' => true,
+        ],
+        [
+            'name' => 'Escape',
+            'description' => 'Escape with the crypto wallet.',
+        ],
+    ];
+    public const HEIST_UNDER_THE_SURPHAZE_OBJECTIVES = [
+        [
+            'name' => 'Enter the museum',
+            'description' => 'Enter the museum. Try to not be detected.',
+        ],
+        [
+            'name' => 'Disable the cameras',
+            'description' => 'Immediately take out the cameras to avoid being detected.',
+            'optional' => true,
+        ],
+        [
+            'name' => 'Disable the ground floor security',
+            'description' => 'Disable the ground floor security and access the first 3 exposition rooms. Those are easy to empty.',
+        ],
+        [
+            'name' => 'Secure the ground floor paintings',
+            'description' => 'Secure the ground floor paintings, along with the artifacts.',
+        ],
+        [
+            'name' => 'Disable the first floor security',
+            'description' => 'Disable the first floor security and access the next other exposition rooms. Those are harder to empty.',
+        ],
+        [
+            'name' => 'Secure the first floor paintings',
+            'description' => "Secure the first floor paintings, along with the artifacts. If you get caught by a guard or a laser, make sure to grab the client's required paintings first and rush to the roof to signal the helicopter.",
+        ],
+        [
+            'name' => 'Secure the secret painting',
+            'description' => "If you still haven't triggered the alarm, you can try to secure the secret painting by picking up the 3 required artifacts at the same time.",
+            'optional' => true,
+        ],
+        [
+            'name' => 'Escape',
+            'description' => 'Escape with the required paintings, and the optional ones if you can.',
+        ],
+    ];
+    public const HEIST_GOLD_SHARKE_OBJECTIVES = [
+        [
+            'name' => 'Enter the bank',
+            'description' => 'Enter the bank and put everyone on the ground.',
+        ],
+        [
+            'name' => 'Drill the first gate',
+            'description' => 'Drill the first gate to get access to the vault. You could also try to find the manager and force him to open the gate.',
+        ],
+        [
+            'name' => 'Trade the civilians',
+            'description' => 'Save as much time as possible by trading the civilians and guards you captured.',
+        ],
+        [
+            'name' => 'Find the oxygen tanks',
+            'description' => 'Find the oxygen tanks early for the vault drill.',
+        ],
+        [
+            'name' => 'Hack the vault door',
+            'description' => 'Hack the vault door to get access to the vault. You may have to hack a computer to get rid of the extra security.',
+        ],
+        [
+            'name' => 'Assemble the vault drill',
+            'description' => 'Assemble the vault drill and start it.',
+        ],
+        [
+            'name' => 'Defend the vault drill',
+            'description' => 'Defend the vault drill from the cops.',
+        ],
+        [
+            'name' => 'Empty the vault',
+            'description' => 'Empty the vault and secure the gold. You must find the server we are after.',
+        ],
+        [
+            'name' => 'Signal the helicopter',
+            'description' => 'Signal the helicopter to get the gold out of the bank.',
+        ],
+        [
+            'name' => 'Secure the server and the gold',
+            'description' => 'Secure the server, and the gold if you can.',
+        ],
+        [
+            'name' => 'Escape',
+            'description' => 'Escape with the server.',
+        ],
+    ];
+    public const HEIST_99_BOXES_OBJECTIVES = [
+        [
+            'name' => 'Enter the warehouse',
+            'description' => 'Enter the warehouse however you want.',
+        ],
+        [
+            'name' => 'Prepare the truck',
+            'description' => 'Prepare the truck with an oxygen tank to store the components.',
+        ],
+        [
+            'name' => 'Find the zipline',
+            'description' => 'Find the zipline to get access to the cargo area.',
+        ],
+        [
+            'name' => 'Signal the helicopter (1st component)',
+            'description' => 'Signal the helicopter to deliver the thermite and open the first cargo door.',
+        ],
+        [
+            'name' => 'Secure the first component',
+            'description' => 'Secure the first component into the truck fast before it deteriorates.',
+        ],
+        [
+            'name' => 'Signal the helicopter (2nd component)',
+            'description' => 'Signal the helicopter to deliver the thermite and open the second cargo door.',
+        ],
+        [
+            'name' => 'Secure the second component',
+            'description' => 'Secure the second component into the truck fast before it deteriorates.',
+        ],
+        [
+            'name' => 'Secure the money',
+            'description' => 'Open the other cargo doors to steal the money.',
+            'optional' => true,
+        ],
+        [
+            'name' => 'Prepare the escape',
+            'description' => 'Prepare the escape by placing spike strips.',
+        ],
+        [
+            'name' => 'Escape',
+            'description' => 'Escape with the components.',
+        ],
+    ];
+    public const HEIST_TOUCH_THE_SKY_OBJECTIVES = [
+        [
+            'name' => 'Enter the penthouse',
+            'description' => 'Enter the penthouse by the ventilation shaft (amogus). Ideally, only one should mask up and open the front door for the others.',
+        ],
+        [
+            'name' => 'Find the master bedroom',
+            'description' => 'Find the master bedroom and start hacking the door.',
+        ],
+        [
+            'name' => 'Hack the door',
+            'description' => 'Finish the hack and enter the master bedroom.',
+        ],
+        [
+            'name' => 'Find the safe',
+            'description' => 'Search for a hidden button to reveal the safe.',
+        ],
+        [
+            'name' => 'Disable the cameras',
+            'description' => 'Disable the cameras to avoid being detected.',
+            'optional' => true,
+        ],
+        [
+            'name' => "Hack the lead guard's phone",
+            'description' => "Hack the lead guard's phone to get a QR code.",
+        ],
+        [
+            'name' => 'Find the red keycard',
+            'description' => 'Go into the storage room using the QR code you hacked and find the red keycard.',
+        ],
+        [
+            'name' => 'Find and open the office',
+            'description' => "Find Mason's office and open it with the red keycard.",
+        ],
+        [
+            'name' => 'Find poison',
+            'description' => 'Find poison to put in Masons drink.',
+        ],
+        [
+            'name' => "Poison Mason's drink",
+            'description' => 'Wait for the delivery guy to arrive and put poison in his drink.',
+        ],
+        [
+            'name' => 'Get the VIP pass',
+            'description' => 'Get the VIP pass from the delivery guy to avoid suspicion in the ground floor area.',
+            'optional' => true,
+        ],
+        [
+            'name' => 'Force Mason to open the vault office',
+            'description' => 'Force Mason to open the vault office.',
+        ],
+        [
+            'name' => 'Grab the codes',
+            'description' => 'Grab the codes written on the whiteboard. There should also be some cocaine you can take.',
+        ],
+        [
+            'name' => 'Open and empty the vault',
+            'description' => 'Head to the master bedroom and open the vault. Empty it.',
+        ],
+        [
+            'name' => 'Signal the helicopter',
+            'description' => "If you've gone loud, signal the helicopter and set up the zipline to get the loot out.",
+            'optional' => true,
+        ],
+        [
+            'name' => 'Secure the loot & escape',
+            'description' => 'Secure the loot and escape.',
+        ],
+    ];
+
     public const REFERENCE_IDENTIFIER = 'heist_';
     public const DATA = [
         // No Rest for the Wicked
@@ -56,13 +377,14 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 100000,
             'maximumPayout' => 300000,
             'description' => 'A bank heist in the middle of the day, the most classic of all heists.',
-            'startAt' => '2024-01-01 14:00:00',
-            'shouldEndAt' => '2024-01-01 16:00:00',
+            'startAt' => '2024-01-01 10:00:00',
+            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Loud,
             'difficulty' => HeistDifficultyEnum::Normal,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'location' => LocationFixtures::LOCATION_CHASE_BANK,
+            'objectives' => self::HEIST_NO_REST_FOR_THE_WICKED_OBJECTIVES,
         ],
         self::HEIST_NO_REST_FOR_THE_WICKED_SUCCESS => [
             'name' => 'No Rest for the Wicked',
@@ -78,6 +400,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
             'location' => LocationFixtures::LOCATION_CHASE_BANK,
+            'objectives' => self::HEIST_NO_REST_FOR_THE_WICKED_OBJECTIVES,
         ],
         self::HEIST_NO_REST_FOR_THE_WICKED_FAILED => [
             'name' => 'No Rest for the Wicked',
@@ -93,6 +416,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
             'location' => LocationFixtures::LOCATION_CHASE_BANK,
+            'objectives' => self::HEIST_NO_REST_FOR_THE_WICKED_OBJECTIVES,
         ],
         // Road Rage
         self::HEIST_ROAD_RAGE_PLANNING => [
@@ -107,6 +431,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_OLD_WAREHOUSE_RED_HOOK,
             'location' => LocationFixtures::LOCATION_BROOKLYN_BRIDGE,
+            'objectives' => self::HEIST_ROAD_RAGE_OBJECTIVES,
         ],
         self::HEIST_ROAD_RAGE_SUCCESS => [
             'name' => 'Road Rage',
@@ -122,6 +447,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_OLD_WAREHOUSE_RED_HOOK,
             'employee' => UserFixtures::EMPLOYEE_BOB,
             'location' => LocationFixtures::LOCATION_BROOKLYN_BRIDGE,
+            'objectives' => self::HEIST_ROAD_RAGE_OBJECTIVES,
         ],
         self::HEIST_ROAD_RAGE_FAILED => [
             'name' => 'Road Rage',
@@ -137,6 +463,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_OLD_WAREHOUSE_RED_HOOK,
             'employee' => UserFixtures::EMPLOYEE_BOB,
             'location' => LocationFixtures::LOCATION_BROOKLYN_BRIDGE,
+            'objectives' => self::HEIST_ROAD_RAGE_OBJECTIVES,
         ],
         // Dirty Ice
         self::HEIST_DIRTY_ICE_PLANNING => [
@@ -151,6 +478,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_CENTRAL_PARK_CAVE,
             'location' => LocationFixtures::LOCATION_TIFFANY_AND_CO,
+            'objectives' => self::HEIST_DIRTY_ICE_OBJECTIVES,
         ],
         self::HEIST_DIRTY_ICE_SUCCESS => [
             'name' => 'Dirty Ice',
@@ -166,6 +494,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_CENTRAL_PARK_CAVE,
             'employee' => UserFixtures::EMPLOYEE_INFILTRATED_CIVILIAN,
             'location' => LocationFixtures::LOCATION_TIFFANY_AND_CO,
+            'objectives' => self::HEIST_DIRTY_ICE_OBJECTIVES,
         ],
         self::HEIST_DIRTY_ICE_FAILED => [
             'name' => 'Dirty Ice',
@@ -181,6 +510,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_CENTRAL_PARK_CAVE,
             'employee' => UserFixtures::EMPLOYEE_INFILTRATED_CIVILIAN,
             'location' => LocationFixtures::LOCATION_TIFFANY_AND_CO,
+            'objectives' => self::HEIST_DIRTY_ICE_OBJECTIVES,
         ],
         // Rock the Cradle
         self::HEIST_ROCK_THE_CRADLE_PLANNING => [
@@ -188,13 +518,14 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 100000,
             'maximumPayout' => 600000,
             'description' => 'Find and secure the crypto wallet from a nightclub.',
-            'startAt' => '2023-11-03 22:00:00',
-            'shouldEndAt' => '2023-11-03 23:00:00',
+            'startAt' => '2024-01-01 10:00:00',
+            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Stealth,
             'difficulty' => HeistDifficultyEnum::Hard,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_BROWNSTONE_BASEMENT,
             'location' => LocationFixtures::LOCATION_MARQUEE,
+            'objectives' => self::HEIST_ROCK_THE_CRADLE_OBJECTIVES,
         ],
         self::HEIST_ROCK_THE_CRADLE_SUCCESS => [
             'name' => 'Rock the Cradle',
@@ -210,6 +541,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_BROWNSTONE_BASEMENT,
             'employee' => UserFixtures::EMPLOYEE_FAKE_COP,
             'location' => LocationFixtures::LOCATION_MARQUEE,
+            'objectives' => self::HEIST_ROCK_THE_CRADLE_OBJECTIVES,
         ],
         self::HEIST_ROCK_THE_CRADLE_FAILED => [
             'name' => 'Rock the Cradle',
@@ -225,6 +557,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_BROWNSTONE_BASEMENT,
             'employee' => UserFixtures::EMPLOYEE_FAKE_COP,
             'location' => LocationFixtures::LOCATION_MARQUEE,
+            'objectives' => self::HEIST_ROCK_THE_CRADLE_OBJECTIVES,
         ],
         // Under the Surphaze
         self::HEIST_UNDER_THE_SURPHAZE_PLANNING => [
@@ -232,13 +565,14 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 500000,
             'maximumPayout' => 950000,
             'description' => 'Infiltrate the modern art museum and steal the most expensive paintings. My client will not tolerate any damage to the paintings.',
-            'startAt' => '2023-11-03 15:00:00',
-            'shouldEndAt' => '2023-11-03 17:00:00',
+            'startAt' => '2024-01-01 10:00:00',
+            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::SemiStealth,
             'difficulty' => HeistDifficultyEnum::Hard,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_INDUSTRIAL_BUILDING_LONG_ISLAND_CITY,
             'location' => LocationFixtures::LOCATION_MUSEUM_OF_MODERN_ART,
+            'objectives' => self::HEIST_UNDER_THE_SURPHAZE_OBJECTIVES,
         ],
         self::HEIST_UNDER_THE_SURPHAZE_SUCCESS => [
             'name' => 'Under the Surphaze',
@@ -254,6 +588,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_INDUSTRIAL_BUILDING_LONG_ISLAND_CITY,
             'employee' => UserFixtures::EMPLOYEE_FAKE_GUARD,
             'location' => LocationFixtures::LOCATION_MUSEUM_OF_MODERN_ART,
+            'objectives' => self::HEIST_UNDER_THE_SURPHAZE_OBJECTIVES,
         ],
         self::HEIST_UNDER_THE_SURPHAZE_FAILED => [
             'name' => 'Under the Surphaze',
@@ -269,6 +604,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_INDUSTRIAL_BUILDING_LONG_ISLAND_CITY,
             'employee' => UserFixtures::EMPLOYEE_FAKE_GUARD,
             'location' => LocationFixtures::LOCATION_MUSEUM_OF_MODERN_ART,
+            'objectives' => self::HEIST_UNDER_THE_SURPHAZE_OBJECTIVES,
         ],
         // Gold & Sharke
         self::HEIST_GOLD_SHARKE_PLANNING => [
@@ -276,13 +612,14 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 600000,
             'maximumPayout' => 1000000,
             'description' => 'Steal the gold from the bank vault. The bank is in the middle of the city, so be prepared for a lot of cops.',
-            'startAt' => '2023-11-03 15:00:00',
-            'shouldEndAt' => '2023-11-03 17:00:00',
+            'startAt' => '2024-01-01 10:00:00',
+            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Loud,
             'difficulty' => HeistDifficultyEnum::VeryHard,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'location' => LocationFixtures::LOCATION_BDIPLUS,
+            'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
         self::HEIST_GOLD_SHARKE_SUCCESS => [
             'name' => 'Gold & Sharke',
@@ -298,6 +635,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
             'location' => LocationFixtures::LOCATION_BDIPLUS,
+            'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
         self::HEIST_GOLD_SHARKE_FAILED => [
             'name' => 'Gold & Sharke',
@@ -313,6 +651,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
             'location' => LocationFixtures::LOCATION_BDIPLUS,
+            'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
         // 99 Boxes
         self::HEIST_99_BOXES_PLANNING => [
@@ -320,13 +659,14 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 450000,
             'maximumPayout' => 900000,
             'description' => 'A warehouse full of boxes. You need to secure the components fast before they deteriorate.',
-            'startAt' => '2023-11-03 15:00:00',
-            'shouldEndAt' => '2023-11-03 17:00:00',
+            'startAt' => '2024-01-01 10:00:00',
+            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Loud,
             'difficulty' => HeistDifficultyEnum::VeryHard,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_PRIVATE_LIBRARY,
             'location' => LocationFixtures::LOCATION_RED_HOOK_TERMINAL,
+            'objectives' => self::HEIST_99_BOXES_OBJECTIVES,
         ],
         self::HEIST_99_BOXES_SUCCESS => [
             'name' => '99 Boxes',
@@ -342,6 +682,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_PRIVATE_LIBRARY,
             'employee' => UserFixtures::EMPLOYEE_POLLING_MAN,
             'location' => LocationFixtures::LOCATION_RED_HOOK_TERMINAL,
+            'objectives' => self::HEIST_99_BOXES_OBJECTIVES,
         ],
         self::HEIST_99_BOXES_FAILED => [
             'name' => '99 Boxes',
@@ -357,6 +698,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_PRIVATE_LIBRARY,
             'employee' => UserFixtures::EMPLOYEE_POLLING_MAN,
             'location' => LocationFixtures::LOCATION_RED_HOOK_TERMINAL,
+            'objectives' => self::HEIST_99_BOXES_OBJECTIVES,
         ],
         // Touch the Sky
         self::HEIST_TOUCH_THE_SKY_PLANNING => [
@@ -364,13 +706,14 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 350000,
             'maximumPayout' => 1000000,
             'description' => 'A fancy penthouse next to the water. The owner is a rich guy who is not afraid to use his money to get what he wants.',
-            'startAt' => '2023-11-03 15:00:00',
-            'shouldEndAt' => '2023-11-03 17:00:00',
+            'startAt' => '2024-01-01 10:00:00',
+            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Stealth,
             'difficulty' => HeistDifficultyEnum::Overkill,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_SUBWAY_STATION,
             'location' => LocationFixtures::LOCATION_ONE57,
+            'objectives' => self::HEIST_TOUCH_THE_SKY_OBJECTIVES,
         ],
         self::HEIST_TOUCH_THE_SKY_SUCCESS => [
             'name' => 'Touch the Sky',
@@ -386,6 +729,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_SUBWAY_STATION,
             'employee' => UserFixtures::EMPLOYEE_GANG_MEMBER,
             'location' => LocationFixtures::LOCATION_ONE57,
+            'objectives' => self::HEIST_TOUCH_THE_SKY_OBJECTIVES,
         ],
         self::HEIST_TOUCH_THE_SKY_FAILED => [
             'name' => 'Touch the Sky',
@@ -401,6 +745,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_SUBWAY_STATION,
             'employee' => UserFixtures::EMPLOYEE_GANG_MEMBER,
             'location' => LocationFixtures::LOCATION_ONE57,
+            'objectives' => self::HEIST_TOUCH_THE_SKY_OBJECTIVES,
         ],
     ];
 
@@ -442,6 +787,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
                 ->setEstablishment($establishment)
                 ->setEmployee($employee)
                 ->setLocation($location)
+                ->setObjectives($heist['objectives'])
             ;
 
             $manager->persist($newHeist);

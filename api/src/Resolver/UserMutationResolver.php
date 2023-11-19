@@ -4,6 +4,7 @@ namespace App\Resolver;
 
 use ApiPlatform\GraphQl\Resolver\MutationResolverInterface;
 use App\Entity\User;
+use App\Enum\UserStatusEnum;
 use App\Helper\ExceptionHelper;
 use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -43,9 +44,12 @@ final class UserMutationResolver implements MutationResolverInterface
             throw $invalidCredentialsException;
         }
 
-        $user = $this->userRepository->findOneBy(['username' => $username]);
+        $user = $this->userRepository->findOneBy([
+            'username' => $username,
+            'status' => UserStatusEnum::Verified,
+        ]);
 
-        if (empty($user) || !$this->passwordHasher->isPasswordValid($user, $password)) {
+        if (null === $user || !$this->passwordHasher->isPasswordValid($user, $password)) {
             throw $invalidCredentialsException;
         }
 

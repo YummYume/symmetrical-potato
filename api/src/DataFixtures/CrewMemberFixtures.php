@@ -19,7 +19,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 85,
-            'objectivesCompleted' => 3,
+            'objectivesCompleted' => 7,
             'payout' => 200000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_DALLAS,
@@ -28,7 +28,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 50,
-            'objectivesCompleted' => 3,
+            'objectivesCompleted' => 7,
             'payout' => 200000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_JOY,
@@ -37,7 +37,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 62,
-            'objectivesCompleted' => 3,
+            'objectivesCompleted' => 7,
             'payout' => 200000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_CHAINS,
@@ -57,7 +57,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 102,
-            'objectivesCompleted' => 5,
+            'objectivesCompleted' => 6,
             'payout' => 750000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_DALLAS,
@@ -66,7 +66,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 146,
-            'objectivesCompleted' => 5,
+            'objectivesCompleted' => 6,
             'payout' => 750000,
             'status' => CrewMemberStatusEnum::Jailed,
             'user' => UserFixtures::HEISTER_HOXTON,
@@ -86,7 +86,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 0,
-            'objectivesCompleted' => 3,
+            'objectivesCompleted' => 5,
             'payout' => 500000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_HOXTON,
@@ -95,7 +95,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 0,
-            'objectivesCompleted' => 3,
+            'objectivesCompleted' => 7,
             'payout' => 500000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_PEARL,
@@ -139,7 +139,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         ],
         // Failure
         [
-            'civilianCasualties' => 33,
+            'civilianCasualties' => 22,
             'kills' => 7,
             'objectivesCompleted' => 2,
             'status' => CrewMemberStatusEnum::Free,
@@ -180,7 +180,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 474,
-            'objectivesCompleted' => 8,
+            'objectivesCompleted' => 11,
             'payout' => 650000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_DALLAS,
@@ -200,7 +200,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 74,
-            'objectivesCompleted' => 4,
+            'objectivesCompleted' => 9,
             'payout' => 650000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_WOLF,
@@ -218,9 +218,9 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         // Touch the Sky
         // Success
         [
-            'civilianCasualties' => 0,
+            'civilianCasualties' => 1,
             'kills' => 274,
-            'objectivesCompleted' => 9,
+            'objectivesCompleted' => 14,
             'payout' => 1000000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_HOXTON,
@@ -229,7 +229,7 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
         [
             'civilianCasualties' => 0,
             'kills' => 302,
-            'objectivesCompleted' => 7,
+            'objectivesCompleted' => 16,
             'payout' => 1000000,
             'status' => CrewMemberStatusEnum::Free,
             'user' => UserFixtures::HEISTER_DALLAS,
