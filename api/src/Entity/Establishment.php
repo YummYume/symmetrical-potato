@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\DeleteMutation;
+use ApiPlatform\Metadata\GraphQl\Mutation;
+use ApiPlatform\Metadata\GraphQl\Query;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Repository\EstablishmentRepository;
@@ -11,9 +17,24 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
+#[ApiResource(
+    operations: [],
+    graphQlOperations: [
+        new Query(
+            normalizationContext: [
+                'groups' => ['establishement:read', 'blameable'],
+            ]
+        ),
+        new QueryCollection(),
+        new Mutation(name: 'create'),
+        new Mutation(name: 'update'),
+        new DeleteMutation(name: 'delete'),
+    ]
+)]
 class Establishment
 {
     use BlameableTrait;
@@ -23,31 +44,49 @@ class Establishment
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[ApiProperty(identifier: true)]
+    #[Groups(['establishement:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 150)]
+    #[ApiProperty]
+    #[Groups(['establishement:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ApiProperty]
+    #[Groups(['establishement:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['establishement:read'])]
     private ?float $minimumWage = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['establishement:read'])]
     private ?int $minimumWorkTimePerWeek = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['establishement:read'])]
     private float $contractorCut = 15.0;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['establishement:read'])]
     private float $employeeCut = 05.0;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['establishement:read'])]
     private float $crewCut = 80.0;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[ApiProperty]
+    #[Groups(['establishement:read'])]
     private ?User $contractor = null;
 
     /** @var ArrayCollection<int, Employee> */

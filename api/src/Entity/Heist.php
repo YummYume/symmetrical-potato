@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
@@ -42,8 +43,9 @@ use Symfony\Component\Uid\Uuid;
         new DeleteMutation(name: 'delete'),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['phase' => 'exact', 'createdBy.id' => 'exact'])]
-#[ApiFilter(UuidFilter::class, properties: ['createdBy'])]
+#[ApiFilter(BooleanFilter::class, properties: ['isFinished'])]
+#[ApiFilter(SearchFilter::class, properties: ['phase' => 'exact'])]
+#[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
 class Heist
 {
     use BlameableTrait;
@@ -104,6 +106,11 @@ class Heist
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $minimumRequiredRating = null;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
+    private bool $isFinished = false;
 
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
     #[ApiProperty]
@@ -254,6 +261,8 @@ class Heist
     {
         $this->endedAt = $endedAt;
 
+        $this->isFinished = (bool) $endedAt;
+
         return $this;
     }
 
@@ -306,6 +315,11 @@ class Heist
         $this->minimumRequiredRating = $minimumRequiredRating;
 
         return $this;
+    }
+
+    public function getIsFinished(): bool
+    {
+        return $this->isFinished;
     }
 
     public function getPreferedTactic(): HeistPreferedTacticEnum

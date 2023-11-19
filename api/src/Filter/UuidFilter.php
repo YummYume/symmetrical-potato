@@ -12,15 +12,12 @@ use Symfony\Component\Uid\Uuid;
 
 final class UuidFilter extends AbstractFilter
 {
-    private const TARGET_PROPERTY = 'id';
-
     private const DESCRIPTION_PROPERTY = [
         'type' => Type::BUILTIN_TYPE_STRING,
         'required' => false,
         'description' => 'Recursively filter by UUID',
         'openapi' => [
-            'example' => 'If the property is "uuid_employee__user" the filter will be applied to the property "employee.user" of the entity. 
-                If the property is "uuid" the filter will be applied to the property "id" of the entity (you don\'t need to specify the id property of the root entity).',
+            'example' => 'If the property is "employee__user" the filter will be applied to the property "employee.user" of the entity.',
             'description' => 'Recursively filter by UUID',
             'name' => 'UUID filter',
             'type' => 'string',
@@ -33,8 +30,16 @@ final class UuidFilter extends AbstractFilter
      */
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
-        // Check if the query uses the uuid filter
-        if (!str_contains($property, 'uuid')) {
+        // Check if properties are defined
+        if (0 === count($this->getProperties())) {
+            return;
+        }
+
+        // Get the property of the path
+        $pathProperty = $this->getPathProperty($property, $this->getProperties());
+
+        // Return if the property does not exist
+        if (null === $pathProperty) {
             return;
         }
 
@@ -45,16 +50,8 @@ final class UuidFilter extends AbstractFilter
             return;
         }
 
-        // Get the property of the path
-        $pathProperty = 'uuid' === $property ? UuidFilter::TARGET_PROPERTY : $this->getPathProperty($property, $this->getProperties());
-
-        // Return if the property does not exist
-        if (null === $pathProperty) {
-            return;
-        }
-
-        // Check if the property is not enabled and mapped or if the property is not the target property
-        if ((!$this->isPropertyEnabled($pathProperty, $resourceClass) || !$this->isPropertyMapped($pathProperty, $resourceClass, true)) && !(UuidFilter::TARGET_PROPERTY === $pathProperty)) {
+        // Check if the property is not enabled and mapped
+        if (!$this->isPropertyEnabled($pathProperty, $resourceClass) || !$this->isPropertyMapped($pathProperty, $resourceClass, true)) {
             return;
         }
 
@@ -64,20 +61,13 @@ final class UuidFilter extends AbstractFilter
         // Split the path property
         $pathProperty = explode('.', $pathProperty);
 
-        // If the first property of the path is the target property, apply the filter else call the nestedQuery function
-        if (UuidFilter::TARGET_PROPERTY === $pathProperty[0]) {
-            $queryBuilder
-                ->andWhere(sprintf('%s.%s = :%s', $alias, UuidFilter::TARGET_PROPERTY, $property))
-                ->setParameter($property, $value);
-        } else {
-            $this->nestedQuery($queryBuilder, $queryNameGenerator, $pathProperty, $alias, $value);
-        }
+        $this->nestedQuery($queryBuilder, $queryNameGenerator, $pathProperty, $alias, $value);
     }
 
     /**
      * @param array<int, string> $pathProperties
      *
-     * @description Recursive function to join the properties of the path
+     * @description Recursive function to join the property of the path
      */
     public function nestedQuery(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, array $pathProperties, string $alias, string $value): void
     {
@@ -88,17 +78,13 @@ final class UuidFilter extends AbstractFilter
         $parameterName = $queryNameGenerator->generateParameterName($property);
         $aliasJoin = $queryNameGenerator->generateJoinAlias($property);
 
-        // Create the join for the property
-        $queryBuilder->join("$alias.$property", $aliasJoin);
-
         // If there are more properties in the path, call the function again
         if (sizeof($pathProperties) > 0) {
-            $queryBuilder->andWhere(sprintf('%s.%s = %s.%s', $aliasJoin, UuidFilter::TARGET_PROPERTY, $alias, $property));
-
+            $queryBuilder->leftJoin("$alias.$property", $aliasJoin);
             $this->nestedQuery($queryBuilder, $queryNameGenerator, $pathProperties, $aliasJoin, $value);
         } else {
             $queryBuilder
-                ->andWhere(sprintf('%s.%s = :%s', $aliasJoin, UuidFilter::TARGET_PROPERTY, $parameterName))
+                ->andWhere(sprintf('%s.%s = :%s', $alias, $property, $parameterName))
                 ->setParameter($parameterName, $value);
         }
     }
@@ -110,20 +96,10 @@ final class UuidFilter extends AbstractFilter
     {
         // Get the properties of the resource
         $properties = $this->getProperties() ?? [];
-
-        $description = [
-            'uuid' => array_merge(
-                ['property' => UuidFilter::TARGET_PROPERTY],
-                UuidFilter::DESCRIPTION_PROPERTY
-            ),
-        ];
+        $description = [];
 
         foreach ($properties as $property => $strategy) {
-            if (UuidFilter::TARGET_PROPERTY === $property || str_contains($property, 'uuid')) {
-                continue;
-            }
-
-            $description['uuid_'.StringFormatHelper::camelToSnake($property)] = array_merge(
+            $description[StringFormatHelper::camelToSnake($property)] = array_merge(
                 ['property' => $property],
                 UuidFilter::DESCRIPTION_PROPERTY
             );
@@ -139,8 +115,7 @@ final class UuidFilter extends AbstractFilter
      */
     private function getPathProperty(string $targetProperty, array $properties): ?string
     {
-        $removeUuid = str_replace('uuid_', '', $targetProperty);
-        $replaceDoubleUnderscore = str_replace('__', '.', $removeUuid);
+        $replaceDoubleUnderscore = str_replace('__', '.', $targetProperty);
         $snakeToCamel = StringFormatHelper::snakeToCamel($replaceDoubleUnderscore);
 
         if (array_key_exists($snakeToCamel, $properties)) {

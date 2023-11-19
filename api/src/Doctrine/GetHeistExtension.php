@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Doctrine\Extensions;
+namespace App\Doctrine;
 
 use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
