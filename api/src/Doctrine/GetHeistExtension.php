@@ -38,11 +38,14 @@ class GetHeistExtension implements QueryCollectionExtensionInterface, QueryItemE
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
         /* @var User */
-        if (Heist::class !== $resourceClass || null === $user = $this->security->getUser()) {
+        if (Heist::class !== $resourceClass) {
             return;
         }
 
-        if (!in_array($user->getRoles(), [User::ROLE_ADMIN, User::ROLE_CONTRACTOR])) {
+        /* @var User */
+        $user = $this->security->getUser();
+
+        if (null === $user || !in_array($user->getRoles(), [User::ROLE_ADMIN, User::ROLE_CONTRACTOR])) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
             $queryBuilder->andWhere("$rootAlias.visibility = :visibility");
             $queryBuilder->setParameter('visibility', HeistVisibilityEnum::Public);
