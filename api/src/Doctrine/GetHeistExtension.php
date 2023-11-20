@@ -45,7 +45,7 @@ class GetHeistExtension implements QueryCollectionExtensionInterface, QueryItemE
         /* @var User */
         $user = $this->security->getUser();
 
-        if (null === $user || !in_array($user->getRoles(), [User::ROLE_ADMIN, User::ROLE_CONTRACTOR])) {
+        if (null === $user || !array_intersect($user->getRoles(), [User::ROLE_ADMIN, User::ROLE_CONTRACTOR])) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
             $queryBuilder->andWhere("$rootAlias.visibility = :visibility");
             $queryBuilder->setParameter('visibility', HeistVisibilityEnum::Public);

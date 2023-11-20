@@ -362,6 +362,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * WARNING: You should probably not use this method directly unless necessary.
      * The user's global rating is automatically computed on a regular basis.
+     *
      * @see User::computeGlobalRating()
      */
     public function setGlobalRating(?float $globalRating): static

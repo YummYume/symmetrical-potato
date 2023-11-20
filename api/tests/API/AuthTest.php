@@ -2,9 +2,10 @@
 
 namespace App\Tests\API;
 
-use App\Tests\ApiAuthTestCase;
+use ApiPlatform\Symfony\Bundle\Test\Client;
+use App\Tests\AbstractTestCase;
 
-final class AuthTest extends ApiAuthTestCase
+final class AuthTest extends AbstractTestCase
 {
     public function testMeNotAuthenticated(): void
     {
@@ -31,7 +32,11 @@ final class AuthTest extends ApiAuthTestCase
 
     public function testMeAuthenticated(): void
     {
-        static::createAuthenticatedClient()->request('POST', '/graphql', [
+        /**
+         * @var Client $client
+         */
+        [$client] = static::createAuthenticatedClient();
+        $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
