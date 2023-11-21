@@ -23,14 +23,19 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
 #[ApiResource(
+    security: 'is_granted("ROLE_USER")',
     operations: [],
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['employee:read'],
+                'groups' => ['employee:read:public'],
             ]
         ),
-        new QueryCollection(),
+        new QueryCollection(
+            normalizationContext: [
+                'groups' => ['employee:read:public'],
+            ]
+        ),
         new Mutation(name: 'create'),
         new Mutation(name: 'update'),
         new DeleteMutation(name: 'delete'),

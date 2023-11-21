@@ -34,10 +34,14 @@ use Symfony\Component\Uid\Uuid;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['heist:read', 'heist:read:public', 'blameable'],
+                'groups' => ['heist:read:public', 'blameable'],
             ]
         ),
-        new QueryCollection(),
+        new QueryCollection(
+            normalizationContext: [
+                'groups' => ['heist:read:public', 'blameable'],
+            ]
+        ),
         new Mutation(name: 'create'),
         new Mutation(name: 'update'),
         new DeleteMutation(name: 'delete'),
@@ -76,7 +80,7 @@ class Heist
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['heist:read'])]
+    #[Groups(['heist:read', 'heist:read:public'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

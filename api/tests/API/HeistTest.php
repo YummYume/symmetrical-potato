@@ -10,7 +10,7 @@ final class HeistTest extends AbstractTestCase
     public const CONTRACTOR = 'shade';
     public const EMPLOYEE = 'bob';
 
-    public const ALL_PUBLIC_HEIST = [
+    public const ALL_PUBLIC_HEISTS = [
         ['node' => ['name' => 'No Rest for the Wicked']],
         ['node' => ['name' => 'No Rest for the Wicked']],
         ['node' => ['name' => 'Road Rage']],
@@ -29,7 +29,7 @@ final class HeistTest extends AbstractTestCase
         ['node' => ['name' => 'Touch the Sky']],
     ];
 
-    public const ALL_HEIST = [
+    public const ALL_HEISTS = [
         ['node' => ['name' => 'No Rest for the Wicked']],
         ['node' => ['name' => 'No Rest for the Wicked']],
         ['node' => ['name' => 'No Rest for the Wicked']],
@@ -57,13 +57,14 @@ final class HeistTest extends AbstractTestCase
     ];
 
     /**
-     * @param array<int, mixed> $result
+     * This method is used to test if a user can only see the heists he is allowed to.
      *
-     * @description This method is used to test if a user getting access only to the heists he has access to
+     * @param array<int, mixed> $result   The expected result
+     * @param string|null       $username The username to use to authenticate the user
      */
-    public function checkHeistsHas(array $result, string $username = null): void
+    public function checkUserCanSeeHeists(array $result, string $username = null): void
     {
-        static::checkRessourceHas('heists {
+        static::checkResourceJsonEquals('heists {
             edges {
                 node {
                     name
@@ -73,9 +74,9 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * @description This method is used to test if a user not authenticated can get all the public heists only
+     * This method is used to test if a not authenticated user can get all the public heists only.
      */
-    public function testGetHeistsNotAuthenticated(): void
+    public function testNotAuthenticatedCanSeePublicHeists(): void
     {
         $client = static::createClient();
         $client->request('POST', '/graphql', [
@@ -103,41 +104,41 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * @description This method is used to test if an admin can get all the heists
+     * This method is used to test if an admin can see all the heists.
      */
-    public function testGetHeistsHasAdmin(): void
+    public function testAdminCanSeeAllHeists(): void
     {
-        $this->checkHeistsHas(self::ALL_HEIST, self::ADMIN);
+        $this->checkUserCanSeeHeists(self::ALL_HEISTS, self::ADMIN);
     }
 
     /**
-     * @description This method is used to test if a contractor can get all the heists
+     * This method is used to test if a contractor can see all the heists.
      */
-    public function testGetHeistsHasContrator(): void
+    public function testContractorCanSeeAllHeists(): void
     {
-        $this->checkHeistsHas(self::ALL_HEIST, self::CONTRACTOR);
+        $this->checkUserCanSeeHeists(self::ALL_HEISTS, self::CONTRACTOR);
     }
 
     /**
-     * @description This method is used to test if an employee can get all the public heists
+     * This method is used to test if an employee can see the public heists only.
      */
-    public function testGetHeistsHasEmployee(): void
+    public function testEmployeeCanSeePublicHeists(): void
     {
-        $this->checkHeistsHas(self::ALL_PUBLIC_HEIST, self::EMPLOYEE);
+        $this->checkUserCanSeeHeists(self::ALL_PUBLIC_HEISTS, self::EMPLOYEE);
     }
 
     /**
-     * @description This method is used to test if a heister can get all the public heists
+     * This method is used to test if a heister can see the public heists only.
      */
-    public function testGetHeistsHasHeister(): void
+    public function testHeisterCanSeePublicHeists(): void
     {
-        $this->checkHeistsHas(self::ALL_PUBLIC_HEIST);
+        $this->checkUserCanSeeHeists(self::ALL_PUBLIC_HEISTS);
     }
 
     /**
-     * @description This method is used to test if a contractor can get all the heists he has made
+     * This method is used to test if a contractor can see all the heists he has made.
      */
-    public function testGetHeistsMadeByAContractor(): void
+    public function testContractorCanSeeAllHeistsHeMade(): void
     {
         ['client' => $client, 'userId' => $userId] = static::createAuthenticatedClient(self::CONTRACTOR);
         $client->request('POST', '/graphql', [
@@ -175,9 +176,9 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * @description This method is used to test if a employee can get all the heists he is related to
+     * This method is used to test if a employee can see all the heists he is related to.
      */
-    public function testGetHeistsRelatedToAnEmployee(): void
+    public function testEmployeeCanSeeAllHeistsRelated(): void
     {
         ['client' => $client, 'userId' => $userId] = static::createAuthenticatedClient(self::EMPLOYEE);
         $client->request('POST', '/graphql', [
@@ -211,9 +212,9 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * @description This method is used to test if a heister can get all the heists he is member of
+     * This method is used to test if a heister can see all the heists he is member of.
      */
-    public function testGetHeistsLinkedToAHeister(): void
+    public function testHeisterCanSeeAllHeistMemberOf(): void
     {
         ['client' => $client, 'userId' => $userId] = static::createAuthenticatedClient();
         $client->request('POST', '/graphql', [
@@ -261,14 +262,14 @@ final class HeistTest extends AbstractTestCase
             ],
             'json' => [
                 'query' => sprintf('query {
-                    heists(employee__user__id: "%s", phase: "%s") {
+                    heists(employee__user__id: "%s", phase: %s) {
                         edges {
                             node {
                                 name
                             }
                         }
                     }
-                }', $userId, 'succeeded|failed|cancelled'),
+                }', $userId, '["succeeded", "failed", "cancelled"]'),
             ],
         ]);
 

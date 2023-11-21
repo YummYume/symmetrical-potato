@@ -55,11 +55,13 @@ abstract class AbstractTestCase extends ApiTestCase
     }
 
     /**
-     * @param array<string, mixed> $result
+     * This method check depending on the user if the resource is the same as the expected result.
      *
-     * @description This method check depending on the user if the result is the same as the expected one
+     * @param string               $grapqlQuery The graphql query to execute
+     * @param array<string, mixed> $result      The expected result
+     * @param string|null          $username    The username to use to authenticate the user
      */
-    protected static function checkRessourceHas(string $grapqlQuery, array $result, string $username = null): void
+    protected static function checkResourceJsonEquals(string $grapqlQuery, array $result, string $username = null): void
     {
         ['client' => $client] = $username ? static::createAuthenticatedClient($username) : static::createAuthenticatedClient();
         $client->request('POST', '/graphql', [

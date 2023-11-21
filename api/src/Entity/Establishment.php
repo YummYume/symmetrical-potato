@@ -22,14 +22,19 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
 #[ApiResource(
+    security: 'is_granted("ROLE_USER")',
     operations: [],
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['establishement:read', 'blameable'],
+                'groups' => ['establishement:read:public', 'blameable'],
             ]
         ),
-        new QueryCollection(),
+        new QueryCollection(
+            normalizationContext: [
+                'groups' => ['establishement:read:public', 'blameable'],
+            ]
+        ),
         new Mutation(name: 'create'),
         new Mutation(name: 'update'),
         new DeleteMutation(name: 'delete'),
@@ -50,7 +55,7 @@ class Establishment
 
     #[ORM\Column(length: 150)]
     #[ApiProperty]
-    #[Groups(['establishement:read'])]
+    #[Groups(['establishement:read', 'establishement:read:public'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

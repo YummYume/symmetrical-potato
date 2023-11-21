@@ -13,7 +13,7 @@ final class MatchFilter extends AbstractFilter
 {
     /**
      * @param array<string, mixed> $context
-     * @param string               $value
+     * @param array<int, string>   $value
      */
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
@@ -21,7 +21,7 @@ final class MatchFilter extends AbstractFilter
             return;
         }
 
-        $constrains = explode('|', $value);
+        // $constrains = explode('|', $value);
 
         $alias = $queryBuilder->getRootAliases()[0];
         $field = $property;
@@ -34,7 +34,7 @@ final class MatchFilter extends AbstractFilter
 
         $queryBuilder
             ->andWhere($queryBuilder->expr()->in(sprintf('%s.%s', $alias, $field), ":$valueParameter"))
-            ->setParameter($valueParameter, $constrains);
+            ->setParameter($valueParameter, $value);
     }
 
     /**
@@ -56,13 +56,13 @@ final class MatchFilter extends AbstractFilter
             $propertyName = $this->normalizePropertyName($property);
             $description[$propertyName] = [
                 'property' => $propertyName,
-                'type' => Type::BUILTIN_TYPE_STRING,
+                'type' => Type::BUILTIN_TYPE_ARRAY,
                 'required' => false,
                 'openapi' => [
-                    'example' => 'If the property is `phase: "succeeded|failed|cancelled"` the filter will be applied a `WHERE phase IN ("succeeded", "failed", "cancelled")` clause.',
+                    'example' => 'If the property is `phase: ["succeeded", "failed", "cancelled"]` the filter will be applied a `WHERE phase IN ("succeeded", "failed", "cancelled")` clause.',
                     'description' => 'Matches a property value against a list of values.',
                     'name' => 'Match filter',
-                    'type' => Type::BUILTIN_TYPE_STRING,
+                    'type' => Type::BUILTIN_TYPE_ARRAY,
                 ],
             ];
         }
