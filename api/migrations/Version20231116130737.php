@@ -14,7 +14,7 @@ final class Version20231116130737 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Add a visibility to the heist (public or draft)';
     }
 
     public function up(Schema $schema): void

@@ -8,14 +8,10 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 abstract class AbstractTestCase extends ApiTestCase
 {
     /**
-     * @return array{Client, string|null}
+     * @return array{client: Client, userId: string|null}
      */
     protected static function createAuthenticatedClient(?string $username = 'dallas', string $password = 'xxx'): array
     {
-        if (null === $username) {
-            $username = 'dallas';
-        }
-
         $userId = null;
 
         $client = static::createClient();
@@ -55,20 +51,17 @@ abstract class AbstractTestCase extends ApiTestCase
             printf('Could not login user "%s" with password "%s".', $username, $password);
         }
 
-        return [$client, $userId];
+        return ['client' => $client, 'userId' => $userId];
     }
 
     /**
      * @param array<string, mixed> $result
      *
-     * @description This method is used to test the GraphQL queries with different user.
+     * @description This method check depending on the user if the result is the same as the expected one
      */
-    protected static function getHas(string $grapqlQuery, array $result, string $username = null): void
+    protected static function checkRessourceHas(string $grapqlQuery, array $result, string $username = null): void
     {
-        /**
-         * @var Client $client
-         */
-        [$client] = static::createAuthenticatedClient($username);
+        ['client' => $client] = $username ? static::createAuthenticatedClient($username) : static::createAuthenticatedClient();
         $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',

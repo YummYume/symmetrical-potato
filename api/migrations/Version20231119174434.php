@@ -14,7 +14,7 @@ final class Version20231119174434 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Add a is_finished to the heist';
     }
 
     public function up(Schema $schema): void

@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
@@ -17,6 +15,7 @@ use App\Enum\HeistDifficultyEnum;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\HeistPreferedTacticEnum;
 use App\Enum\HeistVisibilityEnum;
+use App\Filter\MatchFilter;
 use App\Filter\UuidFilter;
 use App\Repository\HeistRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,11 +29,12 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: HeistRepository::class)]
 #[ApiResource(
+    security: 'is_granted("ROLE_USER")',
     operations: [],
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['heist:read', 'blameable'],
+                'groups' => ['heist:read', 'heist:read:public', 'blameable'],
             ]
         ),
         new QueryCollection(),
@@ -43,8 +43,7 @@ use Symfony\Component\Uid\Uuid;
         new DeleteMutation(name: 'delete'),
     ]
 )]
-#[ApiFilter(BooleanFilter::class, properties: ['isFinished'])]
-#[ApiFilter(SearchFilter::class, properties: ['phase' => 'exact'])]
+#[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
 class Heist
 {
@@ -62,7 +61,7 @@ class Heist
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['heist:read'])]
+    #[Groups(['heist:read', 'heist:read:public'])]
     private ?Uuid $id = null;
 
     #[ORM\Column]
@@ -107,11 +106,6 @@ class Heist
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $minimumRequiredRating = null;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
-    #[ApiProperty]
-    #[Groups(['heist:read'])]
-    private bool $isFinished = false;
-
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
@@ -151,6 +145,8 @@ class Heist
 
     #[ORM\ManyToOne(inversedBy: 'heists')]
     #[ORM\JoinColumn(nullable: false)]
+    #[ApiProperty]
+    #[Groups(['heist:read'])]
     private ?Establishment $establishment = null;
 
     /** @var ArrayCollection<int, Asset> */
@@ -261,8 +257,6 @@ class Heist
     {
         $this->endedAt = $endedAt;
 
-        $this->isFinished = (bool) $endedAt;
-
         return $this;
     }
 
@@ -315,11 +309,6 @@ class Heist
         $this->minimumRequiredRating = $minimumRequiredRating;
 
         return $this;
-    }
-
-    public function getIsFinished(): bool
-    {
-        return $this->isFinished;
     }
 
     public function getPreferedTactic(): HeistPreferedTacticEnum

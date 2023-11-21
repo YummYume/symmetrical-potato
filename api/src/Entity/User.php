@@ -38,7 +38,7 @@ use Symfony\Component\Uid\Uuid;
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => ['user:read'],
+                'groups' => ['user:read:public'],
             ],
         ),
         new Mutation(name: 'create'),

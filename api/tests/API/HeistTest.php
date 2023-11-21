@@ -2,7 +2,6 @@
 
 namespace App\Tests\API;
 
-use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Tests\AbstractTestCase;
 
 final class HeistTest extends AbstractTestCase
@@ -60,11 +59,11 @@ final class HeistTest extends AbstractTestCase
     /**
      * @param array<int, mixed> $result
      *
-     * @description This method is used to test the GraphQL queries with different user.
+     * @description This method is used to test if a user getting access only to the heists he has access to
      */
-    public function getHeistsHas(array $result, string $username = null): void
+    public function checkHeistsHas(array $result, string $username = null): void
     {
-        static::getHas('heists {
+        static::checkRessourceHas('heists {
             edges {
                 node {
                     name
@@ -73,9 +72,13 @@ final class HeistTest extends AbstractTestCase
         }', ['heists' => ['edges' => $result]], $username);
     }
 
+    /**
+     * @description This method is used to test if a user not authenticated can get all the public heists only
+     */
     public function testGetHeistsNotAuthenticated(): void
     {
-        static::createClient()->request('POST', '/graphql', [
+        $client = static::createClient();
+        $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
@@ -93,42 +96,50 @@ final class HeistTest extends AbstractTestCase
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertJsonEquals([
-            'data' => [
-                'heists' => [
-                    'edges' => self::ALL_PUBLIC_HEIST,
-                ],
-            ],
-        ]);
+
+        $data = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertEquals(403, $data['errors'][0]['extensions']['status'] ?? null);
     }
 
+    /**
+     * @description This method is used to test if an admin can get all the heists
+     */
     public function testGetHeistsHasAdmin(): void
     {
-        $this->getHeistsHas(self::ALL_HEIST, self::ADMIN);
+        $this->checkHeistsHas(self::ALL_HEIST, self::ADMIN);
     }
 
+    /**
+     * @description This method is used to test if a contractor can get all the heists
+     */
     public function testGetHeistsHasContrator(): void
     {
-        $this->getHeistsHas(self::ALL_HEIST, self::CONTRACTOR);
+        $this->checkHeistsHas(self::ALL_HEIST, self::CONTRACTOR);
     }
 
+    /**
+     * @description This method is used to test if an employee can get all the public heists
+     */
     public function testGetHeistsHasEmployee(): void
     {
-        $this->getHeistsHas(self::ALL_PUBLIC_HEIST, self::EMPLOYEE);
+        $this->checkHeistsHas(self::ALL_PUBLIC_HEIST, self::EMPLOYEE);
     }
 
+    /**
+     * @description This method is used to test if a heister can get all the public heists
+     */
     public function testGetHeistsHasHeister(): void
     {
-        $this->getHeistsHas(self::ALL_PUBLIC_HEIST);
+        $this->checkHeistsHas(self::ALL_PUBLIC_HEIST);
     }
 
-    public function testGetHeistsFromAContractor(): void
+    /**
+     * @description This method is used to test if a contractor can get all the heists he has made
+     */
+    public function testGetHeistsMadeByAContractor(): void
     {
-        /**
-         * @var Client      $client
-         * @var string|null $userId
-         */
-        [$client, $userId] = static::createAuthenticatedClient(self::CONTRACTOR);
+        ['client' => $client, 'userId' => $userId] = static::createAuthenticatedClient(self::CONTRACTOR);
         $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',
@@ -163,13 +174,12 @@ final class HeistTest extends AbstractTestCase
         ]);
     }
 
-    public function testGetHeistsLinkedToAEmployee(): void
+    /**
+     * @description This method is used to test if a employee can get all the heists he is related to
+     */
+    public function testGetHeistsRelatedToAnEmployee(): void
     {
-        /**
-         * @var Client      $client
-         * @var string|null $userId
-         */
-        [$client, $userId] = static::createAuthenticatedClient(self::EMPLOYEE);
+        ['client' => $client, 'userId' => $userId] = static::createAuthenticatedClient(self::EMPLOYEE);
         $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',
@@ -200,13 +210,12 @@ final class HeistTest extends AbstractTestCase
         ]);
     }
 
+    /**
+     * @description This method is used to test if a heister can get all the heists he is member of
+     */
     public function testGetHeistsLinkedToAHeister(): void
     {
-        /**
-         * @var Client      $client
-         * @var string|null $userId
-         */
-        [$client, $userId] = static::createAuthenticatedClient();
+        ['client' => $client, 'userId' => $userId] = static::createAuthenticatedClient();
         $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',
@@ -240,27 +249,26 @@ final class HeistTest extends AbstractTestCase
         ]);
     }
 
-    public function testGetHeistsFinishedLinkedToAEmployee(): void
+    /**
+     * @description This method is used to test if a employee can get all the finished heists he is related to
+     */
+    public function testGetFinishedHeistsEmployee(): void
     {
-        /**
-         * @var Client      $client
-         * @var string|null $userId
-         */
-        [$client, $userId] = static::createAuthenticatedClient(self::EMPLOYEE);
+        ['client' => $client, 'userId' => $userId] = static::createAuthenticatedClient(self::EMPLOYEE);
         $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
             'json' => [
                 'query' => sprintf('query {
-                    heists(employee__user__id: "%s", isFinished: true) {
+                    heists(employee__user__id: "%s", phase: "%s") {
                         edges {
                             node {
                                 name
                             }
                         }
                     }
-                }', $userId),
+                }', $userId, 'succeeded|failed|cancelled'),
             ],
         ]);
 
