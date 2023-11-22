@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\DeleteMutation;
+use ApiPlatform\Metadata\GraphQl\Mutation;
+use ApiPlatform\Metadata\GraphQl\Query;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\EmployeeStatusEnum;
@@ -12,9 +18,29 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
+#[ApiResource(
+    security: 'is_granted("ROLE_USER")',
+    operations: [],
+    graphQlOperations: [
+        new Query(
+            normalizationContext: [
+                'groups' => ['employee:read:public'],
+            ]
+        ),
+        new QueryCollection(
+            normalizationContext: [
+                'groups' => ['employee:read:public'],
+            ]
+        ),
+        new Mutation(name: 'create'),
+        new Mutation(name: 'update'),
+        new DeleteMutation(name: 'delete'),
+    ]
+)]
 class Employee
 {
     use BlameableTrait;
@@ -32,6 +58,8 @@ class Employee
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[ApiProperty(identifier: true)]
+    #[Groups(['employee:read'])]
     private ?Uuid $id = null;
 
     /**
@@ -44,6 +72,7 @@ class Employee
     private ?string $codeName = null;
 
     #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
+    #[Groups(['employee:read'])]
     private ?User $user = null;
 
     /** @var ArrayCollection<int, EmployeeTimeOff> */

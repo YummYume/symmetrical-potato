@@ -36,7 +36,11 @@ use Symfony\Component\Uid\Uuid;
                 'groups' => ['user:read:public'],
             ]
         ),
-        new QueryCollection(),
+        new QueryCollection(
+            normalizationContext: [
+                'groups' => ['user:read:public'],
+            ],
+        ),
         new Mutation(name: 'create'),
         new Mutation(name: 'update'),
         new DeleteMutation(name: 'delete'),
@@ -85,6 +89,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
+    #[Groups(['user:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -357,6 +362,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * WARNING: You should probably not use this method directly unless necessary.
      * The user's global rating is automatically computed on a regular basis.
+     *
      * @see User::computeGlobalRating()
      */
     public function setGlobalRating(?float $globalRating): static

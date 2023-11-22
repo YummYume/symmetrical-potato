@@ -9,6 +9,7 @@ use App\Entity\Location;
 use App\Enum\HeistDifficultyEnum;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\HeistPreferedTacticEnum;
+use App\Enum\HeistVisibilityEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -768,9 +769,12 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             $location = $this->getReference(LocationFixtures::REFERENCE_IDENTIFIER.$heist['location'], Location::class);
             $endedAt = $heist['endedAt'] ?? null;
 
+            $visibility = HeistVisibilityEnum::Draft;
+
             if (null !== $employee) {
                 /** @var Employee $employee */
                 $employee = $this->getReference(EmployeeFixtures::REFERENCE_IDENTIFIER.$heist['employee'], Employee::class);
+                $visibility = HeistVisibilityEnum::Public;
             }
 
             $newHeist = (new Heist())
@@ -787,6 +791,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
                 ->setEstablishment($establishment)
                 ->setEmployee($employee)
                 ->setLocation($location)
+                ->setVisibility($visibility)
                 ->setObjectives($heist['objectives'])
             ;
 

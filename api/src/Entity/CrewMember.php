@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\DeleteMutation;
+use ApiPlatform\Metadata\GraphQl\Mutation;
+use ApiPlatform\Metadata\GraphQl\Query;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\CrewMemberStatusEnum;
@@ -11,9 +17,29 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CrewMemberRepository::class)]
+#[ApiResource(
+    security: 'is_granted("ROLE_USER")',
+    operations: [],
+    graphQlOperations: [
+        new Query(
+            normalizationContext: [
+                'groups' => ['crew_member:read:public'],
+            ]
+        ),
+        new QueryCollection(
+            normalizationContext: [
+                'groups' => ['crew_member:read:public'],
+            ]
+        ),
+        new Mutation(name: 'create'),
+        new Mutation(name: 'update'),
+        new DeleteMutation(name: 'delete'),
+    ]
+)]
 class CrewMember
 {
     use BlameableTrait;
@@ -28,29 +54,45 @@ class CrewMember
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[ApiProperty(identifier: true)]
+    #[Groups(['crew_member:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['crew_member:read'])]
     private int $civilianCasualties = 0;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['crew_member:read'])]
     private int $kills = 0;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['crew_member:read'])]
     private int $objectivesCompleted = 0;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['crew_member:read'])]
     private ?float $payout = null;
 
     #[ORM\Column(length: 50, enumType: CrewMemberStatusEnum::class)]
+    #[ApiProperty]
+    #[Groups(['crew_member:read'])]
     private CrewMemberStatusEnum $status = CrewMemberStatusEnum::Free;
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[ApiProperty]
+    #[Groups(['crew_member:read'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[ApiProperty]
+    #[Groups(['crew_member:read'])]
     private ?Heist $heist = null;
 
     /** @var ArrayCollection<int, HeistAsset> */

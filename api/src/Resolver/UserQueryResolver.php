@@ -12,7 +12,7 @@ final class UserQueryResolver implements QueryItemResolverInterface
 {
     public function __construct(
         private readonly Security $security,
-        private readonly ExceptionHelper $exceptionHelper
+        private readonly ExceptionHelper $exceptionHelper,
     ) {
     }
 

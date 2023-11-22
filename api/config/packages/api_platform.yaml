@@ -21,6 +21,7 @@ api_platform:
         html:
             mime_types: ['text/html']
     graphql:
+        nesting_separator: __
         graphql_playground:
             enabled: false
 
