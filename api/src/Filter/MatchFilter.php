@@ -21,8 +21,6 @@ final class MatchFilter extends AbstractFilter
             return;
         }
 
-        // $constrains = explode('|', $value);
-
         $alias = $queryBuilder->getRootAliases()[0];
         $field = $property;
 

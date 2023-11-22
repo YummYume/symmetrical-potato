@@ -55,7 +55,7 @@ abstract class AbstractTestCase extends ApiTestCase
     }
 
     /**
-     * This method check depending on the user if the resource is the same as the expected result.
+     * This method checks if the resource is the same as the expected result. Can be given a user to authenticate.
      *
      * @param string               $grapqlQuery The graphql query to execute
      * @param array<string, mixed> $result      The expected result

@@ -120,7 +120,7 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * This method is used to test if an employee can see the public heists only.
+     * This method is used to test if an employee can only see the public heists.
      */
     public function testEmployeeCanSeePublicHeists(): void
     {
@@ -128,7 +128,7 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * This method is used to test if a heister can see the public heists only.
+     * This method is used to test if a heister can only see the public heists.
      */
     public function testHeisterCanSeePublicHeists(): void
     {
@@ -176,7 +176,7 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * This method is used to test if a employee can see all the heists he is related to.
+     * This method is used to test if an employee can see all the heists they are related to.
      */
     public function testEmployeeCanSeeAllHeistsRelated(): void
     {
@@ -212,7 +212,7 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * This method is used to test if a heister can see all the heists he is member of.
+     * This method is used to test if an heister can see all the heists they are member of.
      */
     public function testHeisterCanSeeAllHeistMemberOf(): void
     {
@@ -251,7 +251,7 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * @description This method is used to test if a employee can get all the finished heists he is related to
+     * This method is used to test if an employee can get all the finished heists they are related to.
      */
     public function testGetFinishedHeistsEmployee(): void
     {
