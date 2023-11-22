@@ -1,4 +1,4 @@
-import { Box, Card, Container, Grid, Heading, Inset, Section, Text } from '@radix-ui/themes';
+import { Card, Container, Grid, Heading, Inset, Section, Text } from '@radix-ui/themes';
 import { type MetaFunction } from '@remix-run/node';
 import { Trans, useTranslation } from 'react-i18next';
 

@@ -1,5 +1,4 @@
 import { Grid, Select, Text } from '@radix-ui/themes';
-import cn from 'classnames';
 
 export type FieldSelectProps = {
   name: string;
