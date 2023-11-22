@@ -1,0 +1,25 @@
+# User
+user.username.unique: Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre.
+user.email.unique: Cette adresse e-mail est déjà utilisée. Veuillez en choisir une autre.
+user.username.not_blank: Veuillez saisir un nom d'utilisateur.
+user.username.min_length: Votre nom d'utilisateur doit comporter au moins {limit} caractères.
+user.username.max_length: Votre nom d'utilisateur ne peut pas comporter plus de {limit} caractères.
+user.password.not_blank: Veuillez saisir un mot de passe.
+user.password.min_length: Votre mot de passe doit comporter au moins {limit} caractères.
+user.password.max_length: Votre mot de passe ne peut pas comporter plus de {limit} caractères.
+user.password.at_least_one_digit: Votre mot de passe doit contenir au moins un chiffre.
+user.password.at_least_one_uppercase_letter: Votre mot de passe doit contenir au moins une lettre majuscule.
+user.password.at_least_one_lowercase_letter: Votre mot de passe doit contenir au moins une lettre minuscule.
+user.password.at_least_one_special_character: >-
+  Votre mot de passe doit contenir au moins un caractère spécial.
+  Les caractères spéciaux autorisés sont : « ! @ \ # $ % ^ & * ( ) \ - _ = + ; : , < . > ».
+  Les espaces sont autorisés.
+user.plain_password.not_compromised: >-
+  Votre mot de passe a été trouvé dans une fuite de données. Il ne doit plus être utilisé. Veuillez en choisir un autre.
+user.email.not_blank: Veuillez saisir une adresse e-mail.
+user.email.invalid: Veuillez saisir une adresse e-mail valide.
+user.email.min_length: Votre adresse e-mail doit comporter au moins {limit} caractères.
+user.email.max_length: Votre adresse e-mail ne peut pas comporter plus de {limit} caractères.
+user.reason.not_blank: Veuillez saisir une raison pour votre demande d'inscription.
+user.reason.min_length: Votre raison doit comporter au moins {limit} caractères.
+user.reason.max_length: Votre raison ne peut pas comporter plus de {limit} caractères.

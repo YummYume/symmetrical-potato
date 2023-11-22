@@ -1,0 +1,24 @@
+# User
+user.username.unique: This username is already taken. Please choose another one.
+user.email.unique: This email address is already taken. Please choose another one.
+user.username.not_blank: Please enter a username.
+user.username.min_length: Your username must be at least {limit} characters long.
+user.username.max_length: Your username cannot be longer than {limit} characters.
+user.password.not_blank: Please enter a password.
+user.password.min_length: Your password must be at least {limit} characters long.
+user.password.max_length: Your password cannot be longer than {limit} characters.
+user.password.at_least_one_digit: Your password must contain at least one digit.
+user.password.at_least_one_uppercase_letter: Your password must contain at least one uppercase letter.
+user.password.at_least_one_lowercase_letter: Your password must contain at least one lowercase letter.
+user.password.at_least_one_special_character: >-
+  Your password must contain at least one special character.
+  Allowed special characters are: « ! @ \ # $ % ^ & * ( ) \ - _ = + ; : , < . > ».
+  Whitespaces are allowed.
+user.plain_password.not_compromised: Your password has been found in a data breach. It must not be used anymore. Please choose a different password.
+user.email.not_blank: Please enter an email address.
+user.email.invalid: Please enter a valid email address.
+user.email.min_length: Your email address must be at least {limit} characters long.
+user.email.max_length: Your email address cannot be longer than {limit} characters.
+user.reason.not_blank: Please enter a reason for your registration request.
+user.reason.min_length: Your reason must be at least {limit} characters long.
+user.reason.max_length: Your reason cannot be longer than {limit} characters.
