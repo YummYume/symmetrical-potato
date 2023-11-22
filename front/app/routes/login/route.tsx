@@ -1,5 +1,5 @@
-import { Heading } from '@radix-ui/themes';
-import { redirect, json } from '@remix-run/node';
+import { Container, Heading, Section } from '@radix-ui/themes';
+import { json, redirect } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
@@ -62,7 +62,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   try {
     const response = await requestAuthToken(context.client, username, password);
 
-    if (response && response.loginUser && response.loginUser.user) {
+    if (response?.loginUser?.user) {
       const user = response.loginUser.user;
       let cookieOptions: CookieSerializeOptions = {};
 
@@ -125,23 +125,29 @@ export default function Login() {
   const passwordError = getMessageErrorForPath(fieldErrors, 'password');
 
   return (
-    <Form method="post" className="flex flex-col gap-2" unstable_viewTransition>
-      <Heading as="h1">{t('login')}</Heading>
-      <FieldInput
-        name="username"
-        label={t('username')}
-        type="text"
-        error={usernameError ? t(usernameError, { ns: 'validators' }) : undefined}
-        required
-      />
-      <FieldInput
-        name="password"
-        label={t('password')}
-        type="password"
-        error={passwordError ? t(passwordError, { ns: 'validators' }) : undefined}
-        required
-      />
-      <SubmitButton text={t('login')} submittingText={t('logging_in')} />
-    </Form>
+    <Container p="4" size="1">
+      <Section className="space-y-16">
+        <Heading as="h1" className="text-center" size="9">
+          {t('login')}
+        </Heading>
+        <Form method="post" className="space-y-4" unstable_viewTransition>
+          <FieldInput
+            name="username"
+            label={t('username')}
+            type="text"
+            error={usernameError ? t(usernameError, { ns: 'validators' }) : undefined}
+            required
+          />
+          <FieldInput
+            name="password"
+            label={t('password')}
+            type="password"
+            error={passwordError ? t(passwordError, { ns: 'validators' }) : undefined}
+            required
+          />
+          <SubmitButton className="w-full" text={t('login')} submittingText={t('logging_in')} />
+        </Form>
+      </Section>
+    </Container>
   );
 }

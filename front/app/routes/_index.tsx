@@ -24,7 +24,7 @@ export default function Index() {
     <>
       <div className="relative hidden items-center overflow-hidden rem:h-[441px] lg:flex">
         <img
-          src="/img/potatoes.jpg"
+          src="img/potatoes.jpg"
           alt=""
           height={1067}
           width={1600}
@@ -33,15 +33,15 @@ export default function Index() {
           className="absolute w-full"
         />
       </div>
-      <Container p="3">
-        <Section className="space-y-20">
+      <Container p="4">
+        <Section className="space-y-16">
           <Heading size="9" className="text-center capitalize">
             symmetrical potato
           </Heading>
           <Text as="p">
             <Trans i18nKey="visitor:potatoes.description"></Trans>
           </Text>
-          <Grid gap="3">
+          <Grid gap="4">
             <Heading as="h2" size="8" className="text-center first-letter:uppercase">
               {t('potatoes', {
                 ns: 'visitor',
@@ -49,11 +49,11 @@ export default function Index() {
             </Heading>
             <Grid gap="6">
               {POTATOES.map((potato) => (
-                <Box key={potato}>
-                  <Heading as="h3" mb="3" className="first-letter:uppercase">
+                <Grid gap="2" key={potato}>
+                  <Heading as="h3" className="first-letter:uppercase">
                     {t(`visitor:potatoes.${potato}`)}
                   </Heading>
-                  <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                  <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {[...Array(5).keys()].map((i) => (
                       <Link key={i} to="/" className="group">
                         <Card>
@@ -70,13 +70,13 @@ export default function Index() {
                       </Link>
                     ))}
                   </div>
-                </Box>
+                </Grid>
               ))}
             </Grid>
           </Grid>
         </Section>
         <Section>
-          <Grid gap="3">
+          <Grid gap="4">
             <Heading as="h2" size="8" className="text-center first-letter:uppercase">
               {t('visitor:potatoes.inspiration_title')}
             </Heading>

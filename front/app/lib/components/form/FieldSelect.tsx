@@ -1,4 +1,4 @@
-import { Select, Text } from '@radix-ui/themes';
+import { Grid, Select, Text } from '@radix-ui/themes';
 import cn from 'classnames';
 
 export type FieldSelectProps = {
@@ -29,7 +29,7 @@ export const FieldSelect = ({
   const ariaDescribedBy = `${name}-error`;
 
   return (
-    <div className={cn('flex flex-col gap-2', containerClassName)}>
+    <Grid className={containerClassName} gap="1">
       <Text as="span" id={ariaLabelledBy} className={hideLabel ? 'sr-only' : ''}>
         {label}
       </Text>
@@ -46,6 +46,6 @@ export const FieldSelect = ({
           {error}
         </Text>
       )}
-    </div>
+    </Grid>
   );
 };

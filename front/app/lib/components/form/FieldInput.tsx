@@ -1,4 +1,4 @@
-import { Text, TextField } from '@radix-ui/themes';
+import { Grid, Text, TextField } from '@radix-ui/themes';
 import cn from 'classnames';
 
 export type FieldInputProps = {
@@ -29,20 +29,20 @@ export const FieldInput = ({
   const ariaDescribedBy = `${name}-error`;
 
   return (
-    <div className={cn('flex flex-col gap-2', containerClassName)}>
+    <Grid className={containerClassName} gap="1">
       <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
         {label}
       </Text>
       <TextField.Root className={inputContainerClassName}>
-        {leftSlot && leftSlot}
+        {leftSlot}
         <TextField.Input id={name} name={name} aria-describedby={ariaDescribedBy} {...rest} />
-        {rightSlot && rightSlot}
+        {rightSlot}
       </TextField.Root>
       {error && (
         <Text as="p" id={ariaDescribedBy} className={errorClassName}>
           {error}
         </Text>
       )}
-    </div>
+    </Grid>
   );
 };

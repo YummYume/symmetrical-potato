@@ -1,7 +1,7 @@
 import * as Checkbox from '@radix-ui/react-checkbox';
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
 import * as RadixToast from '@radix-ui/react-toast';
-import { Select, Theme } from '@radix-ui/themes';
+import { Heading, Select, Text, Theme } from '@radix-ui/themes';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import { json, type LinksFunction } from '@remix-run/node';
 import {
@@ -127,8 +127,8 @@ export const ErrorBoundary = () => {
   if (isRouteErrorResponse(error)) {
     return (
       <div>
-        <h1>{error.status}</h1>
-        <p>{error.statusText}</p>
+        <Heading as="h1">{error.status}</Heading>
+        <Text as="p">{error.statusText}</Text>
         <Link to="/">Go home</Link>
       </div>
     );
