@@ -43,7 +43,9 @@ export default function Index() {
           </Text>
           <Grid gap="3">
             <Heading as="h2" size="8" className="text-center first-letter:uppercase">
-              {t('visitor:potatoes')}
+              {t('potatoes', {
+                ns: 'visitor',
+              })}
             </Heading>
             <Grid gap="6">
               {POTATOES.map((potato) => (
