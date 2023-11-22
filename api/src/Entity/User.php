@@ -36,11 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [],
     graphQlOperations: [
-        new Query(
-            normalizationContext: [
-                'groups' => ['user:read:public'],
-            ]
-        ),
+        new Query(),
         new QueryCollection(
             normalizationContext: [
                 'groups' => ['user:read:public'],

@@ -90,10 +90,10 @@ export enum EmployeeStatusEnum {
 
 export type Establishment = Node & {
   __typename?: 'Establishment';
-  createdBy?: Maybe<User>;
+  createdBy?: Maybe<UserItem>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  updatedBy?: Maybe<User>;
+  updatedBy?: Maybe<UserItem>;
 };
 
 /** Cursor connection for Establishment. */
@@ -122,10 +122,10 @@ export type EstablishmentPageInfo = {
 
 export type Heist = Node & {
   __typename?: 'Heist';
-  createdBy?: Maybe<User>;
+  createdBy?: Maybe<UserItem>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  updatedBy?: Maybe<User>;
+  updatedBy?: Maybe<UserItem>;
 };
 
 /** Cursor connection for Heist. */
@@ -303,8 +303,8 @@ export type Query = {
   heists?: Maybe<HeistCursorConnection>;
   meUser?: Maybe<User>;
   node?: Maybe<Node>;
-  user?: Maybe<User>;
-  users?: Maybe<UserCursorConnection>;
+  user?: Maybe<UserItem>;
+  users?: Maybe<UserCollectionCursorConnection>;
 };
 
 export type QueryCrewMemberArgs = {
@@ -372,38 +372,104 @@ export type QueryUsersArgs = {
 
 export type User = Node & {
   __typename?: 'User';
+  balance: Scalars['Float']['output'];
+  email: Scalars['String']['output'];
+  /** WARNING: You should probably not use this method directly unless necessary. */
+  globalRating?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  locale: UserLocaleEnum;
+  roles: Scalars['Iterable']['output'];
+  username: Scalars['String']['output'];
+};
+
+export type UserCollection = Node & {
+  __typename?: 'UserCollection';
   id: Scalars['ID']['output'];
   username: Scalars['String']['output'];
 };
 
-/** Cursor connection for User. */
-export type UserCursorConnection = {
-  __typename?: 'UserCursorConnection';
-  edges?: Maybe<Array<Maybe<UserEdge>>>;
-  pageInfo: UserPageInfo;
+/** Cursor connection for UserCollection. */
+export type UserCollectionCursorConnection = {
+  __typename?: 'UserCollectionCursorConnection';
+  edges?: Maybe<Array<Maybe<UserCollectionEdge>>>;
+  pageInfo: UserCollectionPageInfo;
   totalCount: Scalars['Int']['output'];
 };
 
-/** Edge of User. */
-export type UserEdge = {
-  __typename?: 'UserEdge';
+/** Edge of UserCollection. */
+export type UserCollectionEdge = {
+  __typename?: 'UserCollectionEdge';
   cursor: Scalars['String']['output'];
-  node?: Maybe<User>;
+  node?: Maybe<UserCollection>;
+};
+
+/** Information about the current page. */
+export type UserCollectionPageInfo = {
+  __typename?: 'UserCollectionPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export type UserItem = Node & {
+  __typename?: 'UserItem';
+  allowedRoles: Scalars['Iterable']['output'];
+  balance: Scalars['Float']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserItem>;
+  crewMembers?: Maybe<CrewMemberCursorConnection>;
+  email: Scalars['String']['output'];
+  employee?: Maybe<Employee>;
+  establishments?: Maybe<EstablishmentCursorConnection>;
+  forbiddenHeists?: Maybe<HeistCursorConnection>;
+  /** WARNING: You should probably not use this method directly unless necessary. */
+  globalRating?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  locale: UserLocaleEnum;
+  mutuallyExclusiveRoles: Scalars['Iterable']['output'];
+  plainPassword: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+  roles: Scalars['Iterable']['output'];
+  status: UserStatusEnum;
+  token?: Maybe<Scalars['String']['output']>;
+  tokenTtl?: Maybe<Scalars['Int']['output']>;
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserItem>;
+  /** A visual identifier that represents this user. */
+  userIdentifier: Scalars['String']['output'];
+  username: Scalars['String']['output'];
+};
+
+export type UserItemCrewMembersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UserItemEstablishmentsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UserItemForbiddenHeistsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  crewMembers__user__id?: InputMaybe<Scalars['String']['input']>;
+  employee__user__id?: InputMaybe<Scalars['String']['input']>;
+  establishment__contractor__id?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  phase?: InputMaybe<Scalars['Iterable']['input']>;
 };
 
 export enum UserLocaleEnum {
   En = 'En',
   Fr = 'Fr',
 }
-
-/** Information about the current page. */
-export type UserPageInfo = {
-  __typename?: 'UserPageInfo';
-  endCursor?: Maybe<Scalars['String']['output']>;
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  startCursor?: Maybe<Scalars['String']['output']>;
-};
 
 export enum UserStatusEnum {
   Dead = 'Dead',
@@ -910,13 +976,7 @@ export type DeleteUserInput = {
 export type DeleteUserPayload = {
   __typename?: 'deleteUserPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  user?: Maybe<DeleteUserPayloadData>;
-};
-
-/** Deletes a User. */
-export type DeleteUserPayloadData = Node & {
-  __typename?: 'deleteUserPayloadData';
-  id: Scalars['ID']['output'];
+  user?: Maybe<UserItem>;
 };
 
 /** Logins a User. */
@@ -1415,37 +1475,7 @@ export type UpdateUserNestedPayloadPageInfo = {
 export type UpdateUserPayload = {
   __typename?: 'updateUserPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  user?: Maybe<UpdateUserPayloadData>;
-};
-
-/** Updates a User. */
-export type UpdateUserPayloadData = Node & {
-  __typename?: 'updateUserPayloadData';
-  allowedRoles?: Maybe<Scalars['Iterable']['output']>;
-  balance?: Maybe<Scalars['Float']['output']>;
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UpdateUserNestedPayload>;
-  crewMembers?: Maybe<UpdateCrewMemberNestedPayloadCursorConnection>;
-  email?: Maybe<Scalars['String']['output']>;
-  employee?: Maybe<UpdateEmployeeNestedPayload>;
-  establishments?: Maybe<UpdateEstablishmentNestedPayloadCursorConnection>;
-  forbiddenHeists?: Maybe<UpdateHeistNestedPayloadCursorConnection>;
-  /** WARNING: You should probably not use this method directly unless necessary. */
-  globalRating?: Maybe<Scalars['Float']['output']>;
-  id: Scalars['ID']['output'];
-  locale?: Maybe<UserLocaleEnum>;
-  mutuallyExclusiveRoles?: Maybe<Scalars['Iterable']['output']>;
-  plainPassword?: Maybe<Scalars['String']['output']>;
-  reason?: Maybe<Scalars['String']['output']>;
-  roles?: Maybe<Scalars['Iterable']['output']>;
-  status?: Maybe<UserStatusEnum>;
-  token?: Maybe<Scalars['String']['output']>;
-  tokenTtl?: Maybe<Scalars['Int']['output']>;
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UpdateUserNestedPayload>;
-  /** A visual identifier that represents this user. */
-  userIdentifier?: Maybe<Scalars['String']['output']>;
-  username?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<UserItem>;
 };
 
 /** Validates a User. */
