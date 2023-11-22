@@ -8,6 +8,8 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 abstract class AbstractTestCase extends ApiTestCase
 {
     /**
+     * Creates a client with a default Authorization header.
+     *
      * @return array{client: Client, userId: string|null}
      */
     protected static function createAuthenticatedClient(?string $username = 'dallas', string $password = 'xxx'): array
@@ -48,7 +50,7 @@ abstract class AbstractTestCase extends ApiTestCase
              */
             $userId = $data['data']['loginUser']['user']['id'];
         } catch (\Exception $e) {
-            printf('Could not login user "%s" with password "%s".', $username, $password);
+            printf('Could not login user "%s" with password "%s" : %s.', $username, $password, $e->getMessage());
         }
 
         return ['client' => $client, 'userId' => $userId];
@@ -60,10 +62,20 @@ abstract class AbstractTestCase extends ApiTestCase
      * @param string               $grapqlQuery The graphql query to execute
      * @param array<string, mixed> $result      The expected result
      * @param string|null          $username    The username to use to authenticate the user
+     * @param string|null          $password    The password to use to authenticate the user
      */
-    protected static function checkResourceJsonEquals(string $grapqlQuery, array $result, string $username = null): void
-    {
-        ['client' => $client] = $username ? static::createAuthenticatedClient($username) : static::createAuthenticatedClient();
+    protected static function checkResourceJsonEquals(
+        string $grapqlQuery,
+        array $result,
+        ?string $username = 'dallas',
+        ?string $password = 'xxx'
+    ): void {
+        if ($username) {
+            $client = static::createAuthenticatedClient($username, $password)['client'];
+        } else {
+            $client = static::createClient();
+        }
+
         $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',
@@ -76,7 +88,6 @@ abstract class AbstractTestCase extends ApiTestCase
         ]);
 
         static::assertResponseIsSuccessful();
-
         static::assertJsonEquals([
             'data' => $result,
         ]);

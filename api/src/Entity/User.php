@@ -49,6 +49,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'create',
             processor: UserPasswordHasher::class,
+            security: 'user == null',
             normalizationContext: [
                 'groups' => ['user:register:read'],
             ],
@@ -66,7 +67,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 is_granted("ROLE_ADMIN") or
                 (object == user and object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified"))
             ',
-            securityMessage: 'common.action.unauthorized',
+            securityMessage: 'Unauthorized.',
         ),
         new Query(
             name: 'me',
@@ -102,7 +103,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified") and
                 previous_object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Unverified")
             ',
-            securityPostDenormalizeMessage: 'common.action.unauthorized',
+            securityPostDenormalizeMessage: 'Unauthorized.',
             normalizationContext: [
                 'groups' => ['user:read'],
             ],
