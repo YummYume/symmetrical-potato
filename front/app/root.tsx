@@ -1,16 +1,18 @@
+import * as Checkbox from '@radix-ui/react-checkbox';
+import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
 import * as RadixToast from '@radix-ui/react-toast';
-import { Select, Switch, Theme } from '@radix-ui/themes';
+import { Heading, Select, Text, Theme } from '@radix-ui/themes';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import { json, type LinksFunction } from '@remix-run/node';
 import {
   Form,
-  isRouteErrorResponse,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
   useLoaderData,
   useNavigation,
   useRouteError,
@@ -125,8 +127,8 @@ export const ErrorBoundary = () => {
   if (isRouteErrorResponse(error)) {
     return (
       <div>
-        <h1>{error.status}</h1>
-        <p>{error.statusText}</p>
+        <Heading as="h1">{error.status}</Heading>
+        <Text as="p">{error.statusText}</Text>
         <Link to="/">Go home</Link>
       </div>
     );
@@ -179,52 +181,12 @@ export default function App() {
             className="fixed left-0 top-0 z-50 h-0.5 w-full rounded-b-6 bg-transparent"
           />
           <RadixToast.Provider swipeDirection="right">
-            <header className="flex flex-col justify-between border-b border-b-gray-10 p-4 lg:flex-row lg:items-center">
-              <Link to="/" className="text-7" unstyled>
+            <header className="sticky top-0 z-10 grid grid-cols-[max-content_auto] items-center justify-between gap-x-4 gap-y-2 bg-slate-1 p-4 shadow-6 sm:grid-cols-[auto_max-content_max-content] sm:justify-normal">
+              <Link to="/" className="w-fit text-7" unstyled>
                 Symmetrical Potato
               </Link>
-              <nav className="flex flex-col gap-2 lg:flex-row lg:gap-4">
-                <Form
-                  method="post"
-                  className="flex flex-col items-center gap-2 lg:flex-row"
-                  onChange={(event) => {
-                    setIsChangingPreferences(true);
-                    submit(event.currentTarget, {
-                      navigate: false,
-                      unstable_viewTransition: true,
-                    });
-                  }}
-                >
-                  <Switch
-                    name="darkMode"
-                    size="2"
-                    defaultChecked={useDarkMode}
-                    aria-label={t('enable_dark_mode')}
-                    value="true"
-                    disabled={isChangingPreferences}
-                  />
-                  <FieldSelect
-                    name="locale"
-                    required
-                    label={t('change_locale')}
-                    hideLabel
-                    defaultValue={locale}
-                    containerClassName="w-40"
-                    disabled={isChangingPreferences}
-                  >
-                    <Select.Content>
-                      {ALLOWED_LOCALES.map((allowedLocale) => (
-                        <Select.Item key={allowedLocale} value={allowedLocale}>
-                          {getLocaleLabel(allowedLocale)}
-                        </Select.Item>
-                      ))}
-                    </Select.Content>
-                  </FieldSelect>
-                  <noscript>
-                    <SubmitButton text={t('submit')} />
-                  </noscript>
-                </Form>
-                <ul className="flex flex-col items-center gap-2 lg:flex-row">
+              <nav>
+                <ul className="flex items-center gap-4">
                   {user && (
                     <>
                       <li>Logged in as {user.username}</li>
@@ -249,7 +211,52 @@ export default function App() {
                   )}
                 </ul>
               </nav>
+              <Form
+                method="post"
+                className="col-span-full flex items-center justify-end gap-4 sm:col-span-1"
+                onChange={(event) => {
+                  setIsChangingPreferences(true);
+                  submit(event.currentTarget, {
+                    navigate: false,
+                    unstable_viewTransition: true,
+                  });
+                }}
+              >
+                <FieldSelect
+                  name="locale"
+                  required
+                  label={t('change_locale')}
+                  hideLabel
+                  defaultValue={locale}
+                  disabled={isChangingPreferences}
+                >
+                  <Select.Content>
+                    {ALLOWED_LOCALES.map((allowedLocale) => (
+                      <Select.Item key={allowedLocale} value={allowedLocale}>
+                        {getLocaleLabel(allowedLocale)}
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </FieldSelect>
+                <Checkbox.Root
+                  aria-label={t('enable_dark_mode')}
+                  defaultChecked={useDarkMode}
+                  disabled={isChangingPreferences}
+                  name="darkMode"
+                  value="true"
+                >
+                  {useDarkMode ? (
+                    <MoonIcon width="24" height="24" />
+                  ) : (
+                    <SunIcon width="24" height="24" />
+                  )}
+                </Checkbox.Root>
+                <noscript>
+                  <SubmitButton text={t('submit')} />
+                </noscript>
+              </Form>
             </header>
+
             {flashMessage && (
               <Toast
                 content={flashMessage.content}

@@ -1,5 +1,4 @@
-import { Select, Text } from '@radix-ui/themes';
-import cn from 'classnames';
+import { Grid, Select, Text } from '@radix-ui/themes';
 
 export type FieldSelectProps = {
   name: string;
@@ -29,14 +28,14 @@ export const FieldSelect = ({
   const ariaDescribedBy = `${name}-error`;
 
   return (
-    <div className={cn('flex flex-col gap-2', containerClassName)}>
+    <Grid className={containerClassName} gap="1">
       <Text as="span" id={ariaLabelledBy} className={hideLabel ? 'sr-only' : ''}>
         {label}
       </Text>
       <Select.Root name={name} {...rest}>
         <Select.Trigger
           aria-labelledby={ariaLabelledBy}
-          aria-describedby={ariaDescribedBy}
+          aria-describedby={error ? ariaDescribedBy : undefined}
           {...triggerProps}
         />
         {children}
@@ -46,6 +45,6 @@ export const FieldSelect = ({
           {error}
         </Text>
       )}
-    </div>
+    </Grid>
   );
 };

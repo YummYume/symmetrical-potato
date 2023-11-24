@@ -4,10 +4,7 @@ import type { Config } from 'tailwindcss';
 
 export default {
   content: ['./app/**/*.{js,jsx,ts,tsx}'],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+  plugins: [require('tailwindcss-radix')(), require('tailwindcss-convert-px-to-rem')],
   presets: [radixThemePreset],
   darkMode: 'class',
 } satisfies Config;
