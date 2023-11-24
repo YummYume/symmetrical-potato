@@ -39,7 +39,7 @@ export default function Index() {
             symmetrical potato
           </Heading>
           <Text as="p">
-            <Trans i18nKey="visitor:potatoes.description"></Trans>
+            <Trans i18nKey="potatoes.description" ns="visitor"></Trans>
           </Text>
           <Grid gap="4">
             <Heading as="h2" size="8" className="text-center first-letter:uppercase">
@@ -51,7 +51,7 @@ export default function Index() {
               {POTATOES.map((potato) => (
                 <Grid gap="2" key={potato}>
                   <Heading as="h3" className="first-letter:uppercase">
-                    {t(`visitor:potatoes.${potato}`)}
+                    {t(`potatoes.${potato}`, { ns: 'visitor' })}
                   </Heading>
                   <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {[...Array(5).keys()].map((i) => (
@@ -78,9 +78,9 @@ export default function Index() {
         <Section>
           <Grid gap="4">
             <Heading as="h2" size="8" className="text-center first-letter:uppercase">
-              {t('visitor:potatoes.inspiration_title')}
+              {t('potatoes.inspiration_title', { ns: 'visitor' })}
             </Heading>
-            <Text as="p">{t('visitor:potatoes.inspiration')}</Text>
+            <Text as="p">{t('potatoes.inspiration', { ns: 'visitor' })}</Text>
             <iframe
               src="https://www.youtube-nocookie.com/embed/QiqqC_fbP1c"
               title="Youtube video"
