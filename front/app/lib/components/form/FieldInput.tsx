@@ -34,7 +34,12 @@ export const FieldInput = ({
       </Text>
       <TextField.Root className={inputContainerClassName}>
         {leftSlot}
-        <TextField.Input id={name} name={name} aria-describedby={ariaDescribedBy} {...rest} />
+        <TextField.Input
+          id={name}
+          name={name}
+          aria-describedby={error ? ariaDescribedBy : ''}
+          {...rest}
+        />
         {rightSlot}
       </TextField.Root>
       {error && (
