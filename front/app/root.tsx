@@ -178,7 +178,6 @@ export default function App() {
             id="global-progress-bar"
             active={navigation.state === 'loading'}
             loadingMessage={t('page_loading')}
-            className="fixed left-0 top-0 z-50 h-0.5 w-full rounded-b-6 bg-transparent"
           />
           <RadixToast.Provider swipeDirection="right">
             <header className="sticky top-0 z-10 grid grid-cols-[max-content_auto] items-center justify-between gap-x-4 gap-y-2 bg-slate-1 p-4 shadow-6 sm:grid-cols-[auto_max-content_max-content] sm:justify-normal">
