@@ -22,7 +22,7 @@ final class UserQueryResolver implements QueryItemResolverInterface
     public function __invoke(?object $item, array $context): object
     {
         return match ($context['info']->fieldName) {
-            'meUser' => $this->me(),
+            'getMeUser' => $this->me(),
             default => throw $this->exceptionHelper->createTranslatableHttpException(404, 'common.not_found'),
         };
     }

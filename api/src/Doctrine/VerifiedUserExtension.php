@@ -13,6 +13,11 @@ use Doctrine\ORM\QueryBuilder;
 final class VerifiedUserExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     /**
+     * Operations that are allowed to access unverified users.
+     */
+    private const ALLOWED_OPERATIONS = ['validate'];
+
+    /**
      * @param array<string, mixed> $context
      */
     public function applyToCollection(
@@ -22,7 +27,7 @@ final class VerifiedUserExtension implements QueryCollectionExtensionInterface, 
         Operation $operation = null,
         array $context = []
     ): void {
-        $this->addWhere($queryBuilder, $resourceClass);
+        $this->addWhere($queryBuilder, $resourceClass, $context);
     }
 
     /**
@@ -37,13 +42,15 @@ final class VerifiedUserExtension implements QueryCollectionExtensionInterface, 
         Operation $operation = null,
         array $context = []
     ): void {
-        $this->addWhere($queryBuilder, $resourceClass);
+        $this->addWhere($queryBuilder, $resourceClass, $context);
     }
 
-    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
+    /**
+     * @param array<string, mixed> $context
+     */
+    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass, array $context): void
     {
-        // TODO admins operations can still see all users
-        if (User::class !== $resourceClass) {
+        if (User::class !== $resourceClass || \in_array($context['operation_name'], self::ALLOWED_OPERATIONS, true)) {
             return;
         }
 

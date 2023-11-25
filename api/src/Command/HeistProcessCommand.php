@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\CrewMember;
 use App\Entity\Heist;
+use App\Entity\User;
 use App\Enum\CrewMemberStatusEnum;
 use App\Enum\HeistDifficultyEnum;
 use App\Enum\HeistPhaseEnum;
@@ -341,8 +342,8 @@ final class HeistProcessCommand extends Command
         // Kills are reduced if the heist is not loud
         return (int) match ($heist->getPreferedTactic()) {
             HeistPreferedTacticEnum::Loud => $totalKills,
-            HeistPreferedTacticEnum::SemiStealth => $totalKills * 0.50,
-            HeistPreferedTacticEnum::Stealth => $totalKills * 0.05,
+            HeistPreferedTacticEnum::SemiStealth => $totalKills * 0.45,
+            HeistPreferedTacticEnum::Stealth => min($totalKills * 0.05, 4),
             HeistPreferedTacticEnum::Unknown => $totalKills * $this->randomFloat(0.05, 1.00)
         };
     }

@@ -6,6 +6,7 @@ use App\Tests\AbstractTestCase;
 
 final class HeistTest extends AbstractTestCase
 {
+    public const HEISTER = 'dallas';
     public const ADMIN = 'bain';
     public const CONTRACTOR = 'shade';
     public const EMPLOYEE = 'bob';
@@ -132,7 +133,7 @@ final class HeistTest extends AbstractTestCase
      */
     public function testHeisterCanSeePublicHeists(): void
     {
-        $this->checkUserCanSeeHeists(self::ALL_PUBLIC_HEISTS);
+        $this->checkUserCanSeeHeists(self::ALL_PUBLIC_HEISTS, self::HEISTER);
     }
 
     /**

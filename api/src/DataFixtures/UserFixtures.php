@@ -52,30 +52,102 @@ final class UserFixtures extends Fixture
     public const DEFAULT_PASSWORD = 'xxx';
     public const REFERENCE_IDENTIFIER = 'user_';
     public const DATA = [
-        self::HEISTER_DALLAS => ['role' => User::ROLE_HEISTER],
-        self::HEISTER_HOXTON => ['role' => User::ROLE_HEISTER],
-        self::HEISTER_CHAINS => ['role' => User::ROLE_HEISTER],
-        self::HEISTER_WOLF => ['role' => User::ROLE_HEISTER],
-        self::HEISTER_JOY => ['role' => User::ROLE_HEISTER],
-        self::HEISTER_PEARL => ['role' => User::ROLE_HEISTER],
-        self::EMPLOYEE_BILE => ['role' => User::ROLE_EMPLOYEE],
-        self::EMPLOYEE_BOB => ['role' => User::ROLE_EMPLOYEE],
-        self::EMPLOYEE_INFILTRATED_CIVILIAN => ['role' => User::ROLE_EMPLOYEE],
-        self::EMPLOYEE_FAKE_COP => ['role' => User::ROLE_EMPLOYEE],
-        self::EMPLOYEE_FAKE_GUARD => ['role' => User::ROLE_EMPLOYEE],
-        self::EMPLOYEE_POLLING_MAN => ['role' => User::ROLE_EMPLOYEE],
-        self::EMPLOYEE_GANG_MEMBER => ['role' => User::ROLE_EMPLOYEE],
-        self::EMPLOYEE_PENDING => ['role' => User::ROLE_EMPLOYEE],
-        self::CONTRACTOR_SHADE => ['role' => User::ROLE_CONTRACTOR],
-        self::CONTRACTOR_SHAYU => ['role' => User::ROLE_CONTRACTOR],
-        self::CONTRACTOR_BUTCHER => ['role' => User::ROLE_CONTRACTOR],
-        self::CONTRACTOR_VLAD => ['role' => User::ROLE_CONTRACTOR],
-        self::CONTRACTOR_BECKETT => ['role' => User::ROLE_CONTRACTOR],
-        self::CONTRACTOR_MAC => ['role' => User::ROLE_CONTRACTOR],
-        self::CONTRACTOR_KEEGAN => ['role' => User::ROLE_CONTRACTOR],
-        self::CONTRACTOR_PENDING => ['role' => User::ROLE_CONTRACTOR],
-        self::CONTRACTOR_REJECTED => ['role' => User::ROLE_CONTRACTOR],
-        self::ADMIN_BAIN => ['role' => User::ROLE_ADMIN],
+        self::HEISTER_DALLAS => [
+            'role' => User::ROLE_HEISTER,
+            'balance' => 1_000_000,
+        ],
+        self::HEISTER_HOXTON => [
+            'role' => User::ROLE_HEISTER,
+            'balance' => 1_000_000,
+        ],
+        self::HEISTER_CHAINS => [
+            'role' => User::ROLE_HEISTER,
+            'balance' => 1_000_000,
+        ],
+        self::HEISTER_WOLF => [
+            'role' => User::ROLE_HEISTER,
+            'balance' => 1_000_000,
+        ],
+        self::HEISTER_JOY => [
+            'role' => User::ROLE_HEISTER,
+            'balance' => 1_000_000,
+        ],
+        self::HEISTER_PEARL => [
+            'role' => User::ROLE_HEISTER,
+            'balance' => 1_000_000,
+        ],
+        self::EMPLOYEE_BILE => [
+            'role' => User::ROLE_EMPLOYEE,
+            'balance' => 1000,
+        ],
+        self::EMPLOYEE_BOB => [
+            'role' => User::ROLE_EMPLOYEE,
+            'balance' => 1000,
+        ],
+        self::EMPLOYEE_INFILTRATED_CIVILIAN => [
+            'role' => User::ROLE_EMPLOYEE,
+            'balance' => 1000,
+        ],
+        self::EMPLOYEE_FAKE_COP => [
+            'role' => User::ROLE_EMPLOYEE,
+            'balance' => 1000,
+        ],
+        self::EMPLOYEE_FAKE_GUARD => [
+            'role' => User::ROLE_EMPLOYEE,
+            'balance' => 1000,
+        ],
+        self::EMPLOYEE_POLLING_MAN => [
+            'role' => User::ROLE_EMPLOYEE,
+            'balance' => 1000,
+        ],
+        self::EMPLOYEE_GANG_MEMBER => [
+            'role' => User::ROLE_EMPLOYEE,
+            'balance' => 1000,
+        ],
+        self::EMPLOYEE_PENDING => [
+            'role' => User::ROLE_EMPLOYEE,
+            'balance' => 1000,
+        ],
+        self::CONTRACTOR_SHADE => [
+            'role' => User::ROLE_CONTRACTOR,
+            'balance' => 10_000_000,
+        ],
+        self::CONTRACTOR_SHAYU => [
+            'role' => User::ROLE_CONTRACTOR,
+            'balance' => 10_000_000,
+        ],
+        self::CONTRACTOR_BUTCHER => [
+            'role' => User::ROLE_CONTRACTOR,
+            'balance' => 10_000_000,
+        ],
+        self::CONTRACTOR_VLAD => [
+            'role' => User::ROLE_CONTRACTOR,
+            'balance' => 10_000_000,
+        ],
+        self::CONTRACTOR_BECKETT => [
+            'role' => User::ROLE_CONTRACTOR,
+            'balance' => 10_000_000,
+        ],
+        self::CONTRACTOR_MAC => [
+            'role' => User::ROLE_CONTRACTOR,
+            'balance' => 10_000_000,
+        ],
+        self::CONTRACTOR_KEEGAN => [
+            'role' => User::ROLE_CONTRACTOR,
+            'balance' => 10_000_000,
+        ],
+        self::CONTRACTOR_PENDING => [
+            'role' => User::ROLE_CONTRACTOR,
+            'balance' => 10_000_000,
+        ],
+        self::CONTRACTOR_REJECTED => [
+            'role' => User::ROLE_CONTRACTOR,
+            'balance' => 10_000_000,
+        ],
+        self::ADMIN_BAIN => [
+            'role' => User::ROLE_ADMIN,
+            'balance' => 100_000_000,
+        ],
     ];
 
     public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)
@@ -92,8 +164,9 @@ final class UserFixtures extends Fixture
                 ->setPassword($this->passwordHasher->hashPassword($newUser, self::DEFAULT_PASSWORD))
                 ->addRole($user['role'])
                 ->setLocale(UserLocaleEnum::random())
-                ->setBalance(random_int(0, 100000) * 0.75)
+                ->setBalance($user['balance'])
                 ->setStatus(UserStatusEnum::Verified)
+                ->setReason('Let me INNNNNNNN')
             ;
 
             $manager->persist($newUser);

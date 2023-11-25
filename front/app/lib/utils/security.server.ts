@@ -1,12 +1,12 @@
 import { redirect } from '@remix-run/node';
 
-import type { User } from '~api/types';
+import type { MeUser } from '~api/types';
 
 /**
  * Throw a redirect if the user is not logged in. Will return the user if logged in.
  */
 export const denyAccessUnlessGranted = (
-  user: User | null,
+  user: MeUser | null,
   roles: string | string[] = 'ROLE_USER',
   redirectTo = '/login',
   init: number | ResponseInit | undefined = undefined,

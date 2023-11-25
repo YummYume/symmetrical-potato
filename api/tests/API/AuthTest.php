@@ -6,6 +6,9 @@ use App\Tests\AbstractTestCase;
 
 final class AuthTest extends AbstractTestCase
 {
+    /**
+     * Tests if the getMeUser query returns null when not authenticated.
+     */
     public function testMeNotAuthenticated(): void
     {
         static::createClient()->request('POST', '/graphql', [
@@ -14,8 +17,8 @@ final class AuthTest extends AbstractTestCase
             ],
             'json' => [
                 'query' => 'query {
-                    meUser {
-                        username
+                    getMeUser {
+                        email
                     }
                 }',
             ],
@@ -24,11 +27,14 @@ final class AuthTest extends AbstractTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains([
             'data' => [
-                'meUser' => null,
+                'getMeUser' => null,
             ],
         ]);
     }
 
+    /**
+     * Tests if the getMeUser query returns the authenticated user.
+     */
     public function testMeAuthenticated(): void
     {
         ['client' => $client] = static::createAuthenticatedClient();
@@ -38,8 +44,8 @@ final class AuthTest extends AbstractTestCase
             ],
             'json' => [
                 'query' => 'query {
-                    meUser {
-                        username
+                    getMeUser {
+                        email
                     }
                 }',
             ],
@@ -48,13 +54,16 @@ final class AuthTest extends AbstractTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains([
             'data' => [
-                'meUser' => [
-                    'username' => 'dallas',
+                'getMeUser' => [
+                    'email' => 'dallas@sp.com',
                 ],
             ],
         ]);
     }
 
+    /**
+     * Tests if a user can login.
+     */
     public function testSuccessfulLogin(): void
     {
         $client = static::createClient();
@@ -81,8 +90,12 @@ final class AuthTest extends AbstractTestCase
         $data = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertArrayHasKey('token', $data['data']['loginUser']['user'] ?? []);
+        $this->assertArrayNotHasKey('errors', $data);
     }
 
+    /**
+     * Tests if invalid credentials are rejected.
+     */
     public function testInvalidLogin(): void
     {
         $client = static::createClient();
@@ -109,5 +122,6 @@ final class AuthTest extends AbstractTestCase
         $data = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertArrayNotHasKey('token', $data['data']['loginUser']['user'] ?? []);
+        $this->assertArrayHasKey('errors', $data);
     }
 }
