@@ -5,7 +5,7 @@ import type { Query, Mutation } from '~api/types';
 export const getCurrentUser = async (client: GraphQLClient) => {
   return client.request<Query>(gql`
     query {
-      meUser {
+      getMeUser {
         id
         username
         email

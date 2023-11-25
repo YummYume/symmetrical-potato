@@ -7,7 +7,7 @@ use App\Tests\AbstractTestCase;
 final class AuthTest extends AbstractTestCase
 {
     /**
-     * Tests if the meUser query returns null when not authenticated.
+     * Tests if the getMeUser query returns null when not authenticated.
      */
     public function testMeNotAuthenticated(): void
     {
@@ -17,8 +17,8 @@ final class AuthTest extends AbstractTestCase
             ],
             'json' => [
                 'query' => 'query {
-                    meUser {
-                        username
+                    getMeUser {
+                        email
                     }
                 }',
             ],
@@ -27,13 +27,13 @@ final class AuthTest extends AbstractTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains([
             'data' => [
-                'meUser' => null,
+                'getMeUser' => null,
             ],
         ]);
     }
 
     /**
-     * Tests if the meUser query returns the authenticated user.
+     * Tests if the getMeUser query returns the authenticated user.
      */
     public function testMeAuthenticated(): void
     {
@@ -44,8 +44,8 @@ final class AuthTest extends AbstractTestCase
             ],
             'json' => [
                 'query' => 'query {
-                    meUser {
-                        username
+                    getMeUser {
+                        email
                     }
                 }',
             ],
@@ -54,8 +54,8 @@ final class AuthTest extends AbstractTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains([
             'data' => [
-                'meUser' => [
-                    'username' => 'dallas',
+                'getMeUser' => [
+                    'email' => 'dallas@sp.com',
                 ],
             ],
         ]);

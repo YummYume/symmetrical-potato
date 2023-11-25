@@ -12,30 +12,6 @@ use Symfony\Component\PropertyInfo\Type;
 final class MatchFilter extends AbstractFilter
 {
     /**
-     * @param array<string, mixed> $context
-     * @param array<int, string>   $value
-     */
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
-    {
-        if (!$this->isPropertyEnabled($property, $resourceClass) || !$this->isPropertyMapped($property, $resourceClass)) {
-            return;
-        }
-
-        $alias = $queryBuilder->getRootAliases()[0];
-        $field = $property;
-
-        if ($this->isPropertyNested($property, $resourceClass)) {
-            [$alias, $field] = $this->addJoinsForNestedProperty($property, $alias, $queryBuilder, $queryNameGenerator, $resourceClass, Join::INNER_JOIN);
-        }
-
-        $valueParameter = $queryNameGenerator->generateParameterName($field);
-
-        $queryBuilder
-            ->andWhere($queryBuilder->expr()->in(sprintf('%s.%s', $alias, $field), ":$valueParameter"))
-            ->setParameter($valueParameter, $value);
-    }
-
-    /**
      * @return array<string, mixed>
      */
     public function getDescription(string $resourceClass): array
@@ -66,5 +42,36 @@ final class MatchFilter extends AbstractFilter
         }
 
         return $description;
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    protected function filterProperty(
+        string $property,
+        mixed $value,
+        QueryBuilder $queryBuilder,
+        QueryNameGeneratorInterface $queryNameGenerator,
+        string $resourceClass,
+        Operation $operation = null,
+        array $context = []
+    ): void {
+        if (!$this->isPropertyEnabled($property, $resourceClass) || !$this->isPropertyMapped($property, $resourceClass)) {
+            return;
+        }
+
+        $alias = $queryBuilder->getRootAliases()[0];
+        $field = $property;
+
+        if ($this->isPropertyNested($property, $resourceClass)) {
+            [$alias, $field] = $this->addJoinsForNestedProperty($property, $alias, $queryBuilder, $queryNameGenerator, $resourceClass, Join::INNER_JOIN);
+        }
+
+        $valueParameter = $queryNameGenerator->generateParameterName($field);
+
+        $queryBuilder
+            ->andWhere($queryBuilder->expr()->in(sprintf('%s.%s', $alias, $field), ":$valueParameter"))
+            ->setParameter($valueParameter, $value)
+        ;
     }
 }

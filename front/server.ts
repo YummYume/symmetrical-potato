@@ -15,7 +15,7 @@ import { getCurrentUser } from '~api/user';
 import { getLocale } from '~utils/locale';
 
 import type { GetLoadContextFunction } from '@remix-run/express';
-import type { User } from '~api/types';
+import type { MeUser } from '~api/types';
 
 sourceMapSupport.install();
 installGlobals();
@@ -40,13 +40,13 @@ const getLoadContext = (async (req, res) => {
     },
   });
   const darkMode = await darkModeCookie.parse(req.headers.cookie ?? '');
-  let user: User | null = null;
+  let user: MeUser | null = null;
 
   try {
     const userResponse = await getCurrentUser(client);
 
-    if (userResponse && userResponse.meUser) {
-      user = userResponse.meUser;
+    if (userResponse && userResponse.getMeUser) {
+      user = userResponse.getMeUser;
     }
   } catch (error) {
     // TODO use refresh token?

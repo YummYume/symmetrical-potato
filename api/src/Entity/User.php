@@ -36,11 +36,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [],
     graphQlOperations: [
-        new Query(),
+        new Query(
+            normalizationContext: [
+                'groups' => ['user:read:public'],
+            ]
+        ),
         new QueryCollection(
             normalizationContext: [
                 'groups' => ['user:read:public'],
-            ],
+            ]
         ),
         new Mutation(
             name: 'create',
@@ -66,7 +70,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityMessage: 'Unauthorized.',
         ),
         new Query(
-            name: 'me',
+            name: 'get',
+            shortName: 'MeUser',
             resolver: UserQueryResolver::class,
             args: [],
             normalizationContext: [
@@ -137,7 +142,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['user:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
