@@ -54,6 +54,7 @@ export async function loader({ request, context }: DataFunctionArgs) {
   return json(
     {
       env: {
+        GOOGLE_MAPS_KEY: process.env.GOOGLE_MAPS_KEY,
         SENTRY_DSN: process.env.SENTRY_DSN,
       },
       flashMessage,

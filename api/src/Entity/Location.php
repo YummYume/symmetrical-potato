@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\Query;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Repository\LocationRepository;
@@ -11,9 +15,26 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
+#[ApiResource(
+    security: 'is_granted("ROLE_USER")',
+    operations: [],
+    graphQlOperations: [
+        new Query(
+            normalizationContext: [
+                'groups' => ['location:read:public'],
+            ]
+        ),
+        new QueryCollection(
+            normalizationContext: [
+                'groups' => ['location:read:public'],
+            ]
+        ),
+    ]
+)]
 class Location
 {
     use BlameableTrait;
@@ -23,18 +44,27 @@ class Location
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $id = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['location:read'])]
     private ?float $latitude = null;
 
     #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['location:read'])]
     private ?float $longitude = null;
 
     #[ORM\Column(length: 255)]
+    #[ApiProperty]
+    #[Groups(['location:read', 'location:read:public'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[ApiProperty]
+    #[Groups(['location:read'])]
     private ?string $address = null;
 
     #[ORM\Column]

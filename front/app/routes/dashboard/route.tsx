@@ -1,6 +1,7 @@
 import { Heading } from '@radix-ui/themes';
 import { useLoaderData } from '@remix-run/react';
 
+import Map from '~/lib/components/Map';
 import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { DataFunctionArgs } from '@remix-run/node';
@@ -33,6 +34,7 @@ export default function Dashboard() {
           viewTransitionName: 'logo',
         }}
       />
+      <Map />
     </div>
   );
 }

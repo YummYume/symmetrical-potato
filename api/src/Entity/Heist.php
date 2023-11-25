@@ -65,7 +65,6 @@ class Heist
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['heist:read', 'heist:read:public'])]
     private ?Uuid $id = null;
 
     #[ORM\Column]
