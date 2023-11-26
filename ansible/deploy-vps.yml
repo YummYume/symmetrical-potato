@@ -12,11 +12,8 @@
       register: found_compose
 
     - name: Stop all services
-      community.docker.docker_compose:
-        project_src: ./app
-        files: compose.prod.yml
-        build: false
-        stopped: true
+      command:
+        cmd: "docker compose -f ./app/compose.prod.yml down"
       when: found_compose.stat.exists
 
     - name: Get compose.prod.yml
@@ -34,11 +31,12 @@
         mode: "0660"
 
     - name: Create and pull compose services
-      community.docker.docker_compose:
-        project_src: ./app
-        files: compose.prod.yml
-        pull: true
-        state: present
+      command:
+        cmd: "docker compose -f ./app/compose.prod.yml {{ item }}"
+      loop:
+        - pull
+        - build --force-rm
+        - up -d --remove-orphans --force-recreate
 
     - name: Required Symfony Commands
       command:
