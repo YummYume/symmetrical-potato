@@ -17,7 +17,7 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v4
 
-      - name: Cache APT packages
+      - name: Cache APT packages (Ansible)
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: ansible
