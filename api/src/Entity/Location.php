@@ -7,6 +7,7 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Repository\LocationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -35,6 +36,12 @@ class Location
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
+
+    #[ORM\Column]
+    private int $reviewCount = 0;
+
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $averageRating = null;
 
     /** @var ArrayCollection<int, Review> */
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Review::class)]
@@ -99,6 +106,30 @@ class Location
     public function setAddress(?string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getReviewCount(): int
+    {
+        return $this->reviewCount;
+    }
+
+    public function setReviewCount(int $reviewCount): static
+    {
+        $this->reviewCount = $reviewCount;
+
+        return $this;
+    }
+
+    public function getAverageRating(): ?float
+    {
+        return $this->averageRating;
+    }
+
+    public function setAverageRating(?float $averageRating): static
+    {
+        $this->averageRating = $averageRating;
 
         return $this;
     }

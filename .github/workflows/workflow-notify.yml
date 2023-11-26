@@ -2,7 +2,7 @@ name: Workflow Notify
 
 on:
   workflow_run:
-    workflows: ["Testing API", "Linting Front", "Linting API", "Publish Front", "Publish API", "Deploy on VPS"]
+    workflows: ["Testing API", "Linting Front", "Linting API", "Publish Front", "Publish API", "Deploy on VPS", "Execute scheduled tasks"]
     types: [completed]
 
 jobs:
