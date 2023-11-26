@@ -11,3 +11,16 @@
     @apply rounded-r-6 bg-accent-7 transition-all duration-[inherit] motion-reduce:transition-none;
   }
 }
+
+// Drawer
+.rt-DialogOverlay {
+  &:has(.drawer) {
+    .drawer {
+      @apply h-full w-[75vw] max-w-none space-y-4 sm:w-[66vw] md:w-[50vw] lg:w-[33vw] xl:w-[25vw];
+    }
+  }
+
+  &:has(.drawer--right) {
+    @apply justify-end;
+  }
+}

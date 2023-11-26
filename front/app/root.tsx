@@ -1,7 +1,7 @@
 import * as Checkbox from '@radix-ui/react-checkbox';
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
+import { HamburgerMenuIcon, MoonIcon, SunIcon } from '@radix-ui/react-icons';
 import * as RadixToast from '@radix-ui/react-toast';
-import { Heading, Select, Text, Theme } from '@radix-ui/themes';
+import { Button, Dialog, Flex, Heading, Select, Text, Theme } from '@radix-ui/themes';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import { json, type LinksFunction } from '@remix-run/node';
 import {
@@ -160,6 +160,90 @@ export default function App() {
     setIsChangingPreferences(false);
   }, [locale, useDarkMode]);
 
+  const menu = () => {
+    return (
+      <>
+        {user && (
+          <Flex align="center" gap="4" justify="end">
+            <Text>
+              {t('logged-in-as')} {user.username}
+            </Text>
+            <Form method="post" action="/logout">
+              <SubmitButton text={t('logout')} />
+            </Form>
+          </Flex>
+        )}
+        <Form
+          method="post"
+          className="flex items-center justify-end gap-4"
+          onChange={(event) => {
+            setIsChangingPreferences(true);
+            submit(event.currentTarget, {
+              navigate: false,
+              unstable_viewTransition: true,
+            });
+          }}
+        >
+          {/* Locale */}
+          <FieldSelect
+            name="locale"
+            required
+            label={t('change_locale')}
+            hideLabel
+            defaultValue={locale}
+            disabled={isChangingPreferences}
+          >
+            <Select.Content>
+              {ALLOWED_LOCALES.map((allowedLocale) => (
+                <Select.Item key={allowedLocale} value={allowedLocale}>
+                  {getLocaleLabel(allowedLocale)}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </FieldSelect>
+
+          {/* Dark mode */}
+          <Checkbox.Root
+            aria-label={t('enable_dark_mode')}
+            defaultChecked={useDarkMode}
+            disabled={isChangingPreferences}
+            name="darkMode"
+            value="true"
+          >
+            <Button aria-label={t('enable_dark_mode')}>
+              {useDarkMode ? (
+                <MoonIcon width="24" height="24" />
+              ) : (
+                <SunIcon width="24" height="24" />
+              )}
+            </Button>
+          </Checkbox.Root>
+
+          <noscript>
+            <SubmitButton text={t('submit')} />
+          </noscript>
+        </Form>
+        <nav>
+          <ul className="grid items-center gap-4 text-right md:grid-flow-col">
+            {user ? (
+              <li>
+                <Link to="/dashboard" prefetch="intent">
+                  {t('dashboard')}
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link to="/login" prefetch="intent">
+                  {t('login')}
+                </Link>
+              </li>
+            )}
+          </ul>
+        </nav>
+      </>
+    );
+  };
+
   return (
     <html
       lang={locale}
@@ -181,80 +265,21 @@ export default function App() {
             loadingMessage={t('page_loading')}
           />
           <RadixToast.Provider swipeDirection="right">
-            <header className="sticky top-0 z-10 grid grid-cols-[max-content_auto] items-center justify-between gap-x-4 gap-y-2 bg-slate-1 p-4 shadow-6 sm:grid-cols-[auto_max-content_max-content] sm:justify-normal">
+            <header className="sticky top-0 z-10 flex items-center justify-between bg-slate-1 p-4 shadow-6">
               <Link to="/" className="w-fit text-7" unstyled>
                 Symmetrical Potato
               </Link>
-              <nav>
-                <ul className="flex items-center gap-4">
-                  {user && (
-                    <>
-                      <li>Logged in as {user.username}</li>
-                      <li>
-                        <Link to="/dashboard" prefetch="intent">
-                          Dashboard
-                        </Link>
-                      </li>
-                      <li>
-                        <Form method="post" action="/logout">
-                          <SubmitButton text={t('logout')} />
-                        </Form>
-                      </li>
-                    </>
-                  )}
-                  {!user && (
-                    <li>
-                      <Link to="/login" prefetch="intent">
-                        {t('login')}
-                      </Link>
-                    </li>
-                  )}
-                </ul>
-              </nav>
-              <Form
-                method="post"
-                className="col-span-full flex items-center justify-end gap-4 sm:col-span-1"
-                onChange={(event) => {
-                  setIsChangingPreferences(true);
-                  submit(event.currentTarget, {
-                    navigate: false,
-                    unstable_viewTransition: true,
-                  });
-                }}
-              >
-                <FieldSelect
-                  name="locale"
-                  required
-                  label={t('change_locale')}
-                  hideLabel
-                  defaultValue={locale}
-                  disabled={isChangingPreferences}
-                >
-                  <Select.Content>
-                    {ALLOWED_LOCALES.map((allowedLocale) => (
-                      <Select.Item key={allowedLocale} value={allowedLocale}>
-                        {getLocaleLabel(allowedLocale)}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </FieldSelect>
-                <Checkbox.Root
-                  aria-label={t('enable_dark_mode')}
-                  defaultChecked={useDarkMode}
-                  disabled={isChangingPreferences}
-                  name="darkMode"
-                  value="true"
-                >
-                  {useDarkMode ? (
-                    <MoonIcon width="24" height="24" />
-                  ) : (
-                    <SunIcon width="24" height="24" />
-                  )}
-                </Checkbox.Root>
-                <noscript>
-                  <SubmitButton text={t('submit')} />
-                </noscript>
-              </Form>
+              <div className="flex items-center gap-x-4 gap-y-2 md:hidden">
+                <Dialog.Root>
+                  <Dialog.Trigger>
+                    <Button aria-label={t('open-menu')}>
+                      <HamburgerMenuIcon width="24" height="24" />
+                    </Button>
+                  </Dialog.Trigger>
+                  <Dialog.Content className="drawer drawer--right">{menu()}</Dialog.Content>
+                </Dialog.Root>
+              </div>
+              <div className="hidden items-center gap-4 md:flex md:flex-row-reverse">{menu()}</div>
             </header>
 
             {flashMessage && (
