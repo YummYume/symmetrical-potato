@@ -15,7 +15,7 @@ export default function ForgottenPassword() {
 
   return (
     <Section className="space-y-16">
-      <Heading as="h1" className="text-center" size="9">
+      <Heading align="center" as="h1" size="9">
         {t('forgotten-password', { ns: 'login' })}
       </Heading>
       <Container p="4" size="1">
