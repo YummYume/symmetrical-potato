@@ -26,6 +26,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HeistRepository::class)]
 #[ApiResource(
@@ -42,7 +43,19 @@ use Symfony\Component\Uid\Uuid;
                 'groups' => ['heist:read:public', 'blameable'],
             ]
         ),
-        new Mutation(name: 'create'),
+        new Mutation(
+            name: 'create',
+            security: 'is_granted("ROLE_CONTRACTOR") or is_granted("ROLE_ADMIN")',
+            normalizationContext: [
+                'groups' => ['heist:create:read'],
+            ],
+            denormalizationContext: [
+                'groups' => ['heist:create'],
+            ],
+            validationContext: [
+                'groups' => ['heist:create'],
+            ],
+        ),
         new Mutation(name: 'update'),
         new DeleteMutation(name: 'delete'),
     ]
@@ -80,53 +93,119 @@ class Heist
     #[ORM\Column]
     #[ApiProperty]
     #[Groups(['heist:read', 'heist:read:public'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.name.not_blank')]
+    #[Assert\Length(
+        groups: ['heist:create'],
+        min: 2,
+        max: 100,
+        minMessage: 'heist.name.min_length',
+        maxMessage: 'heist.name.max_length'
+    )]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.description.not_blank')]
+    #[Assert\Length(
+        groups: ['heist:create'],
+        min: 10,
+        max: 255,
+        minMessage: 'heist.description.min_length',
+        maxMessage: 'heist.description.max_length'
+    )]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.start_date.not_blank')]
+    #[Assert\DateTime(groups: ['heist:create'], message: 'heist.start_date.invalid')]
+    #[Assert\LessThan(
+        groups: ['heist:create'],
+        propertyPath: 'shouldEndAt',
+        message: 'heist.start_date.less_than.should_end_date'
+    )]
+    #[Assert\GreaterThanOrEqual(
+        groups: ['heist:create'],
+        value: 'today',
+        message: 'heist.start_date.greater_than_equal.today'
+    )]
     private ?\DateTimeInterface $startAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.should_end_date.not_blank')]
+    #[Assert\DateTime(groups: ['heist:create'], message: 'heist.should_end_date.invalid')]
+    #[Assert\GreaterThan(
+        groups: ['heist:create'],
+        propertyPath: 'startAt',
+        message: 'heist.should_end_date.greather_than.start_date'
+    )]
     private ?\DateTimeInterface $shouldEndAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\DateTime(groups: ['heist:create'], message: 'heist.end_date.invalid')]
+    #[Assert\GreaterThan(
+        groups: ['heist:create'],
+        propertyPath: 'startAt',
+        message: 'heist.end_date.greater_than.start_date'
+    )]
     private ?\DateTimeInterface $endedAt = null;
 
     /** @var array<int, array<string, string|bool>> */
     #[ORM\Column(type: Types::JSON)]
     private array $objectives = [];
 
+    #[Assert\Type(groups: ['heist:create'], type: 'float', message: 'heist.minimum_required_rating.invalid')]
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $minimumRequiredRating = null;
 
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.prefered_tactic.not_blank')]
+    #[Assert\Choice(
+        groups: ['heist:create'],
+        callback: [HeistPreferedTacticEnum::class, 'toArray'],
+        message: 'heist.prefered_tactic.invalid'
+    )]
     private HeistPreferedTacticEnum $preferedTactic = HeistPreferedTacticEnum::Unknown;
 
     #[ORM\Column(length: 50, enumType: HeistDifficultyEnum::class)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.difficulty.not_blank')]
+    #[Assert\Choice(
+        groups: ['heist:create'],
+        callback: [HeistDifficultyEnum::class, 'toArray'],
+        message: 'heist.difficulty.invalid'
+    )]
     private HeistDifficultyEnum $difficulty = HeistDifficultyEnum::Normal;
 
     #[ORM\Column(length: 50, enumType: HeistPhaseEnum::class)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.phase.not_blank')]
+    #[Assert\Choice(
+        groups: ['heist:create'],
+        callback: [HeistPhaseEnum::class, 'toArray'],
+        message: 'heist.phase.invalid'
+    )]
     private HeistPhaseEnum $phase = HeistPhaseEnum::Planning;
 
     #[ORM\Column(length: 10, enumType: HeistVisibilityEnum::class)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.visibility.not_blank')]
+    #[Assert\Choice(
+        groups: ['heist:create'],
+        callback: [HeistVisibilityEnum::class, 'toArray'],
+        message: 'heist.visibility.invalid'
+    )]
     private HeistVisibilityEnum $visibility = HeistVisibilityEnum::Draft;
 
     /** @var ArrayCollection<int, CrewMember> */
@@ -144,12 +223,14 @@ class Heist
     #[ORM\ManyToOne(inversedBy: 'heists')]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.employee.not_blank')]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]
     #[ORM\JoinColumn(nullable: false)]
     #[ApiProperty]
     #[Groups(['heist:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.establishment.not_blank')]
     private ?Establishment $establishment = null;
 
     /** @var ArrayCollection<int, Asset> */

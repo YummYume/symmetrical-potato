@@ -23,6 +23,50 @@ user.reason.not_blank: Please enter a reason for your registration request.
 user.reason.min_length: Your reason must be at least {limit} characters long.
 user.reason.max_length: Your reason cannot be longer than {limit} characters.
 
+# Heist
+heist.name.not_blank: Please enter a name.
+heist.name.min_length: The name must be at least {limit} characters long.
+heist.name.max_length: The name cannot exceed {limit} characters.
+
+heist.description.not_blank: Please enter a description.
+heist.description.min_length: The description must be at least {limit} characters long.
+heist.description.max_length: The description cannot exceed {limit} characters.
+
+heist.start_date.not_blank: Please enter the start date.
+heist.start_date.invalid: Please enter a valid start date.
+heist.start_date.less_than.should_end_date: The start date must be before the theoretical end date.
+heist.start_date.greater_than_equal.today: The start date must be after today.
+
+heist.should_end_date.not_blank: Please enter the theoretical end date.
+heist.should_end_date.invalid: Please enter a valid theoretical end date.
+heist.should_end_date.greater_than_equal.start_date: The theoretical end date must be after the start date.
+
+heist.end_date.invalid: Please enter a valid end date.
+heist.end_date.greater_than.start_date: The end date must be after the start date.
+
+heist.objectives.invalid: Please enter a list of objectives in JSON format.
+
+heist.minimum_required_rating.invalid: Please enter a number.
+
+heist.prefered_tactic.not_blank: Please enter a recommended tactic.
+heist.prefered_tactic.invalid: The recommended tactic is invalid.
+
+heist.difficulty.not_blank: Please enter a difficulty.
+heist.difficulty.invalid: The difficulty is invalid.
+
+heist.phase.not_blank: Please enter a phase.
+heist.phase.invalid: The phase is invalid.
+
+heist.visibility.not_blank: Please enter visibility.
+heist.visibility.invalid: The visibility is invalid.
+
+heist.allowedEmployees.type: Please enter a list of allowed employees in JSON format.
+heist.allowedEmployees.not_blank: Please enter a list of allowed employees.
+
+heist.employee.not_blank: Please enter an employee.
+
+heist.establishment.not_blank: Please enter an establishment.
+
 # ContractorRequest
 contractor_request.reason.not_blank: Please enter a reason for your contractor request.
 contractor_request.reason.min_length: Your reason must be at least {limit} characters long.
