@@ -14,13 +14,41 @@
 
 // Drawer
 .rt-DialogOverlay {
+  @apply p-3.5;
+
   &:has(.drawer) {
     .drawer {
-      @apply h-full w-[75vw] max-w-none space-y-4 sm:w-[66vw] md:w-[50vw] lg:w-[33vw] xl:w-[25vw];
+      @apply max-w-none space-y-4;
     }
+  }
+
+  &:has(.drawer--bottom),
+  &:has(.drawer--top) {
+    .drawer {
+      @apply h-auto;
+    }
+  }
+
+  &:has(.drawer--left),
+  &:has(.drawer--right) {
+    .drawer {
+      @apply min-h-full w-[75vw] sm:w-[66vw] md:w-[50vw] lg:w-[33vw] xl:w-[25vw];
+    }
+  }
+
+  &:has(.drawer--bottom) {
+    @apply items-end;
+  }
+
+  &:has(.drawer--left) {
+    @apply justify-start;
   }
 
   &:has(.drawer--right) {
     @apply justify-end;
+  }
+
+  &:has(.drawer--top) {
+    @apply items-start;
   }
 }
