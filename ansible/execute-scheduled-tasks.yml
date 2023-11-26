@@ -9,7 +9,7 @@
       register: api-result
 
     - name: Launch scheduled tasks
-      when: result.exists
+      when: api-result.exists
       command:
         cmd: "docker compose -f ./app/compose.prod.yml exec php {{ item }}"
       loop:
