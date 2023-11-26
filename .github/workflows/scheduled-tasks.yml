@@ -8,8 +8,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  commands:
-    name: Run commands
+  scheduled-tasks:
+    name: Run scheduled tasks
 
     runs-on: ubuntu-latest
 
