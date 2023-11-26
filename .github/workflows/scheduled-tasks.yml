@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '*/15 * * * *' # every 15 minutes
 
+  workflow_dispatch:
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
