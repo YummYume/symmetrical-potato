@@ -1,0 +1,18 @@
+---
+- hosts: prod
+  name: Execute scheduled tasks
+  no_log: true
+  tasks:
+    - name: Get API container info
+      community.docker.docker_container_info:
+        name: php
+      register: api-result
+
+    - name: Launch scheduled tasks
+      when: api-result.exists
+      command:
+        cmd: "docker compose -f ./app/compose.prod.yml exec php {{ item }}"
+      loop:
+        - php bin/console app:review:process
+        - php bin/console app:user-rating:compute
+        - php bin/console app:heist:process

@@ -35,9 +35,9 @@ final class HeistProcessCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->title('Processing ongoing and unprocessed heists...');
-
         try {
+            $io->title('Processing ongoing and unprocessed heists...');
+
             $ongoingHeists = $this->heistRepository->findUnprocessedOngoingHeists();
 
             if (empty($ongoingHeists)) {

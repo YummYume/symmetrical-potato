@@ -1,14 +1,15 @@
-name: Deploy on VPS
+name: Execute scheduled tasks
 
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '*/15 * * * *' # every 15 minutes
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Deploy on VPS
+  scheduled-tasks:
+    name: Run scheduled tasks
 
     runs-on: ubuntu-latest
 
@@ -17,21 +18,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Cache APT packages
-        uses: actions/cache@v3
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/apt.lock') }}
-          restore-keys: ${{ runner.os }}-apt-
+          packages: ansible
+          version: 1.0
 
-      - name: Install Ansible
-        run: |
-          sudo apt update
-          sudo apt install -y ansible
-
-      - name: Deploy on vps
+      - name: Execute Ansible playbook
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: deploy-vps.yml
+          playbook: execute-scheduled-tasks.yml
           directory: ./ansible
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           vault_password: ${{ secrets.VAULT_PASSWORD }}

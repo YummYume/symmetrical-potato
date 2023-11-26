@@ -88,6 +88,16 @@ class Establishment
     #[Groups(['establishement:read'])]
     private float $crewCut = 80.0;
 
+    #[ORM\Column]
+    #[ApiProperty]
+    #[Groups(['establishement:read', 'establishement:read:public'])]
+    private int $reviewCount = 0;
+
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[ApiProperty]
+    #[Groups(['establishement:read', 'establishement:read:public'])]
+    private ?float $averageRating = null;
+
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
     #[ApiProperty]
@@ -205,6 +215,30 @@ class Establishment
     public function getHeisterCut(): float
     {
         return $this->getCrewCut() / Heist::MAX_ALLOWED_CREW_MEMBERS;
+    }
+
+    public function getReviewCount(): int
+    {
+        return $this->reviewCount;
+    }
+
+    public function setReviewCount(int $reviewCount): static
+    {
+        $this->reviewCount = $reviewCount;
+
+        return $this;
+    }
+
+    public function getAverageRating(): ?float
+    {
+        return $this->averageRating;
+    }
+
+    public function setAverageRating(?float $averageRating): static
+    {
+        $this->averageRating = $averageRating;
+
+        return $this;
     }
 
     public function getContractor(): ?User
