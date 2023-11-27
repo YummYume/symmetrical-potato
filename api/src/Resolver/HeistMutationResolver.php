@@ -29,33 +29,38 @@ final class HeistMutationResolver implements MutationResolverInterface
      */
     public function create(array $context): ?Heist
     {
-        $location = $this->locationRepository->findOneBy([
-            'latitude' => $context['args']['input']['location']['latitude'],
-            'longitude' => $context['args']['input']['location']['longitude'],
-        ]);
+        dump($context['args']['input']);
+        dump($context);
+        // $location = $this->locationRepository->findOneBy([
+        //     'latitude' => $context['args']['input']['location']['latitude'],
+        //     'longitude' => $context['args']['input']['location']['longitude'],
+        // ]);
 
-        if (null === $location) {
-            // TODO check if location is valid (e.g. with google maps api) and create it if it is else throw error
-        }
+        return null;
 
-        $heist = (new Heist())
-            ->setName($context['args']['input']['name'])
-            ->setDescription($context['args']['input']['description'])
-            ->setMaximumPayout($context['args']['input']['maximumPayout'])
-            ->setMinimumPayout($context['args']['input']['minimumPayout'])
-            ->setPreferedTactic($context['args']['input']['preferedTactic'])
-            ->setDifficulty($context['args']['input']['difficulty'])
-            ->setVisibility($context['args']['input']['visibility'])
-            ->setPhase($context['args']['input']['phase'])
-            ->setLocation($location)
-            ->addAllowedEmployee($context['args']['input']['allowedEmployees'])
-            ->setEstablishment($context['args']['input']['establishment'])
-            ->addForbiddenAsset($context['args']['input']['forbiddenAssets'])
-            ->addForbiddenUser($context['args']['input']['forbiddenUsers'])
-            ->setStartAt($context['args']['input']['startTime'])
-            ->setShouldEndAt($context['args']['input']['shouldEndAt'])
-        ;
+        // if (null === $location) {
+        //     return null;
+        //     // TODO check if location is valid (e.g. with google maps api) and create it if it is else throw error
+        // }
 
-        return $heist;
+        // $heist = (new Heist())
+        //     ->setName($context['args']['input']['name'])
+        //     ->setDescription($context['args']['input']['description'])
+        //     ->setMaximumPayout($context['args']['input']['maximumPayout'])
+        //     ->setMinimumPayout($context['args']['input']['minimumPayout'])
+        //     ->setPreferedTactic($context['args']['input']['preferedTactic'])
+        //     ->setDifficulty($context['args']['input']['difficulty'])
+        //     ->setVisibility($context['args']['input']['visibility'])
+        //     ->setPhase($context['args']['input']['phase'])
+        //     ->setLocation($location)
+        //     ->addAllowedEmployee($context['args']['input']['allowedEmployees'])
+        //     ->setEstablishment($context['args']['input']['establishment'])
+        //     ->addForbiddenAsset($context['args']['input']['forbiddenAssets'])
+        //     ->addForbiddenUser($context['args']['input']['forbiddenUsers'])
+        //     ->setStartAt($context['args']['input']['startTime'])
+        //     ->setShouldEndAt($context['args']['input']['shouldEndAt'])
+        // ;
+
+        // return $heist;
     }
 }

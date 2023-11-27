@@ -40,7 +40,13 @@ heist.start_date.greater_than_equal.today: La date de début doit être après a
 
 heist.should_end_date.not_blank: Veuillez saisir la date de fin théorique.
 heist.should_end_date.invalid: Veuillez saisir une date de fin théorique valide.
-heist.should_end_date.greater_than_equal.start_date: La date de fin théorique doit être après la date de début.
+heist.should_end_date.greater_than.start_date: La date de fin théorique doit être après la date de début.
+
+heist.minimun_payout.not_blank: Veuillez saisir un montant minimum.
+heist.minimun_payout.invalid: Veuillez saisir un montant minimum valide.
+
+heist.maximum_payout.not_blank: Veuillez saisir un montant maximum.
+heist.maximum_payout.invalid: Veuillez saisir un montant maximum valide.
 
 heist.end_date.invalid: Veuillez saisir une date de fin valide.
 heist.end_date.greater_than.start_date: La date de fin doit être après la date de début.

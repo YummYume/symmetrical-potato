@@ -27,12 +27,12 @@ use Symfony\Component\Uid\Uuid;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['establishement:read:public', 'blameable'],
+                'groups' => ['establishement:read', 'establishement:read:public', 'blameable'],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => ['establishement:read:public', 'blameable'],
+                'groups' => ['establishement:read', 'establishement:read:public', 'blameable'],
             ]
         ),
         new Mutation(name: 'create'),

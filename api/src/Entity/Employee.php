@@ -28,12 +28,12 @@ use Symfony\Component\Uid\Uuid;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['employee:read:public'],
+                'groups' => ['employee:read', 'employee:read:public'],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => ['employee:read:public'],
+                'groups' => ['employee:read', 'employee:read:public'],
             ]
         ),
         new Mutation(name: 'create'),
@@ -59,7 +59,6 @@ class Employee
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['employee:read'])]
     private ?Uuid $id = null;
 
     /**

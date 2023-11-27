@@ -41,6 +41,12 @@ heist.should_end_date.not_blank: Please enter the theoretical end date.
 heist.should_end_date.invalid: Please enter a valid theoretical end date.
 heist.should_end_date.greater_than_equal.start_date: The theoretical end date must be after the start date.
 
+heist.minimun_payout.not_blank: Please enter a minimum payout.
+heist.minimun_payout.invalid: Please enter a valid minimum payout.
+
+heist.maximum_payout.not_blank: Please enter a maximum payout.
+heist.maximum_payout.invalid: Please enter a valid maximum payout.
+
 heist.end_date.invalid: Please enter a valid end date.
 heist.end_date.greater_than.start_date: The end date must be after the start date.
 

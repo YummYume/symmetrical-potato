@@ -18,6 +18,7 @@ use App\Enum\HeistVisibilityEnum;
 use App\Filter\MatchFilter;
 use App\Filter\UuidFilter;
 use App\Repository\HeistRepository;
+use App\Resolver\HeistMutationResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -30,7 +31,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HeistRepository::class)]
 #[ApiResource(
-    security: 'is_granted("ROLE_USER")',
+    // security: 'is_granted("ROLE_USER")',
+    collectDenormalizationErrors: true,
     operations: [],
     graphQlOperations: [
         new Query(
@@ -40,12 +42,79 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => ['heist:read:public', 'blameable'],
+                'groups' => ['heist:read', 'heist:read:public', 'blameable'],
             ]
         ),
         new Mutation(
             name: 'create',
             security: 'is_granted("ROLE_CONTRACTOR") or is_granted("ROLE_ADMIN")',
+            resolver: HeistMutationResolver::class,
+            // args: [
+            //     'name' => [
+            //         'type' => 'String!',
+            //         'description' => 'The name of the heist',
+            //     ],
+            //     'description' => [
+            //         'type' => 'String!',
+            //         'description' => 'The description of the heist',
+            //     ],
+            //     'minimumPayout' => [
+            //         'type' => 'Float!',
+            //         'description' => 'The minimum payout of the heist',
+            //     ],
+            //     'maximumPayout' => [
+            //         'type' => 'Float!',
+            //         'description' => 'The maximum payout of the heist',
+            //     ],
+            //     'startAt' => [
+            //         'type' => 'String!',
+            //         'description' => 'The start time of the heist',
+            //     ],
+            //     'shouldEndAt' => [
+            //         'type' => 'String!',
+            //         'description' => 'The time the heist should end',
+            //     ],
+            //     'preferedTactic' => [
+            //         'type' => 'HeistPreferedTacticEnum',
+            //         'description' => 'The prefered tactic of the heist',
+            //     ],
+            //     'difficulty' => [
+            //         'type' => 'HeistDifficultyEnum',
+            //         'description' => 'The difficulty of the heist',
+            //     ],
+            //     'visibility' => [
+            //         'type' => 'HeistVisibilityEnum',
+            //         'description' => 'The visibility of the heist',
+            //     ],
+            //     'phase' => [
+            //         'type' => 'HeistPhaseEnum',
+            //         'description' => 'The phase of the heist',
+            //     ],
+            //     'employee' => [
+            //         'type' => 'String!',
+            //         'description' => 'The employee that is responsible for the heist',
+            //     ],
+            //     'establishment' => [
+            //         'type' => 'String!',
+            //         'description' => 'The establishment where the heist takes place',
+            //     ],
+            //     'allowedEmployees' => [
+            //         'type' => '[String]',
+            //         'description' => 'The employees allowed to participate in the heist',
+            //     ],
+            //     'forbiddenAssets' => [
+            //         'type' => '[String]',
+            //         'description' => 'The assets that are forbidden to use in the heist',
+            //     ],
+            //     'forbiddenUsers' => [
+            //         'type' => '[String]',
+            //         'description' => 'The users that are forbidden to participate in the heist',
+            //     ],
+            //     'crewMembers' => [
+            //         'type' => '[String]',
+            //         'description' => 'The crew members of the heist',
+            //     ],
+            // ],
             normalizationContext: [
                 'groups' => ['heist:create:read'],
             ],
@@ -82,17 +151,21 @@ class Heist
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['heist:read'])]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.minimum_payout.not_blank')]
+    #[Assert\Type(groups: ['heist:create'], type: 'float', message: 'heist.minimum_payout.invalid')]
     private ?float $minimumPayout = null;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['heist:read'])]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.maximum_payout.not_blank')]
+    #[Assert\Type(groups: ['heist:create'], type: 'float', message: 'heist.maximum_payout.invalid')]
     private ?float $maximumPayout = null;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['heist:read', 'heist:read:public'])]
+    #[Groups(['heist:read', 'heist:read:public', 'heist:create', 'heist:create:read'])]
     #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.name.not_blank')]
     #[Assert\Length(
         groups: ['heist:create'],
@@ -105,7 +178,7 @@ class Heist
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[ApiProperty]
-    #[Groups(['heist:read'])]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.description.not_blank')]
     #[Assert\Length(
         groups: ['heist:create'],
@@ -118,9 +191,9 @@ class Heist
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[ApiProperty]
-    #[Groups(['heist:read'])]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.start_date.not_blank')]
-    #[Assert\DateTime(groups: ['heist:create'], message: 'heist.start_date.invalid')]
+    #[Assert\Type(type: "\DateTimeInterface", groups: ['heist:create'], message: 'heist.start_date.invalid')]
     #[Assert\LessThan(
         groups: ['heist:create'],
         propertyPath: 'shouldEndAt',
@@ -135,20 +208,20 @@ class Heist
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[ApiProperty]
-    #[Groups(['heist:read'])]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.should_end_date.not_blank')]
-    #[Assert\DateTime(groups: ['heist:create'], message: 'heist.should_end_date.invalid')]
+    #[Assert\Type(type: "\DateTimeInterface", groups: ['heist:create'], message: 'heist.should_end_date.invalid')]
     #[Assert\GreaterThan(
         groups: ['heist:create'],
         propertyPath: 'startAt',
-        message: 'heist.should_end_date.greather_than.start_date'
+        message: 'heist.should_end_date.greater_than.start_date'
     )]
     private ?\DateTimeInterface $shouldEndAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[ApiProperty]
-    #[Groups(['heist:read'])]
-    #[Assert\DateTime(groups: ['heist:create'], message: 'heist.end_date.invalid')]
+    #[Groups(['heist:read', 'heist:create:read'])]
+    #[Assert\Type(type: "\DateTimeInterface", groups: ['heist:create'], message: 'heist.end_date.invalid')]
     #[Assert\GreaterThan(
         groups: ['heist:create'],
         propertyPath: 'startAt',
@@ -158,92 +231,77 @@ class Heist
 
     /** @var array<int, array<string, string|bool>> */
     #[ORM\Column(type: Types::JSON)]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private array $objectives = [];
 
-    #[Assert\Type(groups: ['heist:create'], type: 'float', message: 'heist.minimum_required_rating.invalid')]
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[ApiProperty]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
+    #[Assert\Type(groups: ['heist:create'], type: 'float', message: 'heist.minimum_required_rating.invalid')]
     private ?float $minimumRequiredRating = null;
 
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
-    #[ApiProperty]
-    #[Groups(['heist:read'])]
-    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.prefered_tactic.not_blank')]
-    #[Assert\Choice(
-        groups: ['heist:create'],
-        callback: [HeistPreferedTacticEnum::class, 'toArray'],
-        message: 'heist.prefered_tactic.invalid'
-    )]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private HeistPreferedTacticEnum $preferedTactic = HeistPreferedTacticEnum::Unknown;
 
     #[ORM\Column(length: 50, enumType: HeistDifficultyEnum::class)]
-    #[ApiProperty]
-    #[Groups(['heist:read'])]
-    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.difficulty.not_blank')]
-    #[Assert\Choice(
-        groups: ['heist:create'],
-        callback: [HeistDifficultyEnum::class, 'toArray'],
-        message: 'heist.difficulty.invalid'
-    )]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private HeistDifficultyEnum $difficulty = HeistDifficultyEnum::Normal;
 
     #[ORM\Column(length: 50, enumType: HeistPhaseEnum::class)]
-    #[ApiProperty]
-    #[Groups(['heist:read'])]
-    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.phase.not_blank')]
-    #[Assert\Choice(
-        groups: ['heist:create'],
-        callback: [HeistPhaseEnum::class, 'toArray'],
-        message: 'heist.phase.invalid'
-    )]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private HeistPhaseEnum $phase = HeistPhaseEnum::Planning;
 
     #[ORM\Column(length: 10, enumType: HeistVisibilityEnum::class)]
-    #[ApiProperty]
-    #[Groups(['heist:read'])]
-    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.visibility.not_blank')]
-    #[Assert\Choice(
-        groups: ['heist:create'],
-        callback: [HeistVisibilityEnum::class, 'toArray'],
-        message: 'heist.visibility.invalid'
-    )]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private HeistVisibilityEnum $visibility = HeistVisibilityEnum::Draft;
 
     /** @var ArrayCollection<int, CrewMember> */
     #[ORM\OneToMany(mappedBy: 'heist', targetEntity: CrewMember::class, orphanRemoval: true)]
+    #[ApiProperty]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private Collection $crewMembers;
 
     #[ORM\ManyToOne(inversedBy: 'heist')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
+
+    private array $coordinates = [];
 
     /** @var ArrayCollection<int, Employee> */
     #[ORM\ManyToMany(targetEntity: Employee::class, inversedBy: 'allowedHeists')]
+    #[ApiProperty]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private Collection $allowedEmployees;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]
     #[ApiProperty]
-    #[Groups(['heist:read'])]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.employee.not_blank')]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]
     #[ORM\JoinColumn(nullable: false)]
     #[ApiProperty]
-    #[Groups(['heist:read'])]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.establishment.not_blank')]
     private ?Establishment $establishment = null;
 
     /** @var ArrayCollection<int, Asset> */
     #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'forbiddenHeists')]
     #[ORM\JoinTable(name: 'heist_forbidden_assets')]
+    #[ApiProperty]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private Collection $forbiddenAssets;
 
     /** @var ArrayCollection<int, Asset> */
     #[ORM\OneToMany(mappedBy: 'heist', targetEntity: Asset::class)]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private Collection $assets;
 
     /** @var ArrayCollection<int, User> */
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'forbiddenHeists')]
+    #[ApiProperty]
+    #[Groups(['heist:read', 'heist:create', 'heist:create:read'])]
     private Collection $forbiddenUsers;
 
     public function __construct()

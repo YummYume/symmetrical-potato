@@ -1,19 +1,17 @@
+import { SpeakerLoudIcon, SpeakerOffIcon } from '@radix-ui/react-icons';
 import GoogleMapReact from 'google-map-react';
 import { useState } from 'react';
 
-import { getEnv } from '../utils/env.client';
-
 import type { MapOptions } from 'google-map-react';
+import type { Coords } from 'google-map-react';
 
-// import type { Coords } from 'google-map-react';
+type MarkerProps = { isLoud: boolean } & Coords;
 
-// type MarkerProps = { text: string } & Coords;
+function Marker({ isLoud }: MarkerProps) {
+  return isLoud ? <SpeakerLoudIcon /> : <SpeakerOffIcon />;
+}
 
-// function Marker({ text }: MarkerProps) {
-//   return <div>{text}</div>;
-// }
-
-export default function Map() {
+export default function Map({ apiKey }: { apiKey: string }) {
   const [bounds, setBounds] = useState<{ lat: number; lng: number }>({
     lat: 40.759,
     lng: -73.9845,
@@ -48,7 +46,7 @@ export default function Map() {
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
         bootstrapURLKeys={{
-          key: getEnv('GOOGLE_MAPS_KEY'),
+          key: apiKey,
           libraries: ['places'],
         }}
         defaultCenter={mapOptions.center}
@@ -61,7 +59,7 @@ export default function Map() {
           setBounds({ ...bounds, lat, lng });
         }}
       >
-        {/* <Marker lat={59.955413} lng={30.337844} text="My Marker" /> */}
+        <Marker lat={40.81595252205852} lng={-74.01374590454101} isLoud />
       </GoogleMapReact>
     </div>
   );
