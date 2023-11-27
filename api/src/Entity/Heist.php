@@ -49,72 +49,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'create',
             security: 'is_granted("ROLE_CONTRACTOR") or is_granted("ROLE_ADMIN")',
             resolver: HeistMutationResolver::class,
-            // args: [
-            //     'name' => [
-            //         'type' => 'String!',
-            //         'description' => 'The name of the heist',
-            //     ],
-            //     'description' => [
-            //         'type' => 'String!',
-            //         'description' => 'The description of the heist',
-            //     ],
-            //     'minimumPayout' => [
-            //         'type' => 'Float!',
-            //         'description' => 'The minimum payout of the heist',
-            //     ],
-            //     'maximumPayout' => [
-            //         'type' => 'Float!',
-            //         'description' => 'The maximum payout of the heist',
-            //     ],
-            //     'startAt' => [
-            //         'type' => 'String!',
-            //         'description' => 'The start time of the heist',
-            //     ],
-            //     'shouldEndAt' => [
-            //         'type' => 'String!',
-            //         'description' => 'The time the heist should end',
-            //     ],
-            //     'preferedTactic' => [
-            //         'type' => 'HeistPreferedTacticEnum',
-            //         'description' => 'The prefered tactic of the heist',
-            //     ],
-            //     'difficulty' => [
-            //         'type' => 'HeistDifficultyEnum',
-            //         'description' => 'The difficulty of the heist',
-            //     ],
-            //     'visibility' => [
-            //         'type' => 'HeistVisibilityEnum',
-            //         'description' => 'The visibility of the heist',
-            //     ],
-            //     'phase' => [
-            //         'type' => 'HeistPhaseEnum',
-            //         'description' => 'The phase of the heist',
-            //     ],
-            //     'employee' => [
-            //         'type' => 'String!',
-            //         'description' => 'The employee that is responsible for the heist',
-            //     ],
-            //     'establishment' => [
-            //         'type' => 'String!',
-            //         'description' => 'The establishment where the heist takes place',
-            //     ],
-            //     'allowedEmployees' => [
-            //         'type' => '[String]',
-            //         'description' => 'The employees allowed to participate in the heist',
-            //     ],
-            //     'forbiddenAssets' => [
-            //         'type' => '[String]',
-            //         'description' => 'The assets that are forbidden to use in the heist',
-            //     ],
-            //     'forbiddenUsers' => [
-            //         'type' => '[String]',
-            //         'description' => 'The users that are forbidden to participate in the heist',
-            //     ],
-            //     'crewMembers' => [
-            //         'type' => '[String]',
-            //         'description' => 'The crew members of the heist',
-            //     ],
-            // ],
             normalizationContext: [
                 'groups' => ['heist:create:read'],
             ],
@@ -265,7 +199,17 @@ class Heist
     #[ORM\ManyToOne(inversedBy: 'heist')]
     private ?Location $location = null;
 
-    private array $coordinates = [];
+    #[ApiProperty]
+    #[Groups(['heist:create'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.latitude.not_blank')]
+    #[Assert\Type(groups: ['heist:create'], type: 'float', message: 'heist.latitude.invalid')]
+    private ?float $latitude = null;
+
+    #[ApiProperty]
+    #[Groups(['heist:create'])]
+    #[Assert\NotBlank(groups: ['heist:create'], message: 'heist.longitude.not_blank')]
+    #[Assert\Type(groups: ['heist:create'], type: 'float', message: 'heist.longitude.invalid')]
+    private ?float $longitude = null;
 
     /** @var ArrayCollection<int, Employee> */
     #[ORM\ManyToMany(targetEntity: Employee::class, inversedBy: 'allowedHeists')]
@@ -429,6 +373,30 @@ class Heist
     public function getRequiredObjectiveCount(): int
     {
         return \count($this->getRequiredObjectives());
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): static
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): static
+    {
+        $this->longitude = $longitude;
+
+        return $this;
     }
 
     /**

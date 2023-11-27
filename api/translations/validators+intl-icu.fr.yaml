@@ -53,6 +53,12 @@ heist.end_date.greater_than.start_date: La date de fin doit être après la date
 
 heist.objectives.invalid: Veuillez saisir une liste d'objectifs au format JSON.
 
+heist.latitude.not_blank: Veuillez saisir une latitude.
+heist.latitude.invalid: Veuillez saisir une latitude valide.
+
+heist.longitude.not_blank: Veuillez saisir une longitude.
+heist.longitude.invalid: Veuillez saisir une longitude valide.
+
 heist.minimum_required_rating.invalid: Veuillez saisir un nombre.
 
 heist.prefered_tactic.not_blank: Veuillez saisir une tactique recommendée.

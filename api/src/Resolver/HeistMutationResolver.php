@@ -3,13 +3,16 @@
 namespace App\Resolver;
 
 use ApiPlatform\GraphQl\Resolver\MutationResolverInterface;
+use ApiPlatform\Validator\ValidatorInterface;
 use App\Entity\Heist;
-use App\Repository\LocationRepository;
+
+// use App\Repository\LocationRepository;
 
 final class HeistMutationResolver implements MutationResolverInterface
 {
     public function __construct(
-        private readonly LocationRepository $locationRepository,
+        // private readonly LocationRepository $locationRepository,
+        private readonly ValidatorInterface $validator,
     ) {
     }
 
@@ -19,18 +22,19 @@ final class HeistMutationResolver implements MutationResolverInterface
     public function __invoke(?object $item, array $context): ?object
     {
         return match ($context['info']->fieldName) {
-            'createHeist' => $this->create($context),
+            'createHeist' => $this->create($item),
             default => null,
         };
     }
 
-    /**
-     * @param array<string, mixed> $context
-     */
-    public function create(array $context): ?Heist
+    public function create(?object $item): ?Heist
     {
-        dump($context['args']['input']);
-        dump($context);
+        if (null === $item || !$item instanceof Heist) {
+            return null;
+        }
+
+        $this->validator->validate($item, ['groups' => 'heist:create']);
+
         // $location = $this->locationRepository->findOneBy([
         //     'latitude' => $context['args']['input']['location']['latitude'],
         //     'longitude' => $context['args']['input']['location']['longitude'],

@@ -52,6 +52,12 @@ heist.end_date.greater_than.start_date: The end date must be after the start dat
 
 heist.objectives.invalid: Please enter a list of objectives in JSON format.
 
+heist.latitude.not_blank: Please enter a latitude.
+heist.latitude.invalid: Please enter a valid latitude.
+
+heist.longitude.not_blank: Please enter a longitude.
+heist.longitude.invalid: Please enter a valid longitude.
+
 heist.minimum_required_rating.invalid: Please enter a number.
 
 heist.prefered_tactic.not_blank: Please enter a recommended tactic.
