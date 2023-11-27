@@ -19,6 +19,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Enum/'
+            - '../src/Model/'
             - '../src/Kernel.php'
 
     App\Error\ErrorHandler:

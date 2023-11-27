@@ -105,11 +105,11 @@ final class RegistrationTest extends AbstractTestCase
             ],
             'json' => [
                 'query' => 'mutation {
-                    loginUser(input: {
+                    requestToken(input: {
                         username: "test",
                         password: "48GEDG$fefez"
                     }) {
-                        user {
+                        token {
                             token
                         }
                     }
@@ -121,7 +121,7 @@ final class RegistrationTest extends AbstractTestCase
 
         $data = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertArrayNotHasKey('token', $data['data']['loginUser']['user'] ?? []);
+        $this->assertArrayNotHasKey('token', $data['data']['requestToken']['token'] ?? []);
         $this->assertArrayHasKey('errors', $data);
     }
 
@@ -205,11 +205,11 @@ final class RegistrationTest extends AbstractTestCase
             ],
             'json' => [
                 'query' => 'mutation {
-                    loginUser(input: {
+                    requestToken(input: {
                         username: "test",
                         password: "48GEDG$fefez"
                     }) {
-                        user {
+                        token {
                             token
                         }
                     }
@@ -221,7 +221,7 @@ final class RegistrationTest extends AbstractTestCase
 
         $data = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertArrayHasKey('token', $data['data']['loginUser']['user'] ?? []);
+        $this->assertArrayHasKey('token', $data['data']['requestToken']['token'] ?? []);
         $this->assertArrayNotHasKey('errors', $data);
 
         return $userId;
@@ -300,7 +300,7 @@ final class RegistrationTest extends AbstractTestCase
 
         $data = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertArrayNotHasKey('token', $data['data']['loginUser']['user'] ?? []);
+        $this->assertArrayNotHasKey('token', $data['data']['requestToken']['token'] ?? []);
         $this->assertArrayHasKey('errors', $data);
     }
 }

@@ -90,9 +90,11 @@ export enum EmployeeStatusEnum {
 
 export type Establishment = Node & {
   __typename?: 'Establishment';
+  averageRating?: Maybe<Scalars['Float']['output']>;
   createdBy?: Maybe<User>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  reviewCount: Scalars['Int']['output'];
   updatedBy?: Maybe<User>;
 };
 
@@ -213,8 +215,8 @@ export type Mutation = {
   deleteHeist?: Maybe<DeleteHeistPayload>;
   /** Deletes a User. */
   deleteUser?: Maybe<DeleteUserPayload>;
-  /** Logins a User. */
-  loginUser?: Maybe<LoginUserPayload>;
+  /** Requests a Token. */
+  requestToken?: Maybe<RequestTokenPayload>;
   /** Updates a CrewMember. */
   updateCrewMember?: Maybe<UpdateCrewMemberPayload>;
   /** Updates a Employee. */
@@ -269,8 +271,8 @@ export type MutationDeleteUserArgs = {
   input: DeleteUserInput;
 };
 
-export type MutationLoginUserArgs = {
-  input: LoginUserInput;
+export type MutationRequestTokenArgs = {
+  input: RequestTokenInput;
 };
 
 export type MutationUpdateCrewMemberArgs = {
@@ -315,6 +317,8 @@ export type Query = {
   heist?: Maybe<Heist>;
   heists?: Maybe<HeistCursorConnection>;
   node?: Maybe<Node>;
+  token?: Maybe<Token>;
+  tokens?: Maybe<TokenCursorConnection>;
   user?: Maybe<User>;
   users?: Maybe<UserCursorConnection>;
 };
@@ -371,6 +375,17 @@ export type QueryNodeArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type QueryTokenArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryTokensArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
@@ -380,6 +395,39 @@ export type QueryUsersArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type Token = Node & {
+  __typename?: 'Token';
+  _id?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  resources: Scalars['Iterable']['output'];
+  token?: Maybe<Scalars['String']['output']>;
+  tokenTtl?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Cursor connection for Token. */
+export type TokenCursorConnection = {
+  __typename?: 'TokenCursorConnection';
+  edges?: Maybe<Array<Maybe<TokenEdge>>>;
+  pageInfo: TokenPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of Token. */
+export type TokenEdge = {
+  __typename?: 'TokenEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<Token>;
+};
+
+/** Information about the current page. */
+export type TokenPageInfo = {
+  __typename?: 'TokenPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
 };
 
 export type User = Node & {
@@ -597,6 +645,7 @@ export type CreateEmployeePayloadData = Node & {
 
 /** Creates a Establishment. */
 export type CreateEstablishmentInput = {
+  averageRating?: InputMaybe<Scalars['Float']['input']>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   contractor: Scalars['String']['input'];
   contractorCut: Scalars['Float']['input'];
@@ -610,6 +659,7 @@ export type CreateEstablishmentInput = {
   minimumWage: Scalars['Float']['input'];
   minimumWorkTimePerWeek: Scalars['Int']['input'];
   name: Scalars['String']['input'];
+  reviewCount: Scalars['Int']['input'];
   updatedAt?: InputMaybe<Scalars['String']['input']>;
   updatedBy?: InputMaybe<Scalars['String']['input']>;
 };
@@ -617,6 +667,7 @@ export type CreateEstablishmentInput = {
 /** Creates a Establishment. */
 export type CreateEstablishmentNestedPayload = Node & {
   __typename?: 'createEstablishmentNestedPayload';
+  averageRating?: Maybe<Scalars['Float']['output']>;
   contractor: CreateUserNestedPayload;
   contractorCut: Scalars['Float']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
@@ -631,6 +682,7 @@ export type CreateEstablishmentNestedPayload = Node & {
   minimumWage: Scalars['Float']['output'];
   minimumWorkTimePerWeek: Scalars['Int']['output'];
   name: Scalars['String']['output'];
+  reviewCount: Scalars['Int']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<CreateUserNestedPayload>;
 };
@@ -645,6 +697,7 @@ export type CreateEstablishmentPayload = {
 /** Creates a Establishment. */
 export type CreateEstablishmentPayloadData = Node & {
   __typename?: 'createEstablishmentPayloadData';
+  averageRating?: Maybe<Scalars['Float']['output']>;
   contractor: CreateUserNestedPayload;
   contractorCut: Scalars['Float']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
@@ -659,6 +712,7 @@ export type CreateEstablishmentPayloadData = Node & {
   minimumWage: Scalars['Float']['output'];
   minimumWorkTimePerWeek: Scalars['Int']['output'];
   name: Scalars['String']['output'];
+  reviewCount: Scalars['Int']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<CreateUserNestedPayload>;
 };
@@ -931,8 +985,8 @@ export type DeleteUserPayloadData = Node & {
   id: Scalars['ID']['output'];
 };
 
-/** Logins a User. */
-export type LoginUserInput = {
+/** Requests a Token. */
+export type RequestTokenInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The password of the user to authenticate. */
   password: Scalars['String']['input'];
@@ -940,19 +994,11 @@ export type LoginUserInput = {
   username: Scalars['String']['input'];
 };
 
-/** Logins a User. */
-export type LoginUserPayload = {
-  __typename?: 'loginUserPayload';
+/** Requests a Token. */
+export type RequestTokenPayload = {
+  __typename?: 'requestTokenPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  user?: Maybe<LoginUserPayloadData>;
-};
-
-/** Logins a User. */
-export type LoginUserPayloadData = Node & {
-  __typename?: 'loginUserPayloadData';
-  id: Scalars['ID']['output'];
-  token?: Maybe<Scalars['String']['output']>;
-  tokenTtl?: Maybe<Scalars['Int']['output']>;
+  token?: Maybe<Token>;
 };
 
 /** Updates a CrewMember. */
@@ -1131,6 +1177,7 @@ export type UpdateEmployeePayloadData = Node & {
 
 /** Updates a Establishment. */
 export type UpdateEstablishmentInput = {
+  averageRating?: InputMaybe<Scalars['Float']['input']>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   contractor?: InputMaybe<Scalars['String']['input']>;
   contractorCut?: InputMaybe<Scalars['Float']['input']>;
@@ -1145,6 +1192,7 @@ export type UpdateEstablishmentInput = {
   minimumWage?: InputMaybe<Scalars['Float']['input']>;
   minimumWorkTimePerWeek?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  reviewCount?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['String']['input']>;
   updatedBy?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1152,6 +1200,7 @@ export type UpdateEstablishmentInput = {
 /** Updates a Establishment. */
 export type UpdateEstablishmentNestedPayload = Node & {
   __typename?: 'updateEstablishmentNestedPayload';
+  averageRating?: Maybe<Scalars['Float']['output']>;
   contractor?: Maybe<UpdateUserNestedPayload>;
   contractorCut?: Maybe<Scalars['Float']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
@@ -1166,6 +1215,7 @@ export type UpdateEstablishmentNestedPayload = Node & {
   minimumWage?: Maybe<Scalars['Float']['output']>;
   minimumWorkTimePerWeek?: Maybe<Scalars['Int']['output']>;
   name?: Maybe<Scalars['String']['output']>;
+  reviewCount?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UpdateUserNestedPayload>;
 };
@@ -1204,6 +1254,7 @@ export type UpdateEstablishmentPayload = {
 /** Updates a Establishment. */
 export type UpdateEstablishmentPayloadData = Node & {
   __typename?: 'updateEstablishmentPayloadData';
+  averageRating?: Maybe<Scalars['Float']['output']>;
   contractor?: Maybe<UpdateUserNestedPayload>;
   contractorCut?: Maybe<Scalars['Float']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
@@ -1218,6 +1269,7 @@ export type UpdateEstablishmentPayloadData = Node & {
   minimumWage?: Maybe<Scalars['Float']['output']>;
   minimumWorkTimePerWeek?: Maybe<Scalars['Int']['output']>;
   name?: Maybe<Scalars['String']['output']>;
+  reviewCount?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UpdateUserNestedPayload>;
 };
@@ -1362,8 +1414,6 @@ export type UpdateUserInput = {
   reason?: InputMaybe<Scalars['String']['input']>;
   roles?: InputMaybe<Scalars['Iterable']['input']>;
   status?: InputMaybe<UserStatusEnum>;
-  token?: InputMaybe<Scalars['String']['input']>;
-  tokenTtl?: InputMaybe<Scalars['Int']['input']>;
   updatedAt?: InputMaybe<Scalars['String']['input']>;
   updatedBy?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
@@ -1390,8 +1440,6 @@ export type UpdateUserNestedPayload = Node & {
   reason?: Maybe<Scalars['String']['output']>;
   roles?: Maybe<Scalars['Iterable']['output']>;
   status?: Maybe<UserStatusEnum>;
-  token?: Maybe<Scalars['String']['output']>;
-  tokenTtl?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UpdateUserNestedPayload>;
   /** A visual identifier that represents this user. */
@@ -1451,8 +1499,6 @@ export type UpdateUserPayloadData = Node & {
   reason?: Maybe<Scalars['String']['output']>;
   roles?: Maybe<Scalars['Iterable']['output']>;
   status?: Maybe<UserStatusEnum>;
-  token?: Maybe<Scalars['String']['output']>;
-  tokenTtl?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UpdateUserNestedPayload>;
   /** A visual identifier that represents this user. */

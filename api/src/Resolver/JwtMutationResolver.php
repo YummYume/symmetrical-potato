@@ -3,14 +3,14 @@
 namespace App\Resolver;
 
 use ApiPlatform\GraphQl\Resolver\MutationResolverInterface;
-use App\Entity\User;
+use App\ApiResource\Token;
 use App\Enum\UserStatusEnum;
 use App\Helper\ExceptionHelper;
 use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class UserMutationResolver implements MutationResolverInterface
+final class JwtMutationResolver implements MutationResolverInterface
 {
     public function __construct(
         private readonly UserPasswordHasherInterface $passwordHasher,
@@ -26,7 +26,7 @@ final class UserMutationResolver implements MutationResolverInterface
     public function __invoke(?object $item, array $context): ?object
     {
         return match ($context['info']->fieldName) {
-            'loginUser' => $this->login($context),
+            'requestToken' => $this->requestToken($context),
             default => null,
         };
     }
@@ -34,7 +34,7 @@ final class UserMutationResolver implements MutationResolverInterface
     /**
      * @param array<string, mixed> $context
      */
-    public function login(array $context): ?User
+    public function requestToken(array $context): ?Token
     {
         $username = $context['args']['input']['username'] ?? null;
         $password = $context['args']['input']['password'] ?? null;
@@ -56,7 +56,8 @@ final class UserMutationResolver implements MutationResolverInterface
         $jwt = $this->JWTManager->create($user);
         $expires = $this->JWTManager->parse($jwt)['exp'];
 
-        return $user
+        return (new Token())
+            ->setId($user->getId())
             ->setToken($jwt)
             ->setTokenTtl($expires - time())
         ;

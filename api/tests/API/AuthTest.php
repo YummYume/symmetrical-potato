@@ -73,11 +73,11 @@ final class AuthTest extends AbstractTestCase
             ],
             'json' => [
                 'query' => 'mutation {
-                    loginUser(input: {
+                    requestToken(input: {
                         username: "dallas",
                         password: "xxx"
                     }) {
-                        user {
+                        token {
                             token
                         }
                     }
@@ -89,7 +89,7 @@ final class AuthTest extends AbstractTestCase
 
         $data = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertArrayHasKey('token', $data['data']['loginUser']['user'] ?? []);
+        $this->assertArrayHasKey('token', $data['data']['requestToken']['token'] ?? []);
         $this->assertArrayNotHasKey('errors', $data);
     }
 
@@ -105,11 +105,11 @@ final class AuthTest extends AbstractTestCase
             ],
             'json' => [
                 'query' => 'mutation {
-                    loginUser(input: {
+                    requestToken(input: {
                         username: "dallas",
                         password: "invalid"
                     }) {
-                        user {
+                        token {
                             token
                         }
                     }
@@ -121,7 +121,7 @@ final class AuthTest extends AbstractTestCase
 
         $data = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertArrayNotHasKey('token', $data['data']['loginUser']['user'] ?? []);
+        $this->assertArrayNotHasKey('token', $data['data']['requestToken']['token'] ?? []);
         $this->assertArrayHasKey('errors', $data);
     }
 }

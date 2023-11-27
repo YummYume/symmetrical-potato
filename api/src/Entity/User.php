@@ -14,7 +14,6 @@ use App\Enum\HeistPhaseEnum;
 use App\Enum\UserLocaleEnum;
 use App\Enum\UserStatusEnum;
 use App\Repository\UserRepository;
-use App\Resolver\UserMutationResolver;
 use App\Resolver\UserQueryResolver;
 use App\State\UserPasswordHasher;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -77,25 +76,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: [
                 'groups' => ['user:read'],
             ]
-        ),
-        new Mutation(
-            name: 'login',
-            resolver: UserMutationResolver::class,
-            write: false,
-            validate: false,
-            args: [
-                'username' => [
-                    'type' => 'String!',
-                    'description' => 'The username of the user to authenticate.',
-                ],
-                'password' => [
-                    'type' => 'String!',
-                    'description' => 'The password of the user to authenticate.',
-                ],
-            ],
-            normalizationContext: [
-                'groups' => ['user:login'],
-            ],
         ),
         new Mutation(
             name: 'validate',
@@ -270,14 +250,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @var ArrayCollection<int, Establishment> */
     #[ORM\OneToMany(mappedBy: 'contractor', targetEntity: Establishment::class)]
     private Collection $establishments;
-
-    #[ApiProperty]
-    #[Groups(['user:login'])]
-    private ?string $token = null;
-
-    #[ApiProperty]
-    #[Groups(['user:login'])]
-    private ?int $tokenTtl = null;
 
     /** @var ArrayCollection<int, Heist> */
     #[ORM\ManyToMany(targetEntity: Heist::class, mappedBy: 'forbiddenUsers')]
@@ -686,30 +658,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $establishment->setContractor(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getToken(): ?string
-    {
-        return $this->token;
-    }
-
-    public function setToken(?string $token): static
-    {
-        $this->token = $token;
-
-        return $this;
-    }
-
-    public function getTokenTtl(): ?int
-    {
-        return $this->tokenTtl;
-    }
-
-    public function setTokenTtl(?int $tokenTtl): static
-    {
-        $this->tokenTtl = $tokenTtl;
 
         return $this;
     }

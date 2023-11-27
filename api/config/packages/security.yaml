@@ -21,6 +21,7 @@ security:
             stateless: true
             provider: users
             jwt: ~
+            user_checker: App\Security\UserChecker
 
     role_hierarchy:
         !php/const App\Entity\User::ROLE_ADMIN: !php/const App\Entity\User::ROLE_USER
