@@ -23,11 +23,11 @@ abstract class AbstractTestCase extends ApiTestCase
             ],
             'json' => [
                 'query' => sprintf('mutation {
-                    loginUser(input: {
+                    requestToken(input: {
                         username: "%s",
                         password: "%s"
                     }) {
-                        user {
+                        token {
                             id
                             token
                         }
@@ -41,14 +41,14 @@ abstract class AbstractTestCase extends ApiTestCase
 
             $client->setDefaultOptions([
                 'headers' => [
-                    'Authorization' => 'Bearer '.$data['data']['loginUser']['user']['token'],
+                    'Authorization' => 'Bearer '.$data['data']['requestToken']['token']['token'],
                 ],
             ]);
 
             /**
              * @var string|null $userId
              */
-            $userId = $data['data']['loginUser']['user']['id'];
+            $userId = $data['data']['requestToken']['token']['id'];
         } catch (\Exception $e) {
             printf('Could not login user "%s" with password "%s" : %s.', $username, $password, $e->getMessage());
         }

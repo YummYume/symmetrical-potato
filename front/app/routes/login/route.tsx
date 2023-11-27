@@ -62,17 +62,17 @@ export async function action({ request, context }: ActionFunctionArgs) {
   try {
     const response = await requestAuthToken(context.client, username, password);
 
-    if (response?.loginUser?.user) {
-      const user = response.loginUser.user;
+    if (response?.requestToken?.token) {
+      const token = response.requestToken.token;
       let cookieOptions: CookieSerializeOptions = {};
 
-      if (user.tokenTtl) {
-        cookieOptions['maxAge'] = user.tokenTtl;
+      if (token.tokenTtl) {
+        cookieOptions['maxAge'] = token.tokenTtl;
       }
 
       return redirect('/dashboard', {
         headers: {
-          'Set-Cookie': await bearerCookie.serialize(user.token, cookieOptions),
+          'Set-Cookie': await bearerCookie.serialize(token.token, cookieOptions),
         },
       });
     }

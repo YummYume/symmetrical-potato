@@ -24,9 +24,9 @@ export const requestAuthToken = async (
 ) => {
   return client.request<Mutation>(
     gql`
-      mutation LoginUser($input: loginUserInput!) {
-        loginUser(input: $input) {
-          user {
+      mutation RequestToken($input: requestTokenInput!) {
+        requestToken(input: $input) {
+          token {
             token
             tokenTtl
           }
