@@ -35,12 +35,12 @@ heist.description.max_length: La description ne peut pas comporter plus de {limi
 
 heist.start_date.not_blank: Veuillez saisir la date de début.
 heist.start_date.invalid: Veuillez saisir une date de début valide.
-heist.start_date.less_than.should_end_date: La date de début doit être avant la date de fin théorique.
-heist.start_date.greater_than_equal.today: La date de début doit être après aujourd'hui.
+heist.start_date.less_than.should_end_date: La date de début doit être anterieure à la date de fin théorique.
+heist.start_date.greater_than_equal.today: La date de début doit être supérieure ou égale à la date du jour.
 
 heist.should_end_date.not_blank: Veuillez saisir la date de fin théorique.
 heist.should_end_date.invalid: Veuillez saisir une date de fin théorique valide.
-heist.should_end_date.greater_than.start_date: La date de fin théorique doit être après la date de début.
+heist.should_end_date.greater_than.start_date: La date de fin théorique doit être supérieure à la date de début.
 
 heist.minimun_payout.not_blank: Veuillez saisir un montant minimum.
 heist.minimun_payout.invalid: Veuillez saisir un montant minimum valide.
@@ -49,7 +49,7 @@ heist.maximum_payout.not_blank: Veuillez saisir un montant maximum.
 heist.maximum_payout.invalid: Veuillez saisir un montant maximum valide.
 
 heist.end_date.invalid: Veuillez saisir une date de fin valide.
-heist.end_date.greater_than.start_date: La date de fin doit être après la date de début.
+heist.end_date.greater_than.start_date: La date de fin doit être supérieur à la date de début.
 
 heist.objectives.invalid: Veuillez saisir une liste d'objectifs au format JSON.
 

@@ -34,12 +34,12 @@ heist.description.max_length: The description cannot exceed {limit} characters.
 
 heist.start_date.not_blank: Please enter the start date.
 heist.start_date.invalid: Please enter a valid start date.
-heist.start_date.less_than.should_end_date: The start date must be before the theoretical end date.
-heist.start_date.greater_than_equal.today: The start date must be after today.
+heist.start_date.less_than.should_end_date: The start date must be earlier than the theoretical end date.
+heist.start_date.greater_than_equal.today: The start date must be greater than or equal to the current date.
 
 heist.should_end_date.not_blank: Please enter the theoretical end date.
 heist.should_end_date.invalid: Please enter a valid theoretical end date.
-heist.should_end_date.greater_than_equal.start_date: The theoretical end date must be after the start date.
+heist.should_end_date.greater_than_equal.start_date: The theoretical end date must be greater than the start date.
 
 heist.minimun_payout.not_blank: Please enter a minimum payout.
 heist.minimun_payout.invalid: Please enter a valid minimum payout.
@@ -48,7 +48,7 @@ heist.maximum_payout.not_blank: Please enter a maximum payout.
 heist.maximum_payout.invalid: Please enter a valid maximum payout.
 
 heist.end_date.invalid: Please enter a valid end date.
-heist.end_date.greater_than.start_date: The end date must be after the start date.
+heist.end_date.greater_than.start_date: La date de fin doit être supérieur à la date de début.
 
 heist.objectives.invalid: Please enter a list of objectives in JSON format.
 

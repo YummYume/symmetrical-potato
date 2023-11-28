@@ -5,14 +5,15 @@ namespace App\Resolver;
 use ApiPlatform\GraphQl\Resolver\MutationResolverInterface;
 use ApiPlatform\Validator\ValidatorInterface;
 use App\Entity\Heist;
-
-// use App\Repository\LocationRepository;
+use App\Lib\GoogleMaps;
+use App\Repository\LocationRepository;
 
 final class HeistMutationResolver implements MutationResolverInterface
 {
     public function __construct(
-        // private readonly LocationRepository $locationRepository,
+        private readonly LocationRepository $locationRepository,
         private readonly ValidatorInterface $validator,
+        private readonly GoogleMaps $googleMaps
     ) {
     }
 
@@ -35,10 +36,20 @@ final class HeistMutationResolver implements MutationResolverInterface
 
         $this->validator->validate($item, ['groups' => 'heist:create']);
 
-        // $location = $this->locationRepository->findOneBy([
-        //     'latitude' => $context['args']['input']['location']['latitude'],
-        //     'longitude' => $context['args']['input']['location']['longitude'],
-        // ]);
+        $location = $this->locationRepository->findOneBy([
+            'latitude' => $item->getLatitude(),
+            'longitude' => $item->getLongitude(),
+        ]);
+
+        if (null === $location) {
+            // TODO check if location is valid (e.g. with google maps api) and create it if it is else throw error
+
+            // $this->googleMaps->getGeoCoding('49 Washington St, Newark, NJ 07102, États-Unis');
+            $this->googleMaps->getPlaceDetailsById('ChIJEbe_EYBUwokRVFFMEcYKXkc');
+            // $this->googleMaps->getGeoCodingReverse($item->getLatitude(), $item->getLongitude());
+
+            return null;
+        }
 
         return null;
 
