@@ -14,41 +14,39 @@
 
 // Drawer
 .rt-DialogOverlay {
-  @apply p-3.5;
+  @apply animate-duration-300 #{!important};
 
-  &:has(.drawer) {
-    .drawer {
-      @apply max-w-none space-y-4;
-    }
+  .rt-DialogContent {
+    @apply max-w-none space-y-4;
   }
 
-  &:has(.drawer--bottom),
-  &:has(.drawer--top) {
-    .drawer {
+  &.drawer--bottom,
+  &.drawer--top {
+    .rt-DialogContent {
       @apply h-auto;
     }
   }
 
-  &:has(.drawer--left),
-  &:has(.drawer--right) {
-    .drawer {
+  &.drawer--left,
+  &.drawer--right {
+    .rt-DialogContent {
       @apply min-h-full w-[75vw] sm:w-[66vw] md:w-[50vw] lg:w-[33vw] xl:w-[25vw];
     }
   }
 
-  &:has(.drawer--bottom) {
-    @apply items-end;
+  &.drawer--bottom {
+    @apply animate-fade-up items-end;
   }
 
-  &:has(.drawer--left) {
-    @apply justify-start;
+  &.drawer--left {
+    @apply animate-fade-right justify-start;
   }
 
-  &:has(.drawer--right) {
-    @apply justify-end;
+  &.drawer--right {
+    @apply animate-fade-left justify-end;
   }
 
-  &:has(.drawer--top) {
-    @apply items-start;
+  &.drawer--top {
+    @apply animate-fade-down items-start;
   }
 }

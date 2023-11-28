@@ -106,10 +106,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
 export type Action = typeof action;
 
-export let handle = {
-  i18n: ['common', 'login'],
-};
-
 export const meta: MetaFunction<Loader> = ({ data }) => {
   if (!data) {
     return [];

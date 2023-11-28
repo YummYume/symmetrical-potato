@@ -15,10 +15,6 @@ export async function loader({ context }: DataFunctionArgs) {
 
 export type Loader = typeof loader;
 
-export let handle = {
-  i18n: ['common'],
-};
-
 export default function Dashboard() {
   const { t } = useTranslation();
 

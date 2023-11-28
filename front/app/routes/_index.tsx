@@ -13,10 +13,6 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export let handle = {
-  i18n: ['common', 'visitor'],
-};
-
 export default function Index() {
   const { t } = useTranslation();
 

@@ -6,10 +6,6 @@ import { Link } from '~/lib/components/Link';
 import { FieldInput } from '~/lib/components/form/FieldInput';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 
-export let handle = {
-  i18n: ['common', 'login'],
-};
-
 export default function ForgottenPassword() {
   const { t } = useTranslation();
 
