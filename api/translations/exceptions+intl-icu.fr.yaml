@@ -5,3 +5,13 @@ common.unauthorized: Vous n'êtes pas autorisé à effectuer cette action.
 # User
 user.not_authenticated: Vous n'êtes pas authentifié.
 user.invalid_credentials: Les informations d'identification fournies sont invalides.
+
+# Google API
+google_api.bad_request: Les informations fournies sont invalides.
+google_api.not_found: La ressource demandée n'a pas été trouvée.
+google_api.unauthorized: Vous n'êtes pas autorisé à effectuer cette action.
+google_api.forbidden: Vous n'êtes pas autorisé à effectuer cette action.
+google_api.internal_server_error: Une erreur est survenue, veuillez réessayer plus tard.
+google_api.too_many_requests: Trop de requêtes ont été effectuées, veuillez réessayer plus tard.
+google.service_unavailable: Le service est indisponible, veuillez réessayer plus tard.
+google_api.error: Une erreur est survenue, veuillez réessayer plus tard.

@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HeistRepository::class)]
 #[ApiResource(
-    // security: 'is_granted("ROLE_USER")',
+    security: 'is_granted("ROLE_USER")',
     collectDenormalizationErrors: true,
     operations: [],
     graphQlOperations: [

@@ -15,8 +15,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
 #[ApiResource(
@@ -35,6 +37,21 @@ use Symfony\Component\Uid\Uuid;
         ),
     ]
 )]
+#[UniqueEntity(
+    fields: ['latitude', 'longitude'],
+    message: 'location.latlng.unique',
+    groups: ['location:create']
+)]
+#[UniqueEntity(
+    fields: ['name'],
+    message: 'location.name.unique',
+    groups: ['location:create']
+)]
+#[UniqueEntity(
+    fields: ['address'],
+    message: 'location.address.unique',
+    groups: ['location:create']
+)]
 class Location
 {
     use BlameableTrait;
@@ -50,22 +67,35 @@ class Location
     #[ORM\Column]
     #[ApiProperty]
     #[Groups(['location:read'])]
+    #[Assert\NotBlank(groups: ['location:create'], message: 'location.latitude.not_blank')]
+    #[Assert\Type(type: 'float', groups: ['location:create'], message: 'location.latitude.type')]
     private ?float $latitude = null;
 
     #[ORM\Column]
     #[ApiProperty]
     #[Groups(['location:read'])]
+    #[Assert\NotBlank(groups: ['location:create'], message: 'location.longitude.not_blank')]
+    #[Assert\Type(type: 'float', groups: ['location:create'], message: 'location.longitude.type')]
     private ?float $longitude = null;
 
     #[ORM\Column(length: 255)]
     #[ApiProperty]
     #[Groups(['location:read', 'location:read:public'])]
+    #[Assert\NotBlank(groups: ['location:create'], message: 'location.name.not_blank')]
+    #[Assert\Length(max: 255, groups: ['location:create'], maxMessage: 'location.name.max_length')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[ApiProperty]
     #[Groups(['location:read'])]
+    #[Assert\Length(max: 255, groups: ['location:create'], maxMessage: 'location.address.max_length')]
     private ?string $address = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[ApiProperty]
+    #[Groups(['location:read'])]
+    #[Assert\Length(max: 255, groups: ['location:create'], maxMessage: 'location.place_id.max_length')]
+    private ?string $placeId = null;
 
     #[ORM\Column]
     private int $reviewCount = 0;
@@ -160,6 +190,18 @@ class Location
     public function setAverageRating(?float $averageRating): static
     {
         $this->averageRating = $averageRating;
+
+        return $this;
+    }
+
+    public function getPlaceId(): ?string
+    {
+        return $this->placeId;
+    }
+
+    public function setPlaceId(?string $placeId): static
+    {
+        $this->placeId = $placeId;
 
         return $this;
     }

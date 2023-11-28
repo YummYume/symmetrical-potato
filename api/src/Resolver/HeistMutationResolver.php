@@ -5,13 +5,16 @@ namespace App\Resolver;
 use ApiPlatform\GraphQl\Resolver\MutationResolverInterface;
 use ApiPlatform\Validator\ValidatorInterface;
 use App\Entity\Heist;
+use App\Entity\Location;
 use App\Lib\GoogleMaps;
 use App\Repository\LocationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 final class HeistMutationResolver implements MutationResolverInterface
 {
     public function __construct(
         private readonly LocationRepository $locationRepository,
+        private readonly EntityManagerInterface $entityManager,
         private readonly ValidatorInterface $validator,
         private readonly GoogleMaps $googleMaps
     ) {
@@ -42,40 +45,23 @@ final class HeistMutationResolver implements MutationResolverInterface
         ]);
 
         if (null === $location) {
-            // TODO check if location is valid (e.g. with google maps api) and create it if it is else throw error
+            $place = $this->googleMaps->getPlaceInfornationsByCoordinates($item->getLatitude(), $item->getLongitude());
 
-            // $this->googleMaps->getGeoCoding('49 Washington St, Newark, NJ 07102, États-Unis');
-            $this->googleMaps->getPlaceDetailsById('ChIJEbe_EYBUwokRVFFMEcYKXkc');
-            // $this->googleMaps->getGeoCodingReverse($item->getLatitude(), $item->getLongitude());
+            $location = (new Location())
+                ->setLatitude($place['coordinates']['latitude'])
+                ->setLongitude($place['coordinates']['longitude'])
+                ->setName($place['displayName']['text'])
+                ->setAddress($place['address'])
+                ->setPlaceId($place['placeId']);
 
-            return null;
+            $this->validator->validate($location, ['groups' => 'location:create']);
+
+            $this->entityManager->persist($location);
+            $this->entityManager->flush();
         }
 
-        return null;
+        $item->setLocation($location);
 
-        // if (null === $location) {
-        //     return null;
-        //     // TODO check if location is valid (e.g. with google maps api) and create it if it is else throw error
-        // }
-
-        // $heist = (new Heist())
-        //     ->setName($context['args']['input']['name'])
-        //     ->setDescription($context['args']['input']['description'])
-        //     ->setMaximumPayout($context['args']['input']['maximumPayout'])
-        //     ->setMinimumPayout($context['args']['input']['minimumPayout'])
-        //     ->setPreferedTactic($context['args']['input']['preferedTactic'])
-        //     ->setDifficulty($context['args']['input']['difficulty'])
-        //     ->setVisibility($context['args']['input']['visibility'])
-        //     ->setPhase($context['args']['input']['phase'])
-        //     ->setLocation($location)
-        //     ->addAllowedEmployee($context['args']['input']['allowedEmployees'])
-        //     ->setEstablishment($context['args']['input']['establishment'])
-        //     ->addForbiddenAsset($context['args']['input']['forbiddenAssets'])
-        //     ->addForbiddenUser($context['args']['input']['forbiddenUsers'])
-        //     ->setStartAt($context['args']['input']['startTime'])
-        //     ->setShouldEndAt($context['args']['input']['shouldEndAt'])
-        // ;
-
-        // return $heist;
+        return $item;
     }
 }
