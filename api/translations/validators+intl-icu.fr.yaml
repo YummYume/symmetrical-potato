@@ -25,8 +25,8 @@ user.reason.min_length: Votre raison doit comporter au moins {limit} caractères
 user.reason.max_length: Votre raison ne peut pas comporter plus de {limit} caractères.
 
 # ContractorRequest
-contractor_request.reason.not_blank: Veuillez saisir une raison pour votre demande de contractant.
+contractor_request.reason.not_blank: Veuillez saisir une raison pour votre demande de prestataire.
 contractor_request.reason.min_length: Votre raison doit comporter au moins {limit} caractères.
 contractor_request.reason.max_length: Votre raison ne peut pas comporter plus de {limit} caractères.
-contractor_request.status.not_pending: Vous devez accepter ou refuser la demande de contractant.
+contractor_request.status.not_pending: Vous devez accepter ou refuser la demande de prestataire.
 contractor_request.admin_comment.max_length: Le commentaire ne peut pas comporter plus de {limit} caractères.
