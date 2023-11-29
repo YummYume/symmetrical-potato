@@ -27,12 +27,12 @@ use Symfony\Component\Uid\Uuid;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['establishement:read', 'establishement:read:public', 'blameable'],
+                'groups' => [Establishment::READ, Establishment::READ_PUBLIC],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => ['establishement:read', 'establishement:read:public', 'blameable'],
+                'groups' => [Establishment::READ, Establishment::READ_PUBLIC],
             ]
         ),
         new Mutation(name: 'create'),
@@ -45,63 +45,66 @@ class Establishment
     use BlameableTrait;
     use TimestampableTrait;
 
+    public const READ = 'establishment:read';
+    public const READ_PUBLIC = 'establishment:read:public';
+
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['establishement:read'])]
+    #[Groups([self::READ])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 150)]
     #[ApiProperty]
-    #[Groups(['establishement:read', 'establishement:read:public'])]
+    #[Groups([self::READ, self::READ_PUBLIC])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[ApiProperty]
-    #[Groups(['establishement:read'])]
+    #[Groups([self::READ])]
     private ?string $description = null;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['establishement:read'])]
+    #[Groups([self::READ])]
     private ?float $minimumWage = null;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['establishement:read'])]
+    #[Groups([self::READ])]
     private ?int $minimumWorkTimePerWeek = null;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['establishement:read'])]
+    #[Groups([self::READ])]
     private float $contractorCut = 15.0;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['establishement:read'])]
+    #[Groups([self::READ])]
     private float $employeeCut = 05.0;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['establishement:read'])]
+    #[Groups([self::READ])]
     private float $crewCut = 80.0;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['establishement:read', 'establishement:read:public'])]
+    #[Groups([self::READ, self::READ_PUBLIC])]
     private int $reviewCount = 0;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     #[ApiProperty]
-    #[Groups(['establishement:read', 'establishement:read:public'])]
+    #[Groups([self::READ, self::READ_PUBLIC])]
     private ?float $averageRating = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
     #[ApiProperty]
-    #[Groups(['establishement:read'])]
+    #[Groups([self::READ, Heist::READ])]
     private ?User $contractor = null;
 
     /** @var ArrayCollection<int, Employee> */

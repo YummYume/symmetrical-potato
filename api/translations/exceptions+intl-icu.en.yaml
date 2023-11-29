@@ -6,6 +6,9 @@ common.unauthorized: You are not authorized to perform this action.
 user.not_authenticated: You are not authenticated.
 user.invalid_credentials: The provided credentials are invalid.
 
+# Heist
+heist.establishment.not_allowed: This establishment does not belong to you.
+
 # Google API
 google_api.bad_request: The provided information is invalid.
 google_api.not_found: The requested resource was not found.

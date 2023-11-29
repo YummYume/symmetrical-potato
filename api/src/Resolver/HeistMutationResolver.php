@@ -6,17 +6,22 @@ use ApiPlatform\GraphQl\Resolver\MutationResolverInterface;
 use ApiPlatform\Validator\ValidatorInterface;
 use App\Entity\Heist;
 use App\Entity\Location;
+use App\Entity\User;
+use App\Helper\ExceptionHelper;
 use App\Lib\GoogleMaps;
 use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 final class HeistMutationResolver implements MutationResolverInterface
 {
     public function __construct(
-        private readonly LocationRepository $locationRepository,
+        private readonly Security $security,
+        private readonly ExceptionHelper $exceptionHelper,
         private readonly EntityManagerInterface $entityManager,
         private readonly ValidatorInterface $validator,
-        private readonly GoogleMaps $googleMaps
+        private readonly LocationRepository $locationRepository,
+        private readonly GoogleMaps $googleMaps,
     ) {
     }
 
@@ -37,7 +42,17 @@ final class HeistMutationResolver implements MutationResolverInterface
             return null;
         }
 
-        $this->validator->validate($item, ['groups' => 'heist:create']);
+        $user = $this->security->getUser();
+
+        if (!$user instanceof User) {
+            return null;
+        }
+
+        $this->validator->validate($item, ['groups' => Heist::CREATE]);
+
+        if (!$user->getEstablishments()->contains($item->getEstablishment())) {
+            throw $this->exceptionHelper->createTranslatableHttpException(403, 'heist.establishment.not_allowed');
+        }
 
         $location = $this->locationRepository->findOneBy([
             'latitude' => $item->getLatitude(),
@@ -54,7 +69,7 @@ final class HeistMutationResolver implements MutationResolverInterface
                 ->setAddress($place['address'])
                 ->setPlaceId($place['placeId']);
 
-            $this->validator->validate($location, ['groups' => 'location:create']);
+            $this->validator->validate($location, ['groups' => Location::CREATE]);
 
             $this->entityManager->persist($location);
             $this->entityManager->flush();

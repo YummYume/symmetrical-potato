@@ -67,16 +67,11 @@ heist.prefered_tactic.invalid: La tactique recommendée est invalide.
 heist.difficulty.not_blank: Veuillez saisir une difficulté.
 heist.difficulty.invalid: La difficulté est invalide.
 
-heist.phase.not_blank: Veuillez saisir une phase.
-heist.phase.invalid: La phase est invalide.
-
 heist.visibility.not_blank: Veuillez saisir une visibilité.
 heist.visibility.invalid: La visibilité est invalide.
 
 heist.allowedEmployees.type: Veuillez saisir une liste d'employés autorisés au format JSON.
 heist.allowedEmployees.not_blank: Veuillez saisir une liste d'employés autorisés.
-
-heist.employee.not_blank: Veuillez saisir un employé.
 
 heist.establishment.not_blank: Veuillez saisir un établissement.
 

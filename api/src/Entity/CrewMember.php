@@ -27,12 +27,12 @@ use Symfony\Component\Uid\Uuid;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['crew_member:read:public'],
+                'groups' => [CrewMember::READ_PUBLIC],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => ['crew_member:read:public'],
+                'groups' => [CrewMember::READ_PUBLIC],
             ]
         ),
         new Mutation(name: 'create'),
@@ -45,6 +45,9 @@ class CrewMember
     use BlameableTrait;
     use TimestampableTrait;
 
+    public const READ = 'crew_member:read';
+    public const READ_PUBLIC = 'crew_member:read:public';
+
     public const REVIVE_COST = 5_000_000;
     public const MAX_RATING = 5;
     public const KILL_RATIO_FACTOR = 0.01;
@@ -55,44 +58,44 @@ class CrewMember
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['crew_member:read'])]
+    #[Groups([self::READ])]
     private ?Uuid $id = null;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['crew_member:read'])]
+    #[Groups([self::READ])]
     private int $civilianCasualties = 0;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['crew_member:read'])]
+    #[Groups([self::READ])]
     private int $kills = 0;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['crew_member:read'])]
+    #[Groups([self::READ])]
     private int $objectivesCompleted = 0;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['crew_member:read'])]
+    #[Groups([self::READ])]
     private ?float $payout = null;
 
     #[ORM\Column(length: 50, enumType: CrewMemberStatusEnum::class)]
     #[ApiProperty]
-    #[Groups(['crew_member:read'])]
+    #[Groups([self::READ])]
     private CrewMemberStatusEnum $status = CrewMemberStatusEnum::Free;
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
     #[ApiProperty]
-    #[Groups(['crew_member:read'])]
+    #[Groups([self::READ])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
     #[ApiProperty]
-    #[Groups(['crew_member:read'])]
+    #[Groups([self::READ])]
     private ?Heist $heist = null;
 
     /** @var ArrayCollection<int, HeistAsset> */
