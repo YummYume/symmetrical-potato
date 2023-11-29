@@ -19,6 +19,45 @@ export type Scalars = {
   Iterable: { input: any; output: any };
 };
 
+export type ContractorRequest = Node & {
+  __typename?: 'ContractorRequest';
+  adminComment?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  reason: Scalars['String']['output'];
+  status: ContractorRequestStatusEnum;
+  user?: Maybe<User>;
+};
+
+/** Cursor connection for ContractorRequest. */
+export type ContractorRequestCursorConnection = {
+  __typename?: 'ContractorRequestCursorConnection';
+  edges?: Maybe<Array<Maybe<ContractorRequestEdge>>>;
+  pageInfo: ContractorRequestPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of ContractorRequest. */
+export type ContractorRequestEdge = {
+  __typename?: 'ContractorRequestEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<ContractorRequest>;
+};
+
+/** Information about the current page. */
+export type ContractorRequestPageInfo = {
+  __typename?: 'ContractorRequestPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export enum ContractorRequestStatusEnum {
+  Accepted = 'Accepted',
+  Pending = 'Pending',
+  Rejected = 'Rejected',
+}
+
 export type CrewMember = Node & {
   __typename?: 'CrewMember';
   id: Scalars['ID']['output'];
@@ -195,6 +234,8 @@ export type MeUser = Node & {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Creates a ContractorRequest. */
+  createContractorRequest?: Maybe<CreateContractorRequestPayload>;
   /** Creates a CrewMember. */
   createCrewMember?: Maybe<CreateCrewMemberPayload>;
   /** Creates a Employee. */
@@ -217,6 +258,8 @@ export type Mutation = {
   deleteUser?: Maybe<DeleteUserPayload>;
   /** Requests a Token. */
   requestToken?: Maybe<RequestTokenPayload>;
+  /** Updates a ContractorRequest. */
+  updateContractorRequest?: Maybe<UpdateContractorRequestPayload>;
   /** Updates a CrewMember. */
   updateCrewMember?: Maybe<UpdateCrewMemberPayload>;
   /** Updates a Employee. */
@@ -229,6 +272,10 @@ export type Mutation = {
   updateUser?: Maybe<UpdateUserPayload>;
   /** Validates a User. */
   validateUser?: Maybe<ValidateUserPayload>;
+};
+
+export type MutationCreateContractorRequestArgs = {
+  input: CreateContractorRequestInput;
 };
 
 export type MutationCreateCrewMemberArgs = {
@@ -275,6 +322,10 @@ export type MutationRequestTokenArgs = {
   input: RequestTokenInput;
 };
 
+export type MutationUpdateContractorRequestArgs = {
+  input: UpdateContractorRequestInput;
+};
+
 export type MutationUpdateCrewMemberArgs = {
   input: UpdateCrewMemberInput;
 };
@@ -307,6 +358,8 @@ export type Node = {
 
 export type Query = {
   __typename?: 'Query';
+  contractorRequest?: Maybe<ContractorRequest>;
+  contractorRequests?: Maybe<ContractorRequestCursorConnection>;
   crewMember?: Maybe<CrewMember>;
   crewMembers?: Maybe<CrewMemberCursorConnection>;
   employee?: Maybe<Employee>;
@@ -321,6 +374,18 @@ export type Query = {
   tokens?: Maybe<TokenCursorConnection>;
   user?: Maybe<User>;
   users?: Maybe<UserCursorConnection>;
+};
+
+export type QueryContractorRequestArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryContractorRequestsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<Scalars['Iterable']['input']>;
 };
 
 export type QueryCrewMemberArgs = {
@@ -470,6 +535,20 @@ export enum UserStatusEnum {
   Unverified = 'Unverified',
   Verified = 'Verified',
 }
+
+/** Creates a ContractorRequest. */
+export type CreateContractorRequestInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  reason: Scalars['String']['input'];
+  user?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Creates a ContractorRequest. */
+export type CreateContractorRequestPayload = {
+  __typename?: 'createContractorRequestPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  contractorRequest?: Maybe<ContractorRequest>;
+};
 
 /** Creates a CrewMember. */
 export type CreateCrewMemberInput = {
@@ -1001,6 +1080,31 @@ export type RequestTokenPayload = {
   token?: Maybe<Token>;
 };
 
+/** Updates a ContractorRequest. */
+export type UpdateContractorRequestInput = {
+  adminComment?: InputMaybe<Scalars['String']['input']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  status?: InputMaybe<ContractorRequestStatusEnum>;
+};
+
+/** Updates a ContractorRequest. */
+export type UpdateContractorRequestNestedPayload = Node & {
+  __typename?: 'updateContractorRequestNestedPayload';
+  adminComment?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<ContractorRequestStatusEnum>;
+  user?: Maybe<UpdateUserNestedPayload>;
+};
+
+/** Updates a ContractorRequest. */
+export type UpdateContractorRequestPayload = {
+  __typename?: 'updateContractorRequestPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  contractorRequest?: Maybe<ContractorRequest>;
+};
+
 /** Updates a CrewMember. */
 export type UpdateCrewMemberInput = {
   civilianCasualties?: InputMaybe<Scalars['Int']['input']>;
@@ -1399,6 +1503,7 @@ export type UpdateHeistPayloadData = Node & {
 export type UpdateUserInput = {
   balance?: InputMaybe<Scalars['Float']['input']>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  contractorRequest?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['String']['input']>;
   createdBy?: InputMaybe<Scalars['String']['input']>;
   crewMembers?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -1424,6 +1529,7 @@ export type UpdateUserNestedPayload = Node & {
   __typename?: 'updateUserNestedPayload';
   allowedRoles?: Maybe<Scalars['Iterable']['output']>;
   balance?: Maybe<Scalars['Float']['output']>;
+  contractorRequest?: Maybe<UpdateContractorRequestNestedPayload>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UpdateUserNestedPayload>;
   crewMembers?: Maybe<UpdateCrewMemberNestedPayloadCursorConnection>;
@@ -1483,6 +1589,7 @@ export type UpdateUserPayloadData = Node & {
   __typename?: 'updateUserPayloadData';
   allowedRoles?: Maybe<Scalars['Iterable']['output']>;
   balance?: Maybe<Scalars['Float']['output']>;
+  contractorRequest?: Maybe<UpdateContractorRequestNestedPayload>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UpdateUserNestedPayload>;
   crewMembers?: Maybe<UpdateCrewMemberNestedPayloadCursorConnection>;
