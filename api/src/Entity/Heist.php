@@ -62,6 +62,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'update',
             security: 'is_granted("ROLE_CONTRACTOR") or is_granted("ROLE_ADMIN")',
+            resolver: HeistMutationResolver::class,
             normalizationContext: [
                 'groups' => [Heist::UPDATE_READ],
             ],
@@ -248,6 +249,7 @@ class Heist
         self::CREATE,
         self::CREATE_READ,
         self::UPDATE,
+        self::UPDATE_READ,
     ])]
     private HeistPreferedTacticEnum $preferedTactic = HeistPreferedTacticEnum::Unknown;
 
@@ -257,6 +259,7 @@ class Heist
         self::CREATE,
         self::CREATE_READ,
         self::UPDATE,
+        self::UPDATE_READ,
     ])]
     private HeistDifficultyEnum $difficulty = HeistDifficultyEnum::Normal;
 
@@ -270,6 +273,7 @@ class Heist
         self::CREATE,
         self::CREATE_READ,
         self::UPDATE,
+        self::UPDATE_READ,
     ])]
     private HeistVisibilityEnum $visibility = HeistVisibilityEnum::Draft;
 
@@ -328,6 +332,7 @@ class Heist
         self::CREATE,
         self::CREATE_READ,
         self::UPDATE,
+        self::UPDATE_READ,
     ])]
     private Collection $forbiddenAssets;
 
@@ -338,6 +343,7 @@ class Heist
         self::CREATE,
         self::CREATE_READ,
         self::UPDATE,
+        self::UPDATE_READ,
     ])]
     private Collection $assets;
 
@@ -349,6 +355,7 @@ class Heist
         self::CREATE,
         self::CREATE_READ,
         self::UPDATE,
+        self::UPDATE_READ,
     ])]
     private Collection $forbiddenUsers;
 

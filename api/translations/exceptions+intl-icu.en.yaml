@@ -8,6 +8,8 @@ user.invalid_credentials: The provided credentials are invalid.
 
 # Heist
 heist.establishment.not_allowed: This establishment does not belong to you.
+heist.slot.not_available: This slot is not available for this location.
+heist.contractor.not_allowed: You are not authorized to perform this action.
 
 # Google API
 google_api.bad_request: The provided information is invalid.
