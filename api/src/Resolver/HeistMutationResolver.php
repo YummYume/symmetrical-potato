@@ -55,7 +55,7 @@ final class HeistMutationResolver implements MutationResolverInterface
         $this->validator->validate($item, ['groups' => Heist::WRITE]);
 
         // Check if the establishment is owned by the user or if the user is an admin
-        if (!$user->getEstablishments()->contains($item->getEstablishment()) || $this->security->isGranted('ROLE_ADMIN')) {
+        if (!$user->getEstablishments()->contains($item->getEstablishment()) || $this->security->isGranted(User::ROLE_ADMIN)) {
             throw $this->exceptionHelper->createTranslatableHttpException(403, 'heist.establishment.not_allowed');
         }
 
@@ -94,12 +94,16 @@ final class HeistMutationResolver implements MutationResolverInterface
         $user = $this->security->getUser();
 
         if (null === $user || !$user instanceof User) {
-            return null;
+            throw $this->exceptionHelper->createTranslatableHttpException(401, 'user.not_authenticated');
+        }
+
+        if (null === $item->getId()) {
+            throw $this->exceptionHelper->createTranslatableHttpException(400, 'common.not_found');
         }
 
         // Check if the heist is owned by the establishment of the user or if the user is an admin
-        if (!$user->getEstablishments()->contains($item->getEstablishment()) || $this->security->isGranted('ROLE_ADMIN')) {
-            throw $this->exceptionHelper->createTranslatableHttpException(403, 'heist.contractor.not_allowed');
+        if (!$user->getEstablishments()->contains($item->getEstablishment()) || $this->security->isGranted(User::ROLE_ADMIN)) {
+            throw $this->exceptionHelper->createTranslatableHttpException(403, 'common.unauthorized');
         }
 
         $this->validator->validate($item, ['groups' => Heist::UPDATE]);

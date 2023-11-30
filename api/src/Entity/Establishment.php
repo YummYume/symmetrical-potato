@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
@@ -10,6 +11,7 @@ use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
+use App\Filter\UuidFilter;
 use App\Repository\EstablishmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -27,12 +29,12 @@ use Symfony\Component\Uid\Uuid;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [Establishment::READ, Establishment::READ_PUBLIC],
+                'groups' => [Establishment::READ_PUBLIC],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [Establishment::READ, Establishment::READ_PUBLIC],
+                'groups' => [Establishment::READ_PUBLIC],
             ]
         ),
         new Mutation(name: 'create'),
@@ -40,6 +42,7 @@ use Symfony\Component\Uid\Uuid;
         new DeleteMutation(name: 'delete'),
     ]
 )]
+#[ApiFilter(UuidFilter::class, properties: ['contractor.id'])]
 class Establishment
 {
     use BlameableTrait;
@@ -104,7 +107,7 @@ class Establishment
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
     #[ApiProperty]
-    #[Groups([self::READ, Heist::READ])]
+    #[Groups([self::READ])]
     private ?User $contractor = null;
 
     /** @var ArrayCollection<int, Employee> */

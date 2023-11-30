@@ -43,7 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [User::READ_PUBLIC],
+                'groups' => [User::READ],
             ]
         ),
         new Mutation(
@@ -126,12 +126,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['contractor_request:read'])]
+    #[Groups([ContractorRequest::READ])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[ApiProperty]
-    #[Groups([self::READ, self::READ_PUBLIC, self::REGISTER, 'contractor_request:read'])]
+    #[Groups([self::READ, self::READ_PUBLIC, self::REGISTER, ContractorRequest::READ])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.username.not_blank')]
     #[Assert\Length(
         groups: [self::REGISTER],
@@ -190,7 +190,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[ApiProperty]
-    #[Groups([self::READ, self::REGISTER, 'contractor_request:read'])]
+    #[Groups([self::READ, self::REGISTER, ContractorRequest::READ])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.email.not_blank')]
     #[Assert\Email(groups: [self::REGISTER], message: 'user.email.invalid')]
     #[Assert\Length(

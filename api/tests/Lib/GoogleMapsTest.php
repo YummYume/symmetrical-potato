@@ -7,12 +7,10 @@ use App\Tests\AbstractTestCase;
 
 final class GoogleMapsTest extends AbstractTestCase
 {
-    public const NEW_YORK_LATITUDE = 40.742949784543825;
-    public const NEW_YORK_LONGITUDE = -74.17140255510886;
+    public const MUSEUM_NYC_LATITUDE = 40.742949784543825;
+    public const MUSEUM_NYC_LONGITUDE = -74.17140255510886;
 
     public const PLACE = [
-        'latitude' => self::NEW_YORK_LATITUDE,
-        'longitude' => self::NEW_YORK_LONGITUDE,
         'displayName' => [
             'text' => 'The Newark Museum of Art',
         ],
@@ -34,11 +32,11 @@ final class GoogleMapsTest extends AbstractTestCase
      */
     public function testGetPlaceInfornationsByCoordinates(): void
     {
-        $place = $this->googleMaps->getPlaceInfornationsByCoordinates(self::NEW_YORK_LATITUDE, self::NEW_YORK_LONGITUDE);
+        $place = $this->googleMaps->getPlaceInfornationsByCoordinates(self::MUSEUM_NYC_LATITUDE, self::MUSEUM_NYC_LONGITUDE);
 
         $this->assertIsArray($place);
-        $this->assertEquals(self::PLACE['latitude'], $place['coordinates']['latitude']);
-        $this->assertEquals(self::PLACE['longitude'], $place['coordinates']['longitude']);
+        $this->assertEquals(self::MUSEUM_NYC_LATITUDE, $place['coordinates']['latitude']);
+        $this->assertEquals(self::MUSEUM_NYC_LONGITUDE, $place['coordinates']['longitude']);
         $this->assertEquals(self::PLACE['displayName']['text'], $place['displayName']['text']);
         $this->assertEquals(self::PLACE['address'], $place['address']);
         $this->assertEquals(self::PLACE['placeId'], $place['placeId']);

@@ -63,6 +63,9 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'update',
             security: 'is_granted("ROLE_CONTRACTOR") or is_granted("ROLE_ADMIN")',
             resolver: HeistMutationResolver::class,
+            extraArgs: [
+                'id' => ['type' => 'ID!'],
+            ],
             normalizationContext: [
                 'groups' => [Heist::READ],
             ],
