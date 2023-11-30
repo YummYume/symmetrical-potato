@@ -4,20 +4,9 @@ namespace App\Tests\API;
 
 use App\Entity\User;
 use App\Tests\AbstractTestCase;
-use DAMA\DoctrineTestBundle\Doctrine\DBAL\StaticDriver;
 
 final class ContractorRequestTest extends AbstractTestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        StaticDriver::setKeepStaticConnections(false);
-    }
-
-    public static function tearDownAfterClass(): void
-    {
-        StaticDriver::setKeepStaticConnections(true);
-    }
-
     /**
      * Tests if a contractor cannot send a contractor request.
      */
@@ -115,7 +104,7 @@ final class ContractorRequestTest extends AbstractTestCase
     /**
      * Tests if a non contractor user can send a contractor request and if it is pending.
      */
-    public function testNonContractorCanSendContractorRequest(): string
+    public function testNonContractorCanSendContractorRequest(): void
     {
         ['client' => $client] = static::createAuthenticatedClient('chains');
         $client->request('POST', '/graphql', [
@@ -143,18 +132,14 @@ final class ContractorRequestTest extends AbstractTestCase
 
         $this->assertArrayHasKey('id', $data['data']['createContractorRequest']['contractorRequest'] ?? []);
         $this->assertArrayNotHasKey('errors', $data);
-
-        return $data['data']['createContractorRequest']['contractorRequest']['id'];
     }
 
     /**
      * Tests if a user cannot send another contractor request if they already have one pending.
-     *
-     * @depends testNonContractorCanSendContractorRequest
      */
-    public function testUserCannotSendSecondContractorRequest(string $id): string
+    public function testUserCannotSendSecondContractorRequest(): void
     {
-        ['client' => $client] = static::createAuthenticatedClient('chains');
+        ['client' => $client] = static::createAuthenticatedClient('pending_contractor');
         $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',
@@ -179,17 +164,31 @@ final class ContractorRequestTest extends AbstractTestCase
 
         $this->assertArrayNotHasKey('id', $data['data']['createContractorRequest']['contractorRequest'] ?? []);
         $this->assertArrayHasKey('errors', $data);
-
-        return $id;
     }
 
     /**
      * Tests if an admin can approve a pending contractor request.
-     *
-     * @depends testUserCannotSendSecondContractorRequest
      */
-    public function testAdminCanApprovePendingContractorRequest(string $id): string
+    public function testAdminCanApprovePendingContractorRequest(): string
     {
+        ['client' => $pendingClient] = static::createAuthenticatedClient('pending_contractor');
+        $pendingClient->request('POST', '/graphql', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'query' => 'query {
+                    getMeUser {
+                        contractorRequest {
+                            id
+                        }
+                    }
+                }',
+            ],
+        ]);
+
+        $id = json_decode($pendingClient->getResponse()->getContent(), true)['data']['getMeUser']['contractorRequest']['id'];
+
         ['client' => $client] = static::createAuthenticatedClient('bain');
         $client->request('POST', '/graphql', [
             'headers' => [
@@ -202,6 +201,7 @@ final class ContractorRequestTest extends AbstractTestCase
                             id
                             reason
                             status
+                            adminComment
                         }
                     }
                 }', $id),
@@ -214,8 +214,9 @@ final class ContractorRequestTest extends AbstractTestCase
                 'updateContractorRequest' => [
                     'contractorRequest' => [
                         'id' => $id,
-                        'reason' => "I'm tired of being a heister. I want to be a contractor.",
+                        'reason' => 'You want to earn some money? I have the right heist for you.',
                         'status' => 'Accepted',
+                        'adminComment' => 'Super comment',
                     ],
                 ],
             ],
@@ -226,11 +227,27 @@ final class ContractorRequestTest extends AbstractTestCase
 
     /**
      * Tests if an admin cannot approve a non pending contractor request.
-     *
-     * @depends testAdminCanApprovePendingContractorRequest
      */
-    public function testAdminCannotApproveNonPendingContractorRequest(string $id): void
+    public function testAdminCannotApproveNonPendingContractorRequest(): void
     {
+        ['client' => $pendingClient] = static::createAuthenticatedClient('shade');
+        $pendingClient->request('POST', '/graphql', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'query' => 'query {
+                    getMeUser {
+                        contractorRequest {
+                            id
+                        }
+                    }
+                }',
+            ],
+        ]);
+
+        $id = json_decode($pendingClient->getResponse()->getContent(), true)['data']['getMeUser']['contractorRequest']['id'];
+
         ['client' => $client] = static::createAuthenticatedClient('bain');
         $client->request('POST', '/graphql', [
             'headers' => [
@@ -260,9 +277,29 @@ final class ContractorRequestTest extends AbstractTestCase
      *
      * @depends testAdminCanApprovePendingContractorRequest
      */
-    public function testUserObtainedContractorRole(): void
+    public function testUserObtainedContractorRole(string $id): void
     {
-        ['client' => $client] = static::createAuthenticatedClient('chains');
+        ['client' => $adminClient] = static::createAuthenticatedClient('bain');
+        $adminClient->request('POST', '/graphql', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'query' => sprintf('mutation {
+                    updateContractorRequest(input: {status: Accepted, adminComment: "Super comment", id: "%s"}) {
+                        contractorRequest {
+                            id
+                            reason
+                            status
+                        }
+                    }
+                }', $id),
+            ],
+        ]);
+
+        $this->assertResponseIsSuccessful();
+
+        ['client' => $client] = static::createAuthenticatedClient('pending_contractor');
         $client->request('POST', '/graphql', [
             'headers' => [
                 'Content-Type' => 'application/json',
