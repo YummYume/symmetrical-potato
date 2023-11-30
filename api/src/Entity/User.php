@@ -233,6 +233,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Profile $profile = null;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[Groups(['user:read'])]
     private ?ContractorRequest $contractorRequest = null;
 
     /** @var ArrayCollection<int, Review> */
@@ -317,7 +318,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             default => $roles,
         };
 
-        return array_unique($roles);
+        return array_values(array_unique($roles));
     }
 
     /**
