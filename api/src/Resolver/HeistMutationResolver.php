@@ -48,11 +48,11 @@ final class HeistMutationResolver implements MutationResolverInterface
 
         $user = $this->security->getUser();
 
-        if (!$user instanceof User) {
+        if (null === $user || !$user instanceof User) {
             return null;
         }
 
-        $this->validator->validate($item, ['groups' => Heist::CREATE]);
+        $this->validator->validate($item, ['groups' => Heist::WRITE]);
 
         // Check if the establishment is owned by the user or if the user is an admin
         if (!$user->getEstablishments()->contains($item->getEstablishment()) || $this->security->isGranted('ROLE_ADMIN')) {
@@ -75,7 +75,7 @@ final class HeistMutationResolver implements MutationResolverInterface
                 ->setAddress($place['address'])
                 ->setPlaceId($place['placeId']);
 
-            $this->validator->validate($location, ['groups' => Location::CREATE]);
+            $this->validator->validate($location, ['groups' => Location::WRITE]);
 
             $this->entityManager->persist($location);
         }
@@ -93,7 +93,7 @@ final class HeistMutationResolver implements MutationResolverInterface
 
         $user = $this->security->getUser();
 
-        if (!$user instanceof User) {
+        if (null === $user || !$user instanceof User) {
             return null;
         }
 
@@ -104,7 +104,7 @@ final class HeistMutationResolver implements MutationResolverInterface
 
         $this->validator->validate($item, ['groups' => Heist::UPDATE]);
 
-        // Check if a slot is available for the heist when you make it public
+        // Check if a slot is available for the heist when you want to make it public
         if (!$this->heistRepository->slotAvailable($item) && $item->getVisibility() === HeistVisibilityEnum::Public) {
             throw $this->exceptionHelper->createTranslatableHttpException(400, 'heist.slot.not_available');
         }

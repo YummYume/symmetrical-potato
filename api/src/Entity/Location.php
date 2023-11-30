@@ -27,12 +27,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [Location::READ, Location::READ_PUBLIC],
+                'groups' => [Location::READ],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [Location::READ, Location::READ_PUBLIC],
+                'groups' => [Location::READ],
             ]
         ),
     ]
@@ -40,17 +40,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(
     fields: ['latitude', 'longitude'],
     message: 'location.latlng.unique',
-    groups: [Location::CREATE]
+    groups: [Location::WRITE]
 )]
 #[UniqueEntity(
     fields: ['name'],
     message: 'location.name.unique',
-    groups: [Location::CREATE]
+    groups: [Location::WRITE]
 )]
 #[UniqueEntity(
     fields: ['address'],
     message: 'location.address.unique',
-    groups: [Location::CREATE]
+    groups: [Location::WRITE]
 )]
 class Location
 {
@@ -58,9 +58,7 @@ class Location
     use TimestampableTrait;
 
     public const READ = 'location:read';
-    public const READ_PUBLIC = 'location:read:public';
-    public const CREATE = 'location:create';
-    public const CREATE_PUBLIC = 'location:create:public';
+    public const WRITE = 'location:write';
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -71,35 +69,35 @@ class Location
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups([self::READ])]
-    #[Assert\NotBlank(groups: [self::CREATE], message: 'location.latitude.not_blank')]
-    #[Assert\Type(type: 'float', groups: [self::CREATE], message: 'location.latitude.type')]
+    #[Groups([self::READ, Heist::READ])]
+    #[Assert\NotBlank(groups: [self::WRITE], message: 'location.latitude.not_blank')]
+    #[Assert\Type(type: 'float', groups: [self::WRITE], message: 'location.latitude.type')]
     private ?float $latitude = null;
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups([self::READ])]
-    #[Assert\NotBlank(groups: [self::CREATE], message: 'location.longitude.not_blank')]
-    #[Assert\Type(type: 'float', groups: [self::CREATE], message: 'location.longitude.type')]
+    #[Groups([self::READ, Heist::READ])]
+    #[Assert\NotBlank(groups: [self::WRITE], message: 'location.longitude.not_blank')]
+    #[Assert\Type(type: 'float', groups: [self::WRITE], message: 'location.longitude.type')]
     private ?float $longitude = null;
 
     #[ORM\Column(length: 255)]
     #[ApiProperty]
-    #[Groups([self::READ, self::READ_PUBLIC])]
-    #[Assert\NotBlank(groups: [self::CREATE], message: 'location.name.not_blank')]
-    #[Assert\Length(max: 255, groups: [self::CREATE], maxMessage: 'location.name.max_length')]
+    #[Groups([self::READ, Heist::READ])]
+    #[Assert\NotBlank(groups: [self::WRITE], message: 'location.name.not_blank')]
+    #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.name.max_length')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[ApiProperty]
-    #[Groups([self::READ])]
-    #[Assert\Length(max: 255, groups: [self::CREATE], maxMessage: 'location.address.max_length')]
+    #[Groups([self::READ, Heist::READ])]
+    #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.address.max_length')]
     private ?string $address = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[ApiProperty]
-    #[Groups([self::READ])]
-    #[Assert\Length(max: 255, groups: [self::CREATE], maxMessage: 'location.place_id.max_length')]
+    #[Groups([self::READ, Heist::READ])]
+    #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.place_id.max_length')]
     private ?string $placeId = null;
 
     #[ORM\Column]

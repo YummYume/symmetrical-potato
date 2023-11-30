@@ -24,7 +24,7 @@ final class HeistRepository extends ServiceEntityRepository
     }
 
     /**
-     * Will return if a slot is available for a heist.
+     * Will return if a slot is available for a public heist.
      */
     public function slotAvailable(Heist $heist): bool
     {
