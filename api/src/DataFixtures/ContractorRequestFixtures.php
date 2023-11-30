@@ -16,6 +16,7 @@ final class ContractorRequestFixtures extends Fixture implements DependentFixtur
         UserFixtures::CONTRACTOR_SHADE => [
             'status' => ContractorRequestStatusEnum::Accepted,
             'reason' => 'Experienced contractor from New York.',
+            'adminComment' => "You have a good reputation in the city. I'm sure you will be a great contractor.",
         ],
         UserFixtures::CONTRACTOR_SHAYU => [
             'status' => ContractorRequestStatusEnum::Accepted,
@@ -48,6 +49,7 @@ final class ContractorRequestFixtures extends Fixture implements DependentFixtur
         UserFixtures::CONTRACTOR_REJECTED => [
             'status' => ContractorRequestStatusEnum::Rejected,
             'reason' => 'I know what happened to Bain.',
+            'adminComment' => 'Then you have to die.',
         ],
     ];
 
@@ -67,6 +69,7 @@ final class ContractorRequestFixtures extends Fixture implements DependentFixtur
                 ->setUser($user)
                 ->setStatus($contractorRequest['status'])
                 ->setReason($contractorRequest['reason'])
+                ->setAdminComment($contractorRequest['adminComment'] ?? null)
             ;
             $user->setContractorRequest($newContractorRequest);
 

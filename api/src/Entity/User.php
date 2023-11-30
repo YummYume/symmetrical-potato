@@ -34,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [],
+    processor: UserPasswordHasher::class,
     graphQlOperations: [
         new Query(
             normalizationContext: [
@@ -47,7 +48,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Mutation(
             name: 'create',
-            processor: UserPasswordHasher::class,
             security: 'user == null',
             normalizationContext: [
                 'groups' => ['user:register:read'],
@@ -65,8 +65,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: '
                 is_granted("ROLE_ADMIN") or
                 (object == user and object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified"))
-            ',
-            securityMessage: 'Unauthorized.',
+            '
         ),
         new Query(
             name: 'get',
@@ -84,7 +83,6 @@ use Symfony\Component\Validator\Constraints as Assert;
                 object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified") and
                 previous_object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Unverified")
             ',
-            securityPostDenormalizeMessage: 'Unauthorized.',
             normalizationContext: [
                 'groups' => ['user:read'],
             ],
@@ -122,11 +120,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
+    #[Groups(['contractor_request:read'])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[ApiProperty]
-    #[Groups(['user:read', 'user:read:public', 'user:register'])]
+    #[Groups(['user:read', 'user:read:public', 'user:register', 'contractor_request:read'])]
     #[Assert\NotBlank(groups: ['user:register'], message: 'user.username.not_blank')]
     #[Assert\Length(
         groups: ['user:register'],
@@ -185,7 +184,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[ApiProperty]
-    #[Groups(['user:read', 'user:register'])]
+    #[Groups(['user:read', 'user:register', 'contractor_request:read'])]
     #[Assert\NotBlank(groups: ['user:register'], message: 'user.email.not_blank')]
     #[Assert\Email(groups: ['user:register'], message: 'user.email.invalid')]
     #[Assert\Length(
@@ -233,7 +232,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $profile = null;
 
-    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?ContractorRequest $contractorRequest = null;
 
     /** @var ArrayCollection<int, Review> */
@@ -273,7 +272,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->username;
     }
 
-    public function setUsername(string $username): static
+    public function setUsername(?string $username): static
     {
         $this->username = $username;
 
@@ -385,24 +384,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(?string $password): static
     {
         $this->password = $password;
 
         return $this;
     }
 
-    public function getPlainPassword(): string
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(string $plainPassword): static
+    public function setPlainPassword(?string $plainPassword): static
     {
         $this->plainPassword = $plainPassword;
 
@@ -422,7 +421,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(?string $email): static
     {
         $this->email = $email;
 

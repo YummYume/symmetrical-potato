@@ -22,3 +22,10 @@ user.email.max_length: Your email address cannot be longer than {limit} characte
 user.reason.not_blank: Please enter a reason for your registration request.
 user.reason.min_length: Your reason must be at least {limit} characters long.
 user.reason.max_length: Your reason cannot be longer than {limit} characters.
+
+# ContractorRequest
+contractor_request.reason.not_blank: Please enter a reason for your contractor request.
+contractor_request.reason.min_length: Your reason must be at least {limit} characters long.
+contractor_request.reason.max_length: Your reason cannot be longer than {limit} characters.
+contractor_request.status.not_pending: You must either accept or reject the contractor request.
+contractor_request.admin_comment.max_length: The comment cannot be longer than {limit} characters.

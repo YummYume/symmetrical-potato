@@ -50,7 +50,7 @@ final class VerifiedUserExtension implements QueryCollectionExtensionInterface, 
      */
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass, array $context): void
     {
-        if (User::class !== $resourceClass || \in_array($context['operation_name'], self::ALLOWED_OPERATIONS, true)) {
+        if (User::class !== $resourceClass || \in_array($context['operation_name'] ?? [], self::ALLOWED_OPERATIONS, true)) {
             return;
         }
 
