@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Heist;
 use App\Enum\HeistPhaseEnum;
+use App\Enum\HeistVisibilityEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,6 +21,45 @@ final class HeistRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Heist::class);
+    }
+
+    /**
+     * Will return if a slot is available for a public heist.
+     */
+    public function slotAvailable(Heist $heist): bool
+    {
+        $qb = $this->createQueryBuilder('h');
+        $count = $qb
+            ->select('COUNT(h.id)')
+            ->leftJoin('h.location', 'l')
+            ->where($qb->expr()->orX(
+                'h.phase = :planning',
+                'h.phase = :inProgress',
+            ))
+            ->andWhere($qb->expr()->andX(
+                'l.latitude = :latitude',
+                'l.longitude = :longitude',
+            ))
+            ->andWhere($qb->expr()->andX(
+                'h.shouldEndAt >= :startAt',
+                'h.startAt <= :shouldEndAt',
+            ))
+            ->andWhere('h.visibility = :visibility')
+            ->andWhere('h.endedAt IS NULL')
+            ->setParameters([
+                'planning' => HeistPhaseEnum::Planning,
+                'inProgress' => HeistPhaseEnum::InProgress,
+                'visibility' => HeistVisibilityEnum::Public,
+                'startAt' => $heist->getStartAt(),
+                'shouldEndAt' => $heist->getShouldEndAt(),
+                'latitude' => $heist->getLocation() ? $heist->getLocation()->getLatitude() : $heist->getLatitude(),
+                'longitude' => $heist->getLocation() ? $heist->getLocation()->getLongitude() : $heist->getLongitude(),
+            ])
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        return 0 === $count;
     }
 
     /**

@@ -5,3 +5,17 @@ common.unauthorized: You are not authorized to perform this action.
 # User
 user.not_authenticated: You are not authenticated.
 user.invalid_credentials: The provided credentials are invalid.
+
+# Heist
+heist.establishment.not_allowed: This establishment does not belong to you.
+heist.slot.not_available: This slot is not available for this location.
+
+# Google API
+google_api.bad_request: The provided information is invalid.
+google_api.not_found: The requested resource was not found.
+google_api.unauthorized: You are not authorized to perform this action.
+google_api.forbidden: You are not authorized to perform this action.
+google_api.internal_server_error: An error occurred, please try again later.
+google_api.too_many_requests: Too many requests have been made, please try again later.
+google.service_unavailable: The service is unavailable, please try again later.
+google_api.error: An error occurred, please try again later.

@@ -38,25 +38,25 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['user:read:public'],
+                'groups' => [User::READ_PUBLIC],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => ['user:read:public'],
+                'groups' => [User::READ],
             ]
         ),
         new Mutation(
             name: 'create',
             security: 'user == null',
             normalizationContext: [
-                'groups' => ['user:register:read'],
+                'groups' => [User::REGISTER_READ],
             ],
             denormalizationContext: [
-                'groups' => ['user:register'],
+                'groups' => [User::REGISTER],
             ],
             validationContext: [
-                'groups' => ['user:register'],
+                'groups' => [User::REGISTER],
             ],
         ),
         new Mutation(name: 'update'),
@@ -73,7 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             resolver: UserQueryResolver::class,
             args: [],
             normalizationContext: [
-                'groups' => ['user:read'],
+                'groups' => [User::READ],
             ]
         ),
         new Mutation(
@@ -84,10 +84,10 @@ use Symfony\Component\Validator\Constraints as Assert;
                 previous_object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Unverified")
             ',
             normalizationContext: [
-                'groups' => ['user:read'],
+                'groups' => [User::READ],
             ],
             denormalizationContext: [
-                'groups' => ['user:validate'],
+                'groups' => [User::VALIDATE],
             ],
         ),
     ]
@@ -96,18 +96,24 @@ use Symfony\Component\Validator\Constraints as Assert;
     fields: ['username'],
     errorPath: 'username',
     message: 'user.username.unique',
-    groups: ['user:register']
+    groups: [User::REGISTER]
 )]
 #[UniqueEntity(
     fields: ['email'],
     errorPath: 'email',
     message: 'user.email.unique',
-    groups: ['user:register']
+    groups: [User::REGISTER]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use BlameableTrait;
     use TimestampableTrait;
+
+    public const READ = 'user:read';
+    public const READ_PUBLIC = 'user:read:public';
+    public const REGISTER = 'user:register';
+    public const REGISTER_READ = 'user:register:read';
+    public const VALIDATE = 'user:validate';
 
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_HEISTER = 'ROLE_HEISTER';
@@ -120,15 +126,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['contractor_request:read'])]
+    #[Groups([ContractorRequest::READ])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[ApiProperty]
-    #[Groups(['user:read', 'user:read:public', 'user:register', 'contractor_request:read'])]
-    #[Assert\NotBlank(groups: ['user:register'], message: 'user.username.not_blank')]
+    #[Groups([self::READ, self::READ_PUBLIC, self::REGISTER, ContractorRequest::READ])]
+    #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.username.not_blank')]
     #[Assert\Length(
-        groups: ['user:register'],
+        groups: [self::REGISTER],
         min: 2,
         max: 100,
         minMessage: 'user.username.min_length',
@@ -139,7 +145,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @var array<string> */
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['user:read'])]
+    #[Groups([self::READ])]
     private array $roles = [];
 
     /**
@@ -150,45 +156,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ApiProperty]
-    #[Groups(['user:register'])]
-    #[Assert\NotBlank(groups: ['user:register'], message: 'user.password.not_blank')]
+    #[Groups([self::REGISTER])]
+    #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.password.not_blank')]
     #[Assert\Length(
-        groups: ['user:register'],
+        groups: [self::REGISTER],
         min: 8,
         max: 100,
         minMessage: 'user.password.min_length',
         maxMessage: 'user.password.max_length'
     )]
     #[Assert\Regex(
-        groups: ['user:register'],
+        groups: [self::REGISTER],
         pattern: '/[\d]/',
         message: 'user.password.at_least_one_digit'
     )]
     #[Assert\Regex(
-        groups: ['user:register'],
+        groups: [self::REGISTER],
         pattern: '/[A-Z]/',
         message: 'user.password.at_least_one_uppercase_letter'
     )]
     #[Assert\Regex(
-        groups: ['user:register'],
+        groups: [self::REGISTER],
         pattern: '/[a-z]/',
         message: 'user.password.at_least_one_lowercase_letter'
     )]
     #[Assert\Regex(
-        groups: ['user:register'],
+        groups: [self::REGISTER],
         pattern: '/[!@#$%^&*()\-_=+;:,<.>]/',
         message: 'user.password.at_least_one_special_character'
     )]
-    #[Assert\NotCompromisedPassword(groups: ['user:register'], message: 'user.plain_password.not_compromised')]
+    #[Assert\NotCompromisedPassword(groups: [self::REGISTER], message: 'user.plain_password.not_compromised')]
     private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255)]
     #[ApiProperty]
-    #[Groups(['user:read', 'user:register', 'contractor_request:read'])]
-    #[Assert\NotBlank(groups: ['user:register'], message: 'user.email.not_blank')]
-    #[Assert\Email(groups: ['user:register'], message: 'user.email.invalid')]
+    #[Groups([self::READ, self::REGISTER, ContractorRequest::READ])]
+    #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.email.not_blank')]
+    #[Assert\Email(groups: [self::REGISTER], message: 'user.email.invalid')]
     #[Assert\Length(
-        groups: ['user:register'],
+        groups: [self::REGISTER],
         min: 3,
         max: 255,
         minMessage: 'user.email.min_length',
@@ -198,20 +204,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     #[ApiProperty]
-    #[Groups(['user:read'])]
+    #[Groups([self::READ])]
     private float $balance = 0.0;
 
     #[ORM\Column(nullable: true)]
     #[ApiProperty]
-    #[Groups(['user:read'])]
+    #[Groups([self::READ])]
     private ?float $globalRating = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[ApiProperty]
-    #[Groups(['user:register'])]
-    #[Assert\NotBlank(groups: ['user:register'], message: 'user.reason.not_blank')]
+    #[Groups([self::REGISTER])]
+    #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.reason.not_blank')]
     #[Assert\Length(
-        groups: ['user:register'],
+        groups: [self::REGISTER],
         min: 10,
         max: 2000,
         minMessage: 'user.reason.min_length',
@@ -220,12 +226,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $reason = null;
 
     #[ORM\Column(length: 20, enumType: UserStatusEnum::class)]
-    #[Groups(['user:validate'])]
+    #[Groups([self::VALIDATE])]
     private UserStatusEnum $status = UserStatusEnum::Unverified;
 
     #[ORM\Column(length: 5, enumType: UserLocaleEnum::class)]
     #[ApiProperty]
-    #[Groups(['user:read', 'user:register'])]
+    #[Groups([self::READ, self::REGISTER])]
     private UserLocaleEnum $locale = UserLocaleEnum::En;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]

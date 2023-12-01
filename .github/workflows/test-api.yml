@@ -73,6 +73,9 @@ jobs:
       - name: Copy .env.ci to .env.test.local
         run: cp ./api/.env.ci ./api/.env.test.local
 
+      - name: Copy google credentials
+        run: echo 'GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}' >> ./api/.env.test.local
+
       - name: Install dependencies
         working-directory: ./api
         run: composer install --prefer-dist

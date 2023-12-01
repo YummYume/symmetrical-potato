@@ -45,7 +45,7 @@ export default async function handleRequest(
   remixContext: EntryContext,
   loadContext: AppLoadContext,
 ) {
-  const i18nInstance = createInstance();
+  const i18nInstance = createInstance() as i18n;
   const ns = i18next.getRouteNamespaces(remixContext);
 
   await i18nInstance

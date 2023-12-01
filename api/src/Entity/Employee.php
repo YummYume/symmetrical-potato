@@ -28,12 +28,12 @@ use Symfony\Component\Uid\Uuid;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['employee:read:public'],
+                'groups' => [Employee::READ, Employee::READ_PUBLIC],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => ['employee:read:public'],
+                'groups' => [Employee::READ, Employee::READ_PUBLIC],
             ]
         ),
         new Mutation(name: 'create'),
@@ -45,6 +45,9 @@ class Employee
 {
     use BlameableTrait;
     use TimestampableTrait;
+
+    public const READ = 'employee:read';
+    public const READ_PUBLIC = 'employee:read:public';
 
     public const DAY_MONDAY = 'monday';
     public const DAY_TUESDAY = 'tuesday';
@@ -59,7 +62,6 @@ class Employee
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['employee:read'])]
     private ?Uuid $id = null;
 
     /**
@@ -72,7 +74,7 @@ class Employee
     private ?string $codeName = null;
 
     #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
-    #[Groups(['employee:read'])]
+    #[Groups([self::READ])]
     private ?User $user = null;
 
     /** @var ArrayCollection<int, EmployeeTimeOff> */

@@ -30,13 +30,13 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => ['contractor_request:read'],
+                'groups' => [ContractorRequest::READ],
             ],
             security: 'is_granted("ROLE_ADMIN") or object.user == user',
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => ['contractor_request:read'],
+                'groups' => [ContractorRequest::READ],
             ],
             security: 'is_granted("ROLE_ADMIN")',
         ),
@@ -51,23 +51,23 @@ use Symfony\Component\Validator\Constraints as Assert;
                 )
             ',
             denormalizationContext: [
-                'groups' => ['contractor_request:write'],
+                'groups' => [ContractorRequest::WRITE],
             ],
             normalizationContext: [
-                'groups' => ['contractor_request:read'],
+                'groups' => [ContractorRequest::READ],
             ],
-            validationContext: ['groups' => ['contractor_request:write']],
+            validationContext: ['groups' => [ContractorRequest::WRITE]],
         ),
         new Mutation(
             name: 'update',
             security: 'is_granted("ROLE_ADMIN") and object.getStatus() == enum("App\\\Enum\\\ContractorRequestStatusEnum::Pending")',
             denormalizationContext: [
-                'groups' => ['contractor_request:write:admin'],
+                'groups' => [ContractorRequest::WRITE_ADMIN],
             ],
             normalizationContext: [
-                'groups' => ['contractor_request:read'],
+                'groups' => [ContractorRequest::READ],
             ],
-            validationContext: ['groups' => ['contractor_request:write:admin']]
+            validationContext: ['groups' => [ContractorRequest::WRITE_ADMIN]]
         ),
     ]
 )]
@@ -77,41 +77,45 @@ class ContractorRequest
     use BlameableTrait;
     use TimestampableTrait;
 
+    public const READ = 'contractor_request:read';
+    public const WRITE = 'contractor_request:write';
+    public const WRITE_ADMIN = 'contractor_request:write:admin';
+
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups(['contractor_request:read', 'user:read'])]
+    #[Groups([self::READ, User::READ])]
     private ?Uuid $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['contractor_request:read', 'contractor_request:write'])]
-    #[Assert\NotBlank(groups: ['contractor_request:write'], message: 'contractor_request.reason.not_blank')]
+    #[Groups([self::READ, self::WRITE])]
+    #[Assert\NotBlank(groups: [self::WRITE], message: 'contractor_request.reason.not_blank')]
     #[Assert\Length(
         min: 10,
         max: 1000,
         minMessage: 'contractor_request.reason.min',
         maxMessage: 'contractor_request.reason.max',
-        groups: ['contractor_request:write']
+        groups: [self::WRITE]
     )]
     private ?string $reason = null;
 
     #[ORM\Column(length: 50, enumType: ContractorRequestStatusEnum::class)]
-    #[Groups(['contractor_request:read', 'contractor_request:write:admin'])]
+    #[Groups([self::READ, self::WRITE_ADMIN])]
     #[Assert\Choice(
         choices: [ContractorRequestStatusEnum::Accepted, ContractorRequestStatusEnum::Rejected],
-        groups: ['contractor_request:write:admin'],
+        groups: [self::WRITE_ADMIN],
         message: 'contractor_request.status.not_pending'
     )]
     private ContractorRequestStatusEnum $status = ContractorRequestStatusEnum::Pending;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['contractor_request:read', 'contractor_request:write:admin'])]
+    #[Groups([self::READ, self::WRITE_ADMIN])]
     #[Assert\Length(
         max: 1000,
         maxMessage: 'contractor_request.admin_comment.max_length',
-        groups: ['contractor_request:write:admin']
+        groups: [self::WRITE_ADMIN]
     )]
     private ?string $adminComment = null;
 
