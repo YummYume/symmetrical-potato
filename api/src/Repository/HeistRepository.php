@@ -31,26 +31,35 @@ final class HeistRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('h');
         $count = $qb
             ->select('COUNT(h.id)')
+            ->leftJoin('h.location', 'l')
             ->where($qb->expr()->orX(
                 'h.phase = :planning',
                 'h.phase = :inProgress',
             ))
-            ->andWhere('h.location = :location')
+            ->andWhere($qb->expr()->andX(
+                'l.latitude = :latitude',
+                'l.longitude = :longitude',
+            ))
+            ->andWhere($qb->expr()->andX(
+                'h.shouldEndAt >= :startAt',
+                'h.startAt <= :shouldEndAt',
+            ))
             ->andWhere('h.visibility = :visibility')
-            ->andWhere('h.shouldEndAt >= :startAt')
             ->andWhere('h.endedAt IS NULL')
             ->setParameters([
                 'planning' => HeistPhaseEnum::Planning,
                 'inProgress' => HeistPhaseEnum::InProgress,
                 'visibility' => HeistVisibilityEnum::Public,
                 'startAt' => $heist->getStartAt(),
-                'location' => $heist->getLocation()->getId()->toBinary(),
+                'shouldEndAt' => $heist->getShouldEndAt(),
+                'latitude' => $heist->getLocation() ? $heist->getLocation()->getLatitude() : $heist->getLatitude(),
+                'longitude' => $heist->getLocation() ? $heist->getLocation()->getLongitude() : $heist->getLongitude(),
             ])
             ->getQuery()
             ->getSingleScalarResult()
         ;
 
-        return $count === 0;
+        return 0 === $count;
     }
 
     /**

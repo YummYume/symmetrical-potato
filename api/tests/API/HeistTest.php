@@ -311,11 +311,6 @@ final class HeistTest extends AbstractTestCase
     {
         ['client' => $client, 'userId' => $userId] = static::createAuthenticatedClient(self::CONTRACTOR);
 
-        $now = new \DateTimeImmutable();
-
-        $startAt = $now->format(\DateTimeInterface::ATOM);
-        $shouldEndAt = $now->modify('+1 hour')->format(\DateTimeInterface::ATOM);
-
         // Get an establishment owned by the user
         $client->request('POST', '/graphql', [
             'headers' => [
@@ -343,6 +338,11 @@ final class HeistTest extends AbstractTestCase
         $this->assertEquals('Rooftop Garden', $establishements['data']['establishments']['edges'][0]['node']['name'] ?? null);
 
         $establishementId = $establishements['data']['establishments']['edges'][0]['node']['id'];
+
+        $now = new \DateTimeImmutable();
+
+        $startAt = $now->modify('+1 hour')->format(\DateTimeInterface::ATOM);
+        $shouldEndAt = $now->modify('+2 hour')->format(\DateTimeInterface::ATOM);
 
         // Create a heist
         $client->request('POST', '/graphql', [

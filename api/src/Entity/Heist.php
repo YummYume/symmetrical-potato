@@ -47,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Mutation(
             name: 'create',
-            security: 'is_granted("ROLE_CONTRACTOR") or is_granted("ROLE_ADMIN")',
+            securityPostDenormalize: '(user == object.getEstablishment().getContractor() and is_granted("ROLE_CONTRACTOR")) or is_granted("ROLE_ADMIN")',
             processor: HeistProcessor::class,
             normalizationContext: [
                 'groups' => [Heist::READ],
@@ -77,7 +77,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
-#[SlotAvailable(groups: [Heist::UPDATE])]
+#[SlotAvailable(groups: [Heist::WRITE, Heist::UPDATE])]
 class Heist
 {
     use BlameableTrait;
@@ -154,7 +154,7 @@ class Heist
     )]
     #[Assert\GreaterThanOrEqual(
         groups: [self::WRITE, self::UPDATE],
-        value: 'today',
+        value: 'now',
         message: 'heist.start_date.greater_than_equal.today'
     )]
     private ?\DateTimeInterface $startAt = null;

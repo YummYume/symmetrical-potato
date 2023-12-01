@@ -12,7 +12,6 @@ use App\Entity\Location;
 use App\Entity\User;
 use App\Google\GoogleMaps;
 use App\Helper\ExceptionHelper;
-use App\Repository\HeistRepository;
 use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -35,7 +34,6 @@ final class HeistProcessor implements ProcessorInterface
         private readonly ValidatorInterface $validator,
         private readonly Security $security,
         private readonly ExceptionHelper $exceptionHelper,
-        private readonly HeistRepository $heistRepository,
         private readonly GoogleMaps $googleMaps,
     ) {
     }
@@ -52,14 +50,8 @@ final class HeistProcessor implements ProcessorInterface
 
         // Create mutation
         if ('create' === $operation->getName()) {
-            $user = $this->security->getUser();
-
-            if (null === $user || !$user instanceof User) {
-                throw $this->exceptionHelper->createTranslatableHttpException(403, 'user.not_authenticated');
-            }
-
-            if (!$user->getEstablishments()->contains($heist->getEstablishment()) || $this->security->isGranted(User::ROLE_ADMIN)) {
-                throw $this->exceptionHelper->createTranslatableHttpException(403, 'heist.establishment.not_allowed');
+            if (!$this->security->getUser() instanceof User) {
+                throw $this->exceptionHelper->createTranslatableHttpException(403, 'common.not_authenticated');
             }
 
             $location = $this->locationRepository->findOneBy([
@@ -84,16 +76,6 @@ final class HeistProcessor implements ProcessorInterface
             }
 
             $heist->setLocation($location);
-
-            if (!$this->heistRepository->slotAvailable($heist)) {
-                throw $this->exceptionHelper->createTranslatableHttpException(400, 'heist.slot.not_available');
-            }
-
-            return $this->persistProcessor->process($heist, $operation, $uriVariables, $context);
-        }
-
-        if ('update' !== $operation->getName()) {
-            return $this->persistProcessor->process($heist, $operation, $uriVariables, $context);
         }
 
         return $this->persistProcessor->process($heist, $operation, $uriVariables, $context);
