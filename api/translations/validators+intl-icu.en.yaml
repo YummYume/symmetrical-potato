@@ -73,6 +73,7 @@ heist.allowedEmployees.type: Please enter a list of allowed employees in JSON fo
 heist.allowedEmployees.not_blank: Please enter a list of allowed employees.
 
 heist.establishment.not_blank: Please enter an establishment.
+heist.slot.not_available: This slot is not available for this location.
 
 # Location
 location.name.not_blank: Please enter a name.

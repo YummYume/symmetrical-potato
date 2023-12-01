@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Lib;
+namespace App\Google;
 
 use App\Helper\ExceptionHelper;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

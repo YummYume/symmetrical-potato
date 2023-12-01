@@ -74,6 +74,7 @@ heist.allowedEmployees.type: Veuillez saisir une liste d'employés autorisés au
 heist.allowedEmployees.not_blank: Veuillez saisir une liste d'employés autorisés.
 
 heist.establishment.not_blank: Veuillez saisir un établissement.
+heist.slot.not_available: Ce créneau n'est pas disponible pour cette localisation.
 
 # Location
 location.name.not_blank: Veuillez saisir un nom.

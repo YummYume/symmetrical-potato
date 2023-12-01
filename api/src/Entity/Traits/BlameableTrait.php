@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 trait BlameableTrait
 {
-    public const BLAMEABLE = 'able:blameable';
+    public const BLAMEABLE = 'blameable';
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'created_by_id', referencedColumnName: 'id', nullable: true)]

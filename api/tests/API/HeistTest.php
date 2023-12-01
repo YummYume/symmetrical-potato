@@ -352,8 +352,8 @@ final class HeistTest extends AbstractTestCase
             'json' => [
                 'query' => sprintf('mutation {
                     createHeist(input: { 
-                        name: "the central park heist", 
-                        description: "A riche man is going to the central park with his family. We need to steal his golden car in his apartment.", 
+                        name: "The Central Park heist", 
+                        description: "A rich man is going to the Central Park with his family. We need to steal his golden car in his flat.", 
                         startAt: "%s",
                         shouldEndAt: "%s",
                         minimumPayout: 50000,
@@ -383,7 +383,7 @@ final class HeistTest extends AbstractTestCase
             'data' => [
                 'createHeist' => [
                     'heist' => [
-                        'name' => 'the central park heist',
+                        'name' => 'The Central Park heist',
                         'location' => [
                             'name' => 'The Newark Museum of Art',
                             'placeId' => 'ChIJ5fsDD4BUwokRxwsQqWQjEMM',

@@ -2,7 +2,7 @@
 
 namespace App\Tests\Lib;
 
-use App\Lib\GoogleMaps;
+use App\Google\GoogleMaps;
 use App\Tests\AbstractTestCase;
 
 final class GoogleMapsTest extends AbstractTestCase

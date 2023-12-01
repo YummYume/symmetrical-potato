@@ -1,179 +1,180 @@
 {
-    "folders": [
-        {
-            "name": "API",
-            "path": "api"
-        },
-        {
-            "name": "Front",
-            "path": "front"
-        },
-        {
-            "name": "Root",
-            "path": "./",
-        }
-    ],
-    "extensions": {
-        "recommendations": [
-            "gruntfuggly.todo-tree",
-            "matthewpi.caddyfile-support",
-            "ms-azuretools.vscode-docker",
-            "mansoorkhan96.php-cs-fixer",
-            "bmewburn.vscode-intelephense-client",
-            "graphql.vscode-graphql-syntax",
-            "dbaeumer.vscode-eslint",
-            "esbenp.prettier-vscode",
-            "yoavbls.pretty-ts-errors",
-            "bradlc.vscode-tailwindcss",
-            "lokalise.i18n-ally",
-            "sanderronde.phpstan-vscode"
-        ]
+  "folders": [
+    {
+      "name": "API",
+      "path": "api"
     },
-    "settings": {
-        "files.exclude": {
-            "**/.git": true,
-            "**/.svn": true,
-            "**/.hg": true,
-            "**/CVS": true,
-            "**/.DS_Store": true,
-            "**/Thumbs.db": true,
-            "api": true,
-            "front": true
-        },
-        "editor.insertSpaces": true,
-        "[dockercompose]": {
-            "editor.defaultFormatter": "ms-azuretools.vscode-docker",
-            "editor.tabSize": 2
-        },
-        "[php]": {
-            "editor.tabSize": 4
-        },
-        "[dockerfile]": {
-            "editor.defaultFormatter": "ms-azuretools.vscode-docker",
-            "editor.tabSize": 4
-        },
-        "[html]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode",
-            "editor.tabSize": 4
-        },
-        "[javascript]": {
-            "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-            "editor.tabSize": 2
-        },
-        "[typescript]": {
-            "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-            "editor.tabSize": 2
-        },
-        "[typescriptreact]": {
-            "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-            "editor.tabSize": 2,
-            "javascript.preferences.jsxAttributeCompletionStyle": "auto",
-            "typescript.preferences.jsxAttributeCompletionStyle": "auto",
-            "javascript.preferences.quoteStyle": "double",
-            "typescript.preferences.quoteStyle": "double"
-        },
-        "[json]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode",
-            "editor.tabSize": 2
-        },
-        "[jsonc]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
-        },
-        "[markdown]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode",
-            "editor.wordWrap": "off",
-            "editor.wordWrapColumn": 300
-        },
-        "[sass]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
-        },
-        "[scss]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
-        },
-        "php.suggest.basic": false,
-        "twiggy.phpBinConsoleCommand": "docker compose exec php php bin/console",
-        "i18n-ally.localesPaths": [
-            "locales",
-            "app/lib/i18n"
-        ],
-        "i18n-ally.keystyle": "flat",
-        "i18n-ally.defaultNamespace": "common",
-        "i18n-ally.namespace": true,
-        "phpstan.configFile": "phpstan.neon,phpstan.dist.neon",
-        "phpstan.suppressWorkspaceMessage": true,
-        "intelephense.stubs": [
-            "apache",
-            "bcmath",
-            "bz2",
-            "calendar",
-            "com_dotnet",
-            "Core",
-            "ctype",
-            "curl",
-            "date",
-            "dba",
-            "dom",
-            "enchant",
-            "exif",
-            "FFI",
-            "fileinfo",
-            "filter",
-            "fpm",
-            "ftp",
-            "gd",
-            "gettext",
-            "gmp",
-            "hash",
-            "iconv",
-            "imap",
-            "intl",
-            "json",
-            "ldap",
-            "libxml",
-            "mbstring",
-            "meta",
-            "mysqli",
-            "oci8",
-            "odbc",
-            "openssl",
-            "pcntl",
-            "pcre",
-            "PDO",
-            "pdo_ibm",
-            "pdo_mysql",
-            "pdo_pgsql",
-            "pdo_sqlite",
-            "pgsql",
-            "Phar",
-            "posix",
-            "pspell",
-            "random",
-            "readline",
-            "Reflection",
-            "session",
-            "shmop",
-            "SimpleXML",
-            "snmp",
-            "soap",
-            "sockets",
-            "sodium",
-            "SPL",
-            "sqlite3",
-            "standard",
-            "superglobals",
-            "sysvmsg",
-            "sysvsem",
-            "sysvshm",
-            "tidy",
-            "tokenizer",
-            "xml",
-            "xmlreader",
-            "xmlrpc",
-            "xmlwriter",
-            "xsl",
-            "Zend OPcache",
-            "zip",
-            "zlib"
-        ]
+    {
+      "name": "Front",
+      "path": "front"
+    },
+    {
+      "name": "Root",
+      "path": "./"
     }
+  ],
+  "extensions": {
+    "recommendations": [
+      "gruntfuggly.todo-tree",
+      "matthewpi.caddyfile-support",
+      "ms-azuretools.vscode-docker",
+      "mansoorkhan96.php-cs-fixer",
+      "bmewburn.vscode-intelephense-client",
+      "graphql.vscode-graphql-syntax",
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "yoavbls.pretty-ts-errors",
+      "bradlc.vscode-tailwindcss",
+      "lokalise.i18n-ally",
+      "sanderronde.phpstan-vscode"
+    ]
+  },
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/Thumbs.db": true,
+      "api": true,
+      "front": true
+    },
+    "editor.insertSpaces": true,
+    "[dockercompose]": {
+      "editor.defaultFormatter": "ms-azuretools.vscode-docker",
+      "editor.tabSize": 2
+    },
+    "[php]": {
+      "editor.tabSize": 4
+    },
+    "[dockerfile]": {
+      "editor.defaultFormatter": "ms-azuretools.vscode-docker",
+      "editor.tabSize": 4
+    },
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.tabSize": 4
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+      "editor.tabSize": 2
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+      "editor.tabSize": 2
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+      "editor.tabSize": 2,
+      "javascript.preferences.jsxAttributeCompletionStyle": "auto",
+      "typescript.preferences.jsxAttributeCompletionStyle": "auto",
+      "javascript.preferences.quoteStyle": "double",
+      "typescript.preferences.quoteStyle": "double"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.tabSize": 2
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[yaml]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.tabSize": 4
+    },
+    "[markdown]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.wordWrap": "off",
+      "editor.wordWrapColumn": 300
+    },
+    "[sass]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[scss]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "php.suggest.basic": false,
+    "twiggy.phpBinConsoleCommand": "docker compose exec php php bin/console",
+    "i18n-ally.localesPaths": ["locales", "app/lib/i18n"],
+    "i18n-ally.keystyle": "flat",
+    "i18n-ally.defaultNamespace": "common",
+    "i18n-ally.namespace": true,
+    "phpstan.configFile": "phpstan.neon,phpstan.dist.neon",
+    "phpstan.suppressWorkspaceMessage": true,
+    "intelephense.stubs": [
+      "apache",
+      "bcmath",
+      "bz2",
+      "calendar",
+      "com_dotnet",
+      "Core",
+      "ctype",
+      "curl",
+      "date",
+      "dba",
+      "dom",
+      "enchant",
+      "exif",
+      "FFI",
+      "fileinfo",
+      "filter",
+      "fpm",
+      "ftp",
+      "gd",
+      "gettext",
+      "gmp",
+      "hash",
+      "iconv",
+      "imap",
+      "intl",
+      "json",
+      "ldap",
+      "libxml",
+      "mbstring",
+      "meta",
+      "mysqli",
+      "oci8",
+      "odbc",
+      "openssl",
+      "pcntl",
+      "pcre",
+      "PDO",
+      "pdo_ibm",
+      "pdo_mysql",
+      "pdo_pgsql",
+      "pdo_sqlite",
+      "pgsql",
+      "Phar",
+      "posix",
+      "pspell",
+      "random",
+      "readline",
+      "Reflection",
+      "session",
+      "shmop",
+      "SimpleXML",
+      "snmp",
+      "soap",
+      "sockets",
+      "sodium",
+      "SPL",
+      "sqlite3",
+      "standard",
+      "superglobals",
+      "sysvmsg",
+      "sysvsem",
+      "sysvshm",
+      "tidy",
+      "tokenizer",
+      "xml",
+      "xmlreader",
+      "xmlrpc",
+      "xmlwriter",
+      "xsl",
+      "Zend OPcache",
+      "zip",
+      "zlib"
+    ]
+  }
 }

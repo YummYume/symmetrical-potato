@@ -18,7 +18,8 @@ use App\Enum\HeistVisibilityEnum;
 use App\Filter\MatchFilter;
 use App\Filter\UuidFilter;
 use App\Repository\HeistRepository;
-use App\Resolver\HeistMutationResolver;
+use App\State\HeistProcessor;
+use App\Validator\SlotAvailable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -32,7 +33,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: HeistRepository::class)]
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
-    collectDenormalizationErrors: true,
     operations: [],
     graphQlOperations: [
         new Query(
@@ -48,7 +48,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'create',
             security: 'is_granted("ROLE_CONTRACTOR") or is_granted("ROLE_ADMIN")',
-            resolver: HeistMutationResolver::class,
+            processor: HeistProcessor::class,
             normalizationContext: [
                 'groups' => [Heist::READ],
             ],
@@ -61,11 +61,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Mutation(
             name: 'update',
-            security: 'is_granted("ROLE_CONTRACTOR") or is_granted("ROLE_ADMIN")',
-            resolver: HeistMutationResolver::class,
-            extraArgs: [
-                'id' => ['type' => 'ID!'],
-            ],
+            security: '(user == object.getEstablishment().getContractor() and is_granted("ROLE_CONTRACTOR")) or is_granted("ROLE_ADMIN")',
             normalizationContext: [
                 'groups' => [Heist::READ],
             ],
@@ -81,6 +77,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
+#[SlotAvailable(groups: [Heist::UPDATE])]
 class Heist
 {
     use BlameableTrait;
@@ -102,6 +99,7 @@ class Heist
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
+    #[Groups([self::READ, self::WRITE])]
     private ?Uuid $id = null;
 
     #[ORM\Column]

@@ -14,7 +14,7 @@ final class Version20231127134559 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Change location_id to nullable';
     }
 
     public function up(Schema $schema): void
