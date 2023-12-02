@@ -11,3 +11,42 @@
     @apply rounded-r-6 bg-accent-7 transition-all duration-[inherit] motion-reduce:transition-none;
   }
 }
+
+// Drawer
+.rt-DialogOverlay {
+  @apply animate-duration-300 #{!important};
+
+  .rt-DialogContent {
+    @apply max-w-none space-y-4;
+  }
+
+  &.drawer--bottom,
+  &.drawer--top {
+    .rt-DialogContent {
+      @apply h-auto;
+    }
+  }
+
+  &.drawer--left,
+  &.drawer--right {
+    .rt-DialogContent {
+      @apply min-h-full w-[75vw] sm:w-[66vw] md:w-[50vw] lg:w-[33vw] xl:w-[25vw];
+    }
+  }
+
+  &.drawer--bottom {
+    @apply animate-fade-up items-end;
+  }
+
+  &.drawer--left {
+    @apply animate-fade-right justify-start;
+  }
+
+  &.drawer--right {
+    @apply animate-fade-left justify-end;
+  }
+
+  &.drawer--top {
+    @apply animate-fade-down items-start;
+  }
+}

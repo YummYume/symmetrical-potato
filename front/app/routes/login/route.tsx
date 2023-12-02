@@ -1,9 +1,10 @@
-import { Container, Heading, Section } from '@radix-ui/themes';
+import { Container, Heading, Section, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 
+import { Link } from '~/lib/components/Link';
 import { bearerCookie } from '~/lib/cookies.server';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
@@ -105,10 +106,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
 export type Action = typeof action;
 
-export let handle = {
-  i18n: ['common'],
-};
-
 export const meta: MetaFunction<Loader> = ({ data }) => {
   if (!data) {
     return [];
@@ -125,11 +122,11 @@ export default function Login() {
   const passwordError = getMessageErrorForPath(fieldErrors, 'password');
 
   return (
-    <Container p="4" size="1">
-      <Section className="space-y-16">
-        <Heading as="h1" className="text-center" size="9">
-          {t('login')}
-        </Heading>
+    <Section className="space-y-16">
+      <Heading align="center" as="h1" size="9">
+        {t('login')}
+      </Heading>
+      <Container p="4" size="1">
         <Form method="post" className="space-y-4" unstable_viewTransition>
           <FieldInput
             name="username"
@@ -146,8 +143,16 @@ export default function Login() {
             required
           />
           <SubmitButton className="w-full" text={t('login')} submittingText={t('logging_in')} />
+          <Text as="p">
+            {t('forgotten-password', { ns: 'login' })}{' '}
+            <Link to="/forgotten-password">{t('click-here', { ns: 'login' })}</Link>
+          </Text>
+          <Text as="p">
+            {t('not-registered', { ns: 'login' })}{' '}
+            <Link to="/register">{t('register', { ns: 'login' })}</Link>
+          </Text>
         </Form>
-      </Section>
-    </Container>
+      </Container>
+    </Section>
   );
 }

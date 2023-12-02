@@ -7,3 +7,6 @@ logout: Se déconnecter
 change_locale: Changer la langue
 enable_dark_mode: Activer le mode sombre
 submit: Envoyer
+open-menu: Ouvrir le menu de navigation
+dashboard: Tableau de bord
+logged-in-as: connecté en tant que

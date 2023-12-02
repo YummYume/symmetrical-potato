@@ -1,5 +1,5 @@
-import { Heading } from '@radix-ui/themes';
-import { useLoaderData } from '@remix-run/react';
+import { Heading, Section } from '@radix-ui/themes';
+import { useTranslation } from 'react-i18next';
 
 import { denyAccessUnlessGranted } from '~utils/security.server';
 
@@ -15,24 +15,14 @@ export async function loader({ context }: DataFunctionArgs) {
 
 export type Loader = typeof loader;
 
-export let handle = {
-  i18n: ['common'],
-};
-
 export default function Dashboard() {
-  const { user } = useLoaderData<Loader>();
+  const { t } = useTranslation();
 
   return (
-    <div className="relative w-full">
-      <Heading as="h1">Hi {user.username}</Heading>
-      <img
-        className="absolute right-0 top-20"
-        src="/favicon.ico"
-        alt="Remix Logo"
-        style={{
-          viewTransitionName: 'logo',
-        }}
-      />
-    </div>
+    <Section>
+      <Heading align="center" as="h1" size="9">
+        {t('dashboard')}
+      </Heading>
+    </Section>
   );
 }

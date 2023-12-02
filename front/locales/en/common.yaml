@@ -8,3 +8,6 @@ logout: Logout
 change_locale: Change language
 enable_dark_mode: Enable dark mode
 submit: Submit
+open-menu: Open navigation menu
+dashboard: Dashboard
+logged-in-as: Logged in as
