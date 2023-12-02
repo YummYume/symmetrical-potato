@@ -101,3 +101,12 @@ contractor_request.reason.min_length: Votre raison doit comporter au moins {limi
 contractor_request.reason.max_length: Votre raison ne peut pas comporter plus de {limit} caractères.
 contractor_request.status.not_pending: Vous devez accepter ou refuser la demande de prestataire.
 contractor_request.admin_comment.max_length: Le commentaire ne peut pas comporter plus de {limit} caractères.
+
+# Review
+review.establishment.unique: Vous avez déjà évalué cet établissement.
+review.location.unique: Vous avez déjà évalué cette localisation.
+review.establishment_or_location: Votre évaluation ne peut pas concerner à la fois un établissement et une localisation.
+review.comment.max_length: Votre évaluation ne peut pas comporter plus de {limit} caractères.
+review.rating.not_blank: Veuillez sélectionner une note.
+review.establishment.can_not_review: Vous ne pouvez pas évaluer cet établissement.
+review.location.can_not_review: Vous ne pouvez pas évaluer cette localisation.

@@ -19,7 +19,7 @@ enum ReviewRatingEnum: int
     case FourPointFive = 45;
     case Five = 50;
 
-    public static function getRatingValue(self $rating): int
+    public static function getRatingValue(self $rating): float
     {
         return $rating->value / 10;
     }

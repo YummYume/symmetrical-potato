@@ -205,7 +205,7 @@ final class GoogleMaps
         $place = $this->getGeoCodingReverse($latitude, $longitude);
         $placeDetails = $this->getPlaceDetailsById($place['placeId']);
 
-        return array_unique(array_merge($place, $placeDetails, ['coordinates' => ['latitude' => $latitude, 'longitude' => $longitude]]), SORT_REGULAR);
+        return array_unique(array_merge($place, $placeDetails, ['coordinates' => ['latitude' => $latitude, 'longitude' => $longitude]]), \SORT_REGULAR);
     }
 
     /**

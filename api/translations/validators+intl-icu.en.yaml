@@ -100,3 +100,12 @@ contractor_request.reason.min_length: Your reason must be at least {limit} chara
 contractor_request.reason.max_length: Your reason cannot be longer than {limit} characters.
 contractor_request.status.not_pending: You must either accept or reject the contractor request.
 contractor_request.admin_comment.max_length: The comment cannot be longer than {limit} characters.
+
+# Review
+review.establishment.unique: You have already reviewed this establishment.
+review.location.unique: You have already reviewed this location.
+review.establishment_or_location: Your review cannot concern both an establishment and a location.
+review.comment.max_length: Your review cannot exceed {limit} characters.
+review.rating.not_blank: Please select a rating.
+review.establishment.can_not_review: You cannot review this establishment.
+review.location.can_not_review: You cannot review this location.
