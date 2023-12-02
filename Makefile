@@ -145,6 +145,7 @@ test: test-api
 
 test-api:
 	$(EXECPHP) php bin/phpunit
+	$(EXECPHP) php bin/console doctrine:schema:validate --skip-sync
 
 create-api-test:
 	$(EXECPHP) php bin/console make:test

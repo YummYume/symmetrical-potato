@@ -215,7 +215,7 @@ class Heist
     #[Groups([self::READ])]
     private Collection $crewMembers;
 
-    #[ORM\ManyToOne(inversedBy: 'heist')]
+    #[ORM\ManyToOne(inversedBy: 'heists')]
     #[ApiProperty]
     #[Groups([self::READ])]
     private ?Location $location = null;
