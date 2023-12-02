@@ -2,18 +2,26 @@
 
 namespace App\Entity\Traits;
 
+use ApiPlatform\Metadata\ApiProperty;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 trait TimestampableTrait
 {
+    public const TIMESTAMPABLE = 'timestampable';
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'create')]
+    #[ApiProperty]
+    #[Groups([self::TIMESTAMPABLE])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'update')]
+    #[ApiProperty]
+    #[Groups([self::TIMESTAMPABLE])]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function setCreatedAt(?\DateTimeInterface $createdAt): static

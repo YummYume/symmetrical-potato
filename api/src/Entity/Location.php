@@ -112,12 +112,12 @@ class Location
 
     /** @var ArrayCollection<int, Heist> */
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Heist::class)]
-    private Collection $heist;
+    private Collection $heists;
 
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
-        $this->heist = new ArrayCollection();
+        $this->heists = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -242,15 +242,15 @@ class Location
     /**
      * @return Collection<int, Heist>
      */
-    public function getHeist(): Collection
+    public function getHeists(): Collection
     {
-        return $this->heist;
+        return $this->heists;
     }
 
     public function addHeist(Heist $heist): static
     {
-        if (!$this->heist->contains($heist)) {
-            $this->heist->add($heist);
+        if (!$this->heists->contains($heist)) {
+            $this->heists->add($heist);
             $heist->setLocation($this);
         }
 
@@ -259,7 +259,7 @@ class Location
 
     public function removeHeist(Heist $heist): static
     {
-        if ($this->heist->removeElement($heist)) {
+        if ($this->heists->removeElement($heist)) {
             // set the owning side to null (unless already changed)
             if ($heist->getLocation() === $this) {
                 $heist->setLocation(null);
