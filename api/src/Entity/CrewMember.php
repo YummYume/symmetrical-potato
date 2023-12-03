@@ -62,39 +62,32 @@ class CrewMember
     private ?Uuid $id = null;
 
     #[ORM\Column]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private int $civilianCasualties = 0;
 
     #[ORM\Column]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private int $kills = 0;
 
     #[ORM\Column]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private int $objectivesCompleted = 0;
 
     #[ORM\Column]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private ?float $payout = null;
 
     #[ORM\Column(length: 50, enumType: CrewMemberStatusEnum::class)]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private CrewMemberStatusEnum $status = CrewMemberStatusEnum::Free;
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private ?Heist $heist = null;
 

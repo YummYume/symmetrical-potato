@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraint;
 final class CanReview extends Constraint
 {
     public function __construct(
-        public string $message = 'review.can_not_review',
+        public string $message = 'review.cannot_review',
         array $groups = null,
         mixed $payload = null,
     ) {

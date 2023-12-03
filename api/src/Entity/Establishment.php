@@ -13,36 +13,82 @@ use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Filter\UuidFilter;
 use App\Repository\EstablishmentRepository;
+use App\State\EstablishmentProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
     operations: [],
+    processor: EstablishmentProcessor::class,
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [Establishment::READ],
+                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [Establishment::READ],
+                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE],
             ]
         ),
-        new Mutation(name: 'create'),
-        new Mutation(name: 'update'),
-        new DeleteMutation(name: 'delete'),
+        new Mutation(
+            name: 'create',
+            normalizationContext: [
+                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE],
+            ],
+            denormalizationContext: [
+                'groups' => [self::CREATE],
+            ],
+            validationContext: [
+                'groups' => [self::CREATE],
+            ],
+            security: 'is_granted("ROLE_CONTRACTOR")'
+        ),
+        new Mutation(
+            name: 'update',
+            normalizationContext: [
+                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE],
+            ],
+            denormalizationContext: [
+                'groups' => [self::UPDATE],
+            ],
+            validationContext: [
+                'groups' => [self::UPDATE],
+            ],
+            security: '(is_granted("ROLE_CONTRACTOR") and object.getContractor() == user) or is_granted("ROLE_ADMIN")'
+        ),
+        new DeleteMutation(
+            name: 'delete',
+            security: '(is_granted("ROLE_CONTRACTOR") and object.getContractor() == user) or is_granted("ROLE_ADMIN")'
+        ),
     ]
 )]
 #[ApiFilter(UuidFilter::class, properties: ['contractor.id'])]
+#[Assert\Expression(
+    expression: 'this.getContractor()?.getEstablishments().count() < 10',
+    message: 'establishment.contractor.not_more_than_ten',
+    groups: [self::CREATE]
+)]
+#[Assert\Expression(
+    expression: 'this.getContractorCut() + this.getEmployeeCut() + this.getCrewCut() == 100',
+    message: 'establishment.cuts.sum_to_100',
+    groups: [self::CREATE, self::UPDATE]
+)]
+#[UniqueEntity(
+    fields: ['name'],
+    message: 'establishment.name.unique',
+    groups: [self::CREATE]
+)]
 class Establishment
 {
     use BlameableTrait;
@@ -50,72 +96,127 @@ class Establishment
 
     public const READ = 'establishment:read';
     public const READ_PUBLIC = 'establishment:read:public';
+    public const CREATE = 'establishment:create';
+    public const UPDATE = 'establishment:update';
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups([self::READ])]
+    #[Groups([self::READ_PUBLIC])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 150)]
-    #[ApiProperty]
-    #[Groups([self::READ, self::READ_PUBLIC])]
+    #[Groups([self::READ_PUBLIC, self::CREATE])]
+    #[Assert\NotBlank(message: 'establishment.name.not_blank', groups: [self::CREATE])]
+    #[Assert\Length(
+        min: 1,
+        max: 150,
+        minMessage: 'establishment.name.min_length',
+        maxMessage: 'establishment.name.max_length',
+        groups: [self::CREATE]
+    )]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[ApiProperty]
-    #[Groups([self::READ])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Assert\Length(max: 5000, maxMessage: 'establishment.description.max_length', groups: [self::CREATE, self::UPDATE])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(message: 'establishment.minimum_wage.not_blank', groups: [self::CREATE, self::UPDATE])]
+    #[Assert\Positive(
+        message: 'establishment.minimum_wage.positive',
+        groups: [self::CREATE, self::UPDATE]
+    )]
+    #[Assert\GreaterThanOrEqual(
+        value: 1000,
+        message: 'establishment.minimum_wage.greater_than_or_equal',
+        groups: [self::CREATE, self::UPDATE]
+    )]
     private ?float $minimumWage = null;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(message: 'establishment.minimum_work_time_per_week.not_blank', groups: [self::CREATE, self::UPDATE])]
+    #[Assert\GreaterThanOrEqual(
+        value: 1,
+        message: 'establishment.minimum_work_time_per_week.greater_than_or_equal',
+        groups: [self::CREATE, self::UPDATE]
+    )]
+    #[Assert\LessThanOrEqual(
+        value: 84,
+        message: 'establishment.minimum_work_time_per_week.less_than_or_equal',
+        groups: [self::CREATE, self::UPDATE]
+    )]
     private ?int $minimumWorkTimePerWeek = null;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(message: 'establishment.contractor_cut.not_blank', groups: [self::CREATE, self::UPDATE])]
+    #[Assert\GreaterThanOrEqual(
+        value: 1,
+        message: 'establishment.contractor_cut.greater_than_or_equal',
+        groups: [self::CREATE, self::UPDATE]
+    )]
+    #[Assert\LessThan(
+        value: 100,
+        message: 'establishment.contractor_cut.less_than',
+        groups: [self::CREATE, self::UPDATE]
+    )]
     private float $contractorCut = 15.0;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(message: 'establishment.employee_cut.not_blank', groups: [self::CREATE, self::UPDATE])]
+    #[Assert\GreaterThanOrEqual(
+        value: 1,
+        message: 'establishment.employee_cut.greater_than_or_equal',
+        groups: [self::CREATE, self::UPDATE]
+    )]
+    #[Assert\LessThan(
+        value: 100,
+        message: 'establishment.employee_cut.less_than',
+        groups: [self::CREATE, self::UPDATE]
+    )]
     private float $employeeCut = 05.0;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(message: 'establishment.crew_cut.not_blank', groups: [self::CREATE, self::UPDATE])]
+    #[Assert\GreaterThanOrEqual(
+        value: 20,
+        message: 'establishment.crew_cut.greater_than_or_equal',
+        groups: [self::CREATE, self::UPDATE]
+    )]
+    #[Assert\LessThan(
+        value: 100,
+        message: 'establishment.crew_cut.less_than',
+        groups: [self::CREATE, self::UPDATE]
+    )]
     private float $crewCut = 80.0;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ, self::READ_PUBLIC])]
+    #[Groups([self::READ_PUBLIC])]
     private int $reviewCount = 0;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[ApiProperty]
-    #[Groups([self::READ, self::READ_PUBLIC])]
+    #[Groups([self::READ_PUBLIC])]
     private ?float $averageRating = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[ApiProperty]
-    #[Groups([self::READ])]
+    #[Groups([self::READ_PUBLIC])]
     private ?User $contractor = null;
 
     /** @var ArrayCollection<int, Employee> */
-    #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Employee::class)]
+    #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Employee::class, orphanRemoval: true)]
     private Collection $employees;
 
     /** @var ArrayCollection<int, Review> */
-    #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Review::class)]
+    #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Review::class, orphanRemoval: true)]
     private Collection $reviews;
 
     /** @var ArrayCollection<int, Heist> */

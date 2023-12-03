@@ -32,7 +32,7 @@ final class ContractorRequestProcessor implements ProcessorInterface
     ) {
     }
 
-    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ContractorRequest
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ?ContractorRequest
     {
         if ($operation instanceof DeleteMutation) {
             return $this->removeProcessor->process($data, $operation, $uriVariables, $context);

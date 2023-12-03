@@ -53,10 +53,10 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'groups' => [Heist::READ],
             ],
             denormalizationContext: [
-                'groups' => [Heist::WRITE],
+                'groups' => [Heist::CREATE],
             ],
             validationContext: [
-                'groups' => [Heist::WRITE],
+                'groups' => [Heist::CREATE],
             ],
         ),
         new Mutation(
@@ -77,7 +77,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
-#[SlotAvailable(groups: [Heist::WRITE, Heist::UPDATE])]
+#[SlotAvailable(groups: [Heist::CREATE, Heist::UPDATE])]
 class Heist
 {
     use BlameableTrait;
@@ -85,7 +85,7 @@ class Heist
 
     public const READ = 'heist:read';
     public const READ_PUBLIC = 'heist:read:public';
-    public const WRITE = 'heist:write';
+    public const CREATE = 'heist:create';
     public const UPDATE = 'heist:update';
 
     public const MAX_ALLOWED_CREW_MEMBERS = 4;
@@ -99,29 +99,26 @@ class Heist
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups([self::READ, self::WRITE])]
+    #[Groups([self::READ, self::CREATE])]
     private ?Uuid $id = null;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
-    #[Assert\NotBlank(groups: [self::WRITE, self::UPDATE], message: 'heist.minimum_payout.not_blank')]
-    #[Assert\Type(groups: [self::WRITE, self::UPDATE], type: 'float', message: 'heist.minimum_payout.invalid')]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(groups: [self::CREATE, self::UPDATE], message: 'heist.minimum_payout.not_blank')]
+    #[Assert\Type(groups: [self::CREATE, self::UPDATE], type: 'float', message: 'heist.minimum_payout.invalid')]
     private ?float $minimumPayout = null;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
-    #[Assert\NotBlank(groups: [self::WRITE, self::UPDATE], message: 'heist.maximum_payout.not_blank')]
-    #[Assert\Type(groups: [self::WRITE, self::UPDATE], type: 'float', message: 'heist.maximum_payout.invalid')]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(groups: [self::CREATE, self::UPDATE], message: 'heist.maximum_payout.not_blank')]
+    #[Assert\Type(groups: [self::CREATE, self::UPDATE], type: 'float', message: 'heist.maximum_payout.invalid')]
     private ?float $maximumPayout = null;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ, self::READ_PUBLIC, self::WRITE, self::UPDATE])]
-    #[Assert\NotBlank(groups: [self::WRITE, self::UPDATE], message: 'heist.name.not_blank')]
+    #[Groups([self::READ, self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(groups: [self::CREATE, self::UPDATE], message: 'heist.name.not_blank')]
     #[Assert\Length(
-        groups: [self::WRITE, self::UPDATE],
+        groups: [self::CREATE, self::UPDATE],
         min: 2,
         max: 100,
         minMessage: 'heist.name.min_length',
@@ -130,11 +127,10 @@ class Heist
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
-    #[Assert\NotBlank(groups: [self::WRITE, self::UPDATE], message: 'heist.description.not_blank')]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(groups: [self::CREATE, self::UPDATE], message: 'heist.description.not_blank')]
     #[Assert\Length(
-        groups: [self::WRITE, self::UPDATE],
+        groups: [self::CREATE, self::UPDATE],
         min: 10,
         max: 255,
         minMessage: 'heist.description.min_length',
@@ -143,36 +139,33 @@ class Heist
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
-    #[Assert\NotBlank(groups: [self::WRITE, self::UPDATE], message: 'heist.start_date.not_blank')]
-    #[Assert\Type(type: "\DateTimeInterface", groups: [self::WRITE, self::UPDATE], message: 'heist.start_date.invalid')]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(groups: [self::CREATE, self::UPDATE], message: 'heist.start_date.not_blank')]
+    #[Assert\Type(type: "\DateTimeInterface", groups: [self::CREATE, self::UPDATE], message: 'heist.start_date.invalid')]
     #[Assert\LessThan(
-        groups: [self::WRITE, self::UPDATE],
+        groups: [self::CREATE, self::UPDATE],
         propertyPath: 'shouldEndAt',
         message: 'heist.start_date.less_than.should_end_date'
     )]
     #[Assert\GreaterThanOrEqual(
-        groups: [self::WRITE, self::UPDATE],
+        groups: [self::CREATE, self::UPDATE],
         value: 'now',
         message: 'heist.start_date.greater_than_equal.today'
     )]
     private ?\DateTimeInterface $startAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
-    #[Assert\NotBlank(groups: [self::WRITE, self::UPDATE], message: 'heist.should_end_date.not_blank')]
-    #[Assert\Type(type: "\DateTimeInterface", groups: [self::WRITE, self::UPDATE], message: 'heist.should_end_date.invalid')]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(groups: [self::CREATE, self::UPDATE], message: 'heist.should_end_date.not_blank')]
+    #[Assert\Type(type: "\DateTimeInterface", groups: [self::CREATE, self::UPDATE], message: 'heist.should_end_date.invalid')]
     #[Assert\GreaterThan(
-        groups: [self::WRITE, self::UPDATE],
+        groups: [self::CREATE, self::UPDATE],
         propertyPath: 'startAt',
         message: 'heist.should_end_date.greater_than.start_date'
     )]
     private ?\DateTimeInterface $shouldEndAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[ApiProperty]
     #[Groups([self::READ])]
     #[Assert\Type(type: "\DateTimeInterface", groups: [], message: 'heist.end_date.invalid')]
     #[Assert\GreaterThan(
@@ -184,21 +177,20 @@ class Heist
 
     /** @var array<int, array<string, string|bool>> */
     #[ORM\Column(type: Types::JSON)]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private array $objectives = [];
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
-    #[Assert\Type(groups: [self::WRITE, self::UPDATE], type: 'float', message: 'heist.minimum_required_rating.invalid')]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\Type(groups: [self::CREATE, self::UPDATE], type: 'float', message: 'heist.minimum_required_rating.invalid')]
     private ?float $minimumRequiredRating = null;
 
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private HeistPreferedTacticEnum $preferedTactic = HeistPreferedTacticEnum::Unknown;
 
     #[ORM\Column(length: 50, enumType: HeistDifficultyEnum::class)]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private HeistDifficultyEnum $difficulty = HeistDifficultyEnum::Normal;
 
     #[ORM\Column(length: 50, enumType: HeistPhaseEnum::class)]
@@ -206,36 +198,31 @@ class Heist
     private HeistPhaseEnum $phase = HeistPhaseEnum::Planning;
 
     #[ORM\Column(length: 10, enumType: HeistVisibilityEnum::class)]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private HeistVisibilityEnum $visibility = HeistVisibilityEnum::Draft;
 
     /** @var ArrayCollection<int, CrewMember> */
     #[ORM\OneToMany(mappedBy: 'heist', targetEntity: CrewMember::class, orphanRemoval: true)]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private Collection $crewMembers;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private ?Location $location = null;
 
-    #[ApiProperty]
-    #[Groups([self::WRITE])]
-    #[Assert\NotBlank(groups: [self::WRITE], message: 'heist.latitude.not_blank')]
-    #[Assert\Type(groups: [self::WRITE], type: 'float', message: 'heist.latitude.invalid')]
+    #[Groups([self::CREATE])]
+    #[Assert\NotBlank(groups: [self::CREATE], message: 'heist.latitude.not_blank')]
+    #[Assert\Type(groups: [self::CREATE], type: 'float', message: 'heist.latitude.invalid')]
     private ?float $latitude = null;
 
-    #[ApiProperty]
-    #[Groups([self::WRITE])]
-    #[Assert\NotBlank(groups: [self::WRITE], message: 'heist.longitude.not_blank')]
-    #[Assert\Type(groups: [self::WRITE], type: 'float', message: 'heist.longitude.invalid')]
+    #[Groups([self::CREATE])]
+    #[Assert\NotBlank(groups: [self::CREATE], message: 'heist.longitude.not_blank')]
+    #[Assert\Type(groups: [self::CREATE], type: 'float', message: 'heist.longitude.invalid')]
     private ?float $longitude = null;
 
     /** @var ArrayCollection<int, Employee> */
     #[ORM\ManyToMany(targetEntity: Employee::class, inversedBy: 'allowedHeists')]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private Collection $allowedEmployees;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]
@@ -245,27 +232,24 @@ class Heist
 
     #[ORM\ManyToOne(inversedBy: 'heists')]
     #[ORM\JoinColumn(nullable: false)]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE])]
-    #[Assert\NotBlank(groups: [self::WRITE], message: 'heist.establishment.not_blank')]
+    #[Groups([self::READ, self::CREATE])]
+    #[Assert\NotBlank(groups: [self::CREATE], message: 'heist.establishment.not_blank')]
     private ?Establishment $establishment = null;
 
     /** @var ArrayCollection<int, Asset> */
     #[ORM\ManyToMany(targetEntity: Asset::class, inversedBy: 'forbiddenHeists')]
     #[ORM\JoinTable(name: 'heist_forbidden_assets')]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private Collection $forbiddenAssets;
 
     /** @var ArrayCollection<int, Asset> */
     #[ORM\OneToMany(mappedBy: 'heist', targetEntity: Asset::class)]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private Collection $assets;
 
     /** @var ArrayCollection<int, User> */
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'forbiddenHeists')]
-    #[ApiProperty]
-    #[Groups([self::READ, self::WRITE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private Collection $forbiddenUsers;
 
     public function __construct()
