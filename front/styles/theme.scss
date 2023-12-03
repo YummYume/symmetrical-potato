@@ -36,17 +36,33 @@
 
   &.drawer--bottom {
     @apply animate-fade-up items-end;
+
+    .rt-DialogContent {
+      @apply rounded-b-[0];
+    }
   }
 
   &.drawer--left {
     @apply animate-fade-right justify-start;
+
+    .rt-DialogContent {
+      @apply rounded-l-[0];
+    }
   }
 
   &.drawer--right {
     @apply animate-fade-left justify-end;
+
+    .rt-DialogContent {
+      @apply rounded-r-[0];
+    }
   }
 
   &.drawer--top {
     @apply animate-fade-down items-start;
+
+    .rt-DialogContent {
+      @apply rounded-t-[0];
+    }
   }
 }

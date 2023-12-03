@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\Query;
@@ -52,6 +54,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'location.address.unique',
     groups: [self::WRITE]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['placeId' => 'exact'])]
 class Location
 {
     use BlameableTrait;
