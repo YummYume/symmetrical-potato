@@ -38,17 +38,27 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [User::READ_PUBLIC],
+                'groups' => [self::READ_PUBLIC, self::READ],
+            ],
+            security: 'is_granted("ROLE_USER")'
+        ),
+        new Query(
+            name: 'get',
+            shortName: 'MeUser',
+            resolver: UserQueryResolver::class,
+            args: [],
+            normalizationContext: [
+                'groups' => [self::READ],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [User::READ],
-            ]
+                'groups' => [self::READ],
+            ],
+            security: 'is_granted("ROLE_USER")'
         ),
         new Mutation(
             name: 'create',
-            security: 'user == null',
             normalizationContext: [
                 'groups' => [User::REGISTER_READ],
             ],
@@ -58,23 +68,23 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: [
                 'groups' => [User::REGISTER],
             ],
+            security: 'user == null',
         ),
-        new Mutation(name: 'update'),
-        new DeleteMutation(
-            name: 'delete',
+        new Mutation(
+            name: 'update',
+            normalizationContext: [
+                'groups' => [self::READ],
+            ],
+            denormalizationContext: [
+                'groups' => [self::UPDATE, self::UPDATE_ADMIN],
+            ],
+            validationContext: [
+                'groups' => [self::UPDATE],
+            ],
             security: '
                 is_granted("ROLE_ADMIN") or
                 (object == user and object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified"))
-            '
-        ),
-        new Query(
-            name: 'get',
-            shortName: 'MeUser',
-            resolver: UserQueryResolver::class,
-            args: [],
-            normalizationContext: [
-                'groups' => [User::READ],
-            ]
+            ',
         ),
         new Mutation(
             name: 'validate',
@@ -84,11 +94,18 @@ use Symfony\Component\Validator\Constraints as Assert;
                 previous_object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Unverified")
             ',
             normalizationContext: [
-                'groups' => [User::READ],
+                'groups' => [self::READ],
             ],
             denormalizationContext: [
-                'groups' => [User::VALIDATE],
+                'groups' => [self::VALIDATE],
             ],
+        ),
+        new DeleteMutation(
+            name: 'delete',
+            security: '
+                is_granted("ROLE_ADMIN") or
+                (object == user and object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified"))
+            '
         ),
     ]
 )]
@@ -96,13 +113,13 @@ use Symfony\Component\Validator\Constraints as Assert;
     fields: ['username'],
     errorPath: 'username',
     message: 'user.username.unique',
-    groups: [User::REGISTER]
+    groups: [self::REGISTER]
 )]
 #[UniqueEntity(
     fields: ['email'],
     errorPath: 'email',
     message: 'user.email.unique',
-    groups: [User::REGISTER]
+    groups: [self::REGISTER, self::UPDATE]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -114,6 +131,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const REGISTER = 'user:register';
     public const REGISTER_READ = 'user:register:read';
     public const VALIDATE = 'user:validate';
+    public const UPDATE = 'user:update';
+    public const UPDATE_ADMIN = 'user:update:admin';
 
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_HEISTER = 'ROLE_HEISTER';
@@ -130,7 +149,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[ApiProperty]
     #[Groups([self::READ, self::READ_PUBLIC, self::REGISTER, ContractorRequest::READ])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.username.not_blank')]
     #[Assert\Length(
@@ -144,44 +162,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /** @var array<string> */
     #[ORM\Column]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var ?string The hashed password
      */
     #[ORM\Column]
     #[Ignore]
     private ?string $password = null;
 
-    #[ApiProperty]
-    #[Groups([self::REGISTER])]
+    #[Groups([self::REGISTER, self::UPDATE])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.password.not_blank')]
     #[Assert\Length(
-        groups: [self::REGISTER],
+        groups: [self::REGISTER, self::UPDATE],
         min: 8,
         max: 100,
         minMessage: 'user.password.min_length',
         maxMessage: 'user.password.max_length'
     )]
     #[Assert\Regex(
-        groups: [self::REGISTER],
+        groups: [self::REGISTER, self::UPDATE],
         pattern: '/[\d]/',
         message: 'user.password.at_least_one_digit'
     )]
     #[Assert\Regex(
-        groups: [self::REGISTER],
+        groups: [self::REGISTER, self::UPDATE],
         pattern: '/[A-Z]/',
         message: 'user.password.at_least_one_uppercase_letter'
     )]
     #[Assert\Regex(
-        groups: [self::REGISTER],
+        groups: [self::REGISTER, self::UPDATE],
         pattern: '/[a-z]/',
         message: 'user.password.at_least_one_lowercase_letter'
     )]
     #[Assert\Regex(
-        groups: [self::REGISTER],
+        groups: [self::REGISTER, self::UPDATE],
         pattern: '/[!@#$%^&*()\-_=+;:,<.>]/',
         message: 'user.password.at_least_one_special_character'
     )]
@@ -189,12 +205,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255)]
-    #[ApiProperty]
-    #[Groups([self::READ, self::REGISTER, ContractorRequest::READ])]
-    #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.email.not_blank')]
-    #[Assert\Email(groups: [self::REGISTER], message: 'user.email.invalid')]
+    #[ApiProperty(security: 'object == user or is_granted("ROLE_ADMIN")')]
+    #[Groups([self::READ, self::REGISTER, self::UPDATE, ContractorRequest::READ])]
+    #[Assert\NotBlank(groups: [self::REGISTER, self::UPDATE], message: 'user.email.not_blank')]
+    #[Assert\Email(groups: [self::REGISTER, self::UPDATE], message: 'user.email.invalid')]
     #[Assert\Length(
-        groups: [self::REGISTER],
+        groups: [self::REGISTER, self::UPDATE],
         min: 3,
         max: 255,
         minMessage: 'user.email.min_length',
@@ -203,17 +219,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    #[ApiProperty]
-    #[Groups([self::READ])]
+    #[Groups([self::READ, self::UPDATE_ADMIN])]
     private float $balance = 0.0;
 
     #[ORM\Column(nullable: true)]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private ?float $globalRating = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[ApiProperty]
     #[Groups([self::REGISTER])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.reason.not_blank')]
     #[Assert\Length(
@@ -230,16 +243,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private UserStatusEnum $status = UserStatusEnum::Unverified;
 
     #[ORM\Column(length: 5, enumType: UserLocaleEnum::class)]
-    #[ApiProperty]
-    #[Groups([self::READ, self::REGISTER])]
+    #[Groups([self::READ, self::REGISTER, self::UPDATE])]
     private UserLocaleEnum $locale = UserLocaleEnum::En;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([self::READ, self::READ_PUBLIC])]
     private ?Profile $profile = null;
 
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[Groups(['user:read'])]
+    #[Groups([self::READ])]
     private ?ContractorRequest $contractorRequest = null;
 
     /** @var ArrayCollection<int, Review> */
@@ -453,7 +466,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * WARNING: You should probably not use this method directly unless necessary.
+     * You should probably not use this method directly unless necessary.
      * The user's global rating is automatically computed on a regular basis.
      *
      * @see User::computeGlobalRating()

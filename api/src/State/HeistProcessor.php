@@ -38,7 +38,7 @@ final class HeistProcessor implements ProcessorInterface
     ) {
     }
 
-    public function process(mixed $heist, Operation $operation, array $uriVariables = [], array $context = []): Heist
+    public function process(mixed $heist, Operation $operation, array $uriVariables = [], array $context = []): ?Heist
     {
         if ($operation instanceof DeleteMutation) {
             return $this->removeProcessor->process($heist, $operation, $uriVariables, $context);

@@ -27,12 +27,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [Location::READ],
+                'groups' => [self::READ],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [Location::READ],
+                'groups' => [self::READ],
             ]
         ),
     ]
@@ -40,17 +40,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(
     fields: ['latitude', 'longitude'],
     message: 'location.latlng.unique',
-    groups: [Location::WRITE]
+    groups: [self::WRITE]
 )]
 #[UniqueEntity(
     fields: ['name'],
     message: 'location.name.unique',
-    groups: [Location::WRITE]
+    groups: [self::WRITE]
 )]
 #[UniqueEntity(
     fields: ['address'],
     message: 'location.address.unique',
-    groups: [Location::WRITE]
+    groups: [self::WRITE]
 )]
 class Location
 {
@@ -68,34 +68,29 @@ class Location
     private ?Uuid $id = null;
 
     #[ORM\Column]
-    #[ApiProperty]
     #[Groups([self::READ, Heist::READ])]
     #[Assert\NotBlank(groups: [self::WRITE], message: 'location.latitude.not_blank')]
     #[Assert\Type(type: 'float', groups: [self::WRITE], message: 'location.latitude.type')]
     private ?float $latitude = null;
 
     #[ORM\Column]
-    #[ApiProperty]
     #[Groups([self::READ, Heist::READ])]
     #[Assert\NotBlank(groups: [self::WRITE], message: 'location.longitude.not_blank')]
     #[Assert\Type(type: 'float', groups: [self::WRITE], message: 'location.longitude.type')]
     private ?float $longitude = null;
 
     #[ORM\Column(length: 255)]
-    #[ApiProperty]
     #[Groups([self::READ, Heist::READ])]
     #[Assert\NotBlank(groups: [self::WRITE], message: 'location.name.not_blank')]
     #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.name.max_length')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[ApiProperty]
     #[Groups([self::READ, Heist::READ])]
     #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.address.max_length')]
     private ?string $address = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[ApiProperty]
     #[Groups([self::READ, Heist::READ])]
     #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.place_id.max_length')]
     private ?string $placeId = null;

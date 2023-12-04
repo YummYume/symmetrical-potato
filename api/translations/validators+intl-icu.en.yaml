@@ -23,55 +23,43 @@ user.reason.not_blank: Please enter a reason for your registration request.
 user.reason.min_length: Your reason must be at least {limit} characters long.
 user.reason.max_length: Your reason cannot be longer than {limit} characters.
 
+# Profile
+profile.description.max_length: Your description cannot exceed {limit} characters.
+
 # Heist
 heist.name.not_blank: Please enter a name.
 heist.name.min_length: The name must be at least {limit} characters long.
 heist.name.max_length: The name cannot exceed {limit} characters.
-
 heist.description.not_blank: Please enter a description.
 heist.description.min_length: The description must be at least {limit} characters long.
 heist.description.max_length: The description cannot exceed {limit} characters.
-
 heist.start_date.not_blank: Please enter the start date.
 heist.start_date.invalid: Please enter a valid start date.
 heist.start_date.less_than.should_end_date: The start date must be earlier than the theoretical end date.
 heist.start_date.greater_than_equal.today: The start date must be greater than or equal to the current date.
-
 heist.should_end_date.not_blank: Please enter the theoretical end date.
 heist.should_end_date.invalid: Please enter a valid theoretical end date.
 heist.should_end_date.greater_than_equal.start_date: The theoretical end date must be greater than the start date.
-
 heist.minimun_payout.not_blank: Please enter a minimum payout.
 heist.minimun_payout.invalid: Please enter a valid minimum payout.
-
 heist.maximum_payout.not_blank: Please enter a maximum payout.
 heist.maximum_payout.invalid: Please enter a valid maximum payout.
-
 heist.end_date.invalid: Please enter a valid end date.
 heist.end_date.greater_than.start_date: La date de fin doit être supérieur à la date de début.
-
 heist.objectives.invalid: Please enter a list of objectives in JSON format.
-
 heist.latitude.not_blank: Please enter a latitude.
 heist.latitude.invalid: Please enter a valid latitude.
-
 heist.longitude.not_blank: Please enter a longitude.
 heist.longitude.invalid: Please enter a valid longitude.
-
 heist.minimum_required_rating.invalid: Please enter a number.
-
 heist.prefered_tactic.not_blank: Please enter a recommended tactic.
 heist.prefered_tactic.invalid: The recommended tactic is invalid.
-
 heist.difficulty.not_blank: Please enter a difficulty.
 heist.difficulty.invalid: The difficulty is invalid.
-
 heist.visibility.not_blank: Please enter visibility.
 heist.visibility.invalid: The visibility is invalid.
-
 heist.allowedEmployees.type: Please enter a list of allowed employees in JSON format.
 heist.allowedEmployees.not_blank: Please enter a list of allowed employees.
-
 heist.establishment.not_blank: Please enter an establishment.
 heist.slot.not_available: This slot is not available for this location.
 
@@ -79,19 +67,14 @@ heist.slot.not_available: This slot is not available for this location.
 location.name.not_blank: Please enter a name.
 location.name.max_length: The name cannot exceed {limit} characters.
 location.name.unique: This name is already taken. Please choose another one.
-
 location.latlng.unique: This location already exists. Please choose another one.
-
 location.latitude.not_blank: Please enter a latitude.
 location.latitude.invalid: Please enter a valid latitude.
-
 location.longitude.not_blank: Please enter a longitude.
 location.longitude.invalid: Please enter a valid longitude.
-
 location.address.not_blank: Please enter an address.
 location.address.max_length: The address cannot exceed {limit} characters.
 location.address.unique: This address is already taken. Please choose another one.
-
 location.place_id.max_length: The place ID cannot exceed {limit} characters.
 
 # ContractorRequest
@@ -107,5 +90,29 @@ review.location.unique: You have already reviewed this location.
 review.establishment_or_location: Your review cannot concern both an establishment and a location.
 review.comment.max_length: Your review cannot exceed {limit} characters.
 review.rating.not_blank: Please select a rating.
-review.establishment.can_not_review: You cannot review this establishment.
-review.location.can_not_review: You cannot review this location.
+review.establishment.cannot_review: You cannot review this establishment.
+review.location.cannot_review: You cannot review this location.
+
+# Establishment
+establishment.contractor.not_more_than_ten: You cannot be a contractor for more than ten establishments.
+establishment.cuts.sum_to_100: The sum of all cuts must be 100%.
+establishment.name.unique: This name is already taken. Please choose another one.
+establishment.name.not_blank: Please enter a name.
+establishment.name.min_length: The name must be at least {limit} characters long.
+establishment.name.max_length: The name cannot exceed {limit} characters.
+establishment.description.max_length: The description cannot exceed {limit} characters.
+establishment.minimum_wage.not_blank: Please enter a minimum wage.
+establishment.minimum_wage.positive: The minimum wage must be a positive number.
+establishment.minimum_wage.greater_than_or_equal: The minimum wage cannot be lower than {compared_value, number, currency}.
+establishment.minimum_work_time_per_week.not_blank: Please enter a minimum work time per week.
+establishment.minimum_work_time_per_week.greater_than_or_equal: The minimum work time per week cannot be lower than {compared_value} hour.
+establishment.minimum_work_time_per_week.less_than_or_equal: The minimum work time per week cannot be greater than {compared_value} hours.
+establishment.contractor_cut.not_blank: Please enter a contractor cut.
+establishment.contractor_cut.greater_than_or_equal: The contractor cut cannot be lower than {compared_value}%.
+establishment.contractor_cut.less_than: The contractor cut cannot be equal to or greater than {compared_value}%.
+establishment.employee_cut.not_blank: Please enter an employee cut.
+establishment.employee_cut.greater_than_or_equal: The employee cut cannot be lower than {compared_value}%.
+establishment.employee_cut.less_than: The employee cut cannot be equal to or greater than {compared_value}%.
+establishment.crew_cut.not_blank: Please enter a crew cut.
+establishment.crew_cut.greater_than_or_equal: The crew cut cannot be lower than {compared_value}%.
+establishment.crew_cut.less_than: The crew cut cannot be equal to or greater than {compared_value}%.

@@ -26,7 +26,7 @@ final class HeistProcessCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly HeistRepository $heistRepository,
+        private readonly HeistRepository $heistRepository
     ) {
         parent::__construct();
     }

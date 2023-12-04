@@ -124,12 +124,12 @@ class Review
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[Groups([self::READ_PUBLIC, self::CREATE])]
-    #[CanReview(message: 'review.establishment.can_not_review', groups: [self::CREATE])]
+    #[CanReview(message: 'review.establishment.cannot_review', groups: [self::CREATE])]
     private ?Establishment $establishment = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[Groups([self::READ_PUBLIC, self::CREATE])]
-    #[CanReview(message: 'review.location.can_not_review', groups: [self::CREATE])]
+    #[CanReview(message: 'review.location.cannot_review', groups: [self::CREATE])]
     private ?Location $location = null;
 
     public function getId(): ?Uuid

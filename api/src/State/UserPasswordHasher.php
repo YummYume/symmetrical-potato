@@ -26,7 +26,7 @@ final class UserPasswordHasher implements ProcessorInterface
     ) {
     }
 
-    public function process(mixed $user, Operation $operation, array $uriVariables = [], array $context = []): mixed
+    public function process(mixed $user, Operation $operation, array $uriVariables = [], array $context = []): ?User
     {
         if ($operation instanceof DeleteMutation) {
             return $this->removeProcessor->process($user, $operation, $uriVariables, $context);
