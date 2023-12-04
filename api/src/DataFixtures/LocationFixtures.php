@@ -24,48 +24,49 @@ final class LocationFixtures extends Fixture
             'address' => '405 Lexington Ave, New York, NY 10174, United States',
             'latitude' => 40.75289210721013,
             'longitude' => -73.97348203241299,
+            'placeId' => 'N6w4939ZxLCD7PFt8',
         ],
         self::LOCATION_BROOKLYN_BRIDGE => [
             'name' => 'Brooklyn Bridge',
             'address' => 'New York, NY 10038, United States',
             'latitude' => 40.7064160094788,
             'longitude' => -73.995366290234,
+            'placeId' => 'XUt3K5JTSLcTVss29',
         ],
         self::LOCATION_TIFFANY_AND_CO => [
             'name' => 'Tiffany & Co.',
             'address' => '37 Wall St, New York, NY 10005, United States',
             'latitude' => 40.707121980672184,
             'longitude' => -74.00896543110225,
+            'placeId' => 'eeyMG1FLSWjDJYE48',
         ],
         self::LOCATION_MARQUEE => [
             'name' => 'Marquee',
             'address' => '289 10th Ave, New York, NY 10001, United States',
             'latitude' => 40.75019928902144,
             'longitude' => -74.00238256744451,
+            'placeId' => 'gmTSuhQAeGvS1AkB8',
         ],
         self::LOCATION_MUSEUM_OF_MODERN_ART => [
             'name' => 'The Museum of Modern Art',
             'address' => '11 W 53rd St, New York, NY 10019, United States',
             'latitude' => 40.763012910356615,
             'longitude' => -73.97137382233036,
-        ],
-        self::LOCATION_BDIPLUS => [
-            'name' => 'BDIPlus',
-            'address' => 'Inc., 3 World Trade Center Floor 38, New York, NY 10007, United States',
-            'latitude' => 40.71122746100807,
-            'longitude' => -74.01147116729628,
+            'placeId' => 'p5YANuiJDJs6B9HR9',
         ],
         self::LOCATION_RED_HOOK_TERMINAL => [
             'name' => 'Red Hook Terminal',
             'address' => '70 Hamilton Ave, Brooklyn, NY 11231, United States',
             'latitude' => 40.684101844962186,
             'longitude' => -74.00592073774675,
+            'placeId' => '4ACXjdUZr39DPD23A',
         ],
         self::LOCATION_ONE57 => [
             'name' => 'One57',
             'address' => '157 W 57th St, New York, NY 10019, United States',
             'latitude' => 40.765558037851655,
             'longitude' => -73.97875785264235,
+            'placeId' => 'Z96aLev5jbZF6XHr6',
         ],
     ];
 
@@ -77,6 +78,7 @@ final class LocationFixtures extends Fixture
                 ->setAddress($location['address'])
                 ->setLatitude($location['latitude'])
                 ->setLongitude($location['longitude'])
+                ->setPlaceId($location['placeId'])
             ;
 
             $manager->persist($newLocation);
