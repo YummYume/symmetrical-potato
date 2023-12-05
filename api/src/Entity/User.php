@@ -60,13 +60,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'create',
             normalizationContext: [
-                'groups' => [User::REGISTER_READ],
+                'groups' => [self::REGISTER_READ],
             ],
             denormalizationContext: [
-                'groups' => [User::REGISTER],
+                'groups' => [self::REGISTER],
             ],
             validationContext: [
-                'groups' => [User::REGISTER],
+                'groups' => [self::REGISTER],
             ],
             security: 'user == null',
         ),

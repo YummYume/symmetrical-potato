@@ -37,12 +37,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [Heist::READ],
+                'groups' => [self::READ],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [Heist::READ],
+                'groups' => [self::READ],
             ]
         ),
         new Mutation(
@@ -50,26 +50,26 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityPostDenormalize: '(user == object.getEstablishment().getContractor() and is_granted("ROLE_CONTRACTOR")) or is_granted("ROLE_ADMIN")',
             processor: HeistProcessor::class,
             normalizationContext: [
-                'groups' => [Heist::READ],
+                'groups' => [self::READ],
             ],
             denormalizationContext: [
-                'groups' => [Heist::CREATE],
+                'groups' => [self::CREATE],
             ],
             validationContext: [
-                'groups' => [Heist::CREATE],
+                'groups' => [self::CREATE],
             ],
         ),
         new Mutation(
             name: 'update',
             security: '(user == object.getEstablishment().getContractor() and is_granted("ROLE_CONTRACTOR")) or is_granted("ROLE_ADMIN")',
             normalizationContext: [
-                'groups' => [Heist::READ],
+                'groups' => [self::READ],
             ],
             denormalizationContext: [
-                'groups' => [Heist::UPDATE],
+                'groups' => [self::UPDATE],
             ],
             validationContext: [
-                'groups' => [Heist::UPDATE],
+                'groups' => [self::UPDATE],
             ],
         ),
         new DeleteMutation(name: 'delete'),
@@ -77,7 +77,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
-#[SlotAvailable(groups: [Heist::CREATE, Heist::UPDATE])]
+#[SlotAvailable(groups: [self::CREATE, self::UPDATE])]
 class Heist
 {
     use BlameableTrait;
