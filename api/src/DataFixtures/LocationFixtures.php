@@ -13,7 +13,6 @@ final class LocationFixtures extends Fixture
     public const LOCATION_TIFFANY_AND_CO = 'tiffany_and_co';
     public const LOCATION_MARQUEE = 'marquee';
     public const LOCATION_MUSEUM_OF_MODERN_ART = 'museum_of_modern_art';
-    public const LOCATION_BDIPLUS = 'bdiplus';
     public const LOCATION_RED_HOOK_TERMINAL = 'red_hook_terminal';
     public const LOCATION_ONE57 = 'one57';
 

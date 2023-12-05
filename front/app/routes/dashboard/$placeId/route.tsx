@@ -1,10 +1,11 @@
+import { Section } from '@radix-ui/themes';
 import { redirect, type DataFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import { useState } from 'react';
 
 import { getLocationInfo } from '~/lib/api/location';
+import { Drawer } from '~/lib/components/Drawer';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
-
-import type { Loader } from '~/root';
 
 export async function loader({ context, params }: DataFunctionArgs) {
   denyAccessUnlessGranted(context.user);
@@ -23,17 +24,29 @@ export async function loader({ context, params }: DataFunctionArgs) {
     console.error(e);
   }
 
-  return {};
+  return {
+    locationInfo: null,
+  };
 }
 
-export default function PlaceId() {
-  const locationInfo = useLoaderData<Loader>();
+export type Loader = typeof loader;
 
-  console.log(locationInfo);
+export default function PlaceId({
+  container,
+}: Readonly<{
+  container: HTMLDivElement | null;
+}>) {
+  const [drawerOpen, setDrawerOpen] = useState(true);
+
+  const { locationInfo } = useLoaderData<Loader>();
 
   return (
-    <div>
-      <h1>Place ID</h1>
-    </div>
+    <Drawer container={container} open={drawerOpen} setOpen={setDrawerOpen}>
+      <Section>
+        {locationInfo?.heists?.edges?.map(
+          (heist) => heist && <p key={heist.node?.id}>{heist.node?.name}</p>,
+        )}
+      </Section>
+    </Drawer>
   );
 }

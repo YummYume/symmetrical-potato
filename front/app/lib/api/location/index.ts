@@ -17,6 +17,7 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
         heists(location__placeId: $placeId) {
           edges {
             node {
+              id
               name
             }
           }
