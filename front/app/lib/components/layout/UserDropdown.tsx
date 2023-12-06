@@ -17,7 +17,7 @@ export const UserDropdown = ({
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button variant="soft">
+        <Button aria-label={t('common.user_menu')} variant="soft">
           <PersonIcon />
         </Button>
       </DropdownMenu.Trigger>
@@ -36,7 +36,7 @@ export const UserDropdown = ({
 
         <DropdownMenu.Separator />
         <DropdownMenu.Item color="red">
-          <Form method="post" action="/logout" className="contents">
+          <Form method="post" action="/logout" className="contents" unstable_viewTransition>
             <button className="w-full text-left" type="submit">
               {t('logout')}
             </button>

@@ -91,7 +91,7 @@ export default function Layout() {
             <Drawer
               position="right"
               trigger={
-                <Button aria-label={t('open-menu')}>
+                <Button aria-label={t('open-menu')} variant="soft">
                   <HamburgerMenuIcon width="24" height="24" />
                 </Button>
               }
