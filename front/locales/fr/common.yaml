@@ -9,4 +9,8 @@ enable_dark_mode: Activer le mode sombre
 submit: Envoyer
 open-menu: Ouvrir le menu de navigation
 dashboard: Tableau de bord
-logged-in-as: connecté en tant que
+logged-in-as: Connecté en tant que
+admin: Admin
+common.navigation: La navigation
+map: Carte
+common.user_menu: Menu utilisateur
