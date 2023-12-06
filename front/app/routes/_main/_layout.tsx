@@ -1,6 +1,5 @@
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { Button, Flex, Separator } from '@radix-ui/themes';
-import { json } from '@remix-run/node';
 import { Form, useLoaderData, useSubmit } from '@remix-run/react';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,16 +10,19 @@ import { Locale } from '~/lib/components/Locale';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { Header } from '~/lib/components/layout/Header';
 import { UserDropdown } from '~/lib/components/layout/UserDropdown';
+import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link } from '~components/Link';
 
 import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node';
 
 export async function loader({ context }: DataFunctionArgs) {
-  return json({
-    user: context.user,
+  const user = denyAccessUnlessGranted(context.user);
+
+  return {
+    user,
     locale: context.locale,
     useDarkMode: context.useDarkMode,
-  });
+  };
 }
 
 export type Loader = typeof loader;

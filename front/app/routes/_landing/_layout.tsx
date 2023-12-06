@@ -1,6 +1,5 @@
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { Button, Flex } from '@radix-ui/themes';
-import { json } from '@remix-run/node';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,10 +14,10 @@ import { Link } from '~components/Link';
 import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node';
 
 export async function loader({ context }: DataFunctionArgs) {
-  return json({
+  return {
     locale: context.locale,
     useDarkMode: context.useDarkMode,
-  });
+  };
 }
 
 export type Loader = typeof loader;

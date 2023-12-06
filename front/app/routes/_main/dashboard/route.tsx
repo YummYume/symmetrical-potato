@@ -6,11 +6,7 @@ import { denyAccessUnlessGranted } from '~utils/security.server';
 import type { DataFunctionArgs } from '@remix-run/node';
 
 export async function loader({ context }: DataFunctionArgs) {
-  const user = denyAccessUnlessGranted(context.user);
-
-  return {
-    user,
-  };
+  denyAccessUnlessGranted(context.user);
 }
 
 export type Loader = typeof loader;

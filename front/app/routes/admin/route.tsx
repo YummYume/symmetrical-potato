@@ -1,6 +1,5 @@
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { Button, Flex, Tabs } from '@radix-ui/themes';
-import { json } from '@remix-run/node';
 import { Form, useLoaderData, useSubmit } from '@remix-run/react';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,16 +10,19 @@ import { Locale } from '~/lib/components/Locale';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { Header } from '~/lib/components/layout/Header';
 import { UserDropdown } from '~/lib/components/layout/UserDropdown';
+import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link } from '~components/Link';
 
 import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node';
 
 export async function loader({ context }: DataFunctionArgs) {
-  return json({
-    user: context.user,
+  const user = denyAccessUnlessGranted(context.user, 'ROLE_ADMIN');
+
+  return {
+    user,
     locale: context.locale,
     useDarkMode: context.useDarkMode,
-  });
+  };
 }
 
 export type Loader = typeof loader;
@@ -62,9 +64,7 @@ const Menu = ({
           </noscript>
         </Form>
 
-        {user && (
-          <UserDropdown isAdmin={user.roles.includes('ROLE_ADMIN')} username={user.username} />
-        )}
+        {user && <UserDropdown isAdmin username={user.username} />}
       </Flex>
       <nav>
         <ul className="grid items-center gap-4 text-right md:grid-flow-col">
@@ -79,7 +79,7 @@ const Menu = ({
   );
 };
 
-export default function Layout() {
+export default function AdminLayout() {
   const { user, locale, useDarkMode } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const [isChangingPreferences, setIsChangingPreferences] = useState(false);
