@@ -142,3 +142,6 @@ employee.weekly_schedule.overlap: >-
   Le jour "{day}" avec le numéro d'entrée {entry} est en conflit avec une autre entrée ({startAt} - {endAt} contre {scheduleForDayStartAt} - {scheduleForDayEndAt}).
 employee.weekly_schedule.total_hours_less_than_minimum: >-
   Le nombre d'heures total de l'horaire hebdomadaire ne peut pas être inférieur au temps de travail minimum par semaine requis par l'établissement ({minimumWorkTimePerWeek} heures requises, {totalHours, plural, =0 {aucune heure au total} one {une heure au total} other {# heures au total}}).
+# CrewMember
+crew_member.cannot_join: Vous ne pouvez pas rejoindre ce braquage.
+crew_member.already_joined: Vous avez déjà rejoint ce braquage.

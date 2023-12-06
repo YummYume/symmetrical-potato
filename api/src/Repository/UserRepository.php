@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Heist;
 use App\Entity\User;
 use App\Enum\HeistPhaseEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -62,5 +63,38 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+     * Check if the user can join the heist.
+     */
+    public function canJoin(User $user, Heist $heist): bool
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $count = $qb
+            ->select('COUNT(h.id)')
+            ->leftJoin('u.crewMembers', 'cm')
+            ->leftJoin('cm.heist', 'h')
+            ->where('u.id = :userId')
+            ->andWhere($qb->expr()->orX(
+                'h.phase = :planning',
+                'h.phase = :inProgress',
+            ))
+            ->andWhere($qb->expr()->orX(
+                'h.startAt BETWEEN :startAt AND :shouldEndAt',
+                'h.shouldEndAt BETWEEN :startAt AND :shouldEndAt',
+            ))
+            ->setParameters([
+                'userId' => $user->getId(),
+                'startAt' => $heist->getStartAt(),
+                'shouldEndAt' => $heist->getShouldEndAt(),
+                'planning' => HeistPhaseEnum::Planning,
+                'inProgress' => HeistPhaseEnum::InProgress,
+            ])
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return 0 === $count;
     }
 }
