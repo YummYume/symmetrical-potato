@@ -12,3 +12,5 @@ open-menu: Open navigation menu
 dashboard: Dashboard
 logged-in-as: Logged in as
 admin: Admin
+common.navigation: Navigation
+map: Map
