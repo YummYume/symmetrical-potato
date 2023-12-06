@@ -40,6 +40,8 @@ export default function PlaceId({
 
   const { locationInfo } = useLoaderData<Loader>();
 
+  console.log(container);
+
   return (
     <Drawer container={container} open={drawerOpen} setOpen={setDrawerOpen}>
       <Section>
