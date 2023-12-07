@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator;
+namespace App\State;
 
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
 use ApiPlatform\Metadata\GraphQl\Mutation;
@@ -9,16 +9,21 @@ use ApiPlatform\State\ProcessorInterface;
 use App\Entity\CrewMember;
 use App\Entity\User;
 use App\Helper\ExceptionHelper;
-use App\Repository\UserRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+/**
+ * @implements ProcessorInterface<CrewMember>
+ */
 final class CrewMemberProcessor implements ProcessorInterface
 {
+    /**
+     * @param ProcessorInterface<CrewMember> $persistProcessor
+     * @param ProcessorInterface<CrewMember> $removeProcessor
+     */
     public function __construct(
         #[Autowire('@api_platform.doctrine.orm.state.persist_processor')] private readonly ProcessorInterface $persistProcessor,
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')] private readonly ProcessorInterface $removeProcessor,
-        private readonly UserRepository $userRepository,
         private readonly Security $security,
         private readonly ExceptionHelper $exceptionHelper
     ) {
@@ -34,13 +39,22 @@ final class CrewMemberProcessor implements ProcessorInterface
             return $this->persistProcessor->process($crewMember, $operation, $uriVariables, $context);
         }
 
-        // Create mutation
         if ('create' === $operation->getName()) {
-            if (!$this->security->getUser() instanceof User) {
+            $user = $this->security->getUser();
+            if (!$user instanceof User) {
                 throw $this->exceptionHelper->createTranslatableHttpException(403, 'user.not_authenticated');
             }
 
-            return $this->persistProcessor->process($crewMember, $operation, $uriVariables, $context);
+            $heist = $crewMember->getHeist();
+            if (null === $heist) {
+                throw $this->exceptionHelper->createTranslatableHttpException(400, 'heist.not_found');
+            }
+
+            if (new \DateTimeImmutable() > $heist->getStartAt()) {
+                throw $this->exceptionHelper->createTranslatableHttpException(400, 'heist.already_started');
+            }
+
+            $crewMember->setUser($user);
         }
 
         return $this->persistProcessor->process($crewMember, $operation, $uriVariables, $context);

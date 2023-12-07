@@ -208,7 +208,7 @@ class Establishment
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ_PUBLIC])]
+    #[Groups([self::READ_PUBLIC, Heist::READ])]
     private ?User $contractor = null;
 
     /** @var ArrayCollection<int, Employee> */

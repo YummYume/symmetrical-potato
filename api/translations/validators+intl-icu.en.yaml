@@ -139,4 +139,3 @@ employee.weekly_schedule.total_hours_less_than_minimum: >-
 
 # CrewMember
 crew_member.cannot_join: You cannot join this heist.
-crew_member.already_joined: You have already joined this heist.

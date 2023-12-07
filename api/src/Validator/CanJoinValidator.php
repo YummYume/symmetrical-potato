@@ -4,7 +4,8 @@ namespace App\Validator;
 
 use App\Entity\CrewMember;
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Repository\CrewMemberRepository;
+use App\Repository\HeistRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -14,7 +15,8 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 final class CanJoinValidator extends ConstraintValidator
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
+        private readonly HeistRepository $heistRepository,
+        private readonly CrewMemberRepository $crewMemberRepository,
         private readonly Security $security,
     ) {
     }
@@ -43,11 +45,9 @@ final class CanJoinValidator extends ConstraintValidator
             return;
         }
 
-        if (new \DateTimeImmutable() > $heist->getStartAt()) {
-            return;
-        }
-
-        if (!$this->userRepository->canJoin($user, $heist)) {
+        if ($this->crewMemberRepository->findOneBy(['user' => $user, 'heist' => $heist])) {
+            $this->context->buildViolation($constraint->message)->addViolation();
+        } elseif (!$this->heistRepository->canJoin($user, $heist)) {
             $this->context->buildViolation($constraint->message)->addViolation();
         }
     }

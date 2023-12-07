@@ -9,6 +9,11 @@ user.invalid_credentials: The provided credentials are invalid.
 # Heist
 heist.establishment.not_allowed: This establishment does not belong to you.
 heist.slot.not_available: This slot is not available for this location.
+heist.already_started: The heist has already started.
+heist.not_found: The requested heist was not found.
+
+# CrewMember
+crew_member.already_joined: You have already joined this heist.
 
 # Google API
 google_api.bad_request: The provided information is invalid.

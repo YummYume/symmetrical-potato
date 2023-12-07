@@ -12,19 +12,20 @@ use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\CrewMemberStatusEnum;
 use App\Repository\CrewMemberRepository;
+use App\State\CrewMemberProcessor;
 use App\Validator\CanJoin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CrewMemberRepository::class)]
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
+    processor: CrewMemberProcessor::class,
     operations: [],
     graphQlOperations: [
         new Query(
@@ -39,7 +40,8 @@ use Symfony\Component\Uid\Uuid;
         ),
         new Mutation(
             name: 'create',
-            securityPostDenormalize: 'is_granted("ROLE_HEISTER") && 
+            securityPostDenormalize: '
+                is_granted("ROLE_HEISTER") and
                 "planning" === object.getHeist().getPhase().value
             ',
             normalizationContext: [
@@ -48,15 +50,19 @@ use Symfony\Component\Uid\Uuid;
             denormalizationContext: [
                 'groups' => [self::JOIN],
             ],
+            validationContext: [
+                'groups' => [self::JOIN],
+            ]
         ),
         new Mutation(name: 'update'),
-        new DeleteMutation(name: 'delete'),
+        new DeleteMutation(
+            name: 'delete',
+            security: '
+                (is_granted("ROLE_HEISTER") and user === object.getUser() and "planning" === object.getHeist().getPhase().value) or 
+                is_granted("ROLE_ADMIN")
+            '
+        ),
     ]
-)]
-#[UniqueEntity(
-    fields: ['user', 'heist'],
-    message: 'crew_member.already_joined',
-    groups: [self::JOIN]
 )]
 #[CanJoin(groups: [self::JOIN])]
 class CrewMember
