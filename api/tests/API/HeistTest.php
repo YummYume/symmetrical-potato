@@ -60,6 +60,27 @@ final class HeistTest extends AbstractTestCase
         ['node' => ['name' => 'Touch the Sky']],
     ];
 
+    public const CONTRACTOR_HEISTS = [
+        ['node' => ['name' => 'No Rest for the Wicked']],
+        ['node' => ['name' => 'No Rest for the Wicked']],
+        ['node' => ['name' => 'No Rest for the Wicked']],
+        ['node' => ['name' => 'Road Rage']],
+        ['node' => ['name' => 'Road Rage']],
+        ['node' => ['name' => 'Dirty Ice']],
+        ['node' => ['name' => 'Dirty Ice']],
+        ['node' => ['name' => 'Rock the Cradle']],
+        ['node' => ['name' => 'Rock the Cradle']],
+        ['node' => ['name' => 'Under the Surphaze']],
+        ['node' => ['name' => 'Under the Surphaze']],
+        ['node' => ['name' => 'Gold & Sharke']],
+        ['node' => ['name' => 'Gold & Sharke']],
+        ['node' => ['name' => 'Gold & Sharke']],
+        ['node' => ['name' => '99 Boxes']],
+        ['node' => ['name' => '99 Boxes']],
+        ['node' => ['name' => 'Touch the Sky']],
+        ['node' => ['name' => 'Touch the Sky']],
+    ];
+
     public const CREATE_HEIST = [
         'name' => 'the central park heist',
         'description' => 'A riche man is going to the central park with his family. We need to steal his golden car in his apartment.',
@@ -130,11 +151,11 @@ final class HeistTest extends AbstractTestCase
     }
 
     /**
-     * This method is used to test if a contractor can see all the heists.
+     * This method is used to test if a contractor can see all public heists and only draft heists made by him .
      */
     public function testContractorCanSeeAllHeists(): void
     {
-        $this->checkUserCanSeeHeists(self::ALL_HEISTS, self::CONTRACTOR);
+        $this->checkUserCanSeeHeists(self::CONTRACTOR_HEISTS, self::CONTRACTOR);
     }
 
     /**

@@ -47,18 +47,32 @@ final class GetHeistExtension implements QueryCollectionExtensionInterface, Quer
 
         // If the user is not an admin or contractor, only return public heists
         if (!$this->security->isGranted(User::ROLE_ADMIN) && !$this->security->isGranted(User::ROLE_CONTRACTOR)) {
-            $queryBuilder
-                ->andWhere("$rootAlias.visibility = :public")
-                ->setParameter('public', HeistVisibilityEnum::Public);
-        }
+            $publicParameter = $queryNameGenerator->generateParameterName('public');
 
-        // If the user is a contractor, only return heists that belong to him
-        if ($this->security->isGranted(User::ROLE_CONTRACTOR)) {
+            $queryBuilder
+                ->andWhere("$rootAlias.visibility = :$publicParameter")
+                ->setParameter("$publicParameter", HeistVisibilityEnum::Public);
+        } elseif ($this->security->isGranted(User::ROLE_CONTRACTOR)) {
             $establishementAlias = $queryNameGenerator->generateJoinAlias('establishment');
+
+            $publicParameter = $queryNameGenerator->generateParameterName('public');
+            $draftParameter = $queryNameGenerator->generateParameterName('draft');
+            $contractorIdParameter = $queryNameGenerator->generateParameterName('contractorId');
+
             $queryBuilder
                 ->join("$rootAlias.establishment", $establishementAlias)
-                ->andWhere("$establishementAlias.contractor = :contractorId")
-                ->setParameter('contractorId', $user->getId()->toBinary());
+                ->andWhere($queryBuilder->expr()->orX(
+                    "$rootAlias.visibility = :$publicParameter",
+                    $queryBuilder->expr()->andX(
+                        "$rootAlias.visibility = :$draftParameter",
+                        "$establishementAlias.contractor = :$contractorIdParameter"
+                    )
+                ))
+                ->setParameters([
+                    "$publicParameter" => HeistVisibilityEnum::Public,
+                    "$draftParameter" => HeistVisibilityEnum::Draft,
+                    "$contractorIdParameter" => $user->getId()->toBinary(),
+                ]);
         }
     }
 }
