@@ -8,6 +8,7 @@ export const Drawer = ({
   container,
   close,
   description,
+  onClose,
   open = false,
   position = 'left',
   setOpen,
@@ -18,6 +19,7 @@ export const Drawer = ({
   container?: HTMLElement | null;
   close?: ReactNode;
   description?: string;
+  onClose?: () => void;
   open?: boolean;
   position?: 'bottom' | 'left' | 'right' | 'top';
   setOpen?: Dispatch<SetStateAction<boolean>>;
@@ -36,6 +38,10 @@ export const Drawer = ({
             onPointerDownOutside={() => {
               if (setOpen) {
                 setOpen(false);
+              }
+
+              if (onClose) {
+                onClose();
               }
             }}
           >

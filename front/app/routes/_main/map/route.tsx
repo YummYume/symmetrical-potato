@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData, useNavigate } from '@remix-run/react';
+import { Outlet, useNavigate } from '@remix-run/react';
 import { APIProvider } from '@vis.gl/react-google-maps';
 import { useRef } from 'react';
 
@@ -20,9 +20,9 @@ export async function loader({ context }: DataFunctionArgs) {
 export type Loader = typeof loader;
 
 export default function MapPage() {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const { user } = useLoaderData<Loader>();
   const navigate = useNavigate();
+
+  const mapRef = useRef<HTMLDivElement>(null);
 
   const mapOptions: React.ComponentProps<typeof Map> = {};
 
