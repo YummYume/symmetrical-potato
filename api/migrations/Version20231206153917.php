@@ -14,7 +14,7 @@ final class Version20231206153917 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Make payout field nullable';
     }
 
     public function up(Schema $schema): void

@@ -56,21 +56,16 @@ final class GetHeistExtension implements QueryCollectionExtensionInterface, Quer
             $establishementAlias = $queryNameGenerator->generateJoinAlias('establishment');
 
             $publicParameter = $queryNameGenerator->generateParameterName('public');
-            $draftParameter = $queryNameGenerator->generateParameterName('draft');
             $contractorIdParameter = $queryNameGenerator->generateParameterName('contractorId');
 
             $queryBuilder
                 ->join("$rootAlias.establishment", $establishementAlias)
                 ->andWhere($queryBuilder->expr()->orX(
                     "$rootAlias.visibility = :$publicParameter",
-                    $queryBuilder->expr()->andX(
-                        "$rootAlias.visibility = :$draftParameter",
-                        "$establishementAlias.contractor = :$contractorIdParameter"
-                    )
+                    "$establishementAlias.contractor = :$contractorIdParameter"
                 ))
                 ->setParameters([
                     "$publicParameter" => HeistVisibilityEnum::Public,
-                    "$draftParameter" => HeistVisibilityEnum::Draft,
                     "$contractorIdParameter" => $user->getId()->toBinary(),
                 ]);
         }

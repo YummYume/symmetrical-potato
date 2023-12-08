@@ -42,7 +42,7 @@ use Symfony\Component\Uid\Uuid;
             name: 'create',
             securityPostDenormalize: '
                 is_granted("ROLE_HEISTER") and
-                "planning" === object.getHeist().getPhase().value
+                enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase().value
             ',
             normalizationContext: [
                 'groups' => [self::READ],
@@ -58,7 +58,10 @@ use Symfony\Component\Uid\Uuid;
         new DeleteMutation(
             name: 'delete',
             security: '
-                (is_granted("ROLE_HEISTER") and user === object.getUser() and "planning" === object.getHeist().getPhase().value) or 
+                (
+                    is_granted("ROLE_HEISTER") and user === object.getUser() and 
+                    enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase().value
+                ) or 
                 is_granted("ROLE_ADMIN")
             '
         ),
