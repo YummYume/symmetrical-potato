@@ -12,34 +12,86 @@ use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\EmployeeStatusEnum;
 use App\Repository\EmployeeRepository;
+use App\State\EmployeeProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
     operations: [],
+    processor: EmployeeProcessor::class,
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [Employee::READ, Employee::READ_PUBLIC],
-            ]
+                'groups' => [self::READ, self::READ_PUBLIC],
+            ],
+            security: 'is_granted("READ_PUBLIC", object)',
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [Employee::READ, Employee::READ_PUBLIC],
+                'groups' => [self::READ, self::READ_PUBLIC],
             ]
         ),
-        new Mutation(name: 'create'),
-        new Mutation(name: 'update'),
-        new DeleteMutation(name: 'delete'),
+        new Mutation(
+            name: 'create',
+            denormalizationContext: [
+                'groups' => [self::CREATE],
+            ],
+            normalizationContext: [
+                'groups' => [self::READ],
+            ],
+            validationContext: [
+                'groups' => [self::CREATE],
+            ],
+            securityPostDenormalize: 'is_granted("CREATE", object)',
+        ),
+        new Mutation(
+            name: 'validate',
+            denormalizationContext: [
+                'groups' => [self::VALIDATE],
+            ],
+            normalizationContext: [
+                'groups' => [self::READ],
+            ],
+            validationContext: [
+                'groups' => [self::VALIDATE],
+            ],
+            security: 'is_granted("VALIDATE", object)',
+        ),
+        new Mutation(
+            name: 'update',
+            denormalizationContext: [
+                'groups' => [self::UPDATE],
+            ],
+            normalizationContext: [
+                'groups' => [self::READ],
+            ],
+            validationContext: [
+                'groups' => [self::VALIDATE],
+            ],
+            security: 'is_granted("UPDATE", object)',
+        ),
+        new DeleteMutation(
+            name: 'delete',
+            security: 'is_granted("DELETE", object)',
+        ),
     ]
+)]
+#[UniqueEntity(
+    fields: ['codeName', 'establishment'],
+    message: 'employee.code_name.unique',
+    errorPath: 'codeName',
+    groups: [self::VALIDATE],
 )]
 class Employee
 {
@@ -48,6 +100,9 @@ class Employee
 
     public const READ = 'employee:read';
     public const READ_PUBLIC = 'employee:read:public';
+    public const CREATE = 'employee:create';
+    public const VALIDATE = 'employee:validate';
+    public const UPDATE = 'employee:update';
 
     public const DAY_MONDAY = 'monday';
     public const DAY_TUESDAY = 'tuesday';
@@ -56,6 +111,15 @@ class Employee
     public const DAY_FRIDAY = 'friday';
     public const DAY_SATURDAY = 'saturday';
     public const DAY_SUNDAY = 'sunday';
+    public const DAYS = [
+        self::DAY_MONDAY,
+        self::DAY_TUESDAY,
+        self::DAY_WEDNESDAY,
+        self::DAY_THURSDAY,
+        self::DAY_FRIDAY,
+        self::DAY_SATURDAY,
+        self::DAY_SUNDAY,
+    ];
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -65,15 +129,33 @@ class Employee
     private ?Uuid $id = null;
 
     /**
-     * @var array<string, array<string, string>>
+     * @var array<string, array<int, array<string, string>>>
      */
     #[ORM\Column(type: Types::JSON)]
+    #[ApiProperty(security: '')]
+    #[Groups([self::READ, User::READ, self::CREATE])]
     private array $weeklySchedule = [];
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups([self::READ, self::READ_PUBLIC, User::READ, self::VALIDATE])]
+    #[Assert\When(
+        expression: 'this.getStatus() == enum("App\\\Enum\\\EmployeeStatusEnum::Active")',
+        constraints: [
+            new Assert\NotBlank(
+                message: 'employee.code_name.not_blank',
+                groups: [self::VALIDATE]
+            ),
+        ],
+        groups: [self::VALIDATE]
+    )]
+    #[Assert\Length(
+        max: 50,
+        maxMessage: 'employee.code_name.max_length',
+        groups: [self::VALIDATE]
+    )]
     private ?string $codeName = null;
 
-    #[ORM\OneToOne(mappedBy: 'employee', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'employee', targetEntity: User::class)]
     #[Groups([self::READ])]
     private ?User $user = null;
 
@@ -81,17 +163,48 @@ class Employee
     #[ORM\OneToMany(mappedBy: 'employee', targetEntity: EmployeeTimeOff::class, orphanRemoval: true)]
     private Collection $timeOffs;
 
-    #[ORM\ManyToOne(inversedBy: 'employees')]
+    #[ORM\ManyToOne(inversedBy: 'employees', targetEntity: Establishment::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([self::READ, self::READ_PUBLIC, self::CREATE])]
+    #[Assert\NotNull(
+        message: 'employee.establishment.not_null',
+        groups: [self::CREATE]
+    )]
     private ?Establishment $establishment = null;
 
     #[ORM\Column(length: 50, enumType: EmployeeStatusEnum::class)]
+    #[ApiProperty(security: '')]
+    #[Groups([self::READ, User::READ, self::VALIDATE])]
+    #[Assert\Choice(
+        choices: [EmployeeStatusEnum::Active, EmployeeStatusEnum::Rejected],
+        message: 'employee.status.either_active_or_rejected',
+        groups: [self::VALIDATE]
+    )]
     private EmployeeStatusEnum $status = EmployeeStatusEnum::Pending;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ApiProperty(security: '')]
+    #[Groups([self::READ, self::CREATE])]
+    #[Assert\NotBlank(
+        message: 'employee.motivation.not_blank',
+        groups: [self::CREATE]
+    )]
+    #[Assert\Length(
+        min: 10,
+        max: 1000,
+        minMessage: 'employee.motivation.min_length',
+        maxMessage: 'employee.motivation.max_length',
+        groups: [self::CREATE]
+    )]
     private ?string $motivation = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups([self::READ, self::READ_PUBLIC, self::UPDATE])]
+    #[Assert\Length(
+        max: 1000,
+        maxMessage: 'employee.description.max_length',
+        groups: [self::UPDATE]
+    )]
     private ?string $description = null;
 
     /** @var ArrayCollection<int, Heist> */
@@ -115,7 +228,7 @@ class Employee
     }
 
     /**
-     * @return array<string, array<string, string>>
+     * @return array<string, array<int, array<string, string>>>
      */
     public function getWeeklySchedule(): array
     {
@@ -123,7 +236,7 @@ class Employee
     }
 
     /**
-     * @param array<string, array<string, string>> $weeklySchedule
+     * @param array<string, array<int, array<string, string>>> $weeklySchedule
      */
     public function setWeeklySchedule(array $weeklySchedule): static
     {
@@ -299,5 +412,153 @@ class Employee
         }
 
         return $this;
+    }
+
+    public function hasContractor(User $user): bool
+    {
+        return $this->establishment?->getContractor() === $user;
+    }
+
+    /**
+     * Validates the weekly schedule.
+     */
+    #[Assert\Callback(groups: [self::CREATE])]
+    public function validateWeeklySchedule(ExecutionContextInterface $context): void
+    {
+        /**
+         * @var array<string, array<int, array<string, string>>|string>
+         */
+        $weeklySchedule = $this->getWeeklySchedule();
+        $totalHours = 0;
+
+        foreach (self::DAYS as $day) {
+            // Validate if all days are present
+            if (!isset($weeklySchedule[$day]) || !\is_array($weeklySchedule[$day])) {
+                $context->buildViolation('employee.weekly_schedule.missing_day')
+                    ->atPath('weeklySchedule')
+                    ->setParameter('{{ day }}', $day)
+                    ->addViolation()
+                ;
+
+                continue;
+            }
+
+            $daySchedule = $weeklySchedule[$day];
+            $schedulesForDay = [];
+            $i = 0;
+
+            foreach ($daySchedule as $schedule) {
+                ++$i;
+                $entry = (string) $i;
+
+                // Validate if all required fields are present
+                if (!isset($schedule['startAt']) || !isset($schedule['endAt'])) {
+                    $context->buildViolation('employee.weekly_schedule.missing_start_at_or_end_at')
+                        ->atPath('weeklySchedule')
+                        ->setParameter('{{ day }}', $day)
+                        ->setParameter('{{ entry }}', $entry)
+                        ->addViolation()
+                    ;
+
+                    continue;
+                }
+
+                $startAt = $schedule['startAt'];
+                $startAtNumbers = explode(':', $startAt);
+                $endAt = $schedule['endAt'];
+                $endAtNumbers = explode(':', $endAt);
+
+                // Validate if both have 2 numbers
+                if (2 !== \count($startAtNumbers) || 2 !== \count($endAtNumbers)) {
+                    $context->buildViolation('employee.weekly_schedule.invalid_start_at_or_end_at')
+                        ->atPath('weeklySchedule')
+                        ->setParameter('{{ day }}', $day)
+                        ->setParameter('{{ entry }}', $entry)
+                        ->addViolation()
+                    ;
+
+                    continue;
+                }
+
+                // Validate if both are valid hours (e.g. 00:00 - 23:59)
+                if ($startAtNumbers[0] < 0 || $startAtNumbers[0] > 23 || $startAtNumbers[1] < 0 || $startAtNumbers[1] > 59) {
+                    $context->buildViolation('employee.weekly_schedule.invalid_start_at_or_end_at')
+                        ->atPath('weeklySchedule')
+                        ->setParameter('{{ day }}', $day)
+                        ->setParameter('{{ entry }}', $entry)
+                        ->addViolation()
+                    ;
+
+                    continue;
+                }
+
+                if ($endAtNumbers[0] < 0 || $endAtNumbers[0] > 23 || $endAtNumbers[1] < 0 || $endAtNumbers[1] > 59) {
+                    $context->buildViolation('employee.weekly_schedule.invalid_start_at_or_end_at')
+                        ->atPath('weeklySchedule')
+                        ->setParameter('{{ day }}', $day)
+                        ->setParameter('{{ entry }}', $entry)
+                        ->addViolation()
+                    ;
+
+                    continue;
+                }
+
+                $startAtDate = new \DateTimeImmutable($startAt);
+                $endAtDate = new \DateTimeImmutable($endAt);
+
+                // Validate if startAt is before endAt
+                if ($startAtDate >= $endAtDate) {
+                    $context->buildViolation('employee.weekly_schedule.start_at_after_end_at')
+                        ->atPath('weeklySchedule')
+                        ->setParameter('{{ day }}', $day)
+                        ->setParameter('{{ entry }}', $entry)
+                        ->addViolation()
+                    ;
+
+                    continue;
+                }
+
+                $hasOverlap = false;
+
+                // Validate if there are no overlaps (e.g. 00:00 - 01:00 and 00:30 - 01:30)
+                foreach ($schedulesForDay as $scheduleForDay) {
+                    $scheduleForDayStartAt = new \DateTimeImmutable($scheduleForDay['startAt']);
+                    $scheduleForDayEndAt = new \DateTimeImmutable($scheduleForDay['endAt']);
+
+                    if (($startAtDate >= $scheduleForDayStartAt && $startAtDate < $scheduleForDayEndAt)
+                        || ($endAtDate > $scheduleForDayStartAt && $endAtDate <= $scheduleForDayEndAt)
+                    ) {
+                        $hasOverlap = true;
+                        $context->buildViolation('employee.weekly_schedule.overlap')
+                            ->atPath('weeklySchedule')
+                            ->setParameter('{{ day }}', $day)
+                            ->setParameter('{{ entry }}', $entry)
+                            ->setParameter('{{ startAt }}', $startAt)
+                            ->setParameter('{{ endAt }}', $endAt)
+                            ->setParameter('{{ scheduleForDayStartAt }}', $scheduleForDay['startAt'])
+                            ->setParameter('{{ scheduleForDayEndAt }}', $scheduleForDay['endAt'])
+                            ->addViolation()
+                        ;
+                    }
+                }
+
+                if ($hasOverlap) {
+                    continue;
+                }
+
+                $schedulesForDay[] = $schedule;
+                $totalHours += $endAtDate->diff($startAtDate)->h;
+            }
+        }
+
+        // Validate if total hours is more than minimum
+        if ($totalHours < $this->getEstablishment()?->getMinimumWorkTimePerWeek()) {
+            $context->buildViolation('employee.weekly_schedule.total_hours_less_than_minimum')
+                ->atPath('weeklySchedule')
+                ->setParameter('{{ totalHours }}', (string) $totalHours)
+                ->setParameter('{{ minimumWorkTimePerWeek }}', (string) $this->getEstablishment()?->getMinimumWorkTimePerWeek())
+                ->addViolation()
+            ;
+        }
     }
 }

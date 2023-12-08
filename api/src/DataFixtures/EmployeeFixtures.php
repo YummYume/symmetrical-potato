@@ -423,6 +423,57 @@ final class EmployeeFixtures extends Fixture implements DependentFixtureInterfac
             'motivation' => 'plz hire me thx',
             'status' => EmployeeStatusEnum::Pending,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
+            // 40 hours per week
+            'weeklySchedule' => [
+                Employee::DAY_MONDAY => [
+                    [
+                        'startAt' => '09:00',
+                        'endAt' => '12:30',
+                    ],
+                    [
+                        'startAt' => '14:00',
+                        'endAt' => '19:30',
+                    ],
+                ],
+                Employee::DAY_TUESDAY => [
+                    [
+                        'startAt' => '09:00',
+                        'endAt' => '12:30',
+                    ],
+                    [
+                        'startAt' => '14:00',
+                        'endAt' => '19:30',
+                    ],
+                ],
+                Employee::DAY_WEDNESDAY => [],
+                Employee::DAY_THURSDAY => [
+                    [
+                        'startAt' => '09:00',
+                        'endAt' => '12:30',
+                    ],
+                    [
+                        'startAt' => '14:00',
+                        'endAt' => '19:30',
+                    ],
+                ],
+                Employee::DAY_FRIDAY => [
+                    [
+                        'startAt' => '09:00',
+                        'endAt' => '12:30',
+                    ],
+                    [
+                        'startAt' => '14:00',
+                        'endAt' => '19:30',
+                    ],
+                ],
+                Employee::DAY_SATURDAY => [
+                    [
+                        'startAt' => '06:00',
+                        'endAt' => '10:00',
+                    ],
+                ],
+                Employee::DAY_SUNDAY => [],
+            ],
         ],
     ];
 

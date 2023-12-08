@@ -10,4 +10,5 @@ enum EmployeeStatusEnum: string
 
     case Active = 'active';
     case Pending = 'pending';
+    case Rejected = 'rejected';
 }

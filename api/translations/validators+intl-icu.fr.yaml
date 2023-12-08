@@ -119,3 +119,26 @@ establishment.employee_cut.less_than: La part d'employé ne peut pas être supé
 establishment.crew_cut.not_blank: Veuillez saisir une part d'équipe.
 establishment.crew_cut.greater_than_or_equal: La part d'équipe ne peut pas être inférieure à {compared_value}%.
 establishment.crew_cut.less_than: La part d'équipe ne peut pas être supérieure ou égale à {compared_value}%.
+
+# Employee
+employee.code_name.unique: Un employé avec ce nom de code existe déjà. Veuillez en choisir un autre.
+employee.code_name.not_blank: Veuillez saisir un nom de code.
+employee.code_name.max_length: Le nom de code ne peut pas comporter plus de {limit} caractères.
+employee.establishment.not_null: Veuillez sélectionner un établissement.
+employee.status.either_active_or_rejected: Vous devez accepter ou refuser l'employé.
+employee.motivation.not_blank: Veuillez saisir une motivation.
+employee.motivation.min_length: Votre motivation doit comporter au moins {limit} caractères.
+employee.motivation.max_length: Votre motivation ne peut pas comporter plus de {limit} caractères.
+employee.description.max_length: Votre description ne peut pas comporter plus de {limit} caractères.
+employee.weekly_schedule.missing_day: Le jour "{day}" est manquant dans l'horaire hebdomadaire.
+employee.weekly_schedule.missing_start_at_or_end_at: >-
+  Le jour "{day}" avec le numéro d'entrée {entry} manque soit d'une propriété "startAt" soit d'une propriété "endAt".
+employee.weekly_schedule.invalid_start_at_or_end_at: >-
+  Le jour "{day}" avec le numéro d'entrée {entry} a une propriété "startAt" ou "endAt" invalide.
+  Les propriétés doivent être des heures valides au format "HH:mm".
+employee.weekly_schedule.start_at_after_end_at: >-
+  Le jour "{day}" avec le numéro d'entrée {entry} a une propriété "startAt" qui est après la propriété "endAt".
+employee.weekly_schedule.overlap: >-
+  Le jour "{day}" avec le numéro d'entrée {entry} est en conflit avec une autre entrée ({startAt} - {endAt} contre {scheduleForDayStartAt} - {scheduleForDayEndAt}).
+employee.weekly_schedule.total_hours_less_than_minimum: >-
+  Le nombre d'heures total de l'horaire hebdomadaire ne peut pas être inférieur au temps de travail minimum par semaine requis par l'établissement ({minimumWorkTimePerWeek} heures requises, {totalHours, plural, =0 {aucune heure au total} one {une heure au total} other {# heures au total}}).
