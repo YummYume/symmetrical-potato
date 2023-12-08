@@ -819,36 +819,20 @@ export type CreateContractorRequestPayload = {
 
 /** Creates a CrewMember. */
 export type CreateCrewMemberInput = {
-  civilianCasualties: Scalars['Int']['input'];
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['String']['input']>;
-  createdBy?: InputMaybe<Scalars['String']['input']>;
   heist: Scalars['String']['input'];
-  kills: Scalars['Int']['input'];
-  objectivesCompleted: Scalars['Int']['input'];
-  payout: Scalars['Float']['input'];
-  status: CrewMemberStatusEnum;
-  updatedAt?: InputMaybe<Scalars['String']['input']>;
-  updatedBy?: InputMaybe<Scalars['String']['input']>;
-  user: Scalars['String']['input'];
 };
 
 /** Creates a CrewMember. */
 export type CreateCrewMemberNestedPayload = Node & {
   __typename?: 'createCrewMemberNestedPayload';
   civilianCasualties: Scalars['Int']['output'];
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<CreateUserNestedPayload>;
   heist: CreateHeistNestedPayload;
   id: Scalars['ID']['output'];
   kills: Scalars['Int']['output'];
   objectivesCompleted: Scalars['Int']['output'];
-  payout: Scalars['Float']['output'];
-  /** Will calculate the rating of the crew member for the heist depending on multiple factors. */
-  rating: Scalars['Float']['output'];
+  payout?: Maybe<Scalars['Float']['output']>;
   status: CrewMemberStatusEnum;
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<CreateUserNestedPayload>;
   user: CreateUserNestedPayload;
 };
 
@@ -887,18 +871,12 @@ export type CreateCrewMemberPayload = {
 export type CreateCrewMemberPayloadData = Node & {
   __typename?: 'createCrewMemberPayloadData';
   civilianCasualties: Scalars['Int']['output'];
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<CreateUserNestedPayload>;
   heist: CreateHeistNestedPayload;
   id: Scalars['ID']['output'];
   kills: Scalars['Int']['output'];
   objectivesCompleted: Scalars['Int']['output'];
-  payout: Scalars['Float']['output'];
-  /** Will calculate the rating of the crew member for the heist depending on multiple factors. */
-  rating: Scalars['Float']['output'];
+  payout?: Maybe<Scalars['Float']['output']>;
   status: CrewMemberStatusEnum;
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<CreateUserNestedPayload>;
   user: CreateUserNestedPayload;
 };
 

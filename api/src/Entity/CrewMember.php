@@ -42,7 +42,7 @@ use Symfony\Component\Uid\Uuid;
             name: 'create',
             securityPostDenormalize: '
                 is_granted("ROLE_HEISTER") and
-                enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase().value
+                enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase()
             ',
             normalizationContext: [
                 'groups' => [self::READ],
@@ -60,7 +60,7 @@ use Symfony\Component\Uid\Uuid;
             security: '
                 (
                     is_granted("ROLE_HEISTER") and user === object.getUser() and 
-                    enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase().value
+                    enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase()
                 ) or 
                 is_granted("ROLE_ADMIN")
             '
