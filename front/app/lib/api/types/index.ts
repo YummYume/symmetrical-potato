@@ -94,8 +94,14 @@ export enum CrewMemberStatusEnum {
 
 export type Employee = Node & {
   __typename?: 'Employee';
+  codeName?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  establishment: Establishment;
   id: Scalars['ID']['output'];
+  motivation?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<EmployeeStatusEnum>;
   user?: Maybe<UserItem>;
+  weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
 };
 
 /** Cursor connection for Employee. */
@@ -125,6 +131,7 @@ export type EmployeePageInfo = {
 export enum EmployeeStatusEnum {
   Active = 'Active',
   Pending = 'Pending',
+  Rejected = 'Rejected',
 }
 
 export type Establishment = Node & {
@@ -303,6 +310,7 @@ export type MeUser = Node & {
   balance: Scalars['Float']['output'];
   contractorRequest?: Maybe<ContractorRequest>;
   email?: Maybe<Scalars['String']['output']>;
+  employee?: Maybe<Employee>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -328,6 +336,8 @@ export type Mutation = {
   createReview?: Maybe<CreateReviewPayload>;
   /** Creates a User. */
   createUser?: Maybe<CreateUserPayload>;
+  /** Deletes a ContractorRequest. */
+  deleteContractorRequest?: Maybe<DeleteContractorRequestPayload>;
   /** Deletes a CrewMember. */
   deleteCrewMember?: Maybe<DeleteCrewMemberPayload>;
   /** Deletes a Employee. */
@@ -358,6 +368,8 @@ export type Mutation = {
   updateReview?: Maybe<UpdateReviewPayload>;
   /** Updates a User. */
   updateUser?: Maybe<UpdateUserPayload>;
+  /** Validates a Employee. */
+  validateEmployee?: Maybe<ValidateEmployeePayload>;
   /** Validates a User. */
   validateUser?: Maybe<ValidateUserPayload>;
 };
@@ -388,6 +400,10 @@ export type MutationCreateReviewArgs = {
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+export type MutationDeleteContractorRequestArgs = {
+  input: DeleteContractorRequestInput;
 };
 
 export type MutationDeleteCrewMemberArgs = {
@@ -448,6 +464,10 @@ export type MutationUpdateReviewArgs = {
 
 export type MutationUpdateUserArgs = {
   input: UpdateUserInput;
+};
+
+export type MutationValidateEmployeeArgs = {
+  input: ValidateEmployeeInput;
 };
 
 export type MutationValidateUserArgs = {
@@ -724,6 +744,7 @@ export type UserCollection = Node & {
   balance: Scalars['Float']['output'];
   contractorRequest?: Maybe<ContractorRequest>;
   email?: Maybe<Scalars['String']['output']>;
+  employee?: Maybe<Employee>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -762,6 +783,7 @@ export type UserItem = Node & {
   balance: Scalars['Float']['output'];
   contractorRequest?: Maybe<ContractorRequest>;
   email?: Maybe<Scalars['String']['output']>;
+  employee?: Maybe<Employee>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -882,39 +904,23 @@ export type CreateCrewMemberPayloadData = Node & {
 
 /** Creates a Employee. */
 export type CreateEmployeeInput = {
-  allowedHeists?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  codeName?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['String']['input']>;
-  createdBy?: InputMaybe<Scalars['String']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
   establishment: Scalars['String']['input'];
-  heists?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   motivation?: InputMaybe<Scalars['String']['input']>;
-  status: EmployeeStatusEnum;
-  updatedAt?: InputMaybe<Scalars['String']['input']>;
-  updatedBy?: InputMaybe<Scalars['String']['input']>;
-  user?: InputMaybe<Scalars['String']['input']>;
-  weeklySchedule: Scalars['Iterable']['input'];
+  weeklySchedule?: InputMaybe<Scalars['Iterable']['input']>;
 };
 
 /** Creates a Employee. */
 export type CreateEmployeeNestedPayload = Node & {
   __typename?: 'createEmployeeNestedPayload';
-  allowedHeists?: Maybe<CreateHeistNestedPayloadCursorConnection>;
   codeName?: Maybe<Scalars['String']['output']>;
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<CreateUserNestedPayload>;
   description?: Maybe<Scalars['String']['output']>;
   establishment: CreateEstablishmentNestedPayload;
-  heists?: Maybe<CreateHeistNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   motivation?: Maybe<Scalars['String']['output']>;
-  status: EmployeeStatusEnum;
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<CreateUserNestedPayload>;
+  status?: Maybe<EmployeeStatusEnum>;
   user?: Maybe<CreateUserNestedPayload>;
-  weeklySchedule: Scalars['Iterable']['output'];
+  weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
 };
 
 /** Cursor connection for createEmployeeNestedPayload. */
@@ -951,20 +957,14 @@ export type CreateEmployeePayload = {
 /** Creates a Employee. */
 export type CreateEmployeePayloadData = Node & {
   __typename?: 'createEmployeePayloadData';
-  allowedHeists?: Maybe<CreateHeistNestedPayloadCursorConnection>;
   codeName?: Maybe<Scalars['String']['output']>;
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<CreateUserNestedPayload>;
   description?: Maybe<Scalars['String']['output']>;
   establishment: CreateEstablishmentNestedPayload;
-  heists?: Maybe<CreateHeistNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   motivation?: Maybe<Scalars['String']['output']>;
-  status: EmployeeStatusEnum;
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<CreateUserNestedPayload>;
+  status?: Maybe<EmployeeStatusEnum>;
   user?: Maybe<CreateUserNestedPayload>;
-  weeklySchedule: Scalars['Iterable']['output'];
+  weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
 };
 
 /** Creates a Establishment. */
@@ -1050,30 +1050,6 @@ export type CreateHeistNestedPayload = Node & {
   visibility: HeistVisibilityEnum;
 };
 
-/** Cursor connection for createHeistNestedPayload. */
-export type CreateHeistNestedPayloadCursorConnection = {
-  __typename?: 'createHeistNestedPayloadCursorConnection';
-  edges?: Maybe<Array<Maybe<CreateHeistNestedPayloadEdge>>>;
-  pageInfo: CreateHeistNestedPayloadPageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-/** Edge of createHeistNestedPayload. */
-export type CreateHeistNestedPayloadEdge = {
-  __typename?: 'createHeistNestedPayloadEdge';
-  cursor: Scalars['String']['output'];
-  node?: Maybe<CreateHeistNestedPayload>;
-};
-
-/** Information about the current page. */
-export type CreateHeistNestedPayloadPageInfo = {
-  __typename?: 'createHeistNestedPayloadPageInfo';
-  endCursor?: Maybe<Scalars['String']['output']>;
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  startCursor?: Maybe<Scalars['String']['output']>;
-};
-
 /** Creates a Heist. */
 export type CreateHeistPayload = {
   __typename?: 'createHeistPayload';
@@ -1147,6 +1123,25 @@ export type CreateUserPayload = {
 /** Creates a User. */
 export type CreateUserPayloadData = Node & {
   __typename?: 'createUserPayloadData';
+  id: Scalars['ID']['output'];
+};
+
+/** Deletes a ContractorRequest. */
+export type DeleteContractorRequestInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+};
+
+/** Deletes a ContractorRequest. */
+export type DeleteContractorRequestPayload = {
+  __typename?: 'deleteContractorRequestPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  contractorRequest?: Maybe<DeleteContractorRequestPayloadData>;
+};
+
+/** Deletes a ContractorRequest. */
+export type DeleteContractorRequestPayloadData = Node & {
+  __typename?: 'deleteContractorRequestPayloadData';
   id: Scalars['ID']['output'];
 };
 
@@ -1392,38 +1387,20 @@ export type UpdateCrewMemberPayloadData = Node & {
 
 /** Updates a Employee. */
 export type UpdateEmployeeInput = {
-  allowedHeists?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  codeName?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['String']['input']>;
-  createdBy?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  establishment?: InputMaybe<Scalars['String']['input']>;
-  heists?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   id: Scalars['ID']['input'];
-  motivation?: InputMaybe<Scalars['String']['input']>;
-  status?: InputMaybe<EmployeeStatusEnum>;
-  updatedAt?: InputMaybe<Scalars['String']['input']>;
-  updatedBy?: InputMaybe<Scalars['String']['input']>;
-  user?: InputMaybe<Scalars['String']['input']>;
-  weeklySchedule?: InputMaybe<Scalars['Iterable']['input']>;
 };
 
 /** Updates a Employee. */
 export type UpdateEmployeeNestedPayload = Node & {
   __typename?: 'updateEmployeeNestedPayload';
-  allowedHeists?: Maybe<UpdateHeistNestedPayloadCursorConnection>;
   codeName?: Maybe<Scalars['String']['output']>;
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UpdateUserNestedPayload>;
   description?: Maybe<Scalars['String']['output']>;
   establishment?: Maybe<UpdateEstablishmentNestedPayload>;
-  heists?: Maybe<UpdateHeistNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   motivation?: Maybe<Scalars['String']['output']>;
   status?: Maybe<EmployeeStatusEnum>;
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UpdateUserNestedPayload>;
   user?: Maybe<UpdateUserNestedPayload>;
   weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
 };
@@ -1462,18 +1439,12 @@ export type UpdateEmployeePayload = {
 /** Updates a Employee. */
 export type UpdateEmployeePayloadData = Node & {
   __typename?: 'updateEmployeePayloadData';
-  allowedHeists?: Maybe<UpdateHeistNestedPayloadCursorConnection>;
   codeName?: Maybe<Scalars['String']['output']>;
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UpdateUserNestedPayload>;
   description?: Maybe<Scalars['String']['output']>;
   establishment?: Maybe<UpdateEstablishmentNestedPayload>;
-  heists?: Maybe<UpdateHeistNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   motivation?: Maybe<Scalars['String']['output']>;
   status?: Maybe<EmployeeStatusEnum>;
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UpdateUserNestedPayload>;
   user?: Maybe<UpdateUserNestedPayload>;
   weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
 };
@@ -1559,30 +1530,6 @@ export type UpdateHeistNestedPayload = Node & {
   visibility?: Maybe<HeistVisibilityEnum>;
 };
 
-/** Cursor connection for updateHeistNestedPayload. */
-export type UpdateHeistNestedPayloadCursorConnection = {
-  __typename?: 'updateHeistNestedPayloadCursorConnection';
-  edges?: Maybe<Array<Maybe<UpdateHeistNestedPayloadEdge>>>;
-  pageInfo: UpdateHeistNestedPayloadPageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-/** Edge of updateHeistNestedPayload. */
-export type UpdateHeistNestedPayloadEdge = {
-  __typename?: 'updateHeistNestedPayloadEdge';
-  cursor: Scalars['String']['output'];
-  node?: Maybe<UpdateHeistNestedPayload>;
-};
-
-/** Information about the current page. */
-export type UpdateHeistNestedPayloadPageInfo = {
-  __typename?: 'updateHeistNestedPayloadPageInfo';
-  endCursor?: Maybe<Scalars['String']['output']>;
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  startCursor?: Maybe<Scalars['String']['output']>;
-};
-
 /** Updates a Heist. */
 export type UpdateHeistPayload = {
   __typename?: 'updateHeistPayload';
@@ -1642,6 +1589,7 @@ export type UpdateUserNestedPayload = Node & {
   balance?: Maybe<Scalars['Float']['output']>;
   contractorRequest?: Maybe<UpdateContractorRequestNestedPayload>;
   email?: Maybe<Scalars['String']['output']>;
+  employee?: Maybe<UpdateEmployeeNestedPayload>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -1688,6 +1636,7 @@ export type UpdateUserPayloadData = Node & {
   balance?: Maybe<Scalars['Float']['output']>;
   contractorRequest?: Maybe<UpdateContractorRequestNestedPayload>;
   email?: Maybe<Scalars['String']['output']>;
+  employee?: Maybe<UpdateEmployeeNestedPayload>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -1697,11 +1646,68 @@ export type UpdateUserPayloadData = Node & {
   username?: Maybe<Scalars['String']['output']>;
 };
 
+/** Validates a Employee. */
+export type ValidateEmployeeInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  codeName?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  status?: InputMaybe<EmployeeStatusEnum>;
+};
+
+/** Validates a Employee. */
+export type ValidateEmployeeNestedPayload = Node & {
+  __typename?: 'validateEmployeeNestedPayload';
+  codeName?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  establishment: Establishment;
+  id: Scalars['ID']['output'];
+  motivation?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<EmployeeStatusEnum>;
+  user?: Maybe<ValidateUserNestedPayload>;
+  weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
+};
+
+/** Validates a Employee. */
+export type ValidateEmployeePayload = {
+  __typename?: 'validateEmployeePayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  employee?: Maybe<ValidateEmployeePayloadData>;
+};
+
+/** Validates a Employee. */
+export type ValidateEmployeePayloadData = Node & {
+  __typename?: 'validateEmployeePayloadData';
+  codeName?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  establishment: Establishment;
+  id: Scalars['ID']['output'];
+  motivation?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<EmployeeStatusEnum>;
+  user?: Maybe<ValidateUserNestedPayload>;
+  weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
+};
+
 /** Validates a User. */
 export type ValidateUserInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   status: UserStatusEnum;
+};
+
+/** Validates a User. */
+export type ValidateUserNestedPayload = Node & {
+  __typename?: 'validateUserNestedPayload';
+  balance: Scalars['Float']['output'];
+  contractorRequest?: Maybe<ContractorRequest>;
+  email?: Maybe<Scalars['String']['output']>;
+  employee?: Maybe<ValidateEmployeeNestedPayload>;
+  /** You should probably not use this method directly unless necessary. */
+  globalRating?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  locale: UserLocaleEnum;
+  profile: Profile;
+  roles: Scalars['Iterable']['output'];
+  username: Scalars['String']['output'];
 };
 
 /** Validates a User. */
@@ -1717,6 +1723,7 @@ export type ValidateUserPayloadData = Node & {
   balance: Scalars['Float']['output'];
   contractorRequest?: Maybe<ContractorRequest>;
   email?: Maybe<Scalars['String']['output']>;
+  employee?: Maybe<ValidateEmployeeNestedPayload>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
