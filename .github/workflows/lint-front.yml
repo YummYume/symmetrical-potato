@@ -1,9 +1,14 @@
 name: Linting Front
 
 on:
-  push:
+  pull_request:
     branches:
       - '**'
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     paths:
       - "front/**"
       - ".github/workflows/docker-front.yml"
