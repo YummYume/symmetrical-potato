@@ -72,7 +72,7 @@ Use the `make generate-types` command to generate the TypeScript types from the 
 The types will be generated in the `front/app/lib/api/types/index.ts` file.
 
 > [!NOTE]  
-> For convenience, this folder is ignored by ESLint and Prettier.
+> For convenience, this folder is automatically fixed by ESLint & Prettier when generating the types.
 
 ## Authentication
 

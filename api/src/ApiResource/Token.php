@@ -37,6 +37,7 @@ use App\Resolver\JwtMutationResolver;
                     'description' => 'The password of the user to authenticate.',
                 ],
             ],
+            security: 'user == null',
             validate: false,
             read: false,
             write: false,

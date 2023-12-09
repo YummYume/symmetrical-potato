@@ -19,6 +19,73 @@ export type Scalars = {
   Iterable: { input: any; output: any };
 };
 
+export type Asset = Node & {
+  __typename?: 'Asset';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<User>;
+  description?: Maybe<Scalars['String']['output']>;
+  forbiddenHeists?: Maybe<HeistCursorConnection>;
+  globalAsset: Scalars['Boolean']['output'];
+  heist?: Maybe<Heist>;
+  heistAssets?: Maybe<HeistAssetCursorConnection>;
+  id: Scalars['ID']['output'];
+  maxQuantity: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
+  teamAsset: Scalars['Boolean']['output'];
+  type: AssetTypeEnum;
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<User>;
+};
+
+export type AssetForbiddenHeistsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  crewMembers__user__id?: InputMaybe<Scalars['String']['input']>;
+  employee__user__id?: InputMaybe<Scalars['String']['input']>;
+  establishment__contractor__id?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  phase?: InputMaybe<Scalars['Iterable']['input']>;
+};
+
+export type AssetHeistAssetsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** Cursor connection for Asset. */
+export type AssetCursorConnection = {
+  __typename?: 'AssetCursorConnection';
+  edges?: Maybe<Array<Maybe<AssetEdge>>>;
+  pageInfo: AssetPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of Asset. */
+export type AssetEdge = {
+  __typename?: 'AssetEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<Asset>;
+};
+
+/** Information about the current page. */
+export type AssetPageInfo = {
+  __typename?: 'AssetPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export enum AssetTypeEnum {
+  Asset = 'Asset',
+  Equipment = 'Equipment',
+  Weapon = 'Weapon',
+}
+
 export type ContractorRequest = Node & {
   __typename?: 'ContractorRequest';
   adminComment?: Maybe<Scalars['String']['output']>;
@@ -100,7 +167,7 @@ export type Employee = Node & {
   id: Scalars['ID']['output'];
   motivation?: Maybe<Scalars['String']['output']>;
   status?: Maybe<EmployeeStatusEnum>;
-  user?: Maybe<UserItem>;
+  user?: Maybe<User>;
   weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
 };
 
@@ -134,10 +201,55 @@ export enum EmployeeStatusEnum {
   Rejected = 'Rejected',
 }
 
+export type EmployeeTimeOff = Node & {
+  __typename?: 'EmployeeTimeOff';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<User>;
+  description?: Maybe<Scalars['String']['output']>;
+  employee: Employee;
+  endAt: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  reason: EmployeeTimeOffReasonEnum;
+  startAt: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<User>;
+};
+
+/** Cursor connection for EmployeeTimeOff. */
+export type EmployeeTimeOffCursorConnection = {
+  __typename?: 'EmployeeTimeOffCursorConnection';
+  edges?: Maybe<Array<Maybe<EmployeeTimeOffEdge>>>;
+  pageInfo: EmployeeTimeOffPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of EmployeeTimeOff. */
+export type EmployeeTimeOffEdge = {
+  __typename?: 'EmployeeTimeOffEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<EmployeeTimeOff>;
+};
+
+/** Information about the current page. */
+export type EmployeeTimeOffPageInfo = {
+  __typename?: 'EmployeeTimeOffPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export enum EmployeeTimeOffReasonEnum {
+  MedicalLeave = 'MedicalLeave',
+  Other = 'Other',
+  PersonalLeave = 'PersonalLeave',
+  Vacation = 'Vacation',
+}
+
 export type Establishment = Node & {
   __typename?: 'Establishment';
   averageRating?: Maybe<Scalars['Float']['output']>;
-  contractor: UserItem;
+  contractor: User;
   contractorCut: Scalars['Float']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
   crewCut: Scalars['Float']['output'];
@@ -178,13 +290,15 @@ export type EstablishmentPageInfo = {
 export type Heist = Node & {
   __typename?: 'Heist';
   allowedEmployees?: Maybe<EmployeeCursorConnection>;
+  assets?: Maybe<AssetCursorConnection>;
   crewMembers?: Maybe<CrewMemberCursorConnection>;
   description?: Maybe<Scalars['String']['output']>;
   difficulty: HeistDifficultyEnum;
   employee?: Maybe<Employee>;
   endedAt?: Maybe<Scalars['String']['output']>;
   establishment: Establishment;
-  forbiddenUsers?: Maybe<UserCollectionCursorConnection>;
+  forbiddenAssets?: Maybe<AssetCursorConnection>;
+  forbiddenUsers?: Maybe<UserCursorConnection>;
   id: Scalars['ID']['output'];
   location?: Maybe<Location>;
   maximumPayout: Scalars['Float']['output'];
@@ -206,7 +320,21 @@ export type HeistAllowedEmployeesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type HeistAssetsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type HeistCrewMembersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type HeistForbiddenAssetsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -218,6 +346,42 @@ export type HeistForbiddenUsersArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type HeistAsset = Node & {
+  __typename?: 'HeistAsset';
+  asset: Asset;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<User>;
+  crewMember: CrewMember;
+  id: Scalars['ID']['output'];
+  quantity: Scalars['Int']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<User>;
+};
+
+/** Cursor connection for HeistAsset. */
+export type HeistAssetCursorConnection = {
+  __typename?: 'HeistAssetCursorConnection';
+  edges?: Maybe<Array<Maybe<HeistAssetEdge>>>;
+  pageInfo: HeistAssetPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of HeistAsset. */
+export type HeistAssetEdge = {
+  __typename?: 'HeistAssetEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<HeistAsset>;
+};
+
+/** Information about the current page. */
+export type HeistAssetPageInfo = {
+  __typename?: 'HeistAssetPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
 };
 
 /** Cursor connection for Heist. */
@@ -307,61 +471,80 @@ export type LocationPageInfo = {
 
 export type MeUser = Node & {
   __typename?: 'MeUser';
-  balance: Scalars['Float']['output'];
+  balance?: Maybe<Scalars['Float']['output']>;
   contractorRequest?: Maybe<ContractorRequest>;
   email?: Maybe<Scalars['String']['output']>;
   employee?: Maybe<Employee>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
-  locale: UserLocaleEnum;
+  locale?: Maybe<UserLocaleEnum>;
   profile: Profile;
-  roles: Scalars['Iterable']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  roles?: Maybe<Scalars['Iterable']['output']>;
   username: Scalars['String']['output'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Creates a Asset. */
+  createAsset?: Maybe<CreateAssetPayload>;
   /** Creates a ContractorRequest. */
   createContractorRequest?: Maybe<CreateContractorRequestPayload>;
   /** Creates a CrewMember. */
   createCrewMember?: Maybe<CreateCrewMemberPayload>;
   /** Creates a Employee. */
   createEmployee?: Maybe<CreateEmployeePayload>;
+  /** Creates a EmployeeTimeOff. */
+  createEmployeeTimeOff?: Maybe<CreateEmployeeTimeOffPayload>;
   /** Creates a Establishment. */
   createEstablishment?: Maybe<CreateEstablishmentPayload>;
   /** Creates a Heist. */
   createHeist?: Maybe<CreateHeistPayload>;
+  /** Creates a HeistAsset. */
+  createHeistAsset?: Maybe<CreateHeistAssetPayload>;
   /** Creates a Review. */
   createReview?: Maybe<CreateReviewPayload>;
   /** Creates a User. */
   createUser?: Maybe<CreateUserPayload>;
+  /** Deletes a Asset. */
+  deleteAsset?: Maybe<DeleteAssetPayload>;
   /** Deletes a ContractorRequest. */
   deleteContractorRequest?: Maybe<DeleteContractorRequestPayload>;
   /** Deletes a CrewMember. */
   deleteCrewMember?: Maybe<DeleteCrewMemberPayload>;
   /** Deletes a Employee. */
   deleteEmployee?: Maybe<DeleteEmployeePayload>;
+  /** Deletes a EmployeeTimeOff. */
+  deleteEmployeeTimeOff?: Maybe<DeleteEmployeeTimeOffPayload>;
   /** Deletes a Establishment. */
   deleteEstablishment?: Maybe<DeleteEstablishmentPayload>;
   /** Deletes a Heist. */
   deleteHeist?: Maybe<DeleteHeistPayload>;
+  /** Deletes a HeistAsset. */
+  deleteHeistAsset?: Maybe<DeleteHeistAssetPayload>;
   /** Deletes a Review. */
   deleteReview?: Maybe<DeleteReviewPayload>;
   /** Deletes a User. */
   deleteUser?: Maybe<DeleteUserPayload>;
   /** Requests a Token. */
   requestToken?: Maybe<RequestTokenPayload>;
+  /** Updates a Asset. */
+  updateAsset?: Maybe<UpdateAssetPayload>;
   /** Updates a ContractorRequest. */
   updateContractorRequest?: Maybe<UpdateContractorRequestPayload>;
   /** Updates a CrewMember. */
   updateCrewMember?: Maybe<UpdateCrewMemberPayload>;
   /** Updates a Employee. */
   updateEmployee?: Maybe<UpdateEmployeePayload>;
+  /** Updates a EmployeeTimeOff. */
+  updateEmployeeTimeOff?: Maybe<UpdateEmployeeTimeOffPayload>;
   /** Updates a Establishment. */
   updateEstablishment?: Maybe<UpdateEstablishmentPayload>;
   /** Updates a Heist. */
   updateHeist?: Maybe<UpdateHeistPayload>;
+  /** Updates a HeistAsset. */
+  updateHeistAsset?: Maybe<UpdateHeistAssetPayload>;
   /** Updates a Profile. */
   updateProfile?: Maybe<UpdateProfilePayload>;
   /** Updates a Review. */
@@ -372,6 +555,10 @@ export type Mutation = {
   validateEmployee?: Maybe<ValidateEmployeePayload>;
   /** Validates a User. */
   validateUser?: Maybe<ValidateUserPayload>;
+};
+
+export type MutationCreateAssetArgs = {
+  input: CreateAssetInput;
 };
 
 export type MutationCreateContractorRequestArgs = {
@@ -386,6 +573,10 @@ export type MutationCreateEmployeeArgs = {
   input: CreateEmployeeInput;
 };
 
+export type MutationCreateEmployeeTimeOffArgs = {
+  input: CreateEmployeeTimeOffInput;
+};
+
 export type MutationCreateEstablishmentArgs = {
   input: CreateEstablishmentInput;
 };
@@ -394,12 +585,20 @@ export type MutationCreateHeistArgs = {
   input: CreateHeistInput;
 };
 
+export type MutationCreateHeistAssetArgs = {
+  input: CreateHeistAssetInput;
+};
+
 export type MutationCreateReviewArgs = {
   input: CreateReviewInput;
 };
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+export type MutationDeleteAssetArgs = {
+  input: DeleteAssetInput;
 };
 
 export type MutationDeleteContractorRequestArgs = {
@@ -414,12 +613,20 @@ export type MutationDeleteEmployeeArgs = {
   input: DeleteEmployeeInput;
 };
 
+export type MutationDeleteEmployeeTimeOffArgs = {
+  input: DeleteEmployeeTimeOffInput;
+};
+
 export type MutationDeleteEstablishmentArgs = {
   input: DeleteEstablishmentInput;
 };
 
 export type MutationDeleteHeistArgs = {
   input: DeleteHeistInput;
+};
+
+export type MutationDeleteHeistAssetArgs = {
+  input: DeleteHeistAssetInput;
 };
 
 export type MutationDeleteReviewArgs = {
@@ -434,6 +641,10 @@ export type MutationRequestTokenArgs = {
   input: RequestTokenInput;
 };
 
+export type MutationUpdateAssetArgs = {
+  input: UpdateAssetInput;
+};
+
 export type MutationUpdateContractorRequestArgs = {
   input: UpdateContractorRequestInput;
 };
@@ -446,12 +657,20 @@ export type MutationUpdateEmployeeArgs = {
   input: UpdateEmployeeInput;
 };
 
+export type MutationUpdateEmployeeTimeOffArgs = {
+  input: UpdateEmployeeTimeOffInput;
+};
+
 export type MutationUpdateEstablishmentArgs = {
   input: UpdateEstablishmentInput;
 };
 
 export type MutationUpdateHeistArgs = {
   input: UpdateHeistInput;
+};
+
+export type MutationUpdateHeistAssetArgs = {
+  input: UpdateHeistAssetInput;
 };
 
 export type MutationUpdateProfileArgs = {
@@ -512,16 +731,22 @@ export type ProfilePageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  asset?: Maybe<Asset>;
+  assets?: Maybe<AssetCursorConnection>;
   contractorRequest?: Maybe<ContractorRequest>;
   contractorRequests?: Maybe<ContractorRequestCursorConnection>;
   crewMember?: Maybe<CrewMember>;
   crewMembers?: Maybe<CrewMemberCursorConnection>;
   employee?: Maybe<Employee>;
+  employeeTimeOff?: Maybe<EmployeeTimeOff>;
+  employeeTimeOffs?: Maybe<EmployeeTimeOffCursorConnection>;
   employees?: Maybe<EmployeeCursorConnection>;
   establishment?: Maybe<Establishment>;
   establishments?: Maybe<EstablishmentCursorConnection>;
   getMeUser?: Maybe<MeUser>;
   heist?: Maybe<Heist>;
+  heistAsset?: Maybe<HeistAsset>;
+  heistAssets?: Maybe<HeistAssetCursorConnection>;
   heists?: Maybe<HeistCursorConnection>;
   location?: Maybe<Location>;
   locations?: Maybe<LocationCursorConnection>;
@@ -532,8 +757,19 @@ export type Query = {
   reviews?: Maybe<ReviewCursorConnection>;
   token?: Maybe<Token>;
   tokens?: Maybe<TokenCursorConnection>;
-  user?: Maybe<UserItem>;
-  users?: Maybe<UserCollectionCursorConnection>;
+  user?: Maybe<User>;
+  users?: Maybe<UserCursorConnection>;
+};
+
+export type QueryAssetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryAssetsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type QueryContractorRequestArgs = {
@@ -563,6 +799,17 @@ export type QueryEmployeeArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type QueryEmployeeTimeOffArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryEmployeeTimeOffsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type QueryEmployeesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -584,6 +831,17 @@ export type QueryEstablishmentsArgs = {
 
 export type QueryHeistArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type QueryHeistAssetArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryHeistAssetsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type QueryHeistsArgs = {
@@ -666,7 +924,7 @@ export type Review = Node & {
   rating: ReviewRatingEnum;
   ratingNumber?: Maybe<Scalars['Float']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
-  user: UserItem;
+  user: User;
 };
 
 /** Cursor connection for Review. */
@@ -739,58 +997,35 @@ export type TokenPageInfo = {
   startCursor?: Maybe<Scalars['String']['output']>;
 };
 
-export type UserCollection = Node & {
-  __typename?: 'UserCollection';
-  balance: Scalars['Float']['output'];
+export type User = Node & {
+  __typename?: 'User';
+  balance?: Maybe<Scalars['Float']['output']>;
   contractorRequest?: Maybe<ContractorRequest>;
   email?: Maybe<Scalars['String']['output']>;
   employee?: Maybe<Employee>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
-  locale: UserLocaleEnum;
+  locale?: Maybe<UserLocaleEnum>;
   profile: Profile;
-  roles: Scalars['Iterable']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  roles?: Maybe<Scalars['Iterable']['output']>;
   username: Scalars['String']['output'];
 };
 
-/** Cursor connection for UserCollection. */
-export type UserCollectionCursorConnection = {
-  __typename?: 'UserCollectionCursorConnection';
-  edges?: Maybe<Array<Maybe<UserCollectionEdge>>>;
-  pageInfo: UserCollectionPageInfo;
+/** Cursor connection for User. */
+export type UserCursorConnection = {
+  __typename?: 'UserCursorConnection';
+  edges?: Maybe<Array<Maybe<UserEdge>>>;
+  pageInfo: UserPageInfo;
   totalCount: Scalars['Int']['output'];
 };
 
-/** Edge of UserCollection. */
-export type UserCollectionEdge = {
-  __typename?: 'UserCollectionEdge';
+/** Edge of User. */
+export type UserEdge = {
+  __typename?: 'UserEdge';
   cursor: Scalars['String']['output'];
-  node?: Maybe<UserCollection>;
-};
-
-/** Information about the current page. */
-export type UserCollectionPageInfo = {
-  __typename?: 'UserCollectionPageInfo';
-  endCursor?: Maybe<Scalars['String']['output']>;
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  startCursor?: Maybe<Scalars['String']['output']>;
-};
-
-export type UserItem = Node & {
-  __typename?: 'UserItem';
-  balance: Scalars['Float']['output'];
-  contractorRequest?: Maybe<ContractorRequest>;
-  email?: Maybe<Scalars['String']['output']>;
-  employee?: Maybe<Employee>;
-  /** You should probably not use this method directly unless necessary. */
-  globalRating?: Maybe<Scalars['Float']['output']>;
-  id: Scalars['ID']['output'];
-  locale: UserLocaleEnum;
-  profile: Profile;
-  roles: Scalars['Iterable']['output'];
-  username: Scalars['String']['output'];
+  node?: Maybe<User>;
 };
 
 export enum UserLocaleEnum {
@@ -798,11 +1033,89 @@ export enum UserLocaleEnum {
   Fr = 'Fr',
 }
 
+/** Information about the current page. */
+export type UserPageInfo = {
+  __typename?: 'UserPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
 export enum UserStatusEnum {
   Dead = 'Dead',
   Unverified = 'Unverified',
   Verified = 'Verified',
 }
+
+/** Creates a Asset. */
+export type CreateAssetInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  forbiddenHeists?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  heist?: InputMaybe<Scalars['String']['input']>;
+  heistAssets?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  maxQuantity: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+  teamAsset: Scalars['Boolean']['input'];
+  type: AssetTypeEnum;
+  updatedAt?: InputMaybe<Scalars['String']['input']>;
+  updatedBy?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Creates a Asset. */
+export type CreateAssetNestedPayload = Node & {
+  __typename?: 'createAssetNestedPayload';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<CreateUserNestedPayload>;
+  description?: Maybe<Scalars['String']['output']>;
+  forbiddenHeists?: Maybe<CreateHeistNestedPayloadCursorConnection>;
+  globalAsset: Scalars['Boolean']['output'];
+  heist?: Maybe<CreateHeistNestedPayload>;
+  heistAssets?: Maybe<CreateHeistAssetNestedPayloadCursorConnection>;
+  id: Scalars['ID']['output'];
+  maxQuantity: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
+  teamAsset: Scalars['Boolean']['output'];
+  type: AssetTypeEnum;
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<CreateUserNestedPayload>;
+};
+
+/** Cursor connection for createAssetNestedPayload. */
+export type CreateAssetNestedPayloadCursorConnection = {
+  __typename?: 'createAssetNestedPayloadCursorConnection';
+  edges?: Maybe<Array<Maybe<CreateAssetNestedPayloadEdge>>>;
+  pageInfo: CreateAssetNestedPayloadPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of createAssetNestedPayload. */
+export type CreateAssetNestedPayloadEdge = {
+  __typename?: 'createAssetNestedPayloadEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<CreateAssetNestedPayload>;
+};
+
+/** Information about the current page. */
+export type CreateAssetNestedPayloadPageInfo = {
+  __typename?: 'createAssetNestedPayloadPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+/** Creates a Asset. */
+export type CreateAssetPayload = {
+  __typename?: 'createAssetPayload';
+  asset?: Maybe<Asset>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+};
 
 /** Creates a ContractorRequest. */
 export type CreateContractorRequestInput = {
@@ -945,6 +1258,27 @@ export type CreateEmployeePayloadData = Node & {
   weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
 };
 
+/** Creates a EmployeeTimeOff. */
+export type CreateEmployeeTimeOffInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  employee: Scalars['String']['input'];
+  endAt: Scalars['String']['input'];
+  reason: EmployeeTimeOffReasonEnum;
+  startAt: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['String']['input']>;
+  updatedBy?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Creates a EmployeeTimeOff. */
+export type CreateEmployeeTimeOffPayload = {
+  __typename?: 'createEmployeeTimeOffPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  employeeTimeOff?: Maybe<EmployeeTimeOff>;
+};
+
 /** Creates a Establishment. */
 export type CreateEstablishmentInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
@@ -982,13 +1316,71 @@ export type CreateEstablishmentPayload = {
   establishment?: Maybe<Establishment>;
 };
 
+/** Creates a HeistAsset. */
+export type CreateHeistAssetInput = {
+  asset: Scalars['String']['input'];
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  crewMember: Scalars['String']['input'];
+  quantity: Scalars['Int']['input'];
+  updatedAt?: InputMaybe<Scalars['String']['input']>;
+  updatedBy?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Creates a HeistAsset. */
+export type CreateHeistAssetNestedPayload = Node & {
+  __typename?: 'createHeistAssetNestedPayload';
+  asset: CreateAssetNestedPayload;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<CreateUserNestedPayload>;
+  crewMember: CreateCrewMemberNestedPayload;
+  id: Scalars['ID']['output'];
+  quantity: Scalars['Int']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<CreateUserNestedPayload>;
+};
+
+/** Cursor connection for createHeistAssetNestedPayload. */
+export type CreateHeistAssetNestedPayloadCursorConnection = {
+  __typename?: 'createHeistAssetNestedPayloadCursorConnection';
+  edges?: Maybe<Array<Maybe<CreateHeistAssetNestedPayloadEdge>>>;
+  pageInfo: CreateHeistAssetNestedPayloadPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of createHeistAssetNestedPayload. */
+export type CreateHeistAssetNestedPayloadEdge = {
+  __typename?: 'createHeistAssetNestedPayloadEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<CreateHeistAssetNestedPayload>;
+};
+
+/** Information about the current page. */
+export type CreateHeistAssetNestedPayloadPageInfo = {
+  __typename?: 'createHeistAssetNestedPayloadPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+/** Creates a HeistAsset. */
+export type CreateHeistAssetPayload = {
+  __typename?: 'createHeistAssetPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  heistAsset?: Maybe<HeistAsset>;
+};
+
 /** Creates a Heist. */
 export type CreateHeistInput = {
   allowedEmployees?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  assets?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   difficulty: HeistDifficultyEnum;
   establishment: Scalars['String']['input'];
+  forbiddenAssets?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   forbiddenUsers?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   latitude?: InputMaybe<Scalars['Float']['input']>;
   longitude?: InputMaybe<Scalars['Float']['input']>;
@@ -1007,12 +1399,14 @@ export type CreateHeistInput = {
 export type CreateHeistNestedPayload = Node & {
   __typename?: 'createHeistNestedPayload';
   allowedEmployees?: Maybe<CreateEmployeeNestedPayloadCursorConnection>;
+  assets?: Maybe<CreateAssetNestedPayloadCursorConnection>;
   crewMembers?: Maybe<CreateCrewMemberNestedPayloadCursorConnection>;
   description?: Maybe<Scalars['String']['output']>;
   difficulty: HeistDifficultyEnum;
   employee?: Maybe<CreateEmployeeNestedPayload>;
   endedAt?: Maybe<Scalars['String']['output']>;
   establishment: CreateEstablishmentNestedPayload;
+  forbiddenAssets?: Maybe<CreateAssetNestedPayloadCursorConnection>;
   forbiddenUsers?: Maybe<CreateUserNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   location?: Maybe<Location>;
@@ -1026,6 +1420,30 @@ export type CreateHeistNestedPayload = Node & {
   shouldEndAt: Scalars['String']['output'];
   startAt: Scalars['String']['output'];
   visibility: HeistVisibilityEnum;
+};
+
+/** Cursor connection for createHeistNestedPayload. */
+export type CreateHeistNestedPayloadCursorConnection = {
+  __typename?: 'createHeistNestedPayloadCursorConnection';
+  edges?: Maybe<Array<Maybe<CreateHeistNestedPayloadEdge>>>;
+  pageInfo: CreateHeistNestedPayloadPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of createHeistNestedPayload. */
+export type CreateHeistNestedPayloadEdge = {
+  __typename?: 'createHeistNestedPayloadEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<CreateHeistNestedPayload>;
+};
+
+/** Information about the current page. */
+export type CreateHeistNestedPayloadPageInfo = {
+  __typename?: 'createHeistNestedPayloadPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
 };
 
 /** Creates a Heist. */
@@ -1055,9 +1473,9 @@ export type CreateReviewPayload = {
 export type CreateUserInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
-  locale: UserLocaleEnum;
+  locale?: InputMaybe<UserLocaleEnum>;
   plainPassword?: InputMaybe<Scalars['String']['input']>;
-  reason: Scalars['String']['input'];
+  reason?: InputMaybe<Scalars['String']['input']>;
   username: Scalars['String']['input'];
 };
 
@@ -1102,6 +1520,19 @@ export type CreateUserPayload = {
 export type CreateUserPayloadData = Node & {
   __typename?: 'createUserPayloadData';
   id: Scalars['ID']['output'];
+};
+
+/** Deletes a Asset. */
+export type DeleteAssetInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+};
+
+/** Deletes a Asset. */
+export type DeleteAssetPayload = {
+  __typename?: 'deleteAssetPayload';
+  asset?: Maybe<Asset>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
 };
 
 /** Deletes a ContractorRequest. */
@@ -1161,6 +1592,19 @@ export type DeleteEmployeePayloadData = Node & {
   id: Scalars['ID']['output'];
 };
 
+/** Deletes a EmployeeTimeOff. */
+export type DeleteEmployeeTimeOffInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+};
+
+/** Deletes a EmployeeTimeOff. */
+export type DeleteEmployeeTimeOffPayload = {
+  __typename?: 'deleteEmployeeTimeOffPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  employeeTimeOff?: Maybe<EmployeeTimeOff>;
+};
+
 /** Deletes a Establishment. */
 export type DeleteEstablishmentInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
@@ -1178,6 +1622,19 @@ export type DeleteEstablishmentPayload = {
 export type DeleteEstablishmentPayloadData = Node & {
   __typename?: 'deleteEstablishmentPayloadData';
   id: Scalars['ID']['output'];
+};
+
+/** Deletes a HeistAsset. */
+export type DeleteHeistAssetInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+};
+
+/** Deletes a HeistAsset. */
+export type DeleteHeistAssetPayload = {
+  __typename?: 'deleteHeistAssetPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  heistAsset?: Maybe<HeistAsset>;
 };
 
 /** Deletes a Heist. */
@@ -1253,6 +1710,76 @@ export type RequestTokenPayload = {
   token?: Maybe<Token>;
 };
 
+/** Updates a Asset. */
+export type UpdateAssetInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  forbiddenHeists?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  heist?: InputMaybe<Scalars['String']['input']>;
+  heistAssets?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  id: Scalars['ID']['input'];
+  maxQuantity?: InputMaybe<Scalars['Int']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  price?: InputMaybe<Scalars['Float']['input']>;
+  teamAsset?: InputMaybe<Scalars['Boolean']['input']>;
+  type?: InputMaybe<AssetTypeEnum>;
+  updatedAt?: InputMaybe<Scalars['String']['input']>;
+  updatedBy?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Updates a Asset. */
+export type UpdateAssetNestedPayload = Node & {
+  __typename?: 'updateAssetNestedPayload';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UpdateUserNestedPayload>;
+  description?: Maybe<Scalars['String']['output']>;
+  forbiddenHeists?: Maybe<UpdateHeistNestedPayloadCursorConnection>;
+  globalAsset?: Maybe<Scalars['Boolean']['output']>;
+  heist?: Maybe<UpdateHeistNestedPayload>;
+  heistAssets?: Maybe<UpdateHeistAssetNestedPayloadCursorConnection>;
+  id: Scalars['ID']['output'];
+  maxQuantity?: Maybe<Scalars['Int']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  price?: Maybe<Scalars['Float']['output']>;
+  teamAsset?: Maybe<Scalars['Boolean']['output']>;
+  type?: Maybe<AssetTypeEnum>;
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UpdateUserNestedPayload>;
+};
+
+/** Cursor connection for updateAssetNestedPayload. */
+export type UpdateAssetNestedPayloadCursorConnection = {
+  __typename?: 'updateAssetNestedPayloadCursorConnection';
+  edges?: Maybe<Array<Maybe<UpdateAssetNestedPayloadEdge>>>;
+  pageInfo: UpdateAssetNestedPayloadPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of updateAssetNestedPayload. */
+export type UpdateAssetNestedPayloadEdge = {
+  __typename?: 'updateAssetNestedPayloadEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<UpdateAssetNestedPayload>;
+};
+
+/** Information about the current page. */
+export type UpdateAssetNestedPayloadPageInfo = {
+  __typename?: 'updateAssetNestedPayloadPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+/** Updates a Asset. */
+export type UpdateAssetPayload = {
+  __typename?: 'updateAssetPayload';
+  asset?: Maybe<Asset>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+};
+
 /** Updates a ContractorRequest. */
 export type UpdateContractorRequestInput = {
   adminComment?: InputMaybe<Scalars['String']['input']>;
@@ -1284,6 +1811,7 @@ export type UpdateCrewMemberInput = {
   createdAt?: InputMaybe<Scalars['String']['input']>;
   createdBy?: InputMaybe<Scalars['String']['input']>;
   heist?: InputMaybe<Scalars['String']['input']>;
+  heistAssets?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   id: Scalars['ID']['input'];
   kills?: InputMaybe<Scalars['Int']['input']>;
   objectivesCompleted?: InputMaybe<Scalars['Int']['input']>;
@@ -1301,6 +1829,7 @@ export type UpdateCrewMemberNestedPayload = Node & {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UpdateUserNestedPayload>;
   heist?: Maybe<UpdateHeistNestedPayload>;
+  heistAssets?: Maybe<UpdateHeistAssetNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   kills?: Maybe<Scalars['Int']['output']>;
   objectivesCompleted?: Maybe<Scalars['Int']['output']>;
@@ -1351,6 +1880,7 @@ export type UpdateCrewMemberPayloadData = Node & {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UpdateUserNestedPayload>;
   heist?: Maybe<UpdateHeistNestedPayload>;
+  heistAssets?: Maybe<UpdateHeistAssetNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   kills?: Maybe<Scalars['Int']['output']>;
   objectivesCompleted?: Maybe<Scalars['Int']['output']>;
@@ -1427,6 +1957,28 @@ export type UpdateEmployeePayloadData = Node & {
   weeklySchedule?: Maybe<Scalars['Iterable']['output']>;
 };
 
+/** Updates a EmployeeTimeOff. */
+export type UpdateEmployeeTimeOffInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  employee?: InputMaybe<Scalars['String']['input']>;
+  endAt?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  reason?: InputMaybe<EmployeeTimeOffReasonEnum>;
+  startAt?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['String']['input']>;
+  updatedBy?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Updates a EmployeeTimeOff. */
+export type UpdateEmployeeTimeOffPayload = {
+  __typename?: 'updateEmployeeTimeOffPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  employeeTimeOff?: Maybe<EmployeeTimeOff>;
+};
+
 /** Updates a Establishment. */
 export type UpdateEstablishmentInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
@@ -1464,12 +2016,71 @@ export type UpdateEstablishmentPayload = {
   establishment?: Maybe<Establishment>;
 };
 
+/** Updates a HeistAsset. */
+export type UpdateHeistAssetInput = {
+  asset?: InputMaybe<Scalars['String']['input']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  crewMember?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  updatedAt?: InputMaybe<Scalars['String']['input']>;
+  updatedBy?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Updates a HeistAsset. */
+export type UpdateHeistAssetNestedPayload = Node & {
+  __typename?: 'updateHeistAssetNestedPayload';
+  asset?: Maybe<UpdateAssetNestedPayload>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UpdateUserNestedPayload>;
+  crewMember?: Maybe<UpdateCrewMemberNestedPayload>;
+  id: Scalars['ID']['output'];
+  quantity?: Maybe<Scalars['Int']['output']>;
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UpdateUserNestedPayload>;
+};
+
+/** Cursor connection for updateHeistAssetNestedPayload. */
+export type UpdateHeistAssetNestedPayloadCursorConnection = {
+  __typename?: 'updateHeistAssetNestedPayloadCursorConnection';
+  edges?: Maybe<Array<Maybe<UpdateHeistAssetNestedPayloadEdge>>>;
+  pageInfo: UpdateHeistAssetNestedPayloadPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of updateHeistAssetNestedPayload. */
+export type UpdateHeistAssetNestedPayloadEdge = {
+  __typename?: 'updateHeistAssetNestedPayloadEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<UpdateHeistAssetNestedPayload>;
+};
+
+/** Information about the current page. */
+export type UpdateHeistAssetNestedPayloadPageInfo = {
+  __typename?: 'updateHeistAssetNestedPayloadPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+/** Updates a HeistAsset. */
+export type UpdateHeistAssetPayload = {
+  __typename?: 'updateHeistAssetPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  heistAsset?: Maybe<HeistAsset>;
+};
+
 /** Updates a Heist. */
 export type UpdateHeistInput = {
   allowedEmployees?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  assets?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   difficulty?: InputMaybe<HeistDifficultyEnum>;
+  forbiddenAssets?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   forbiddenUsers?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   id: Scalars['ID']['input'];
   maximumPayout?: InputMaybe<Scalars['Float']['input']>;
@@ -1487,12 +2098,14 @@ export type UpdateHeistInput = {
 export type UpdateHeistNestedPayload = Node & {
   __typename?: 'updateHeistNestedPayload';
   allowedEmployees?: Maybe<UpdateEmployeeNestedPayloadCursorConnection>;
+  assets?: Maybe<UpdateAssetNestedPayloadCursorConnection>;
   crewMembers?: Maybe<UpdateCrewMemberNestedPayloadCursorConnection>;
   description?: Maybe<Scalars['String']['output']>;
   difficulty?: Maybe<HeistDifficultyEnum>;
   employee?: Maybe<UpdateEmployeeNestedPayload>;
   endedAt?: Maybe<Scalars['String']['output']>;
   establishment?: Maybe<UpdateEstablishmentNestedPayload>;
+  forbiddenAssets?: Maybe<UpdateAssetNestedPayloadCursorConnection>;
   forbiddenUsers?: Maybe<UpdateUserNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   location?: Maybe<Location>;
@@ -1506,6 +2119,30 @@ export type UpdateHeistNestedPayload = Node & {
   shouldEndAt?: Maybe<Scalars['String']['output']>;
   startAt?: Maybe<Scalars['String']['output']>;
   visibility?: Maybe<HeistVisibilityEnum>;
+};
+
+/** Cursor connection for updateHeistNestedPayload. */
+export type UpdateHeistNestedPayloadCursorConnection = {
+  __typename?: 'updateHeistNestedPayloadCursorConnection';
+  edges?: Maybe<Array<Maybe<UpdateHeistNestedPayloadEdge>>>;
+  pageInfo: UpdateHeistNestedPayloadPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of updateHeistNestedPayload. */
+export type UpdateHeistNestedPayloadEdge = {
+  __typename?: 'updateHeistNestedPayloadEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<UpdateHeistNestedPayload>;
+};
+
+/** Information about the current page. */
+export type UpdateHeistNestedPayloadPageInfo = {
+  __typename?: 'updateHeistNestedPayloadPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
 };
 
 /** Updates a Heist. */
@@ -1573,6 +2210,7 @@ export type UpdateUserNestedPayload = Node & {
   id: Scalars['ID']['output'];
   locale?: Maybe<UserLocaleEnum>;
   profile?: Maybe<UpdateProfileNestedPayload>;
+  reason?: Maybe<Scalars['String']['output']>;
   roles?: Maybe<Scalars['Iterable']['output']>;
   username?: Maybe<Scalars['String']['output']>;
 };
@@ -1620,6 +2258,7 @@ export type UpdateUserPayloadData = Node & {
   id: Scalars['ID']['output'];
   locale?: Maybe<UserLocaleEnum>;
   profile?: Maybe<UpdateProfileNestedPayload>;
+  reason?: Maybe<Scalars['String']['output']>;
   roles?: Maybe<Scalars['Iterable']['output']>;
   username?: Maybe<Scalars['String']['output']>;
 };
@@ -1675,16 +2314,17 @@ export type ValidateUserInput = {
 /** Validates a User. */
 export type ValidateUserNestedPayload = Node & {
   __typename?: 'validateUserNestedPayload';
-  balance: Scalars['Float']['output'];
+  balance?: Maybe<Scalars['Float']['output']>;
   contractorRequest?: Maybe<ContractorRequest>;
   email?: Maybe<Scalars['String']['output']>;
   employee?: Maybe<ValidateEmployeeNestedPayload>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
-  locale: UserLocaleEnum;
+  locale?: Maybe<UserLocaleEnum>;
   profile: Profile;
-  roles: Scalars['Iterable']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  roles?: Maybe<Scalars['Iterable']['output']>;
   username: Scalars['String']['output'];
 };
 
@@ -1698,15 +2338,16 @@ export type ValidateUserPayload = {
 /** Validates a User. */
 export type ValidateUserPayloadData = Node & {
   __typename?: 'validateUserPayloadData';
-  balance: Scalars['Float']['output'];
+  balance?: Maybe<Scalars['Float']['output']>;
   contractorRequest?: Maybe<ContractorRequest>;
   email?: Maybe<Scalars['String']['output']>;
   employee?: Maybe<ValidateEmployeeNestedPayload>;
   /** You should probably not use this method directly unless necessary. */
   globalRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
-  locale: UserLocaleEnum;
+  locale?: Maybe<UserLocaleEnum>;
   profile: Profile;
-  roles: Scalars['Iterable']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  roles?: Maybe<Scalars['Iterable']['output']>;
   username: Scalars['String']['output'];
 };

@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: [
                 'groups' => [self::READ],
             ],
-            security: 'is_granted("ROLE_ADMIN") or object.user == user',
+            security: 'is_granted("READ", object)',
         ),
         new QueryCollection(
             normalizationContext: [
@@ -43,14 +43,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Mutation(
             name: 'create',
-            security: '
-                is_granted("ROLE_USER") and
-                not is_granted("ROLE_CONTRACTOR") and
-                (
-                    user.getContractorRequest() == null or
-                    user.getContractorRequest().getStatus() == enum("App\\\Enum\\\ContractorRequestStatusEnum::Rejected")
-                )
-            ',
             denormalizationContext: [
                 'groups' => [self::WRITE],
             ],
@@ -58,28 +50,24 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'groups' => [self::READ],
             ],
             validationContext: ['groups' => [self::WRITE]],
+            securityPostDenormalize: 'is_granted("CREATE", object)'
         ),
         new Mutation(
             name: 'update',
-            security: 'is_granted("ROLE_ADMIN") and object.getStatus() == enum("App\\\Enum\\\ContractorRequestStatusEnum::Pending")',
             denormalizationContext: [
                 'groups' => [self::WRITE_ADMIN],
             ],
             normalizationContext: [
                 'groups' => [self::READ],
             ],
-            validationContext: ['groups' => [self::WRITE_ADMIN]]
+            validationContext: ['groups' => [
+                self::WRITE_ADMIN,
+            ]],
+            security: 'is_granted("UPDATE", object)'
         ),
         new DeleteMutation(
             name: 'delete',
-            security: '
-                is_granted("ROLE_ADMIN") or
-                (
-                    is_granted("ROLE_USER") and
-                    object.getUser() == user and
-                    object.getStatus() != enum("App\\\Enum\\\ContractorRequestStatusEnum::Accepted")
-                )
-            ',
+            security: 'is_granted("DELETE", object)'
         ),
     ]
 )]

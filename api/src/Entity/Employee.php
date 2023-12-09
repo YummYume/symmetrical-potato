@@ -137,7 +137,7 @@ class Employee
     private array $weeklySchedule = [];
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups([self::READ, self::READ_PUBLIC, User::READ, self::VALIDATE])]
+    #[Groups([self::READ, self::READ_PUBLIC, User::READ, User::READ_PUBLIC, self::VALIDATE])]
     #[Assert\When(
         expression: 'this.getStatus() == enum("App\\\Enum\\\EmployeeStatusEnum::Active")',
         constraints: [
