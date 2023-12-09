@@ -95,6 +95,8 @@ final class ReviewFixtures extends Fixture implements DependentFixtureInterface
             'review' => "I'm not a stealthy heister, but I still enjoyed this place. It triggers a special thing in me, I can't really explain it.",
             'reviewer' => UserFixtures::HEISTER_WOLF,
         ],
+        // BDIPlus
+        // Leave this one empty
         // Red Hook Terminal
         [
             'rating' => ReviewRatingEnum::Four,

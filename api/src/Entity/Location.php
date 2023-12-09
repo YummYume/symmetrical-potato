@@ -67,7 +67,7 @@ class Location
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[ApiProperty(identifier: true)]
+    #[ApiProperty(identifier: false)]
     private ?Uuid $id = null;
 
     #[ORM\Column]
@@ -93,9 +93,10 @@ class Location
     #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.address.max_length')]
     private ?string $address = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Groups([self::READ, Heist::READ])]
     #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.place_id.max_length')]
+    #[ApiProperty(identifier: true)]
     private ?string $placeId = null;
 
     #[ORM\Column]

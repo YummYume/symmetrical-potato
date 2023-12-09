@@ -36,6 +36,10 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
     public const HEIST_UNDER_THE_SURPHAZE_PLANNING = 'under_the_surphaze_planning';
     public const HEIST_UNDER_THE_SURPHAZE_SUCCESS = 'under_the_surphaze_success';
     public const HEIST_UNDER_THE_SURPHAZE_FAILED = 'under_the_surphaze_failed';
+    // Gold Sharke
+    public const HEIST_GOLD_SHARKE_PLANNING = 'gold_sharke_planning';
+    public const HEIST_GOLD_SHARKE_SUCCESS = 'gold_sharke_success';
+    public const HEIST_GOLD_SHARKE_FAILED = 'gold_sharke_failed';
     // 99 Boxes
     public const HEIST_99_BOXES_PLANNING = '99_boxes_planning';
     public const HEIST_99_BOXES_SUCCESS = '99_boxes_success';
@@ -602,6 +606,53 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'employee' => UserFixtures::EMPLOYEE_FAKE_GUARD,
             'location' => LocationFixtures::LOCATION_MUSEUM_OF_MODERN_ART,
             'objectives' => self::HEIST_UNDER_THE_SURPHAZE_OBJECTIVES,
+        ],
+        // Gold & Sharke
+        self::HEIST_GOLD_SHARKE_PLANNING => [
+            'name' => 'Gold & Sharke',
+            'minimumPayout' => 600000,
+            'maximumPayout' => 1000000,
+            'description' => 'Steal the gold from the bank vault. The bank is in the middle of the city, so be prepared for a lot of cops.',
+            'startAt' => '2024-01-01 10:00:00',
+            'shouldEndAt' => '2024-01-01 11:15:00',
+            'preferedTactic' => HeistPreferedTacticEnum::Loud,
+            'difficulty' => HeistDifficultyEnum::VeryHard,
+            'phase' => HeistPhaseEnum::Planning,
+            'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
+            'location' => LocationFixtures::LOCATION_BDIPLUS,
+            'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
+        ],
+        self::HEIST_GOLD_SHARKE_SUCCESS => [
+            'name' => 'Gold & Sharke',
+            'minimumPayout' => 600000,
+            'maximumPayout' => 1000000,
+            'description' => 'Steal the gold from the bank vault. The bank is in the middle of the city, so be prepared for a lot of cops.',
+            'startAt' => '2023-07-06 15:00:00',
+            'shouldEndAt' => '2023-07-06 17:00:00',
+            'endedAt' => '2023-07-06 16:30:00',
+            'preferedTactic' => HeistPreferedTacticEnum::Loud,
+            'difficulty' => HeistDifficultyEnum::VeryHard,
+            'phase' => HeistPhaseEnum::Succeeded,
+            'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
+            'employee' => UserFixtures::EMPLOYEE_BILE,
+            'location' => LocationFixtures::LOCATION_BDIPLUS,
+            'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
+        ],
+        self::HEIST_GOLD_SHARKE_FAILED => [
+            'name' => 'Gold & Sharke',
+            'minimumPayout' => 600000,
+            'maximumPayout' => 1000000,
+            'description' => 'Steal the gold from the bank vault. The bank is in the middle of the city, so be prepared for a lot of cops.',
+            'startAt' => '2023-07-01 15:00:00',
+            'shouldEndAt' => '2023-07-01 17:00:00',
+            'endedAt' => '2023-07-01 16:00:00',
+            'preferedTactic' => HeistPreferedTacticEnum::Loud,
+            'difficulty' => HeistDifficultyEnum::VeryHard,
+            'phase' => HeistPhaseEnum::Failed,
+            'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
+            'employee' => UserFixtures::EMPLOYEE_BILE,
+            'location' => LocationFixtures::LOCATION_BDIPLUS,
+            'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
         // 99 Boxes
         self::HEIST_99_BOXES_PLANNING => [

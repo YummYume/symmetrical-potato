@@ -175,6 +175,26 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
             'user' => UserFixtures::HEISTER_HOXTON,
             'heist' => HeistFixtures::HEIST_UNDER_THE_SURPHAZE_FAILED,
         ],
+        // Gold & Sharke
+        // Success
+        [
+            'civilianCasualties' => 0,
+            'kills' => 474,
+            'objectivesCompleted' => 11,
+            'payout' => 650000,
+            'status' => CrewMemberStatusEnum::Free,
+            'user' => UserFixtures::HEISTER_DALLAS,
+            'heist' => HeistFixtures::HEIST_GOLD_SHARKE_SUCCESS,
+        ],
+        // Failure
+        [
+            'civilianCasualties' => 0,
+            'kills' => 65,
+            'objectivesCompleted' => 2,
+            'status' => CrewMemberStatusEnum::Jailed,
+            'user' => UserFixtures::HEISTER_CHAINS,
+            'heist' => HeistFixtures::HEIST_GOLD_SHARKE_FAILED,
+        ],
         // 99 Boxes
         // Success
         [

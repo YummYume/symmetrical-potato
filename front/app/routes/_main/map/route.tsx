@@ -38,7 +38,7 @@ export default function MapPage() {
     <div className="relative h-[calc(100vh-106px)]" ref={mapRef}>
       <APIProvider apiKey={getEnv('GOOGLE_MAPS_API_KEY')}>
         <HeistMap options={mapOptions} />
-        <Outlet context={{ container: mapRef.current }} />
+        <Outlet context={mapRef.current} />
       </APIProvider>
     </div>
   );

@@ -23,3 +23,22 @@ export const getMessageForErrorStatusCode = (error: ClientError, statusCode: num
 
   return foundError?.message ?? null;
 };
+
+/**
+ * Will return true if the client error contains an error with the given paths.
+ */
+export const hasPathError = (error: ClientError, ...paths: string[]) => {
+  if (!error.response.errors || error.response.errors?.length < 1) {
+    return false;
+  }
+
+  return error.response.errors.some((error) => {
+    for (const path of paths) {
+      if (error.path?.includes(path)) {
+        return true;
+      }
+    }
+
+    return false;
+  });
+};

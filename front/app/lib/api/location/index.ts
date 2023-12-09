@@ -5,27 +5,29 @@ import type { Query } from '~api/types';
 export const getLocationInfo = async (client: GraphQLClient, placeId: string) => {
   return client.request<Query>(
     gql`
-      query ($placeId: String!) {
-        locations(placeId: $placeId) {
-          edges {
-            node {
-              name
-              address
-            }
-          }
+      query ($place: String!, $placeId: ID!) {
+        location(id: $placeId) {
+          name
+          address
         }
-        heists(location__placeId: $placeId) {
+        heists(location__placeId: $place) {
           edges {
             node {
+              difficulty
               id
+              maximumPayout
+              minimumPayout
               name
+              preferedTactic
+              startAt
             }
           }
         }
       }
     `,
     {
-      placeId,
+      placeId: `/locations/${placeId}`,
+      place: placeId,
     },
   );
 };
