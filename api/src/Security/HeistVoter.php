@@ -64,6 +64,10 @@ final class HeistVoter extends Voter
 
     private function canCreate(Heist $heist, User $user): bool
     {
+        if ($this->security->isGranted(User::ROLE_ADMIN)) {
+            return true;
+        }
+
         return $heist->getEstablishment()->getContractor() === $user && $this->security->isGranted(User::ROLE_CONTRACTOR);
     }
 
