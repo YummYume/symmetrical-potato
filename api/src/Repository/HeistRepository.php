@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Heist;
+use App\Entity\User;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\HeistVisibilityEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -60,6 +61,56 @@ final class HeistRepository extends ServiceEntityRepository
         ;
 
         return 0 === $count;
+    }
+
+    /**
+     * Check if the user can join the heist.
+     */
+    public function canJoin(User $user, Heist $heist): bool
+    {
+        $qb = $this->createQueryBuilder('h');
+
+        return 0 === $qb
+            ->select('COUNT(h.id)')
+            ->leftJoin('h.crewMembers', 'cm')
+            ->where('cm.user = :userId')
+            ->andWhere($qb->expr()->andX(
+                'h.phase = :planning',
+                'h.visibility = :public',
+            ))
+            ->andWhere(
+                $qb->expr()->orX(
+                    // Get heist who starts and ends during the current heist
+                    $qb->expr()->andX(
+                        $qb->expr()->between('h.startAt', ':startAt', ':shouldEndAt'),
+                        $qb->expr()->between('h.shouldEndAt', ':startAt', ':shouldEndAt'),
+                    ),
+                    // Get heist who ends during the current heist
+                    $qb->expr()->andX(
+                        $qb->expr()->not($qb->expr()->between('h.startAt', ':startAt', ':shouldEndAt')),
+                        $qb->expr()->between('h.shouldEndAt', ':startAt', ':shouldEndAt'),
+                    ),
+                    // Get heist who starts during the current heist
+                    $qb->expr()->andX(
+                        $qb->expr()->between('h.startAt', ':startAt', ':shouldEndAt'),
+                        $qb->expr()->not($qb->expr()->between('h.shouldEndAt', ':startAt', ':shouldEndAt')),
+                    ),
+                    // Get heist who starts before and ends after the current heist
+                    $qb->expr()->andX(
+                        $qb->expr()->lte('h.startAt', ':startAt'),
+                        $qb->expr()->gte('h.shouldEndAt', ':shouldEndAt'),
+                    )
+                )
+            )
+            ->setParameters([
+                'userId' => $user->getId()->toBinary(),
+                'startAt' => $heist->getStartAt(),
+                'shouldEndAt' => $heist->getShouldEndAt(),
+                'planning' => HeistPhaseEnum::Planning,
+                'public' => HeistVisibilityEnum::Public,
+            ])
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

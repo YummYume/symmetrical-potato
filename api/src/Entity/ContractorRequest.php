@@ -31,13 +31,13 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [ContractorRequest::READ],
+                'groups' => [self::READ],
             ],
             security: 'is_granted("ROLE_ADMIN") or object.user == user',
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [ContractorRequest::READ],
+                'groups' => [self::READ],
             ],
             security: 'is_granted("ROLE_ADMIN")',
         ),
@@ -52,23 +52,23 @@ use Symfony\Component\Validator\Constraints as Assert;
                 )
             ',
             denormalizationContext: [
-                'groups' => [ContractorRequest::WRITE],
+                'groups' => [self::WRITE],
             ],
             normalizationContext: [
-                'groups' => [ContractorRequest::READ],
+                'groups' => [self::READ],
             ],
-            validationContext: ['groups' => [ContractorRequest::WRITE]],
+            validationContext: ['groups' => [self::WRITE]],
         ),
         new Mutation(
             name: 'update',
             security: 'is_granted("ROLE_ADMIN") and object.getStatus() == enum("App\\\Enum\\\ContractorRequestStatusEnum::Pending")',
             denormalizationContext: [
-                'groups' => [ContractorRequest::WRITE_ADMIN],
+                'groups' => [self::WRITE_ADMIN],
             ],
             normalizationContext: [
-                'groups' => [ContractorRequest::READ],
+                'groups' => [self::READ],
             ],
-            validationContext: ['groups' => [ContractorRequest::WRITE_ADMIN]]
+            validationContext: ['groups' => [self::WRITE_ADMIN]]
         ),
         new DeleteMutation(
             name: 'delete',

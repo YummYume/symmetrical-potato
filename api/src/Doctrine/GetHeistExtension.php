@@ -23,7 +23,7 @@ final class GetHeistExtension implements QueryCollectionExtensionInterface, Quer
      */
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
-        $this->addWhere($queryBuilder, $resourceClass);
+        $this->addWhere($queryBuilder, $resourceClass, $queryNameGenerator);
     }
 
     /**
@@ -32,10 +32,10 @@ final class GetHeistExtension implements QueryCollectionExtensionInterface, Quer
      */
     public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, array $identifiers, Operation $operation = null, array $context = []): void
     {
-        $this->addWhere($queryBuilder, $resourceClass);
+        $this->addWhere($queryBuilder, $resourceClass, $queryNameGenerator);
     }
 
-    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass): void
+    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass, QueryNameGeneratorInterface $queryNameGenerator): void
     {
         $user = $this->security->getUser();
 
@@ -43,10 +43,31 @@ final class GetHeistExtension implements QueryCollectionExtensionInterface, Quer
             return;
         }
 
+        $rootAlias = $queryBuilder->getRootAliases()[0];
+
+        // If the user is not an admin or contractor, only return public heists
         if (!$this->security->isGranted(User::ROLE_ADMIN) && !$this->security->isGranted(User::ROLE_CONTRACTOR)) {
-            $rootAlias = $queryBuilder->getRootAliases()[0];
-            $queryBuilder->andWhere("$rootAlias.visibility = :visibility");
-            $queryBuilder->setParameter('visibility', HeistVisibilityEnum::Public);
+            $publicParameter = $queryNameGenerator->generateParameterName('public');
+
+            $queryBuilder
+                ->andWhere("$rootAlias.visibility = :$publicParameter")
+                ->setParameter("$publicParameter", HeistVisibilityEnum::Public);
+        } elseif ($this->security->isGranted(User::ROLE_CONTRACTOR)) {
+            $establishementAlias = $queryNameGenerator->generateJoinAlias('establishment');
+
+            $publicParameter = $queryNameGenerator->generateParameterName('public');
+            $contractorIdParameter = $queryNameGenerator->generateParameterName('contractorId');
+
+            $queryBuilder
+                ->join("$rootAlias.establishment", $establishementAlias)
+                ->andWhere($queryBuilder->expr()->orX(
+                    "$rootAlias.visibility = :$publicParameter",
+                    "$establishementAlias.contractor = :$contractorIdParameter"
+                ))
+                ->setParameters([
+                    "$publicParameter" => HeistVisibilityEnum::Public,
+                    "$contractorIdParameter" => $user->getId()->toBinary(),
+                ]);
         }
     }
 }

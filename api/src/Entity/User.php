@@ -60,13 +60,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'create',
             normalizationContext: [
-                'groups' => [User::REGISTER_READ],
+                'groups' => [self::REGISTER_READ],
             ],
             denormalizationContext: [
-                'groups' => [User::REGISTER],
+                'groups' => [self::REGISTER],
             ],
             validationContext: [
-                'groups' => [User::REGISTER],
+                'groups' => [self::REGISTER],
             ],
             security: 'user == null',
         ),
@@ -145,11 +145,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups([ContractorRequest::READ])]
+    #[Groups([ContractorRequest::READ, Heist::READ])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups([self::READ, self::READ_PUBLIC, self::REGISTER, ContractorRequest::READ])]
+    #[Groups([self::READ, self::READ_PUBLIC, self::REGISTER, ContractorRequest::READ, Heist::READ])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.username.not_blank')]
     #[Assert\Length(
         groups: [self::REGISTER],

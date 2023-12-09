@@ -12,6 +12,8 @@ use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\CrewMemberStatusEnum;
 use App\Repository\CrewMemberRepository;
+use App\State\CrewMemberProcessor;
+use App\Validator\CanJoin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,23 +25,49 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: CrewMemberRepository::class)]
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
+    processor: CrewMemberProcessor::class,
     operations: [],
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [CrewMember::READ_PUBLIC],
+                'groups' => [self::READ_PUBLIC],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [CrewMember::READ_PUBLIC],
+                'groups' => [self::READ_PUBLIC],
             ]
         ),
-        new Mutation(name: 'create'),
+        new Mutation(
+            name: 'create',
+            securityPostDenormalize: '
+                is_granted("ROLE_HEISTER") and
+                enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase()
+            ',
+            normalizationContext: [
+                'groups' => [self::READ],
+            ],
+            denormalizationContext: [
+                'groups' => [self::JOIN],
+            ],
+            validationContext: [
+                'groups' => [self::JOIN],
+            ]
+        ),
         new Mutation(name: 'update'),
-        new DeleteMutation(name: 'delete'),
+        new DeleteMutation(
+            name: 'delete',
+            security: '
+                (
+                    is_granted("ROLE_HEISTER") and user === object.getUser() and 
+                    enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase()
+                ) or 
+                is_granted("ROLE_ADMIN")
+            '
+        ),
     ]
 )]
+#[CanJoin(groups: [self::JOIN])]
 class CrewMember
 {
     use BlameableTrait;
@@ -47,6 +75,7 @@ class CrewMember
 
     public const READ = 'crew_member:read';
     public const READ_PUBLIC = 'crew_member:read:public';
+    public const JOIN = 'crew_member:join';
 
     public const REVIVE_COST = 5_000_000;
     public const MAX_RATING = 5;
@@ -73,7 +102,7 @@ class CrewMember
     #[Groups([self::READ])]
     private int $objectivesCompleted = 0;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups([self::READ])]
     private ?float $payout = null;
 
@@ -88,7 +117,7 @@ class CrewMember
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ])]
+    #[Groups([self::READ, self::JOIN])]
     private ?Heist $heist = null;
 
     /** @var ArrayCollection<int, HeistAsset> */

@@ -9,6 +9,11 @@ user.invalid_credentials: Les informations d'identification fournies sont invali
 # Heist
 heist.establishment.not_allowed: Cet établissement ne vous appartient pas.
 heist.slot.not_available: Ce créneau n'est pas disponible pour cette localisation.
+heist.already_started: Le braquage a déjà commencé.
+heist.not_found: Le braquage demandé n'a pas été trouvé.
+
+# CrewMember
+crew_member.already_joined: Vous avez déjà rejoint ce braquage.
 
 # Google API
 google_api.bad_request: Les informations fournies sont invalides.
