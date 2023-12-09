@@ -31,7 +31,8 @@ use Symfony\Component\Uid\Uuid;
         new Query(
             normalizationContext: [
                 'groups' => [self::READ_PUBLIC],
-            ]
+            ],
+            security: 'is_granted("READ", object)'
         ),
         new QueryCollection(
             normalizationContext: [
@@ -40,10 +41,6 @@ use Symfony\Component\Uid\Uuid;
         ),
         new Mutation(
             name: 'create',
-            securityPostDenormalize: '
-                is_granted("ROLE_HEISTER") and
-                enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase()
-            ',
             normalizationContext: [
                 'groups' => [self::READ],
             ],
@@ -52,18 +49,16 @@ use Symfony\Component\Uid\Uuid;
             ],
             validationContext: [
                 'groups' => [self::JOIN],
-            ]
+            ],
+            securityPostDenormalize: 'is_granted("CREATE", object)'
         ),
-        new Mutation(name: 'update'),
+        new Mutation(
+            name: 'update',
+            security: 'is_granted("UPDATE", object)'
+        ),
         new DeleteMutation(
             name: 'delete',
-            security: '
-                (
-                    is_granted("ROLE_HEISTER") and user === object.getUser() and 
-                    enum("App\\\Enum\\\HeistPhaseEnum::Planning") === object.getHeist().getPhase()
-                ) or 
-                is_granted("ROLE_ADMIN")
-            '
+            security: 'is_granted("DELETE", object)'
         ),
     ]
 )]

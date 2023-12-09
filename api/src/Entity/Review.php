@@ -62,11 +62,11 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: [
                 'groups' => [self::UPDATE],
             ],
-            securityPostDenormalize: '(is_granted("ROLE_USER") and object.getUser() == user) or is_granted("ROLE_ADMIN")'
+            securityPostDenormalize: 'is_granted("UPDATE", object)'
         ),
         new DeleteMutation(
             name: 'delete',
-            security: '(is_granted("ROLE_USER") and object.getUser() == user) or is_granted("ROLE_ADMIN")'
+            security: 'is_granted("DELETE", object)'
         ),
     ]
 )]

@@ -34,7 +34,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Query(
             normalizationContext: [
                 'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE],
-            ]
+            ],
+            security: 'is_granted("READ", object)'
         ),
         new QueryCollection(
             normalizationContext: [
@@ -52,7 +53,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: [
                 'groups' => [self::CREATE],
             ],
-            security: 'is_granted("ROLE_CONTRACTOR")'
+            securityPostDenormalize: 'is_granted("CREATE", object)'
         ),
         new Mutation(
             name: 'update',
@@ -65,11 +66,11 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: [
                 'groups' => [self::UPDATE],
             ],
-            security: '(is_granted("ROLE_CONTRACTOR") and object.getContractor() == user) or is_granted("ROLE_ADMIN")'
+            security: 'is_granted("UPDATE", object)'
         ),
         new DeleteMutation(
             name: 'delete',
-            security: '(is_granted("ROLE_CONTRACTOR") and object.getContractor() == user) or is_granted("ROLE_ADMIN")'
+            security: 'is_granted("DELETE", object)'
         ),
     ]
 )]

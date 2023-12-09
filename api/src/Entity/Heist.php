@@ -38,7 +38,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Query(
             normalizationContext: [
                 'groups' => [self::READ],
-            ]
+            ],
+            security: 'is_granted("READ", object)',
         ),
         new QueryCollection(
             normalizationContext: [
@@ -47,7 +48,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Mutation(
             name: 'create',
-            securityPostDenormalize: '(user == object.getEstablishment().getContractor() and is_granted("ROLE_CONTRACTOR")) or is_granted("ROLE_ADMIN")',
             processor: HeistProcessor::class,
             normalizationContext: [
                 'groups' => [self::READ],
@@ -58,10 +58,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: [
                 'groups' => [self::CREATE],
             ],
+            securityPostDenormalize: 'is_granted("CREATE", object)'
         ),
         new Mutation(
             name: 'update',
-            security: '(user == object.getEstablishment().getContractor() and is_granted("ROLE_CONTRACTOR")) or is_granted("ROLE_ADMIN")',
             normalizationContext: [
                 'groups' => [self::READ],
             ],
@@ -71,8 +71,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: [
                 'groups' => [self::UPDATE],
             ],
+            security: 'is_granted("UPDATE", object)'
         ),
-        new DeleteMutation(name: 'delete'),
+        new DeleteMutation(
+            name: 'delete',
+            security: 'is_granted("DELETE", object)'
+        ),
     ]
 )]
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
@@ -227,7 +231,6 @@ class Heist
 
     #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Employee::class)]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    #[ApiProperty]
     #[Groups([self::READ])]
     private ?Employee $employee = null;
 

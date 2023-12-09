@@ -44,10 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: [
                 'groups' => [self::UPDATE],
             ],
-            security: '
-                is_granted("ROLE_ADMIN") or
-                (object.getUser() == user and user.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified"))
-            ',
+            securityPostDenormalize: 'is_granted("UPDATE", object.getUser())',
         ),
     ]
 )]

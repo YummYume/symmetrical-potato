@@ -40,7 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: [
                 'groups' => [self::READ_PUBLIC, self::READ],
             ],
-            security: 'is_granted("ROLE_USER")'
+            security: 'is_granted("READ_PUBLIC", object)'
         ),
         new Query(
             name: 'get',
@@ -53,7 +53,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ_PUBLIC, self::READ],
             ],
             security: 'is_granted("ROLE_USER")'
         ),
@@ -81,31 +81,24 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: [
                 'groups' => [self::UPDATE],
             ],
-            security: '
-                is_granted("ROLE_ADMIN") or
-                (object == user and object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified"))
-            ',
+            security: 'is_granted("UPDATE", object)',
         ),
         new Mutation(
             name: 'validate',
-            securityPostDenormalize: '
-                is_granted("ROLE_ADMIN") and
-                object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified") and
-                previous_object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Unverified")
-            ',
             normalizationContext: [
                 'groups' => [self::READ],
             ],
             denormalizationContext: [
                 'groups' => [self::VALIDATE],
             ],
+            validationContext: [
+                'groups' => [self::VALIDATE],
+            ],
+            security: 'is_granted("VALIDATE", object)',
         ),
         new DeleteMutation(
             name: 'delete',
-            security: '
-                is_granted("ROLE_ADMIN") or
-                (object == user and object.getStatus() == enum("App\\\Enum\\\UserStatusEnum::Verified"))
-            '
+            security: 'is_granted("DELETE", object)'
         ),
     ]
 )]
@@ -162,6 +155,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /** @var array<string> */
     #[ORM\Column]
+    #[ApiProperty(security: '')]
     #[Groups([self::READ])]
     private array $roles = [];
 
@@ -172,6 +166,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Ignore]
     private ?string $password = null;
 
+    #[ApiProperty(security: '')]
     #[Groups([self::REGISTER, self::UPDATE])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.password.not_blank')]
     #[Assert\Length(
@@ -205,7 +200,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255)]
-    #[ApiProperty(security: 'object == user or is_granted("ROLE_ADMIN")')]
+    #[ApiProperty(security: '')]
     #[Groups([self::READ, self::REGISTER, self::UPDATE, ContractorRequest::READ])]
     #[Assert\NotBlank(groups: [self::REGISTER, self::UPDATE], message: 'user.email.not_blank')]
     #[Assert\Email(groups: [self::REGISTER, self::UPDATE], message: 'user.email.invalid')]
@@ -219,15 +214,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
+    #[ApiProperty(security: '')]
     #[Groups([self::READ, self::UPDATE_ADMIN])]
     private float $balance = 0.0;
 
     #[ORM\Column(nullable: true)]
-    #[Groups([self::READ])]
+    #[Groups([self::READ, self::READ_PUBLIC])]
     private ?float $globalRating = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups([self::REGISTER])]
+    #[ApiProperty(security: '')]
+    #[Groups([self::REGISTER, self::READ])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.reason.not_blank')]
     #[Assert\Length(
         groups: [self::REGISTER],
@@ -240,9 +237,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 20, enumType: UserStatusEnum::class)]
     #[Groups([self::VALIDATE])]
+    #[Assert\NotBlank(groups: [self::VALIDATE], message: 'user.status.not_blank')]
+    #[Assert\EqualTo(groups: [self::VALIDATE], value: UserStatusEnum::Verified, message: 'user.status.must_be_verified')]
     private UserStatusEnum $status = UserStatusEnum::Unverified;
 
     #[ORM\Column(length: 5, enumType: UserLocaleEnum::class)]
+    #[ApiProperty(security: '')]
     #[Groups([self::READ, self::REGISTER, self::UPDATE])]
     private UserLocaleEnum $locale = UserLocaleEnum::En;
 
@@ -252,6 +252,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Profile $profile = null;
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: ContractorRequest::class, orphanRemoval: true)]
+    #[ApiProperty(security: '')]
     #[Groups([self::READ])]
     private ?ContractorRequest $contractorRequest = null;
 
@@ -265,7 +266,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: Employee::class, orphanRemoval: true)]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    #[Groups([self::READ])]
+    #[Groups([self::READ, self::READ_PUBLIC])]
     private ?Employee $employee = null;
 
     /** @var ArrayCollection<int, Establishment> */
