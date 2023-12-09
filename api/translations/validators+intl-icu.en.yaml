@@ -116,3 +116,23 @@ establishment.employee_cut.less_than: The employee cut cannot be equal to or gre
 establishment.crew_cut.not_blank: Please enter a crew cut.
 establishment.crew_cut.greater_than_or_equal: The crew cut cannot be lower than {compared_value}%.
 establishment.crew_cut.less_than: The crew cut cannot be equal to or greater than {compared_value}%.
+
+# Employee
+employee.code_name.unique: An employee with this code name already exists. Please choose another one.
+employee.code_name.not_blank: Please enter a code name.
+employee.code_name.max_length: The code name cannot exceed {limit} characters.
+employee.establishment.not_null: Please select an establishment.
+employee.status.either_active_or_rejected: You must either accept or reject the employee.
+employee.motivation.not_blank: Please enter a motivation.
+employee.motivation.min_length: Your motivation must be at least {limit} characters long.
+employee.motivation.max_length: Your motivation cannot be longer than {limit} characters.
+employee.description.max_length: Your description cannot exceed {limit} characters.
+employee.weekly_schedule.missing_day: Day "{day}" is missing from the weekly schedule.
+employee.weekly_schedule.missing_start_at_or_end_at: Day "{day}" with entry number {entry} is missing either a "startAt" or an "endAt" property.
+employee.weekly_schedule.invalid_start_at_or_end_at: >-
+  Day "{day}" with entry number {entry} has an invalid "startAt" or "endAt" property. It must be a valid time in the format "HH:mm".
+employee.weekly_schedule.start_at_after_end_at: Day "{day}" with entry number {entry} has a "startAt" property that is after the "endAt" property.
+employee.weekly_schedule.overlap: >-
+  Day "{day}" with entry number {entry} overlaps with another entry ({startAt} - {endAt} and {scheduleForDayStartAt} - {scheduleForDayEndAt}).
+employee.weekly_schedule.total_hours_less_than_minimum: >-
+  The total number of work hours for the weekly schedule is less than the minimum required by the establishment ({minimumWorkTimePerWeek} required, {totalHours} in total).

@@ -13,7 +13,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 /**
  * @implements ProcessorInterface<User>
  */
-final class UserPasswordHasher implements ProcessorInterface
+final class UserProcessor implements ProcessorInterface
 {
     /**
      * @param ProcessorInterface<User> $persistProcessor

@@ -15,7 +15,7 @@ use App\Enum\UserLocaleEnum;
 use App\Enum\UserStatusEnum;
 use App\Repository\UserRepository;
 use App\Resolver\UserQueryResolver;
-use App\State\UserPasswordHasher;
+use App\State\UserProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [],
-    processor: UserPasswordHasher::class,
+    processor: UserProcessor::class,
     graphQlOperations: [
         new Query(
             normalizationContext: [
@@ -246,12 +246,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups([self::READ, self::REGISTER, self::UPDATE])]
     private UserLocaleEnum $locale = UserLocaleEnum::En;
 
-    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'user', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups([self::READ, self::READ_PUBLIC])]
     private ?Profile $profile = null;
 
-    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToOne(inversedBy: 'user', targetEntity: ContractorRequest::class, orphanRemoval: true)]
     #[Groups([self::READ])]
     private ?ContractorRequest $contractorRequest = null;
 
@@ -263,7 +263,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: CrewMember::class, orphanRemoval: true)]
     private Collection $crewMembers;
 
-    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'user', targetEntity: Employee::class, orphanRemoval: true)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    #[Groups([self::READ])]
     private ?Employee $employee = null;
 
     /** @var ArrayCollection<int, Establishment> */

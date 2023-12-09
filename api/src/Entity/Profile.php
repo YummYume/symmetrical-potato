@@ -75,7 +75,7 @@ class Profile
     )]
     private ?string $description = null;
 
-    #[ORM\OneToOne(mappedBy: 'profile', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'profile', targetEntity: User::class, cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
     public function getId(): ?Uuid

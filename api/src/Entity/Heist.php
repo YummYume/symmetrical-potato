@@ -225,7 +225,8 @@ class Heist
     #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private Collection $allowedEmployees;
 
-    #[ORM\ManyToOne(inversedBy: 'heists')]
+    #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Employee::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     #[ApiProperty]
     #[Groups([self::READ])]
     private ?Employee $employee = null;

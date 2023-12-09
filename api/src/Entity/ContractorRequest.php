@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\DeleteMutation;
 use ApiPlatform\Metadata\GraphQl\Mutation;
 use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
@@ -69,6 +70,17 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             validationContext: ['groups' => [ContractorRequest::WRITE_ADMIN]]
         ),
+        new DeleteMutation(
+            name: 'delete',
+            security: '
+                is_granted("ROLE_ADMIN") or
+                (
+                    is_granted("ROLE_USER") and
+                    object.getUser() == user and
+                    object.getStatus() != enum("App\\\Enum\\\ContractorRequestStatusEnum::Accepted")
+                )
+            ',
+        ),
     ]
 )]
 #[ApiFilter(MatchFilter::class, properties: ['status'])]
@@ -90,7 +102,7 @@ class ContractorRequest
     private ?Uuid $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups([self::READ, self::WRITE])]
+    #[Groups([self::READ, self::WRITE, User::READ])]
     #[Assert\NotBlank(groups: [self::WRITE], message: 'contractor_request.reason.not_blank')]
     #[Assert\Length(
         min: 10,
@@ -102,7 +114,7 @@ class ContractorRequest
     private ?string $reason = null;
 
     #[ORM\Column(length: 50, enumType: ContractorRequestStatusEnum::class)]
-    #[Groups([self::READ, self::WRITE_ADMIN])]
+    #[Groups([self::READ, self::WRITE_ADMIN, User::READ])]
     #[Assert\Choice(
         choices: [ContractorRequestStatusEnum::Accepted, ContractorRequestStatusEnum::Rejected],
         groups: [self::WRITE_ADMIN],
@@ -111,7 +123,7 @@ class ContractorRequest
     private ContractorRequestStatusEnum $status = ContractorRequestStatusEnum::Pending;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups([self::READ, self::WRITE_ADMIN])]
+    #[Groups([self::READ, self::WRITE_ADMIN, User::READ])]
     #[Assert\Length(
         max: 1000,
         maxMessage: 'contractor_request.admin_comment.max_length',
@@ -119,7 +131,7 @@ class ContractorRequest
     )]
     private ?string $adminComment = null;
 
-    #[ORM\OneToOne(mappedBy: 'contractorRequest', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'contractorRequest', targetEntity: User::class)]
     #[Groups(['contractor_request:read:admin'])]
     private ?User $user = null;
 
