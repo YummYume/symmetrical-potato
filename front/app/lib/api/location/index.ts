@@ -9,7 +9,10 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
         location(id: $placeId) {
           name
           address
+          reviewCount
+          averageRating
         }
+
         heists(location__placeId: $place) {
           edges {
             node {
@@ -20,6 +23,21 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
               name
               preferedTactic
               startAt
+            }
+          }
+        }
+
+        reviews(location__placeId: $place) {
+          edges {
+            node {
+              id
+              rating
+              comment
+              createdAt
+              user {
+                id
+                username
+              }
             }
           }
         }

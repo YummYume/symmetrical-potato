@@ -46,6 +46,8 @@ export type AssetForbiddenHeistsArgs = {
   establishment__contractor__id?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  location__placeId?: InputMaybe<Scalars['String']['input']>;
+  location__placeId_list?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   phase?: InputMaybe<Scalars['Iterable']['input']>;
 };
 
@@ -438,11 +440,13 @@ export enum HeistVisibilityEnum {
 export type Location = Node & {
   __typename?: 'Location';
   address?: Maybe<Scalars['String']['output']>;
+  averageRating?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   latitude: Scalars['Float']['output'];
   longitude: Scalars['Float']['output'];
   name: Scalars['String']['output'];
-  placeId?: Maybe<Scalars['String']['output']>;
+  placeId: Scalars['String']['output'];
+  reviewCount: Scalars['Int']['output'];
 };
 
 /** Cursor connection for Location. */
@@ -852,6 +856,8 @@ export type QueryHeistsArgs = {
   establishment__contractor__id?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  location__placeId?: InputMaybe<Scalars['String']['input']>;
+  location__placeId_list?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   phase?: InputMaybe<Scalars['Iterable']['input']>;
 };
 
@@ -864,6 +870,8 @@ export type QueryLocationsArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  placeId?: InputMaybe<Scalars['String']['input']>;
+  placeId_list?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type QueryNodeArgs = {

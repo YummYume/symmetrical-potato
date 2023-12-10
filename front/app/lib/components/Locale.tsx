@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { FieldSelect } from '~components/form/FieldSelect';
 import { ALLOWED_LOCALES, getLocaleLabel } from '~utils/locale';
 
+import FlagFr from './icon/FlagFr';
+import FlagUk from './icon/FlagUk';
+
 const FLAGS = {
-  'en-GB': 'uk',
-  'fr-FR': 'fr',
+  'en-GB': FlagUk,
+  'fr-FR': FlagFr,
 };
 
 export const Locale = ({ defaultValue, disabled }: { defaultValue: string; disabled: boolean }) => {
@@ -22,19 +25,16 @@ export const Locale = ({ defaultValue, disabled }: { defaultValue: string; disab
       disabled={disabled}
     >
       <Select.Content>
-        {ALLOWED_LOCALES.map((allowedLocale) => (
-          <Select.Item key={allowedLocale} value={allowedLocale}>
-            <span className="sr-only">{getLocaleLabel(allowedLocale)}</span>
-            <img
-              alt={getLocaleLabel(allowedLocale)}
-              decoding="async"
-              height="24"
-              loading="lazy"
-              src={`img/flags/${FLAGS[allowedLocale]}.png`}
-              width="24"
-            />
-          </Select.Item>
-        ))}
+        {ALLOWED_LOCALES.map((allowedLocale) => {
+          const Icon = FLAGS[allowedLocale];
+
+          return (
+            <Select.Item key={allowedLocale} value={allowedLocale}>
+              <span className="sr-only">{getLocaleLabel(allowedLocale)}</span>
+              <Icon aria-hidden="true" />
+            </Select.Item>
+          );
+        })}
       </Select.Content>
     </FieldSelect>
   );

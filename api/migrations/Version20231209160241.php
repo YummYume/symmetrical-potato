@@ -14,7 +14,7 @@ final class Version20231209160241 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Add unique index to location.place_id.';
     }
 
     public function up(Schema $schema): void

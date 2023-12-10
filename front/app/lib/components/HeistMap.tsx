@@ -1,6 +1,6 @@
 import { Map } from '@vis.gl/react-google-maps';
 
-const DefaultOptions: React.ComponentProps<typeof Map> = {
+const defaultOptions: React.ComponentProps<typeof Map> = {
   center: { lat: 40.758, lng: 73.9855 },
   restriction: {
     latLngBounds: {
@@ -26,10 +26,11 @@ const DefaultOptions: React.ComponentProps<typeof Map> = {
   streetViewControl: false,
   mapTypeControl: false,
   zoomControl: true,
+  fullscreenControl: false,
 };
 
 export default function HeistMap({
   options = {},
 }: Readonly<{ options: React.ComponentProps<typeof Map> }>) {
-  return <Map {...DefaultOptions} {...options} />;
+  return <Map {...defaultOptions} {...options} />;
 }

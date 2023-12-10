@@ -170,11 +170,16 @@ format-front:
 	$(EXECFRONT) bun run format
 
 # Commands
+process-all: process-heists compute-ratings process-reviews
+
 process-heists:
 	$(EXECPHP) php bin/console app:heist:process
 
 compute-ratings:
 	$(EXECPHP) php bin/console app:user-rating:compute
+
+process-reviews:
+	$(EXECPHP) php bin/console app:review:process
 
 # Vault
 edit-vault:

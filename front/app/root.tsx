@@ -15,7 +15,7 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import { captureRemixErrorBoundaryError } from '@sentry/remix';
-import cl from 'classnames';
+import { clsx } from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChangeLanguage } from 'remix-i18next';
@@ -151,7 +151,7 @@ export default function App() {
     <html
       lang={locale}
       dir={i18n.dir()}
-      className={cl({ dark: useDarkMode })}
+      className={clsx('min-h-screen', { dark: useDarkMode })}
       suppressHydrationWarning
     >
       <head>
@@ -160,12 +160,13 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-full min-w-full">
+      <body className="min-h-screen min-w-full">
         <Theme
           accentColor="sky"
           grayColor="slate"
           appearance={useDarkMode ? 'dark' : 'light'}
           ref={themeRef}
+          className="min-h-screen min-w-full"
         >
           <ProgressBar
             id="global-progress-bar"

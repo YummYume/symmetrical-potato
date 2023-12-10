@@ -175,6 +175,9 @@
       "Zend OPcache",
       "zip",
       "zlib"
+    ],
+    "tailwindCSS.experimental.classRegex": [
+      ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
     ]
   }
 }

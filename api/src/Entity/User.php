@@ -138,11 +138,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups([ContractorRequest::READ, Heist::READ])]
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups([self::READ, self::READ_PUBLIC, self::REGISTER, ContractorRequest::READ, Heist::READ])]
+    #[Groups([self::READ, self::READ_PUBLIC, self::REGISTER, ContractorRequest::READ, Heist::READ, Review::READ_PUBLIC])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.username.not_blank')]
     #[Assert\Length(
         groups: [self::REGISTER],

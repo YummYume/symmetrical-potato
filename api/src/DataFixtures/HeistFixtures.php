@@ -619,7 +619,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::VeryHard,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
-            'location' => LocationFixtures::LOCATION_BDIPLUS,
+            'location' => LocationFixtures::LOCATION_BANK_AMERICA_TOWER,
             'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
         self::HEIST_GOLD_SHARKE_SUCCESS => [
@@ -635,7 +635,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Succeeded,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
-            'location' => LocationFixtures::LOCATION_BDIPLUS,
+            'location' => LocationFixtures::LOCATION_BANK_AMERICA_TOWER,
             'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
         self::HEIST_GOLD_SHARKE_FAILED => [
@@ -651,7 +651,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Failed,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
-            'location' => LocationFixtures::LOCATION_BDIPLUS,
+            'location' => LocationFixtures::LOCATION_BANK_AMERICA_TOWER,
             'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
         // 99 Boxes

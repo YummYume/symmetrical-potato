@@ -100,9 +100,11 @@ class Location
     private ?string $placeId = null;
 
     #[ORM\Column]
+    #[Groups([self::READ, Heist::READ])]
     private int $reviewCount = 0;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Groups([self::READ, Heist::READ])]
     private ?float $averageRating = null;
 
     /** @var ArrayCollection<int, Review> */
