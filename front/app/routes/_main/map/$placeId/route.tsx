@@ -5,12 +5,13 @@ import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 
-import { getLocationInfo } from '~api/location';
+import { getEnv } from '~/lib/utils/env';
+import { getGoogleLocation, getLocationInfo } from '~api/location';
 import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
 import { denyAccessUnlessGranted } from '~utils/security.server';
 
-import type { HeistEdge, Heist, Review, ReviewEdge } from '~api/types';
+import type { Heist, HeistEdge, Review, ReviewEdge } from '~api/types';
 
 export async function loader({ context, params }: DataFunctionArgs) {
   denyAccessUnlessGranted(context.user);
@@ -25,6 +26,7 @@ export async function loader({ context, params }: DataFunctionArgs) {
     return {
       locale: context.locale,
       locationInfo,
+      place: null,
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'location')) {
@@ -32,9 +34,16 @@ export async function loader({ context, params }: DataFunctionArgs) {
     }
   }
 
+  const place = await getGoogleLocation({
+    key: getEnv('GOOGLE_MAPS_API_KEY'),
+    placeId: params.placeId,
+    languageCode: context.locale,
+  });
+
   return {
     locale: null,
     locationInfo: null,
+    place,
   };
 }
 
@@ -45,7 +54,7 @@ type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
 // TODO translations
 export default function PlaceId() {
-  const { locationInfo, locale } = useLoaderData<Loader>();
+  const { locationInfo, locale, place } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const heists =
     locationInfo?.heists?.edges?.filter<HeistEdgeWithNode>(
@@ -59,91 +68,81 @@ export default function PlaceId() {
   // TODO get basic info from Google Places API
   if (!locationInfo?.location) {
     return (
-      <Section className="space-y-4" size="1">
-        <Dialog.Title asChild>
-          <Heading as="h2" size="8">
-            TODO PLACEHOLDER TITLE
-          </Heading>
-        </Dialog.Title>
-        <Dialog.Description asChild>
-          <Grid gap="2">
-            <Text as="p">TODO PLACEHOLDER DESCRIPTION</Text>
-          </Grid>
-        </Dialog.Description>
-      </Section>
+      place && (
+        <div>
+          <Dialog.Title asChild>
+            <Heading as="h2" size="8">
+              {place?.displayName.text}
+            </Heading>
+          </Dialog.Title>
+          <Section className="space-y-3" size="1">
+            <Dialog.Description>{place.formattedAddress}</Dialog.Description>
+          </Section>
+        </div>
+      )
     );
   }
 
   return (
-    <>
-      <Section className="space-y-4" size="1">
+    <Grid gap="3">
+      <div>
         <Dialog.Title asChild>
           <Heading as="h2" size="8">
             {locationInfo.location.name}
           </Heading>
         </Dialog.Title>
-        <Dialog.Description asChild>
-          <Grid gap="2">
-            <Text as="p">{locationInfo.location.address}</Text>
-          </Grid>
-        </Dialog.Description>
-        <Text as="p">{locationInfo.location.reviewCount} reviews</Text>
-        {locationInfo.location.averageRating && (
-          <Text as="p">{locationInfo.location.averageRating} average rating</Text>
-        )}
-      </Section>
+        <Section className="space-y-3" size="1">
+          <Dialog.Description>{locationInfo.location.address}</Dialog.Description>
+          <Text as="p">{locationInfo.location.reviewCount} reviews</Text>
+
+          {locationInfo.location.averageRating && (
+            <Text as="p">{locationInfo.location.averageRating} average rating</Text>
+          )}
+        </Section>
+      </div>
+
       {/* TODO tabs ? */}
       {reviews.length > 0 && (
-        <Section className="space-y-4" size="1">
+        <div>
           <Heading as="h3" size="8">
             Reviews
           </Heading>
-
-          {reviews.map((review) => (
-            <Grid gap="2" key={review.node.id}>
-              <Text as="p">{review.node.user.username}</Text>
-              <Text as="p">{review.node.rating}</Text>
-              <Text as="p">{review.node.comment}</Text>
-              {review.node.createdAt && (
-                <Text as="p">
-                  {new Date(review.node.createdAt).toLocaleDateString(locale, {
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
-                </Text>
-              )}
-            </Grid>
-          ))}
-        </Section>
+          <div>
+            {reviews.map((review) => (
+              <Section className="space-y-3" key={review.node.id} size="1">
+                <Text as="p">{review.node.user.username}</Text>
+                <Text as="p">{review.node.rating}</Text>
+                <Text as="p">{review.node.comment}</Text>
+                {review.node.createdAt && (
+                  <Text as="p">
+                    {new Date(review.node.createdAt).toLocaleDateString(locale, {
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </Text>
+                )}
+              </Section>
+            ))}
+          </div>
+        </div>
       )}
+
       {heists.length > 0 && (
-        <Section className="space-y-4" size="1">
+        <div>
           <Heading as="h3" size="8">
             {t('common.heists')}
           </Heading>
-
           {heists.map((heist) => (
-            <Grid gap="2" key={heist.node?.id}>
+            <Section className="space-y-3" key={heist.node?.id} size="1">
               <Link className="w-fit" to="/">
                 <Heading as="h3" size="6">
                   {heist.node.name}
                 </Heading>
               </Link>
-              <Text as="p">{heist.node.difficulty}</Text>
-              <Text as="p">
-                {Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(
-                  heist.node.minimumPayout,
-                )}
-              </Text>
-              <Text as="p">
-                {Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(
-                  heist.node.maximumPayout,
-                )}
-              </Text>
-              <Text as="p">
+              <Text as="p" className="underline">
                 {new Date(heist.node.startAt).toLocaleDateString(locale, {
                   day: 'numeric',
                   hour: 'numeric',
@@ -152,10 +151,26 @@ export default function PlaceId() {
                   year: 'numeric',
                 })}
               </Text>
-            </Grid>
+              <Text as="p">
+                <span className="font-bold">{t('common.difficulty')}</span>
+                {heist.node.difficulty}
+              </Text>
+              <Text as="p">
+                <span className="font-bold">{t('common.minimumPayout')}</span>
+                {Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(
+                  heist.node.minimumPayout,
+                )}
+              </Text>
+              <Text as="p">
+                <span className="font-bold">{t('common.maximumPayout')}</span>
+                {Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(
+                  heist.node.maximumPayout,
+                )}
+              </Text>
+            </Section>
           ))}
-        </Section>
+        </div>
       )}
-    </>
+    </Grid>
   );
 }

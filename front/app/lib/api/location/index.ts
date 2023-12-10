@@ -1,6 +1,6 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
-import type { Query } from '~api/types';
+import type { GooglePlace, Query } from '~api/types';
 
 export const getLocationInfo = async (client: GraphQLClient, placeId: string) => {
   return client.request<Query>(
@@ -48,4 +48,22 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
       place: placeId,
     },
   );
+};
+
+export const getGoogleLocation = async ({
+  key,
+  languageCode = 'en',
+  placeId,
+}: {
+  key: string;
+  languageCode?: string;
+  placeId: string;
+}) => {
+  const response = await fetch(
+    `https://places.googleapis.com/v1/places/${placeId}?fields=displayName,formattedAddress&key=${key}&languageCode=${languageCode}`,
+  );
+
+  const data: GooglePlace = await response.json();
+
+  return data;
 };

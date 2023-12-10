@@ -13,56 +13,40 @@
 }
 
 // Drawer
-.rt-DialogOverlay {
-  @apply animate-duration-300 #{!important};
+.drawer {
+  @apply absolute inset-0 z-50 overflow-y-auto rounded-3 bg-slate-1 p-6
+    shadow-6 scrollbar-thin scrollbar-thumb-accent-6 scrollbar-thumb-rounded-6;
 
-  .rt-DialogContent {
-    @apply max-w-none space-y-4;
+  &--bottom,
+  &--left,
+  &--right,
+  &--top {
+    @apply animate-duration-300 radix-state-closed:animate-reverse motion-reduce:animate-none #{!important};
   }
 
-  &.drawer--bottom,
-  &.drawer--top {
-    .rt-DialogContent {
-      @apply h-auto;
-    }
+  &--bottom,
+  &--top {
+    @apply h-auto;
   }
 
-  &.drawer--left,
-  &.drawer--right {
-    .rt-DialogContent {
-      @apply min-h-full w-[75vw] sm:w-[66vw] md:w-[50vw] lg:w-[33vw] xl:w-[25vw];
-    }
+  &--left,
+  &--right {
+    @apply min-h-full w-[75vw] sm:w-[66vw] md:w-[50vw] lg:w-[33vw] xl:w-[25vw];
   }
 
-  &.drawer--bottom {
-    @apply animate-fade-up items-end;
-
-    .rt-DialogContent {
-      @apply rounded-b-[0];
-    }
+  &--bottom {
+    @apply top-auto animate-fade-up rounded-b-[0] radix-state-closed:animate-fade-up radix-state-open:animate-fade-up;
   }
 
-  &.drawer--left {
-    @apply animate-fade-right justify-start;
-
-    .rt-DialogContent {
-      @apply rounded-l-[0];
-    }
+  &--left {
+    @apply right-auto animate-fade-right rounded-l-[0] radix-state-closed:animate-fade-right radix-state-open:animate-fade-right;
   }
 
-  &.drawer--right {
-    @apply animate-fade-left justify-end;
-
-    .rt-DialogContent {
-      @apply rounded-r-[0];
-    }
+  &--right {
+    @apply left-auto animate-fade-left rounded-r-[0] radix-state-closed:animate-fade-left radix-state-open:animate-fade-left;
   }
 
-  &.drawer--top {
-    @apply animate-fade-down items-start;
-
-    .rt-DialogContent {
-      @apply rounded-t-[0];
-    }
+  &--top {
+    @apply bottom-auto animate-fade-down rounded-t-[0] radix-state-closed:animate-fade-down radix-state-open:animate-fade-down;
   }
 }

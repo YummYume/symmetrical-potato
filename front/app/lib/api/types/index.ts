@@ -2359,3 +2359,11 @@ export type ValidateUserPayloadData = Node & {
   roles?: Maybe<Scalars['Iterable']['output']>;
   username: Scalars['String']['output'];
 };
+
+/** Google place v1 response. */
+export type GooglePlace = {
+  displayName: {
+    text: string;
+  };
+  formattedAddress: string;
+};

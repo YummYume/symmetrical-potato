@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Outlet, useMatches, useNavigate } from '@remix-run/react';
-import { APIProvider } from '@vis.gl/react-google-maps';
+import { APIProvider, type Map } from '@vis.gl/react-google-maps';
 import { useEffect, useRef, useState } from 'react';
 
 import HeistMap from '~/lib/components/HeistMap';
@@ -8,7 +8,6 @@ import { getEnv } from '~/lib/utils/env';
 import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { DataFunctionArgs } from '@remix-run/node';
-import type { Map } from '@vis.gl/react-google-maps';
 
 export async function loader({ context }: DataFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
@@ -61,27 +60,7 @@ export default function MapPage() {
           <Dialog.Portal container={mapRef.current}>
             <Dialog.Overlay />
             <Dialog.Content
-              className="
-                absolute
-                left-0
-                top-0
-                h-full
-                min-w-[30rem]
-                overflow-y-auto
-                bg-mauve-4
-                p-6
-                shadow-4
-                animate-duration-300
-                scrollbar-thin
-                scrollbar-track-mauve-10
-                scrollbar-thumb-accent-5
-                scrollbar-track-rounded-4
-                scrollbar-thumb-rounded-4
-                radix-state-closed:animate-fade-right
-                radix-state-closed:animate-reverse
-                radix-state-open:animate-fade-right
-                motion-reduce:animate-none
-              "
+              className="drawer drawer--left"
               onInteractOutside={(e) => e.preventDefault()}
             >
               <Outlet />
