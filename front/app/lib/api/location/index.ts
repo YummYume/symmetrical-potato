@@ -63,7 +63,11 @@ export const getGoogleLocation = async ({
     `https://places.googleapis.com/v1/places/${placeId}?fields=displayName,formattedAddress&key=${key}&languageCode=${languageCode}`,
   );
 
-  const data: GooglePlace = await response.json();
+  const data: GooglePlace | { error: {} } = await response.json();
+
+  if ('error' in data) {
+    return null;
+  }
 
   return data;
 };

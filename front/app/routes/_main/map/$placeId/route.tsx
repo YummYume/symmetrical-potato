@@ -40,6 +40,10 @@ export async function loader({ context, params }: DataFunctionArgs) {
     languageCode: context.locale,
   });
 
+  if (!place) {
+    throw redirect('/map');
+  }
+
   return {
     locale: null,
     locationInfo: null,
@@ -52,7 +56,6 @@ export type Loader = typeof loader;
 type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
-// TODO translations
 export default function PlaceId() {
   const { locationInfo, locale, place } = useLoaderData<Loader>();
   const { t } = useTranslation();
@@ -65,7 +68,6 @@ export default function PlaceId() {
       (review): review is ReviewEdgeWithNode => !!review?.node,
     ) ?? [];
 
-  // TODO get basic info from Google Places API
   if (!locationInfo?.location) {
     return (
       place && (
