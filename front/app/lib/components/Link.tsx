@@ -1,5 +1,5 @@
 import { Link as RemixLink } from '@remix-run/react';
-import cn from 'classnames';
+import { clsx } from 'clsx';
 
 import type { RemixLinkProps } from '@remix-run/react/dist/components';
 
@@ -16,7 +16,7 @@ export const Link = ({ to, className, unstyled = false, children, ...props }: Li
     <RemixLink
       to={to}
       prefetch="intent"
-      className={cn(
+      className={clsx(
         {
           'rt-Text rt-reset rt-Link rt-underline-auto': !unstyled,
         },

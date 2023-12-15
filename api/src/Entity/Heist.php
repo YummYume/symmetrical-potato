@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
@@ -82,6 +83,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
 #[SlotAvailable(groups: [self::CREATE, self::UPDATE])]
+#[ApiFilter(SearchFilter::class, properties: ['location.placeId' => 'exact'])]
 class Heist
 {
     use BlameableTrait;

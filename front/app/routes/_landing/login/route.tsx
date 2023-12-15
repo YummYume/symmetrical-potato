@@ -145,10 +145,10 @@ export default function Login() {
           <SubmitButton className="w-full" text={t('login')} submittingText={t('logging_in')} />
           <Text as="p">
             {t('forgotten-password', { ns: 'login' })}{' '}
-            <Link to="/forgotten-password">{t('click-here', { ns: 'login' })}</Link>
+            <Link to="/forgotten-password">{t('click_here', { ns: 'login' })}</Link>
           </Text>
           <Text as="p">
-            {t('not-registered', { ns: 'login' })}{' '}
+            {t('not_registered', { ns: 'login' })}{' '}
             <Link to="/register">{t('register', { ns: 'login' })}</Link>
           </Text>
         </Form>

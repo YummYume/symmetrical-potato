@@ -14,6 +14,8 @@ final class GoogleMaps
         'west' => -74.0431,
     ];
 
+    public const URL = 'https://maps.googleapis.com/maps/api/geocode/json';
+
     public function __construct(
         private readonly string $apiKey,
         private readonly HttpClientInterface $client,
@@ -31,7 +33,7 @@ final class GoogleMaps
         try {
             $response = $this->client->request(
                 'GET',
-                'https://maps.googleapis.com/maps/api/geocode/json',
+                self::URL,
                 [
                     'query' => [
                         'address' => $address,
@@ -60,7 +62,7 @@ final class GoogleMaps
         try {
             $response = $this->client->request(
                 'GET',
-                'https://maps.googleapis.com/maps/api/geocode/json',
+                self::URL,
                 [
                     'query' => [
                         'latlng' => $latitude.','.$longitude,
@@ -88,7 +90,7 @@ final class GoogleMaps
         try {
             $response = $this->client->request(
                 'GET',
-                'https://maps.googleapis.com/maps/api/geocode/json',
+                self::URL,
                 [
                     'query' => [
                         'address' => $address,
@@ -120,7 +122,7 @@ final class GoogleMaps
         try {
             $response = $this->client->request(
                 'GET',
-                'https://maps.googleapis.com/maps/api/geocode/json',
+                self::URL,
                 [
                     'query' => [
                         'latlng' => $latitude.','.$longitude,
@@ -150,7 +152,7 @@ final class GoogleMaps
         try {
             $response = $this->client->request(
                 'GET',
-                'https://maps.googleapis.com/maps/api/geocode/json',
+                self::URL,
                 [
                     'query' => [
                         'address' => $address,

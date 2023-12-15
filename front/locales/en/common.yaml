@@ -15,3 +15,7 @@ admin: Admin
 common.navigation: Navigation
 map: Map
 common.user_menu: User menu
+common.heists: Heists
+common.minimumPayout: 'Minimum payout : '
+common.maximumPayout: 'Maximum payout : '
+common.difficulty: 'Difficulty : '

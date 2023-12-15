@@ -9,8 +9,8 @@ import { hydrateRoot } from 'react-dom/client';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { getInitialNamespaces } from 'remix-i18next';
 
+import { getEnv, setEnv } from '~/lib/utils/env';
 import { config } from '~lib/i18n/config';
-import { getEnv, setEnv } from '~utils/env.client';
 
 import type { Loader as RootLoader } from './root';
 import type { SerializeFrom } from '@remix-run/node';

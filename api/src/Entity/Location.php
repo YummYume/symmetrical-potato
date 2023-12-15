@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\Query;
@@ -52,6 +54,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'location.address.unique',
     groups: [self::WRITE]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['placeId' => 'exact'])]
 class Location
 {
     use BlameableTrait;
@@ -64,7 +67,7 @@ class Location
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[ApiProperty(identifier: true)]
+    #[ApiProperty(identifier: false)]
     private ?Uuid $id = null;
 
     #[ORM\Column]
@@ -90,15 +93,18 @@ class Location
     #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.address.max_length')]
     private ?string $address = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Groups([self::READ, Heist::READ])]
     #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.place_id.max_length')]
+    #[ApiProperty(identifier: true)]
     private ?string $placeId = null;
 
     #[ORM\Column]
+    #[Groups([self::READ, Heist::READ])]
     private int $reviewCount = 0;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Groups([self::READ, Heist::READ])]
     private ?float $averageRating = null;
 
     /** @var ArrayCollection<int, Review> */

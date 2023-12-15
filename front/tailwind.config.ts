@@ -8,6 +8,7 @@ export default {
     require('tailwindcss-radix')(),
     require('tailwindcss-convert-px-to-rem'),
     require('tailwindcss-animated'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
   ],
   presets: [radixThemePreset],
   darkMode: 'class',

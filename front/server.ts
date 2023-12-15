@@ -1,5 +1,5 @@
-import { type RequestHandler, createRequestHandler } from '@remix-run/express';
-import { type ServerBuild, broadcastDevReady, installGlobals } from '@remix-run/node';
+import { createRequestHandler, type RequestHandler } from '@remix-run/express';
+import { broadcastDevReady, installGlobals, type ServerBuild } from '@remix-run/node';
 import compression from 'compression';
 import express from 'express';
 import { GraphQLClient } from 'graphql-request';
@@ -45,7 +45,7 @@ const getLoadContext = (async (req, res) => {
   try {
     const userResponse = await getCurrentUser(client);
 
-    if (userResponse && userResponse.getMeUser) {
+    if (userResponse?.getMeUser) {
       user = userResponse.getMeUser;
     }
   } catch (error) {
@@ -65,7 +65,7 @@ const remixHandler =
       });
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT ?? 3000;
 
 app
   .use(compression())
