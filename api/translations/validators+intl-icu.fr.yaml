@@ -51,10 +51,6 @@ heist.maximum_payout.invalid: Veuillez saisir un montant maximum valide.
 heist.end_date.invalid: Veuillez saisir une date de fin valide.
 heist.end_date.greater_than.start_date: La date de fin doit être supérieur à la date de début.
 heist.objectives.invalid: Veuillez saisir une liste d'objectifs au format JSON.
-heist.latitude.not_blank: Veuillez saisir une latitude.
-heist.latitude.invalid: Veuillez saisir une latitude valide.
-heist.longitude.not_blank: Veuillez saisir une longitude.
-heist.longitude.invalid: Veuillez saisir une longitude valide.
 heist.minimum_required_rating.invalid: Veuillez saisir un nombre.
 heist.prefered_tactic.not_blank: Veuillez saisir une tactique recommendée.
 heist.prefered_tactic.invalid: La tactique recommendée est invalide.
@@ -66,6 +62,7 @@ heist.allowedEmployees.type: Veuillez saisir une liste d'employés autorisés au
 heist.allowedEmployees.not_blank: Veuillez saisir une liste d'employés autorisés.
 heist.establishment.not_blank: Veuillez saisir un établissement.
 heist.slot.not_available: Ce créneau n'est pas disponible pour cette localisation.
+heist.place_id.not_blank: Veuillez saisir un identifiant de lieu.
 
 # Location
 location.name.not_blank: Veuillez saisir un nom.
