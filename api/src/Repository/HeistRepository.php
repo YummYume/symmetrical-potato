@@ -37,10 +37,7 @@ final class HeistRepository extends ServiceEntityRepository
                 'h.phase = :planning',
                 'h.phase = :inProgress',
             ))
-            ->andWhere($qb->expr()->andX(
-                'l.latitude = :latitude',
-                'l.longitude = :longitude',
-            ))
+            ->andWhere('l.latitude = :placeId')
             ->andWhere($qb->expr()->andX(
                 'h.shouldEndAt >= :startAt',
                 'h.startAt <= :shouldEndAt',
@@ -53,8 +50,7 @@ final class HeistRepository extends ServiceEntityRepository
                 'visibility' => HeistVisibilityEnum::Public,
                 'startAt' => $heist->getStartAt(),
                 'shouldEndAt' => $heist->getShouldEndAt(),
-                'latitude' => $heist->getLocation() ? $heist->getLocation()->getLatitude() : $heist->getLatitude(),
-                'longitude' => $heist->getLocation() ? $heist->getLocation()->getLongitude() : $heist->getLongitude(),
+                'placeId' => $heist->getLocation() ? $heist->getLocation()->getPlaceId() : $heist->getPlaceId(),
             ])
             ->getQuery()
             ->getSingleScalarResult()
