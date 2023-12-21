@@ -10,12 +10,13 @@ import { getEnv } from '~/lib/utils/env';
 import { getGoogleLocation, getLocationInfo } from '~api/location';
 import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
-import { denyAccessUnlessGranted } from '~utils/security.server';
+import { ROLES, denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
 import type { Heist, HeistEdge, Review, ReviewEdge } from '~api/types';
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
-  const user = denyAccessUnlessGranted(context.user);
+  denyAccessUnlessGranted(context.user);
+  const isAllowed = hasRoles(context.user, ROLES.CONTRACTOR);
 
   if (!params.placeId) {
     throw redirect('/dashboard');
@@ -28,7 +29,8 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
       locale: context.locale,
       locationInfo,
       place: null,
-      user,
+      placeId: params.placeId,
+      isAllowed,
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'location')) {
@@ -50,7 +52,8 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     locale: null,
     locationInfo: null,
     place,
-    user,
+    placeId: params.placeId,
+    isAllowed,
   };
 }
 
@@ -60,8 +63,7 @@ type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
 export default function PlaceId() {
-  const { locationInfo, locale, place, user } = useLoaderData<Loader>();
-  const isContractor = useMemo(() => user.roles.includes('ROLE_CONTRACTOR'), [user.roles]);
+  const { locationInfo, locale, place, placeId, isAllowed } = useLoaderData<Loader>();
   const { t } = useTranslation();
 
   const heists =
@@ -74,20 +76,64 @@ export default function PlaceId() {
       (review): review is ReviewEdgeWithNode => !!review?.node,
     ) ?? [];
 
+  const AddHeistLink = () => {
+    return (
+      <Link
+        to={`/map/${placeId}/add`}
+        className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
+        unstyled
+      >
+        {t('heist.add', {
+          ns: 'heist',
+        })}
+      </Link>
+    );
+  };
+
+  const EditHeistLink = () => {
+    return (
+      <Link
+        to={`/map/${placeId}/edit`}
+        className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
+        unstyled
+      >
+        {t('heist.edit', {
+          ns: 'heist',
+        })}
+      </Link>
+    );
+  };
+
+  const DelelteHeistLink = () => {
+    return (
+      <Link
+        to={`/map/${placeId}/delete`}
+        className="block w-auto rounded-1 bg-red-10 p-2 text-center font-medium transition-colors hover:bg-red-8"
+        unstyled
+      >
+        {t('heist.delete', {
+          ns: 'heist',
+        })}
+      </Link>
+    );
+  };
+
   if (!locationInfo?.location) {
     return (
       place && (
-        <div>
-          <Dialog.Title asChild>
-            <Heading as="h2" size="8">
-              {place.displayName.text}
-            </Heading>
-          </Dialog.Title>
-          <Section className="space-y-3" size="1">
-            {isContractor && <Link to="/">Create heist</Link>}
-            <Dialog.Description>{place.formattedAddress}</Dialog.Description>
-          </Section>
-        </div>
+        <>
+          <div>
+            <Dialog.Title asChild>
+              <Heading as="h2" size="8">
+                {place.displayName.text}
+              </Heading>
+            </Dialog.Title>
+            <Section className="space-y-3" size="1">
+              <Dialog.Description>{place.formattedAddress}</Dialog.Description>
+            </Section>
+            {isAllowed && <AddHeistLink />}
+          </div>
+        </>
       )
     );
   }
@@ -109,8 +155,7 @@ export default function PlaceId() {
           )}
         </Section>
       </div>
-
-      {isContractor && <Link to="/">Create heist</Link>}
+      {isAllowed && <AddHeistLink />}
 
       {/* TODO tabs ? */}
       {reviews.length > 0 && (
@@ -148,11 +193,19 @@ export default function PlaceId() {
           </Heading>
           {heists.map((heist) => (
             <Section className="space-y-3" key={heist.node?.id} size="1">
-              <Link className="w-fit" to="/">
-                <Heading as="h3" size="6">
-                  {heist.node.name}
-                </Heading>
-              </Link>
+              <div className="flex items-center justify-between">
+                <Link className="w-fit" to="/">
+                  <Heading as="h3" size="6">
+                    {heist.node.name}
+                  </Heading>
+                </Link>
+                {isAllowed && (
+                  <div className="flex items-center">
+                    <EditHeistLink />
+                    <DelelteHeistLink />
+                  </div>
+                )}
+              </div>
               <Text as="p" className="underline">
                 {new Date(heist.node.startAt).toLocaleDateString(locale, {
                   day: 'numeric',

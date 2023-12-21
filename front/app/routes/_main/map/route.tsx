@@ -34,7 +34,7 @@ export default function MapPage() {
   };
 
   useEffect(() => {
-    if (matches.at(-1)?.id === 'routes/_main/map/$placeId/route') {
+    if (matches.at(-1)?.id.startsWith('routes/_main/map/$placeId')) {
       setDrawerOpen(true);
 
       return;
