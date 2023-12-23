@@ -11,6 +11,6 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
 // Defaults
-dayjs.tz.setDefault('Europe/Paris');
+dayjs.tz.setDefault('America/New_York');
 
-export default dayjs;
+export default { dayjs };

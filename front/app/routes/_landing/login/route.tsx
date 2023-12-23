@@ -1,8 +1,10 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Container, Heading, Section, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
-import { Form, useActionData } from '@remix-run/react';
+import { Form } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
+import { getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
 import { Link } from '~/lib/components/Link';
 import { bearerCookie } from '~/lib/cookies.server';
@@ -10,11 +12,10 @@ import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { requestAuthToken } from '~api/user';
-import { FieldInput } from '~components/form/FieldInput';
 import { SubmitButton } from '~components/form/SubmitButton';
+import { FieldInput } from '~components/form/custom/FieldInput';
 import { loginValidationSchema } from '~lib/validators/login';
 import { getMessageForErrorStatusCode, hasErrorStatusCode } from '~utils/api';
-import { getMessageErrorForPath, parseZodErrorsToFieldErrors } from '~utils/error';
 
 import type {
   ActionFunctionArgs,
@@ -22,6 +23,7 @@ import type {
   DataFunctionArgs,
   MetaFunction,
 } from '@remix-run/node';
+import type { z } from 'zod';
 import type { FlashMessage } from '~/root';
 
 export async function loader({ context, request }: DataFunctionArgs) {
@@ -45,19 +47,22 @@ export async function loader({ context, request }: DataFunctionArgs) {
 
 export type Loader = typeof loader;
 
+type FormData = z.infer<typeof loginValidationSchema>;
+const resolver = zodResolver(loginValidationSchema);
+
 export async function action({ request, context }: ActionFunctionArgs) {
   if (context.user) {
     throw redirect('/dashboard');
   }
 
   const t = await i18next.getFixedT(request, ['login', 'validators']);
-  const result = loginValidationSchema.safeParse(await request.formData());
+  const { errors, data } = await getValidatedFormData<FormData>(request, resolver);
 
-  if (!result.success) {
-    return json({ fieldErrors: parseZodErrorsToFieldErrors(result.error.issues) }, { status: 400 });
+  if (errors) {
+    return json({ errors }, { status: 400 });
   }
 
-  const { username, password } = result.data;
+  const { username, password } = data;
   let errorMessage: string | null = null;
 
   try {
@@ -98,10 +103,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     } as FlashMessage);
   }
 
-  return json(
-    { fieldErrors: [] },
-    { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
-  );
+  return json({ status: 401, headers: { 'Set-Cookie': await commitSession(session) } });
 }
 
 export type Action = typeof action;
@@ -116,10 +118,12 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
 
 export default function Login() {
   const { t } = useTranslation();
-  const actionData = useActionData<Action>();
-  const fieldErrors = actionData?.fieldErrors ?? [];
-  const usernameError = getMessageErrorForPath(fieldErrors, 'username');
-  const passwordError = getMessageErrorForPath(fieldErrors, 'password');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useRemixForm<FormData>({ mode: 'onSubmit', resolver });
 
   return (
     <Section className="space-y-16">
@@ -127,19 +131,28 @@ export default function Login() {
         {t('login')}
       </Heading>
       <Container p="4" size="1">
-        <Form method="post" className="space-y-4" unstable_viewTransition>
+        <Form method="post" className="space-y-4" unstable_viewTransition onSubmit={handleSubmit}>
           <FieldInput
             name="username"
             label={t('username')}
-            type="text"
-            error={usernameError ? t(usernameError, { ns: 'validators' }) : undefined}
+            error={
+              errors.username?.message
+                ? t(errors.username.message, { ns: 'validators' })
+                : undefined
+            }
+            register={register}
             required
           />
           <FieldInput
             name="password"
             label={t('password')}
             type="password"
-            error={passwordError ? t(passwordError, { ns: 'validators' }) : undefined}
+            error={
+              errors.password?.message
+                ? t(errors.password.message, { ns: 'validators' })
+                : undefined
+            }
+            register={register}
             required
           />
           <SubmitButton className="w-full" text={t('login')} submittingText={t('logging_in')} />

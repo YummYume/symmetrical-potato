@@ -3,8 +3,8 @@ import { Form } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import { Link } from '~/lib/components/Link';
-import { FieldInput } from '~components/form/FieldInput';
 import { SubmitButton } from '~components/form/SubmitButton';
+import { FieldInput } from '~components/form/custom/FieldInput';
 
 export default function Login() {
   const { t } = useTranslation();

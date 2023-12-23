@@ -1,13 +1,7 @@
 import { z } from 'zod';
 
-import type { ZodErrorMap } from 'zod';
+import type { RawCreateParams as ParamsZod } from 'zod';
 
-type ParamsZod = {
-  errorMap?: ZodErrorMap | undefined;
-  invalid_type_error?: string | undefined;
-  required_error?: string | undefined;
-  description?: string | undefined;
-};
 /**
  * Check if a value is a number or a string that can be parsed to a number
  */
