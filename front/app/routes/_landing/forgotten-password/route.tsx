@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Link } from '~/lib/components/Link';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
-import { FieldInput } from '~/lib/components/form/custom/FieldInput';
+// import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 
 export default function ForgottenPassword() {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ export default function ForgottenPassword() {
       </Heading>
       <Container p="4" size="1">
         <Form method="post" className="mb-4 space-y-4" unstable_viewTransition>
-          <FieldInput name="username" label={t('username')} type="text" error="" required />
+          {/* <FieldInput name="username" label={t('username')} type="text" error="" required /> */}
           <SubmitButton
             className="w-full"
             text={t('reset', { ns: 'login' })}

@@ -1,17 +1,14 @@
 import { Grid, Text, TextField } from '@radix-ui/themes';
+import { useTranslation } from 'react-i18next';
+import { useRemixFormContext } from 'remix-hook-form';
 
 import type { Path } from 'react-hook-form';
-import type { useRemixForm } from 'remix-hook-form';
 
 type FormData = Record<string, unknown>;
-
-type UseRemixForm<T extends FormData> = ReturnType<typeof useRemixForm<T>>;
 
 export type FieldInputProps<T extends FormData> = {
   name: Path<T>;
   label: string;
-  register: UseRemixForm<T>['register'];
-  error?: string;
   leftSlot?: JSX.Element;
   rightSlot?: JSX.Element;
   hideLabel?: boolean;
@@ -24,8 +21,6 @@ export type FieldInputProps<T extends FormData> = {
 export function FieldInput<T extends FormData>({
   name,
   label,
-  error,
-  register,
   leftSlot,
   rightSlot,
   hideLabel = false,
@@ -34,7 +29,15 @@ export function FieldInput<T extends FormData>({
   errorClassName = 'text-accent-6',
   ...rest
 }: FieldInputProps<T>) {
+  const { t } = useTranslation();
+  const {
+    register,
+    formState: { errors },
+  } = useRemixFormContext<T>();
+
   const ariaDescribedBy = `${name}-error`;
+
+  const error = (errors[name]?.message ? errors[name]?.message : null) as string | null;
 
   return (
     <Grid className={containerClassName} gap="1">
@@ -53,7 +56,7 @@ export function FieldInput<T extends FormData>({
       </TextField.Root>
       {error && (
         <Text as="p" id={ariaDescribedBy} className={errorClassName}>
-          {error}
+          {t(error, { ns: 'validators' })}
         </Text>
       )}
     </Grid>

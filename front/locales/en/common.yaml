@@ -2,6 +2,7 @@ homepage: Homepage
 login: Login
 username: Username
 password: Password
+password_confirm: Confirm password
 logging_in: Logging in...
 page_loading: Page is loading...
 logout: Logout
