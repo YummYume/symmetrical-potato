@@ -1,9 +1,13 @@
 homepage: Page d'accueil
 login: S'identifier
+register: S'inscrire
+email: Adresse e-mail
 username: Nom d'utilisateur
 password: Mot de passe
 password_confirm: Confirmer le mot de passe
+reason: Raison
 logging_in: Connexion...
+registering: Inscription...
 page_loading: Chargement de la page...
 logout: Se déconnecter
 change_locale: Changer la langue

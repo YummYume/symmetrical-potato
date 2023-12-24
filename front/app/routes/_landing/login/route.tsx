@@ -1,6 +1,5 @@
 import { Container, Heading, Section, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
-import { Form } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
@@ -13,7 +12,7 @@ import { commitSession, getSession } from '~/lib/session.server';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { requestAuthToken } from '~api/user';
 import { SubmitButton } from '~components/form/SubmitButton';
-import { loginResolver, type LoginFormData } from '~lib/validators/login';
+import { loginResolver } from '~lib/validators/login';
 import { getMessageForErrorStatusCode, hasErrorStatusCode } from '~utils/api';
 
 import type {
@@ -22,6 +21,7 @@ import type {
   DataFunctionArgs,
   MetaFunction,
 } from '@remix-run/node';
+import type { LoginFormData } from '~/lib/validators/login';
 import type { FlashMessage } from '~/root';
 
 export async function loader({ context, request }: DataFunctionArgs) {
@@ -61,7 +61,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   let errorMessage: string | null = null;
 
   try {
-    const response = await requestAuthToken(context.client, username, password);
+    const response = await requestAuthToken(context.client, { username, password });
 
     if (response?.requestToken?.token) {
       const token = response.requestToken.token;
@@ -125,12 +125,7 @@ export default function Login() {
       </Heading>
       <Container p="4" size="1">
         <RemixFormProvider {...methods}>
-          <Form
-            method="post"
-            className="space-y-4"
-            unstable_viewTransition
-            onSubmit={methods.handleSubmit}
-          >
+          <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
             <FieldInput name="username" label={t('username')} required />
             <FieldInput name="password" label={t('password')} type="password" required />
             <SubmitButton className="w-full" text={t('login')} submittingText={t('logging_in')} />
@@ -139,10 +134,9 @@ export default function Login() {
               <Link to="/forgotten-password">{t('click_here', { ns: 'login' })}</Link>
             </Text>
             <Text as="p">
-              {t('not_registered', { ns: 'login' })}{' '}
-              <Link to="/register">{t('register', { ns: 'login' })}</Link>
+              {t('not_registered', { ns: 'login' })} <Link to="/register">{t('register')}</Link>
             </Text>
-          </Form>
+          </form>
         </RemixFormProvider>
       </Container>
     </Section>

@@ -3,6 +3,8 @@ login.username.required: Veuillez saisir votre nom d'utilisateur.
 login.password.required: Veuillez saisir votre mot de passe.
 
 # Register
+register.email.required: Veuillez saisir une adresse e-mail.
+register.email.invalid: L'adresse e-mail est invalide.
 register.username.required: Veuillez saisir un nom d'utilisateur.
 register.username.min_length: Le nom d'utilisateur doit comporter au moins 2 caractères.
 register.username.max_length: Le nom d'utilisateur doit comporter moins de 100 caractères.
@@ -13,7 +15,10 @@ register.password.at_least_one_digit: Le mot de passe doit contenir au moins un 
 register.password.at_least_one_uppercase_letter: Le mot de passe doit contenir au moins une lettre majuscule.
 register.password.at_least_one_lowercase_letter: Le mot de passe doit contenir au moins une lettre minuscule.
 register.password.at_least_one_special_character: Le mot de passe doit contenir au moins un caractère spécial.
-register.password_confirm.must_match: La confirmation du mot de passe doit correspondre au mot de passe.
+register.password_confirm.must_match: Le mot de passe et sa confirmation doivent correspondre.
+register.reason.required: Veuillez saisir une raison.
+register.reason.min_length: La raison doit comporter au moins 10 caractères.
+register.reason.max_length: La raison doit comporter moins de 2000 caractères.
 
 # Locale
 locale.locale.required: Veuillez sélectionner votre langue.

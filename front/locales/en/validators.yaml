@@ -3,6 +3,8 @@ login.username.required: Please enter your username.
 login.password.required: Please enter your password.
 
 # Register
+register.email.required: Please enter an email address.
+register.email.invalid: The email address is invalid.
 register.username.required: Please enter a username.
 register.username.min_length: The username must be at least 2 characters long.
 register.username.max_length: The username must be less than 100 characters long.
@@ -14,6 +16,9 @@ register.password.at_least_one_uppercase_letter: The password must contain at le
 register.password.at_least_one_lowercase_letter: The password must contain at least one lowercase letter.
 register.password.at_least_one_special_character: The password must contain at least one special character.
 register.password_confirm.must_match: The password confirmation must match the password.
+register.reason.required: Please enter a reason.
+register.reason.min_length: The reason must be at least 10 characters long.
+register.reason.max_length: The reason must be less than 2000 characters long.
 
 # Locale
 locale.locale.required: Please select your locale.

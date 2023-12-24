@@ -1,9 +1,13 @@
 homepage: Homepage
 login: Login
+register: Register
+email: Email address
 username: Username
 password: Password
 password_confirm: Confirm password
+reason: Reason
 logging_in: Logging in...
+registering: Registering...
 page_loading: Page is loading...
 logout: Logout
 change_locale: Change language

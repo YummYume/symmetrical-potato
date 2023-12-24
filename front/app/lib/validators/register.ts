@@ -3,6 +3,11 @@ import { z } from 'zod';
 
 export const registerValidationSchema = z
   .object({
+    email: z
+      .string({
+        required_error: 'register.email.required',
+      })
+      .email({ message: 'register.email.invalid' }),
     username: z
       .string({
         required_error: 'register.username.required',
@@ -24,8 +29,18 @@ export const registerValidationSchema = z
         message: 'register.password.at_least_one_special_character',
       }),
     passwordConfirm: z.string(),
+    reason: z
+      .string({
+        required_error: 'register.reason.required',
+      })
+      .min(10, {
+        message: 'register.reason.min_length',
+      })
+      .max(2000, {
+        message: 'register.reason.max_length',
+      }),
   })
-  .refine((data) => data.password !== data.passwordConfirm, {
+  .refine((data) => data.password === data.passwordConfirm, {
     message: 'register.password_confirm.must_match',
     path: ['passwordConfirm'],
   });
