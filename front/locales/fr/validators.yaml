@@ -20,6 +20,9 @@ register.reason.required: Veuillez saisir une raison.
 register.reason.min_length: La raison doit comporter au moins 10 caractères.
 register.reason.max_length: La raison doit comporter moins de 2000 caractères.
 
+# Forgotten password
+forgotten_password.username.required: Veuillez saisir votre nom d'utilisateur.
+
 # Locale
 locale.locale.required: Veuillez sélectionner votre langue.
 locale.locale.invalid: La langue sélectionnée est invalide.

@@ -5,7 +5,7 @@ import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
-import { requestRegister } from '~/lib/api/user';
+import { createRegistrationDemand } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { i18next } from '~/lib/i18n/index.server';
@@ -58,7 +58,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   let errorMessage: string | null = null;
 
   try {
-    await requestRegister(context.client, {
+    await createRegistrationDemand(context.client, {
       email,
       username,
       plainPassword: password,

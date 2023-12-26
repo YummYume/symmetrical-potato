@@ -26,7 +26,10 @@ export const getCurrentUser = async (client: GraphQLClient) => {
 
 type RegisterInput = Required<Omit<CreateUserInput, 'clientMutationId'>>;
 
-export const requestRegister = async (client: GraphQLClient, registerInput: RegisterInput) => {
+export const createRegistrationDemand = async (
+  client: GraphQLClient,
+  registerInput: RegisterInput,
+) => {
   return client.request<Mutation, MutationCreateUserArgs>(
     gql`
       mutation CreateUser($input: createUserInput!) {
