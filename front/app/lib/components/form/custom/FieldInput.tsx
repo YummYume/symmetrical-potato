@@ -1,9 +1,17 @@
 import { Grid, Text, TextField } from '@radix-ui/themes';
+import { useTranslation } from 'react-i18next';
+import { useRemixFormContext } from 'remix-hook-form';
 
-export type FieldInputProps = {
-  name: string;
+import { getFormErrorField } from '~/lib/utils/error';
+
+import type { Path } from 'react-hook-form';
+import type { FormErrorField } from '~/lib/utils/error';
+
+type FormData = Record<string, unknown>;
+
+export type FieldInputProps<T extends FormData> = {
+  name: Path<T>;
   label: string;
-  error?: string;
   leftSlot?: JSX.Element;
   rightSlot?: JSX.Element;
   hideLabel?: boolean;
@@ -13,10 +21,9 @@ export type FieldInputProps = {
 } & React.ComponentProps<typeof TextField.Input> &
   React.RefAttributes<HTMLInputElement>;
 
-export const FieldInput = ({
+export function FieldInput<T extends FormData>({
   name,
   label,
-  error,
   leftSlot,
   rightSlot,
   hideLabel = false,
@@ -24,8 +31,16 @@ export const FieldInput = ({
   inputContainerClassName = '',
   errorClassName = 'text-accent-6',
   ...rest
-}: FieldInputProps) => {
+}: FieldInputProps<T>) {
+  const { t } = useTranslation();
+  const {
+    register,
+    formState: { errors },
+  } = useRemixFormContext<T>();
+
   const ariaDescribedBy = `${name}-error`;
+
+  const error = getFormErrorField(errors[name] as FormErrorField);
 
   return (
     <Grid className={containerClassName} gap="1">
@@ -36,17 +51,17 @@ export const FieldInput = ({
         {leftSlot}
         <TextField.Input
           id={name}
-          name={name}
           aria-describedby={error ? ariaDescribedBy : ''}
+          {...register(name)}
           {...rest}
         />
         {rightSlot}
       </TextField.Root>
       {error && (
         <Text as="p" id={ariaDescribedBy} className={errorClassName}>
-          {error}
+          {t(error, { ns: 'validators' })}
         </Text>
       )}
     </Grid>
   );
-};
+}

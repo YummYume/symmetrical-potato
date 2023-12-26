@@ -2,6 +2,8 @@ import { ResolveAcceptLanguage } from 'resolve-accept-language';
 
 import { localeCookie } from '~lib/cookies.server';
 
+import { UserLocaleEnum } from '../api/types';
+
 export const LOCALE_EN = 'en-GB' as const;
 export const LOCALE_FR = 'fr-FR' as const;
 export const DEFAULT_LOCALE = LOCALE_EN;
@@ -38,4 +40,16 @@ export const getLocaleLabel = (locale: Locale) => {
   };
 
   return labels[locale];
+};
+
+/**
+ * Return the locale enum for the given locale.
+ */
+export const convertToLocaleEnum = (locale: Locale): UserLocaleEnum => {
+  const convertedLocale = {
+    [LOCALE_EN]: UserLocaleEnum.En,
+    [LOCALE_FR]: UserLocaleEnum.Fr,
+  };
+
+  return convertedLocale[locale];
 };

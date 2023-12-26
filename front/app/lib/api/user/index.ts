@@ -1,6 +1,13 @@
 import { type GraphQLClient, gql } from 'graphql-request';
 
-import type { Query, Mutation } from '~api/types';
+import type {
+  Query,
+  Mutation,
+  CreateUserInput,
+  MutationRequestTokenArgs,
+  MutationCreateUserArgs,
+  RequestTokenInput,
+} from '~api/types';
 
 export const getCurrentUser = async (client: GraphQLClient) => {
   return client.request<Query>(gql`
@@ -17,12 +24,32 @@ export const getCurrentUser = async (client: GraphQLClient) => {
   `);
 };
 
-export const requestAuthToken = async (
+type RegisterInput = Required<Omit<CreateUserInput, 'clientMutationId'>>;
+
+export const createRegistrationDemand = async (
   client: GraphQLClient,
-  username: string,
-  password: string,
+  registerInput: RegisterInput,
 ) => {
-  return client.request<Mutation>(
+  return client.request<Mutation, MutationCreateUserArgs>(
+    gql`
+      mutation CreateUser($input: createUserInput!) {
+        createUser(input: $input) {
+          user {
+            id
+          }
+        }
+      }
+    `,
+    {
+      input: registerInput,
+    },
+  );
+};
+
+type LoginInput = Omit<RequestTokenInput, 'clientMutationId'>;
+
+export const requestAuthToken = async (client: GraphQLClient, loginInput: LoginInput) => {
+  return client.request<Mutation, MutationRequestTokenArgs>(
     gql`
       mutation RequestToken($input: requestTokenInput!) {
         requestToken(input: $input) {
@@ -34,10 +61,7 @@ export const requestAuthToken = async (
       }
     `,
     {
-      input: {
-        username,
-        password,
-      },
+      input: loginInput,
     },
   );
 };

@@ -1,20 +1,19 @@
 import { Container, Heading, Section, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
-import { Form, useActionData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
+import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
 import { Link } from '~/lib/components/Link';
+import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { bearerCookie } from '~/lib/cookies.server';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { requestAuthToken } from '~api/user';
-import { FieldInput } from '~components/form/FieldInput';
 import { SubmitButton } from '~components/form/SubmitButton';
-import { loginValidationSchema } from '~lib/validators/login';
+import { loginResolver } from '~lib/validators/login';
 import { getMessageForErrorStatusCode, hasErrorStatusCode } from '~utils/api';
-import { getMessageErrorForPath, parseZodErrorsToFieldErrors } from '~utils/error';
 
 import type {
   ActionFunctionArgs,
@@ -22,6 +21,7 @@ import type {
   DataFunctionArgs,
   MetaFunction,
 } from '@remix-run/node';
+import type { LoginFormData } from '~/lib/validators/login';
 import type { FlashMessage } from '~/root';
 
 export async function loader({ context, request }: DataFunctionArgs) {
@@ -51,17 +51,17 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   const t = await i18next.getFixedT(request, ['login', 'validators']);
-  const result = loginValidationSchema.safeParse(await request.formData());
+  const { errors, data } = await getValidatedFormData<LoginFormData>(request, loginResolver);
 
-  if (!result.success) {
-    return json({ fieldErrors: parseZodErrorsToFieldErrors(result.error.issues) }, { status: 400 });
+  if (errors) {
+    return json({ errors }, { status: 400 });
   }
 
-  const { username, password } = result.data;
+  const { username, password } = data;
   let errorMessage: string | null = null;
 
   try {
-    const response = await requestAuthToken(context.client, username, password);
+    const response = await requestAuthToken(context.client, { username, password });
 
     if (response?.requestToken?.token) {
       const token = response.requestToken.token;
@@ -99,7 +99,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   return json(
-    { fieldErrors: [] },
+    { errors: {} },
     { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
   );
 }
@@ -116,10 +116,7 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
 
 export default function Login() {
   const { t } = useTranslation();
-  const actionData = useActionData<Action>();
-  const fieldErrors = actionData?.fieldErrors ?? [];
-  const usernameError = getMessageErrorForPath(fieldErrors, 'username');
-  const passwordError = getMessageErrorForPath(fieldErrors, 'password');
+  const methods = useRemixForm<LoginFormData>({ mode: 'onSubmit', resolver: loginResolver });
 
   return (
     <Section className="space-y-16">
@@ -127,31 +124,20 @@ export default function Login() {
         {t('login')}
       </Heading>
       <Container p="4" size="1">
-        <Form method="post" className="space-y-4" unstable_viewTransition>
-          <FieldInput
-            name="username"
-            label={t('username')}
-            type="text"
-            error={usernameError ? t(usernameError, { ns: 'validators' }) : undefined}
-            required
-          />
-          <FieldInput
-            name="password"
-            label={t('password')}
-            type="password"
-            error={passwordError ? t(passwordError, { ns: 'validators' }) : undefined}
-            required
-          />
-          <SubmitButton className="w-full" text={t('login')} submittingText={t('logging_in')} />
-          <Text as="p">
-            {t('forgotten-password', { ns: 'login' })}{' '}
-            <Link to="/forgotten-password">{t('click_here', { ns: 'login' })}</Link>
-          </Text>
-          <Text as="p">
-            {t('not_registered', { ns: 'login' })}{' '}
-            <Link to="/register">{t('register', { ns: 'login' })}</Link>
-          </Text>
-        </Form>
+        <RemixFormProvider {...methods}>
+          <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
+            <FieldInput name="username" label={t('username')} required />
+            <FieldInput name="password" label={t('password')} type="password" required />
+            <SubmitButton className="w-full" text={t('login')} submittingText={t('logging_in')} />
+            <Text as="p">
+              {t('forgotten-password', { ns: 'login' })}{' '}
+              <Link to="/forgotten-password">{t('click_here', { ns: 'login' })}</Link>
+            </Text>
+            <Text as="p">
+              {t('not_registered', { ns: 'login' })} <Link to="/register">{t('register')}</Link>
+            </Text>
+          </form>
+        </RemixFormProvider>
       </Container>
     </Section>
   );
