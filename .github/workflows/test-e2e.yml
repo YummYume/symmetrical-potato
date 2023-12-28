@@ -38,5 +38,4 @@ jobs:
     steps:
       - name: Tests
         id: e2e
-        working-directory: E2E
-        run: make e2e
+        run: cd E2E && make e2e
