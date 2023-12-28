@@ -1,6 +1,7 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
-import type { GooglePlace, Query } from '~api/types';
+import type { Query } from '~api/types';
+import type { GooglePlace } from '~api/types/maps';
 
 export const getLocationInfo = async (client: GraphQLClient, placeId: string) => {
   return client.request<Query>(

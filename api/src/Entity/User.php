@@ -96,6 +96,32 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             security: 'is_granted("VALIDATE", object)',
         ),
+        new Mutation(
+            name: 'kill',
+            normalizationContext: [
+                'groups' => [self::READ],
+            ],
+            denormalizationContext: [
+                'groups' => [self::KILL],
+            ],
+            validationContext: [
+                'groups' => [self::KILL],
+            ],
+            security: 'is_granted("KILL", object)',
+        ),
+        new Mutation(
+            name: 'revive',
+            normalizationContext: [
+                'groups' => [self::READ],
+            ],
+            denormalizationContext: [
+                'groups' => [self::REVIVE],
+            ],
+            validationContext: [
+                'groups' => [self::REVIVE],
+            ],
+            security: 'is_granted("REVIVE", object)',
+        ),
         new DeleteMutation(
             name: 'delete',
             security: 'is_granted("DELETE", object)'
@@ -124,6 +150,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const REGISTER = 'user:register';
     public const REGISTER_READ = 'user:register:read';
     public const VALIDATE = 'user:validate';
+    public const KILL = 'user:kill';
+    public const REVIVE = 'user:revive';
     public const UPDATE = 'user:update';
     public const UPDATE_ADMIN = 'user:update:admin';
 
@@ -235,9 +263,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $reason = null;
 
     #[ORM\Column(length: 20, enumType: UserStatusEnum::class)]
-    #[Groups([self::VALIDATE])]
-    #[Assert\NotBlank(groups: [self::VALIDATE], message: 'user.status.not_blank')]
+    #[ApiProperty(security: '')]
+    #[Groups([self::VALIDATE, self::KILL, self::REVIVE, self::READ])]
+    #[Assert\NotBlank(groups: [self::VALIDATE, self::KILL, self::REVIVE], message: 'user.status.not_blank')]
     #[Assert\EqualTo(groups: [self::VALIDATE], value: UserStatusEnum::Verified, message: 'user.status.must_be_verified')]
+    #[Assert\EqualTo(groups: [self::KILL], value: UserStatusEnum::Dead, message: 'user.status.must_be_dead')]
+    #[Assert\EqualTo(groups: [self::REVIVE], value: UserStatusEnum::Verified, message: 'user.status.must_be_verified')]
     private UserStatusEnum $status = UserStatusEnum::Unverified;
 
     #[ORM\Column(length: 5, enumType: UserLocaleEnum::class)]

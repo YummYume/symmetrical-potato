@@ -1,5 +1,5 @@
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { Button, Flex, Separator } from '@radix-ui/themes';
+import { Button, DropdownMenu, Flex, Separator } from '@radix-ui/themes';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { Header } from '~/lib/components/layout/Header';
 import { UserDropdown } from '~/lib/components/layout/UserDropdown';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
-import { Link } from '~components/Link';
+import { Link, NavLink, NavLinkActiveIndicator } from '~components/Link';
 
 import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node';
 
@@ -64,7 +64,18 @@ const Menu = ({
       </Form>
 
       {user && (
-        <UserDropdown isAdmin={user.roles.includes('ROLE_ADMIN')} username={user.username} />
+        <UserDropdown username={user.username}>
+          {user.roles.includes('ROLE_ADMIN') && (
+            <>
+              <DropdownMenu.Separator />
+              <DropdownMenu.Item>
+                <Link className="w-full" to="/admin" unstyled>
+                  {t('admin')}
+                </Link>
+              </DropdownMenu.Item>
+            </>
+          )}
+        </UserDropdown>
       )}
     </Flex>
   );
@@ -108,11 +119,22 @@ export default function Layout() {
                 user={user}
               />
               <Separator className="!w-full" />
-              <nav aria-label={t('common.navigation')} className="md:hidden">
+              <nav aria-label={t('navigation')} className="md:hidden">
                 <ul>
                   {LINKS.map(({ to, label }) => (
                     <li key={to}>
-                      <Link to={to}>{label}</Link>
+                      <NavLink to={to} className="group">
+                        {({ isActive, isPending }) => (
+                          <>
+                            <span>{label}</span>
+                            <NavLinkActiveIndicator
+                              isActive={isActive}
+                              isPending={isPending}
+                              className="transition-colors group-hover:bg-accent-8 group-focus-visible:bg-accent-8 motion-reduce:transition-none"
+                            />
+                          </>
+                        )}
+                      </NavLink>
                     </li>
                   ))}
                 </ul>
@@ -133,7 +155,18 @@ export default function Layout() {
           <ul className="flex gap-4">
             {LINKS.map(({ to, label }) => (
               <li key={to}>
-                <Link to={to}>{label}</Link>
+                <NavLink to={to} className="group">
+                  {({ isActive, isPending }) => (
+                    <>
+                      <span>{label}</span>
+                      <NavLinkActiveIndicator
+                        isActive={isActive}
+                        isPending={isPending}
+                        className="transition-colors group-hover:bg-accent-8 group-focus-visible:bg-accent-8 motion-reduce:transition-none"
+                      />
+                    </>
+                  )}
+                </NavLink>
               </li>
             ))}
           </ul>

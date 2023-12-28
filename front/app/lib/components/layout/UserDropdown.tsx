@@ -3,21 +3,19 @@ import { Button, DropdownMenu } from '@radix-ui/themes';
 import { Form } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import { Link } from '~components/Link';
-
 export const UserDropdown = ({
-  isAdmin = false,
   username,
+  children,
 }: {
-  isAdmin?: boolean;
   username: string;
+  children?: React.ReactNode;
 }) => {
   const { t } = useTranslation();
 
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button aria-label={t('common.user_menu')} variant="soft">
+        <Button aria-label={t('user_menu')} variant="soft">
           <PersonIcon />
         </Button>
       </DropdownMenu.Trigger>
@@ -26,13 +24,7 @@ export const UserDropdown = ({
           {t('logged-in-as')} {username}
         </DropdownMenu.Item>
 
-        {isAdmin && (
-          <DropdownMenu.Item>
-            <Link className="w-full" to="/admin" unstyled>
-              {t('admin')}
-            </Link>
-          </DropdownMenu.Item>
-        )}
+        {children}
 
         <DropdownMenu.Separator />
         <DropdownMenu.Item color="red">

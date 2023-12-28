@@ -5,6 +5,16 @@ const config: CodegenConfig = {
   generates: {
     './app/lib/api/types/index.ts': {
       plugins: ['typescript'],
+      config: {
+        useTypeImports: true,
+        maybeValue: 'T',
+        avoidOptionals: {
+          field: true,
+          inputValue: false,
+          object: false,
+          defaultValue: false,
+        },
+      },
     },
   },
   hooks: {

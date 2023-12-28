@@ -46,4 +46,5 @@ export const registerValidationSchema = z
   });
 
 export const registerResolver = zodResolver(registerValidationSchema);
+
 export type RegisterFormData = z.infer<typeof registerValidationSchema>;

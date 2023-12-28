@@ -32,7 +32,17 @@ final class UserProcessor implements ProcessorInterface
             return $this->removeProcessor->process($user, $operation, $uriVariables, $context);
         }
 
-        if (!$operation instanceof Mutation || !$user instanceof User || !$user->getPlainPassword()) {
+        if (!$operation instanceof Mutation || !$user instanceof User) {
+            return $this->persistProcessor->process($user, $operation, $uriVariables, $context);
+        }
+
+        if ('validate' === $operation->getName()) {
+            $user->addRole(User::ROLE_HEISTER);
+
+            return $this->persistProcessor->process($user, $operation, $uriVariables, $context);
+        }
+
+        if (!$user->getPlainPassword()) {
             return $this->persistProcessor->process($user, $operation, $uriVariables, $context);
         }
 

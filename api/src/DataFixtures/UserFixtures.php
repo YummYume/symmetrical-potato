@@ -18,6 +18,7 @@ final class UserFixtures extends Fixture
     public const HEISTER_WOLF = 'wolf';
     public const HEISTER_JOY = 'joy';
     public const HEISTER_PEARL = 'pearl';
+    public const HEISTER_PENDING = 'pending_heister';
 
     // Employees
     // Accepted
@@ -75,6 +76,11 @@ final class UserFixtures extends Fixture
         self::HEISTER_PEARL => [
             'role' => User::ROLE_HEISTER,
             'balance' => 1_000_000,
+        ],
+        self::HEISTER_PENDING => [
+            'role' => User::ROLE_USER,
+            'balance' => 0,
+            'status' => UserStatusEnum::Unverified,
         ],
         self::EMPLOYEE_BILE => [
             'role' => User::ROLE_EMPLOYEE,
@@ -165,9 +171,13 @@ final class UserFixtures extends Fixture
                 ->addRole($user['role'])
                 ->setLocale(UserLocaleEnum::random())
                 ->setBalance($user['balance'])
-                ->setStatus(UserStatusEnum::Verified)
+                ->setStatus($user['status'] ?? UserStatusEnum::Verified)
                 ->setReason('Let me INNNNNNNN')
             ;
+
+            if (User::ROLE_ADMIN === $user['role']) {
+                $newUser->addRole(User::ROLE_HEISTER);
+            }
 
             $manager->persist($newUser);
             $this->addReference(self::REFERENCE_IDENTIFIER.$key, $newUser);

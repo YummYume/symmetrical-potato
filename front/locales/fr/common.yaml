@@ -17,10 +17,34 @@ open-menu: Ouvrir le menu de navigation
 dashboard: Tableau de bord
 logged-in-as: Connecté en tant que
 admin: Admin
-common.navigation: La navigation
+navigation: Navigation principale
 map: Carte
-common.user_menu: Menu utilisateur
-common.heists: Braquages
-common.minimumPayout: 'Paiement minimum : '
-common.maximumPayout: 'Paiement maximum : '
-common.difficulty: 'Difficulté : '
+user_menu: Menu utilisateur
+heists: Braquages
+users: Utilisateurs
+locations: Lieux
+assets: Assets
+establishments: Établissements
+contractor_requests: Demandes de contractant
+home: Accueil
+delete: Supprimer
+save: Sauvegarder
+saving: Sauvegarde...
+verify: Vérifier
+kill: Tuer
+revive: Réanimer
+cancel: Annuler
+confirm: Confirmer
+
+# Heist
+heist.minimum_payout: Paiement minimum
+heist.maximum_payout: Paiement maximum
+heist.difficulty: Difficulté
+
+# User
+user.balance: Solde
+user.reason: Raison de l'inscription
+user.status: Statut
+user.status.verified: Vérifié
+user.status.unverified: Non vérifié
+user.status.dead: Mort

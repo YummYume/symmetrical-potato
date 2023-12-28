@@ -1,4 +1,6 @@
-meta.title: Register
-meta.description: Enter a email, username, password and a reason to register to Symmetrical Potato.
 already_registered: Already registered ?
 registration_successful: Registration successful, we sent you an email to confirm your account.
+
+# Meta
+meta.title: Register
+meta.description: Enter a email, username, password and a reason to register to Symmetrical Potato.

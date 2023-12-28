@@ -13,6 +13,8 @@ final class UserVoter extends Voter
     public const READ_PUBLIC = 'READ_PUBLIC';
     public const READ = 'READ';
     public const VALIDATE = 'VALIDATE';
+    public const KILL = 'KILL';
+    public const REVIVE = 'REVIVE';
     public const UPDATE = 'UPDATE';
     public const DELETE = 'DELETE';
 
@@ -22,7 +24,15 @@ final class UserVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!\in_array($attribute, [self::READ_PUBLIC, self::READ, self::VALIDATE, self::UPDATE, self::DELETE], true)) {
+        if (!\in_array($attribute, [
+            self::READ_PUBLIC,
+            self::READ,
+            self::VALIDATE,
+            self::KILL,
+            self::REVIVE,
+            self::UPDATE,
+            self::DELETE,
+        ], true)) {
             return false;
         }
 
@@ -48,6 +58,8 @@ final class UserVoter extends Voter
             self::READ_PUBLIC => $this->canReadPublic($userSubject, $user),
             self::READ => $this->canRead($userSubject, $user),
             self::VALIDATE => $this->canValidate($userSubject),
+            self::KILL => $this->canKill($userSubject),
+            self::REVIVE => $this->canRevive($userSubject),
             self::UPDATE => $this->canUpdate($userSubject, $user),
             self::DELETE => $this->canDelete($userSubject, $user),
             default => throw new \LogicException('This code should not be reached!')
@@ -75,6 +87,16 @@ final class UserVoter extends Voter
     private function canValidate(User $userSubject): bool
     {
         return $this->security->isGranted(User::ROLE_ADMIN) && UserStatusEnum::Unverified === $userSubject->getStatus();
+    }
+
+    private function canKill(User $userSubject): bool
+    {
+        return $this->security->isGranted(User::ROLE_ADMIN) && UserStatusEnum::Verified === $userSubject->getStatus();
+    }
+
+    private function canRevive(User $userSubject): bool
+    {
+        return $this->security->isGranted(User::ROLE_ADMIN) && UserStatusEnum::Dead === $userSubject->getStatus();
     }
 
     private function canUpdate(User $userSubject, User $user): bool

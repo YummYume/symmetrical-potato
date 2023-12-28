@@ -45,7 +45,7 @@ const getLoadContext = (async (req, res) => {
   try {
     const userResponse = await getCurrentUser(client);
 
-    if (userResponse?.getMeUser) {
+    if (userResponse.getMeUser) {
       user = userResponse.getMeUser;
     }
   } catch (error) {
