@@ -169,6 +169,15 @@ format-api:
 format-front:
 	$(EXECFRONT) bun run format
 
+# Update
+update: update-api update-front
+
+update-api:
+	$(EXECPHP) composer update
+
+update-front:
+	$(EXECFRONT) bunx npm-check-updates -i
+
 # Commands
 process-all: process-heists compute-ratings process-reviews
 
