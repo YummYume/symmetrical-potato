@@ -12,7 +12,8 @@ on:
     paths:
       - "api/**"
       - "front/**"
-      - "docker/prod/php/**"
+      - "docker/CI/**"
+      - ".github/workflows/test-e2e.yml"
 
   workflow_dispatch:
 
@@ -83,16 +84,6 @@ jobs:
       - name: Install dependencies
         working-directory: ./api
         run: composer install --prefer-dist
-
-      - name: Install and run Caddy
-        run: |
-          sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
-          curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-          curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-          sudo apt update
-          sudo apt install caddy
-          caddy adapt --config ./docker/CI/caddy/Caddyfile
-          caddy run
 
       - name: Copy .env.ci to .env.local
         run: cp ./front/.env.ci ./front/.env.local
@@ -167,6 +158,17 @@ jobs:
       - name: Start server
         working-directory: ./front
         run: bun run start &
+
+      - name: Install Caddy
+        run: |
+          sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
+          curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+          curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+          sudo apt update
+          sudo apt install caddy
+      
+      - name: Run Caddy
+        run: caddy adapt --config docker/CI/caddy/Caddyfile && caddy run
 
       - name: Run tests
         working-directory: ./E2E
