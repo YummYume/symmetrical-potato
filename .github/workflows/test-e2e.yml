@@ -168,8 +168,14 @@ jobs:
           sudo apt install caddy
       
       - name: Run Caddy
-        run: caddy adapt --config docker/CI/caddy/Caddyfile && caddy run
+        run: |
+          export CADDY_ADMIN=localhost:50654
+          caddy adapt --config docker/CI/caddy/Caddyfile
+          caddy run
 
       - name: Run tests
         working-directory: ./E2E
-        run: bun install && bunx playwright install && BASE_URL="http://localhost" bunx playwright test
+        run: |
+          bun install
+          bunx playwright install
+          BASE_URL="http://localhost" bunx playwright test
