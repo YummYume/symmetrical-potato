@@ -1,5 +1,5 @@
 e2e:
-	npx playwright test
+	bunx playwright test
 
 e2e-ui:
-	npx playwright test --ui
+	bunx playwright test --ui

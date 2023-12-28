@@ -1,0 +1,27 @@
+{
+    auto_https off
+}
+
+http://localhost:9000 {
+    root * {$GITHUB_WORKSPACE}
+    encode zstd gzip
+    file_server
+
+    php_fastcgi unix//run/php/php8.2-fpm.sock {
+        resolve_root_symlink
+    }
+
+    @phpFile {
+        path *.php*
+    }
+
+    error @phpFile "Not found" 404
+}
+
+http://localhost {
+    reverse_proxy * 127.0.0.1:3000
+}
+
+http:// {
+    respond "Not found" 404
+}

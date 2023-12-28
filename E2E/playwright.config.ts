@@ -2,7 +2,7 @@ import type { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
   use: {
-    baseURL: 'http://symmetrical-potato.com',
+    baseURL: process.env.BASE_URL ?? 'http://symmetrical-potato.com',
   },
 };
 
