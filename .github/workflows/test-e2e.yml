@@ -1,0 +1,42 @@
+name: Testing E2E
+
+on:
+  pull_request:
+    branches:
+      - '**'
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    paths:
+      - "api/**"
+      - ".github/workflows/test-e2e.yml"
+      - "docker/prod/php/**"
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-e2e:
+    name: Test E2E
+
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:11.1.2
+        ports:
+          - 3306:3306
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        options: --health-cmd="healthcheck.sh --su-mysql --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Tests
+        id: e2e
+        working-directory: ./e2e
+        run: make e2e

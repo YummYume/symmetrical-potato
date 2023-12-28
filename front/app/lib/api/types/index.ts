@@ -49,6 +49,7 @@ export type AssetForbiddenHeistsArgs = {
   location__placeId?: InputMaybe<Scalars['String']['input']>;
   location__placeId_list?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   phase?: InputMaybe<Scalars['Iterable']['input']>;
+  startAt?: InputMaybe<Array<InputMaybe<HeistFilter_StartAt>>>;
 };
 
 export type AssetHeistAssetsArgs = {
@@ -406,6 +407,13 @@ export type HeistEdge = {
   __typename?: 'HeistEdge';
   cursor: Scalars['String']['output'];
   node: Maybe<Heist>;
+};
+
+export type HeistFilter_StartAt = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  strictly_after?: InputMaybe<Scalars['String']['input']>;
+  strictly_before?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Information about the current page. */
@@ -872,6 +880,7 @@ export type QueryHeistsArgs = {
   location__placeId?: InputMaybe<Scalars['String']['input']>;
   location__placeId_list?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   phase?: InputMaybe<Scalars['Iterable']['input']>;
+  startAt?: InputMaybe<Array<InputMaybe<HeistFilter_StartAt>>>;
 };
 
 export type QueryLocationArgs = {

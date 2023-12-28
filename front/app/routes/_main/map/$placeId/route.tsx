@@ -3,6 +3,7 @@ import { Grid, Heading, Section, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { getEnv } from '~/lib/utils/env';
@@ -14,7 +15,7 @@ import { denyAccessUnlessGranted } from '~utils/security.server';
 import type { Heist, HeistEdge, Review, ReviewEdge } from '~api/types';
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
-  denyAccessUnlessGranted(context.user);
+  const user = denyAccessUnlessGranted(context.user);
 
   if (!params.placeId) {
     throw redirect('/dashboard');
@@ -27,6 +28,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
       locale: context.locale,
       locationInfo,
       place: null,
+      user,
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'location')) {
@@ -48,6 +50,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     locale: null,
     locationInfo: null,
     place,
+    user,
   };
 }
 
@@ -57,12 +60,15 @@ type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
 export default function PlaceId() {
-  const { locationInfo, locale, place } = useLoaderData<Loader>();
+  const { locationInfo, locale, place, user } = useLoaderData<Loader>();
+  const isContractor = useMemo(() => user.roles.includes('ROLE_CONTRACTOR'), [user.roles]);
   const { t } = useTranslation();
+
   const heists =
     locationInfo?.heists?.edges?.filter<HeistEdgeWithNode>(
       (heist): heist is HeistEdgeWithNode => !!heist?.node,
     ) ?? [];
+
   const reviews =
     locationInfo?.reviews?.edges?.filter<ReviewEdgeWithNode>(
       (review): review is ReviewEdgeWithNode => !!review?.node,
@@ -78,6 +84,7 @@ export default function PlaceId() {
             </Heading>
           </Dialog.Title>
           <Section className="space-y-3" size="1">
+            {isContractor && <Link to="/">Create heist</Link>}
             <Dialog.Description>{place.formattedAddress}</Dialog.Description>
           </Section>
         </div>
@@ -102,6 +109,8 @@ export default function PlaceId() {
           )}
         </Section>
       </div>
+
+      {isContractor && <Link to="/">Create heist</Link>}
 
       {/* TODO tabs ? */}
       {reviews.length > 0 && (

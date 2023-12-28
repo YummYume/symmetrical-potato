@@ -10,20 +10,19 @@ import { denyAccessUnlessGranted } from '~utils/security.server';
 import type { LoaderFunctionArgs } from '@remix-run/node';
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  const user = denyAccessUnlessGranted(context.user);
+  denyAccessUnlessGranted(context.user);
 
-  return {
-    user,
-  };
+  return null;
 }
 
 export type Loader = typeof loader;
 
 export default function MapPage() {
-  const navigate = useNavigate();
   const matches = useMatches();
+  const navigate = useNavigate();
   const mapRef = useRef<HTMLDivElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
   const mapOptions: React.ComponentProps<typeof Map> = {
     onClick: (e) => {
       const placeId = e.detail.placeId;
@@ -64,7 +63,9 @@ export default function MapPage() {
               onInteractOutside={(e) => e.preventDefault()}
             >
               <Outlet />
-              <Dialog.Close>Close</Dialog.Close>
+              <Dialog.Close>
+                <span className="absolute right-6 top-6 aspect-square h-6">✕</span>
+              </Dialog.Close>
             </Dialog.Content>
           </Dialog.Portal>
         </Dialog.Root>
