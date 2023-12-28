@@ -45,6 +45,10 @@ jobs:
         ports:
           - 5672:5672
 
+    env:
+      extensions: amqp, intl, pdo_mysql, pcntl
+      php_version: '8.2'
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
