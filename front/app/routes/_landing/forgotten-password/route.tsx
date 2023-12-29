@@ -5,9 +5,9 @@ import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
 import { Link } from '~/lib/components/Link';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
-import { forgottenPasswordResolver } from '~/lib/validators/forgottenPassword';
+import { forgottenPasswordResolver } from '~/lib/validators/forgotten-password';
 
-import type { ForgottenPasswordFormData } from '~/lib/validators/forgottenPassword';
+import type { ForgottenPasswordFormData } from '~/lib/validators/forgotten-password';
 
 export default function ForgottenPassword() {
   const { t } = useTranslation();

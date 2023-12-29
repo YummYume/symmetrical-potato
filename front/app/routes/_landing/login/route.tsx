@@ -18,13 +18,13 @@ import { getMessageForErrorStatusCode, hasErrorStatusCode } from '~utils/api';
 import type {
   ActionFunctionArgs,
   CookieSerializeOptions,
-  DataFunctionArgs,
+  LoaderFunctionArgs,
   MetaFunction,
 } from '@remix-run/node';
 import type { LoginFormData } from '~/lib/validators/login';
 import type { FlashMessage } from '~/root';
 
-export async function loader({ context, request }: DataFunctionArgs) {
+export async function loader({ context, request }: LoaderFunctionArgs) {
   if (context.user) {
     throw redirect('/dashboard');
   }

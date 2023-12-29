@@ -1,7 +1,9 @@
-meta.title: Login
-meta.description: Enter your username and password to log into Symmetrical Potato.
 invalid_credentials: Invalid credentials.
 forgotten-password: Forgotten password ?
 click_here: Click here
 reset: Reset password
 not_registered: Not registered yet ?
+
+# Meta
+meta.title: Login
+meta.description: Enter your username and password to log into Symmetrical Potato.

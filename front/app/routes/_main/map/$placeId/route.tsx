@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Grid, Heading, Section, Text } from '@radix-ui/themes';
-import { redirect, type DataFunctionArgs } from '@remix-run/node';
+import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { Heist, HeistEdge, Review, ReviewEdge } from '~api/types';
 
-export async function loader({ context, params }: DataFunctionArgs) {
+export async function loader({ context, params }: LoaderFunctionArgs) {
   denyAccessUnlessGranted(context.user);
 
   if (!params.placeId) {
@@ -74,7 +74,7 @@ export default function PlaceId() {
         <div>
           <Dialog.Title asChild>
             <Heading as="h2" size="8">
-              {place?.displayName.text}
+              {place.displayName.text}
             </Heading>
           </Dialog.Title>
           <Section className="space-y-3" size="1">
@@ -135,7 +135,7 @@ export default function PlaceId() {
       {heists.length > 0 && (
         <div>
           <Heading as="h3" size="8">
-            {t('common.heists')}
+            {t('heists')}
           </Heading>
           {heists.map((heist) => (
             <Section className="space-y-3" key={heist.node?.id} size="1">
@@ -154,17 +154,17 @@ export default function PlaceId() {
                 })}
               </Text>
               <Text as="p">
-                <span className="font-bold">{t('common.difficulty')}</span>
+                <span className="font-bold">{t('heist.difficulty')}</span>
                 {heist.node.difficulty}
               </Text>
               <Text as="p">
-                <span className="font-bold">{t('common.minimumPayout')}</span>
+                <span className="font-bold">{t('heist.minimum_payout')}</span>
                 {Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(
                   heist.node.minimumPayout,
                 )}
               </Text>
               <Text as="p">
-                <span className="font-bold">{t('common.maximumPayout')}</span>
+                <span className="font-bold">{t('heist.maximum_payout')}</span>
                 {Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(
                   heist.node.maximumPayout,
                 )}

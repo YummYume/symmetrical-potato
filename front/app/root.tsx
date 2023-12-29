@@ -31,7 +31,7 @@ import { i18next } from '~lib/i18n/index.server';
 import { commitSession, getSession } from '~lib/session.server';
 import { preferencesValidationSchema } from '~lib/validators/locale';
 
-import type { ActionFunctionArgs, DataFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 
 export type FlashMessage = {
   type: 'success' | 'error' | 'info' | 'warning';
@@ -41,7 +41,7 @@ export type FlashMessage = {
 
 export const FLASH_MESSAGE_KEY = 'flash-message' as const;
 
-export async function loader({ request, context }: DataFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'));
   const flashMessage = session.get(FLASH_MESSAGE_KEY) as FlashMessage | undefined;
 
@@ -106,7 +106,7 @@ export const links: LinksFunction = () => [
 ];
 
 export let handle = {
-  i18n: ['common', 'login', 'register', 'validators', 'visitor'],
+  i18n: ['common', 'login', 'register', 'validators', 'visitor', 'admin', 'flash'],
 };
 
 export const ErrorBoundary = () => {

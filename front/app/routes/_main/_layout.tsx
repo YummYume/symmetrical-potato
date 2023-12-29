@@ -1,7 +1,7 @@
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { Button, Flex, Separator } from '@radix-ui/themes';
+import { Button, DropdownMenu, Flex, Separator } from '@radix-ui/themes';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState, type FormEvent, type ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Drawer } from '~/lib/components/Drawer';
@@ -11,11 +11,11 @@ import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { Header } from '~/lib/components/layout/Header';
 import { UserDropdown } from '~/lib/components/layout/UserDropdown';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
-import { Link } from '~components/Link';
+import { Link, NavLink, NavLinkActiveIndicator } from '~components/Link';
 
-import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node';
+import type { LoaderFunctionArgs, SerializeFrom } from '@remix-run/node';
 
-export async function loader({ context }: DataFunctionArgs) {
+export async function loader({ context }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
 
   return {
@@ -30,32 +30,21 @@ export type Loader = typeof loader;
 const Menu = ({
   isChangingPreferences,
   locale,
-  setIsChangingPreferences,
+  onChange,
   useDarkMode,
   user,
 }: {
   isChangingPreferences: boolean;
   locale: SerializeFrom<Loader>['locale'];
-  setIsChangingPreferences: Dispatch<SetStateAction<boolean>>;
+  onChange: ComponentProps<typeof Form>['onChange'];
   useDarkMode: SerializeFrom<Loader>['useDarkMode'];
   user: SerializeFrom<Loader>['user'];
 }) => {
   const { t } = useTranslation();
-  const submit = useSubmit();
 
   return (
     <Flex align="center" gap="4" justify="end">
-      <Form
-        method="post"
-        className="flex items-center justify-end gap-4"
-        onChange={(event) => {
-          setIsChangingPreferences(true);
-          submit(event.currentTarget, {
-            navigate: false,
-            unstable_viewTransition: true,
-          });
-        }}
-      >
+      <Form method="post" className="flex items-center justify-end gap-4" onChange={onChange}>
         <Locale defaultValue={locale} disabled={isChangingPreferences} />
         <Lightswitch defaultChecked={useDarkMode} disabled={isChangingPreferences} />
         <noscript>
@@ -64,7 +53,18 @@ const Menu = ({
       </Form>
 
       {user && (
-        <UserDropdown isAdmin={user.roles.includes('ROLE_ADMIN')} username={user.username} />
+        <UserDropdown username={user.username}>
+          {user.roles.includes('ROLE_ADMIN') && (
+            <>
+              <DropdownMenu.Separator />
+              <DropdownMenu.Item>
+                <Link className="w-full" to="/admin" unstyled>
+                  {t('admin')}
+                </Link>
+              </DropdownMenu.Item>
+            </>
+          )}
+        </UserDropdown>
       )}
     </Flex>
   );
@@ -74,11 +74,19 @@ export default function Layout() {
   const { user, locale, useDarkMode } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const [isChangingPreferences, setIsChangingPreferences] = useState(false);
-
+  const submit = useSubmit();
   const LINKS = [
     { to: '/dashboard', label: t('dashboard') },
     { to: '/map', label: t('map') },
   ];
+
+  const onChange = (event: FormEvent<HTMLFormElement>) => {
+    setIsChangingPreferences(true);
+    submit(event.currentTarget, {
+      navigate: false,
+      unstable_viewTransition: true,
+    });
+  };
 
   useEffect(() => {
     setIsChangingPreferences(false);
@@ -103,16 +111,27 @@ export default function Layout() {
               <Menu
                 isChangingPreferences={isChangingPreferences}
                 locale={locale}
-                setIsChangingPreferences={setIsChangingPreferences}
+                onChange={onChange}
                 useDarkMode={useDarkMode}
                 user={user}
               />
               <Separator className="!w-full" />
-              <nav aria-label={t('common.navigation')} className="md:hidden">
+              <nav aria-label={t('navigation')} className="md:hidden">
                 <ul>
                   {LINKS.map(({ to, label }) => (
                     <li key={to}>
-                      <Link to={to}>{label}</Link>
+                      <NavLink to={to} className="group">
+                        {({ isActive, isPending }) => (
+                          <>
+                            <span>{label}</span>
+                            <NavLinkActiveIndicator
+                              isActive={isActive}
+                              isPending={isPending}
+                              className="transition-colors group-hover:bg-accent-8 group-focus-visible:bg-accent-8 motion-reduce:transition-none"
+                            />
+                          </>
+                        )}
+                      </NavLink>
                     </li>
                   ))}
                 </ul>
@@ -123,7 +142,7 @@ export default function Layout() {
             <Menu
               isChangingPreferences={isChangingPreferences}
               locale={locale}
-              setIsChangingPreferences={setIsChangingPreferences}
+              onChange={onChange}
               useDarkMode={useDarkMode}
               user={user}
             />
@@ -133,7 +152,18 @@ export default function Layout() {
           <ul className="flex gap-4">
             {LINKS.map(({ to, label }) => (
               <li key={to}>
-                <Link to={to}>{label}</Link>
+                <NavLink to={to} className="group">
+                  {({ isActive, isPending }) => (
+                    <>
+                      <span>{label}</span>
+                      <NavLinkActiveIndicator
+                        isActive={isActive}
+                        isPending={isPending}
+                        className="transition-colors group-hover:bg-accent-8 group-focus-visible:bg-accent-8 motion-reduce:transition-none"
+                      />
+                    </>
+                  )}
+                </NavLink>
               </li>
             ))}
           </ul>

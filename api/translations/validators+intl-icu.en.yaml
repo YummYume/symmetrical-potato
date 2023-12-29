@@ -24,6 +24,7 @@ user.reason.min_length: Your reason must be at least {limit} characters long.
 user.reason.max_length: Your reason cannot be longer than {limit} characters.
 user.status.not_blank: Please select the "Verified" status to validate the registration request.
 user.status.must_be_verified: You must select the "Verified" status to validate the registration request.
+user.status.must_be_dead: You must select the "Dead" status to reject the registration request.
 
 # Profile
 profile.description.max_length: Your description cannot exceed {limit} characters.

@@ -7,4 +7,5 @@ export const loginValidationSchema = z.object({
 });
 
 export const loginResolver = zodResolver(loginValidationSchema);
+
 export type LoginFormData = z.infer<typeof loginValidationSchema>;

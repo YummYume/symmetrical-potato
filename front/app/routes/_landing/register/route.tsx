@@ -17,11 +17,11 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { SubmitButton } from '~components/form/SubmitButton';
 import { FieldInput } from '~components/form/custom/FieldInput';
 
-import type { ActionFunctionArgs, DataFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import type { RegisterFormData } from '~/lib/validators/register';
 import type { FlashMessage } from '~/root';
 
-export async function loader({ context, request }: DataFunctionArgs) {
+export async function loader({ context, request }: LoaderFunctionArgs) {
   if (context.user) {
     throw redirect('/dashboard');
   }
@@ -39,6 +39,8 @@ export async function loader({ context, request }: DataFunctionArgs) {
     },
   });
 }
+
+export type Loader = typeof loader;
 
 export async function action({ request, context }: ActionFunctionArgs) {
   if (context.user) {
@@ -96,6 +98,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
     { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
   );
 }
+
+export type Action = typeof action;
 
 export default function Register() {
   const { t } = useTranslation();

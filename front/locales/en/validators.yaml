@@ -26,3 +26,13 @@ forgotten_password.username.required: Please enter your username.
 # Locale
 locale.locale.required: Please select your locale.
 locale.locale.invalid: The selected locale is invalid.
+
+# User
+user.email.required: Please enter an email address.
+user.email.invalid: The email address is invalid.
+user.balance.min: Please enter a valid balance. This number is too small.
+user.balance.max: Please enter a valid balance. This number is too large.
+user.balance.required: Please enter a balance.
+user.locale.required: Please select a locale.
+user.locale.invalid: The selected locale is invalid.
+user.description.max: The description must be at most 1000 characters long.

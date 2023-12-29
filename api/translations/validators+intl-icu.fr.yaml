@@ -25,6 +25,7 @@ user.reason.min_length: Votre raison doit comporter au moins {limit} caractères
 user.reason.max_length: Votre raison ne peut pas comporter plus de {limit} caractères.
 user.status.not_blank: Veuillez sélectionner le statut "Vérifié" pour valider la demande d'inscription.
 user.status.must_be_verified: Vous devez sélectionner le statut "Vérifié" pour valider la demande d'inscription.
+user.status.must_be_dead: Vous devez sélectionner le statut "Mort" pour refuser la demande d'inscription.
 
 # Profile
 profile.description.max_length: Votre description ne peut pas comporter plus de {limit} caractères.

@@ -1,0 +1,15 @@
+# User
+user.verify.confirm: >
+  Êtes-vous sûr de vouloir vérifier cet utilisateur ? Il recevra un e-mail l'informant qu'il peut maintenant se connecter.
+user.delete.confirm: >
+  Êtes-vous sûr de vouloir supprimer cet utilisateur ? Toutes les données associées à cet utilisateur seront supprimées.
+user.revive.confirm: >
+  Êtes-vous sûr de vouloir réanimer cet utilisateur ? Il sera considéré comme vivant et pourra se connecter.
+user.kill.confirm: >
+  Êtes-vous sûr de vouloir tuer cet utilisateur ? Des tueurs à gages seront envoyés à son emplacement. Il sera considéré comme mort et ne pourra pas se connecter.
+user.roles.roles: Rôles
+user.roles.role_user: Utilisateur
+user.roles.role_heister: Braqueur
+user.roles.role_employee: Employé
+user.roles.role_contractor: Contractant
+user.roles.role_admin: Admin

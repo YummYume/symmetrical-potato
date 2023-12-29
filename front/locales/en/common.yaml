@@ -17,10 +17,36 @@ open-menu: Open navigation menu
 dashboard: Dashboard
 logged-in-as: Logged in as
 admin: Admin
-common.navigation: Navigation
+navigation: Main navigation
 map: Map
-common.user_menu: User menu
-common.heists: Heists
-common.minimumPayout: 'Minimum payout : '
-common.maximumPayout: 'Maximum payout : '
-common.difficulty: 'Difficulty : '
+user_menu: User menu
+heists: Heists
+users: Users
+locations: Locations
+assets: Assets
+establishments: Establishments
+contractor_requests: Contractor requests
+home: Home
+delete: Delete
+save: Save
+saving: Saving...
+verify: Verify
+kill: Kill
+revive: Revive
+cancel: Cancel
+confirm: Confirm
+
+# Heist
+heist.minimum_payout: Minimum payout
+heist.maximum_payout: Maximum payout
+heist.difficulty: Difficulty
+
+# User
+user.balance: Balance
+user.reason: Registration reason
+user.status: Status
+user.status.verified: Verified
+user.status.unverified: Unverified
+user.status.dead: Dead
+user.profile: Profile
+user.description: Description

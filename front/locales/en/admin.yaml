@@ -1,0 +1,12 @@
+# User
+user.verify.confirm: Are you sure you want to verify this user? They will receive an email notifying them that they can now login.
+user.delete.confirm: Are you sure you want to delete this user? All data associated with this user will be deleted.
+user.revive.confirm: Are you sure you want to revive this user? They will be considered alive and will be able to login.
+user.kill.confirm: >
+  Are you sure you want to kill this user? Hitmen will be sent to their location. They will be considered dead and will not be able to login.
+user.roles: Roles
+user.roles.role_user: User
+user.roles.role_heister: Heister
+user.roles.role_employee: Employee
+user.roles.role_contractor: Contractor
+user.roles.role_admin: Admin

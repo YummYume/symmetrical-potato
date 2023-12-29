@@ -26,3 +26,13 @@ forgotten_password.username.required: Veuillez saisir votre nom d'utilisateur.
 # Locale
 locale.locale.required: Veuillez sélectionner votre langue.
 locale.locale.invalid: La langue sélectionnée est invalide.
+
+# User
+user.email.required: Veuillez saisir une adresse e-mail.
+user.email.invalid: L'adresse e-mail est invalide.
+user.balance.min: Veuillez saisir un solde valide. Ce nombre est trop petit.
+user.balance.max: Veuillez saisir un solde valide. Ce nombre est trop grand.
+user.balance.required: Veuillez saisir un solde.
+user.locale.required: Veuillez sélectionner une langue.
+user.locale.invalid: La langue sélectionnée est invalide.
+user.description.max: La description doit comporter au plus 1000 caractères.
