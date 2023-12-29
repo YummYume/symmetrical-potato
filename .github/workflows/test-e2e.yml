@@ -171,7 +171,7 @@ jobs:
           curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
           sudo apt update
           sudo apt install caddy
-      
+
       - name: Copy Caddyfile
         run: sudo cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
 
@@ -186,11 +186,14 @@ jobs:
       - name: Check port 80
         run: sudo lsof -i :80
 
+      - name: Check port 9000
+        run: sudo lsof -i :9000
+
       - name: Check /run/php
-        run: ls -a /run/php
+        run: ls -a -l /run/php
 
       - name: Check /home/**/api/public
-        run: ls -a /home/runner/work/symmetrical-potato/symmetrical-potato/api/public
+        run: ls -a -l /home/runner/work/symmetrical-potato/symmetrical-potato/api/public
 
       - name: Check Caddy
         run: sudo systemctl status caddy
@@ -199,7 +202,10 @@ jobs:
         run: curl http://127.0.0.1
 
       - name: Curl graphql
-        run: curl http://127.0.0.1:9000/graphql
+        run: |
+          curl http://127.0.0.1:9000
+          curl http://127.0.0.1:9000/graphql
+          curl http://127.0.0.1:9000/doesntexist
 
       # END DEBUG
 
