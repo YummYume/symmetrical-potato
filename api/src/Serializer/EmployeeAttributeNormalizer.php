@@ -41,4 +41,12 @@ final class EmployeeAttributeNormalizer implements NormalizerInterface, Normaliz
 
         return $data instanceof Employee;
     }
+
+    /**
+     * @return array<class-string|'*'|'object'|string, bool|null>
+     */
+    public function getSupportedTypes(): array
+    {
+        return ['*' => true];
+    }
 }

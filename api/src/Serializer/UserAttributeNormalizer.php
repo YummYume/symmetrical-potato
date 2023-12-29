@@ -41,4 +41,12 @@ final class UserAttributeNormalizer implements NormalizerInterface, NormalizerAw
 
         return $data instanceof User;
     }
+
+    /**
+     * @return array<class-string|'*'|'object'|string, bool|null>
+     */
+    public function getSupportedTypes(): array
+    {
+        return ['*' => true];
+    }
 }
