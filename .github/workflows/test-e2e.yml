@@ -173,7 +173,7 @@ jobs:
           sudo apt install caddy
       
       - name: Copy Caddyfile
-        run: cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
+        run: sudo cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
 
       - name: Restart Caddy
         run: sudo systemctl reload caddy
