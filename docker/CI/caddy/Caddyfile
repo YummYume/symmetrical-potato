@@ -4,7 +4,7 @@
 }
 
 http://localhost:9000 {
-    root * {$GITHUB_WORKSPACE}
+    root * {$GITHUB_WORKSPACE}/api/public
     encode zstd gzip
     file_server
 
