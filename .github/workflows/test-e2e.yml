@@ -180,6 +180,9 @@ jobs:
       - name: Echo GITHUB_WORKSPACE
         run: echo ${GITHUB_WORKSPACE}
 
+      - name: Curl localhost
+        run: curl http://127.0.0.1
+
       - name: Curl graphql
         run: curl http://127.0.0.1:9000/graphql
 
