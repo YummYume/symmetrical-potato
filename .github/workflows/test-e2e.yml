@@ -174,17 +174,8 @@ jobs:
       
       - name: Run Caddy
         run: |
-          export API_URL=${{ github.workspace }}
           export CADDY_ADMIN=localhost:50654
           caddy run --config docker/CI/caddy/Caddyfile &
-
-      - name: Echo API_URL
-        run: |
-          echo ${API_URL}
-
-      - name: Echo GITHUB_WORKSPACE
-        run: |
-          echo ${GITHUB_WORKSPACE}
 
       - name: Load Fixtures
         working-directory: ./api
