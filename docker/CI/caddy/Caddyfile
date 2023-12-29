@@ -3,7 +3,7 @@
     admin off
 }
 
-http://localhost:9000 {
+http://127.0.0.1:9000 {
     root * {$GITHUB_WORKSPACE}/api/public
     encode zstd gzip
     file_server
@@ -19,7 +19,7 @@ http://localhost:9000 {
     error @phpFile "Not found" 404
 }
 
-http://localhost {
+http://127.0.0.1 {
     reverse_proxy * 127.0.0.1:3000
 }
 

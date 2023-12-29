@@ -174,14 +174,14 @@ jobs:
       
       - name: Run Caddy
         run: |
-          export CADDY_ADMIN=localhost:50654
-          caddy run --config docker/CI/caddy/Caddyfile &
+          export CADDY_ADMIN=127.0.0.1:50654
+          sudo caddy run --config docker/CI/caddy/Caddyfile &
 
       - name: Echo GITHUB_WORKSPACE
         run: echo ${GITHUB_WORKSPACE}
 
       - name: Curl graphql
-        run: curl http://localhost:9000/graphql
+        run: curl http://127.0.0.1:9000/graphql
 
       - name: Load Fixtures
         working-directory: ./api
@@ -197,7 +197,7 @@ jobs:
         run: |
           bun install
           bunx playwright install --with-deps
-          BASE_URL=http://localhost bunx playwright test
+          BASE_URL=http://127.0.0.1 bunx playwright test
 
       - name: Upload report
         uses: actions/upload-artifact@v3
