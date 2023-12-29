@@ -178,11 +178,19 @@ jobs:
       - name: Restart Caddy
         run: sudo systemctl reload caddy
 
+      # DEBUG
+
       - name: Echo GITHUB_WORKSPACE
         run: echo ${GITHUB_WORKSPACE}
 
       - name: Check port 80
         run: sudo lsof -i :80
+
+      - name: Check /run/php
+        run: ls -a /run/php
+
+      - name: Check /home/**/api/public
+        run: ls -a /home/runner/work/symmetrical-potato/symmetrical-potato/api/public
 
       - name: Check Caddy
         run: sudo systemctl status caddy
@@ -192,6 +200,8 @@ jobs:
 
       - name: Curl graphql
         run: curl http://127.0.0.1:9000/graphql
+
+      # END DEBUG
 
       - name: Load Fixtures
         working-directory: ./api
