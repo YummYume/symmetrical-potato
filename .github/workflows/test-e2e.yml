@@ -179,6 +179,7 @@ jobs:
           caddy run --config docker/CI/caddy/Caddyfile &
 
       - name: Load Fixtures
+        working-directory: ./api
         run: |
           php bin/console doctrine:database:drop --force --env=test'
           php bin/console doctrine:database:create --env=test'
