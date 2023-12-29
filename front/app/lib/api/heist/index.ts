@@ -1,13 +1,13 @@
 import dayjs from 'dayjs';
 import { gql, type GraphQLClient } from 'graphql-request';
 
-import type { Query } from '~api/types';
+import type { Query, QueryHeistsArgs } from '~api/types';
 
 export const getDayHeists = async (client: GraphQLClient) => {
-  return client.request<Query>(
+  return client.request<Pick<Query, 'heists'>, QueryHeistsArgs>(
     gql`
-      query ($now: String!, $tomorrow: String!) {
-        heists(startAt: { after: $now, before: $tomorrow }) {
+      query ($startAt: HeistFilter_startAt) {
+        heists(startAt: $startAt) {
           pageInfo {
             endCursor
             hasNextPage
@@ -26,8 +26,12 @@ export const getDayHeists = async (client: GraphQLClient) => {
       }
     `,
     {
-      now: dayjs().toISOString(),
-      tomorrow: dayjs().add(1, 'day').startOf('day').toISOString(),
+      startAt: [
+        {
+          before: dayjs().toISOString(),
+          after: dayjs().add(1, 'day').startOf('day').toISOString(),
+        },
+      ],
     },
   );
 };

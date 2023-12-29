@@ -12,23 +12,12 @@ import type { LoaderFunctionArgs } from '@remix-run/node';
 export async function loader({ context }: LoaderFunctionArgs) {
   denyAccessUnlessGranted(context.user);
 
-  try {
-    const response = await getDayHeists(context.client);
-
-    return {
-      heists: response.heists.edges,
-      locale: context.locale,
-      pageInfo: response.heists.pageInfo,
-      user: context.user,
-    };
-  } catch (e) {
-    console.error('Error loading heists: ', e);
-  }
+  const response = await getDayHeists(context.client);
 
   return {
-    heists: [],
+    heists: response.heists.edges,
     locale: context.locale,
-    pageInfo: null,
+    pageInfo: response.heists.pageInfo,
     user: context.user,
   };
 }
@@ -49,38 +38,32 @@ export default function Dashboard() {
       </Heading>
       <Container className="space-y-3">
         {heists
-          .filter((heist) => (isHeister ? heist?.node.crewMembers.totalCount ?? 0 <= 4 : true))
-          .map((heist) => {
-            if (heist?.node) {
-              const { crewMembers, id, name, startAt } = heist.node;
-
-              return (
-                <Card asChild key={id}>
-                  <Link to="/">
-                    <Flex justify="between">
-                      <div>
-                        <Text as="p" size="2" weight="bold">
-                          {name}
-                        </Text>
-                        <Text as="p" color="gray" size="2">
-                          Starting today at{' '}
-                          {new Date(startAt).toLocaleTimeString(locale, {
-                            hour: 'numeric',
-                            minute: 'numeric',
-                          })}
-                        </Text>
-                      </div>
+          .filter((heist) => (isHeister ? heist.node.crewMembers.totalCount <= 4 : true))
+          .map(({ node: { crewMembers, id, name, startAt } }) => {
+            return (
+              <Card asChild key={id}>
+                <Link to="/">
+                  <Flex justify="between">
+                    <div>
                       <Text as="p" size="2" weight="bold">
-                        {crewMembers.totalCount}
-                        <span> / 4</span>
+                        {name}
                       </Text>
-                    </Flex>
-                  </Link>
-                </Card>
-              );
-            }
-
-            return null;
+                      <Text as="p" color="gray" size="2">
+                        Starting today at{' '}
+                        {new Date(startAt).toLocaleTimeString(locale, {
+                          hour: 'numeric',
+                          minute: 'numeric',
+                        })}
+                      </Text>
+                    </div>
+                    <Text as="p" size="2" weight="bold">
+                      {crewMembers.totalCount}
+                      <span> / 4</span>
+                    </Text>
+                  </Flex>
+                </Link>
+              </Card>
+            );
           })}
       </Container>
     </Section>
