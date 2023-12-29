@@ -177,6 +177,12 @@ jobs:
           export CADDY_ADMIN=localhost:50654
           caddy run --config docker/CI/caddy/Caddyfile &
 
+      - name: Echo GITHUB_WORKSPACE
+        run: echo ${GITHUB_WORKSPACE}
+
+      - name: Curl graphql
+        run: curl http://localhost:9000/graphql
+
       - name: Load Fixtures
         working-directory: ./api
         run: |
