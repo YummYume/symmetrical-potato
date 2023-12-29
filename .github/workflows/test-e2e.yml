@@ -174,8 +174,17 @@ jobs:
       
       - name: Run Caddy
         run: |
+          export API_URL=${{ github.workspace }}
           export CADDY_ADMIN=localhost:50654
           caddy run --config docker/CI/caddy/Caddyfile &
+
+      - name: Load Fixtures
+        run: |
+          php bin/console doctrine:database:drop --force --env=test'
+          php bin/console doctrine:database:create --env=test'
+          php bin/console doctrine:schema:create --env=test'
+          php bin/console doctrine:fixtures:load --env=test --no-interaction'
+          php bin/console lexik:jwt:generate-keypair --skip-if-exists'
 
       - name: Run tests
         working-directory: ./E2E
