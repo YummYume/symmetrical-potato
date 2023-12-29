@@ -13,9 +13,9 @@ import { UserDropdown } from '~/lib/components/layout/UserDropdown';
 import { denyAdminAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link, NavLink, NavLinkActiveIndicator } from '~components/Link';
 
-import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node';
+import type { LoaderFunctionArgs, SerializeFrom } from '@remix-run/node';
 
-export async function loader({ context }: DataFunctionArgs) {
+export async function loader({ context }: LoaderFunctionArgs) {
   const user = denyAdminAccessUnlessGranted(context.user);
 
   return {

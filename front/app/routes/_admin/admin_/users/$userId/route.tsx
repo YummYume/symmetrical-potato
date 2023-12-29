@@ -1,5 +1,5 @@
 import { Blockquote, Button, Flex, Heading, ScrollArea, Text } from '@radix-ui/themes';
-import { redirect, type DataFunctionArgs } from '@remix-run/node';
+import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -23,7 +23,7 @@ import type { ActionFunctionArgs } from '@remix-run/node';
 import type { AdminUserFormData } from '~/lib/validators/admin/user';
 import type { FlashMessage } from '~/root';
 
-export async function loader({ context, params }: DataFunctionArgs) {
+export async function loader({ context, params }: LoaderFunctionArgs) {
   const currentUser = denyAdminAccessUnlessGranted(context.user);
 
   if (!params.userId) {
@@ -112,6 +112,8 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
   );
 }
+
+export type Action = typeof action;
 
 export default function User() {
   const { user, currentUser } = useLoaderData<Loader>();

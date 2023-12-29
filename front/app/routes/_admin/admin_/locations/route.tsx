@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
-import type { DataFunctionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 
-export async function loader({ context }: DataFunctionArgs) {
+export async function loader({ context }: LoaderFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);
 
   return {};

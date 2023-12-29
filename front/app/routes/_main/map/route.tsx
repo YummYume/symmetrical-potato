@@ -7,9 +7,9 @@ import HeistMap from '~/lib/components/HeistMap';
 import { getEnv } from '~/lib/utils/env';
 import { denyAccessUnlessGranted } from '~utils/security.server';
 
-import type { DataFunctionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 
-export async function loader({ context }: DataFunctionArgs) {
+export async function loader({ context }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
 
   return {

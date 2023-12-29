@@ -1,6 +1,6 @@
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { Button, Flex } from '@radix-ui/themes';
-import { redirect, type DataFunctionArgs, type SerializeFrom } from '@remix-run/node';
+import { redirect, type LoaderFunctionArgs, type SerializeFrom } from '@remix-run/node';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { Header } from '~/lib/components/layout/Header';
 import { Link } from '~components/Link';
 
-export async function loader({ context }: DataFunctionArgs) {
+export async function loader({ context }: LoaderFunctionArgs) {
   if (context.user) {
     throw redirect('/dashboard');
   }

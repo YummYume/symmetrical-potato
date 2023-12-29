@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Grid, Heading, Section, Text } from '@radix-ui/themes';
-import { redirect, type DataFunctionArgs } from '@remix-run/node';
+import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { Heist, HeistEdge, Review, ReviewEdge } from '~api/types';
 
-export async function loader({ context, params }: DataFunctionArgs) {
+export async function loader({ context, params }: LoaderFunctionArgs) {
   denyAccessUnlessGranted(context.user);
 
   if (!params.placeId) {
