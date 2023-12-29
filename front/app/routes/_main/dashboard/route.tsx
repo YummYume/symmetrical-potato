@@ -7,24 +7,22 @@ import { getDayHeists } from '~/lib/api/heist';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link } from '~components/Link';
 
-import type { DataFunctionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
 
-export async function loader({ context }: DataFunctionArgs) {
+export async function loader({ context }: LoaderFunctionArgs) {
   denyAccessUnlessGranted(context.user);
 
   try {
     const response = await getDayHeists(context.client);
 
-    console.log(response);
-
     return {
-      heists: response.heists?.edges ?? [],
+      heists: response.heists.edges,
       locale: context.locale,
-      pageInfo: response.heists?.pageInfo ?? null,
+      pageInfo: response.heists.pageInfo,
       user: context.user,
     };
   } catch (e) {
-    console.error(e);
+    console.error('Error loading heists: ', e);
   }
 
   return {
@@ -44,8 +42,6 @@ export default function Dashboard() {
 
   const isHeister = useMemo(() => user?.roles.includes('ROLE_HEISTER'), [user?.roles]);
 
-  console.log(heists);
-
   return (
     <Section className="space-y-16">
       <Heading align="center" as="h1" size="9">
@@ -53,7 +49,7 @@ export default function Dashboard() {
       </Heading>
       <Container className="space-y-3">
         {heists
-          .filter((heist) => (isHeister ? heist?.node?.crewMembers?.totalCount ?? 0 <= 4 : true))
+          .filter((heist) => (isHeister ? heist?.node.crewMembers.totalCount ?? 0 <= 4 : true))
           .map((heist) => {
             if (heist?.node) {
               const { crewMembers, id, name, startAt } = heist.node;
@@ -75,7 +71,7 @@ export default function Dashboard() {
                         </Text>
                       </div>
                       <Text as="p" size="2" weight="bold">
-                        {crewMembers?.totalCount}
+                        {crewMembers.totalCount}
                         <span> / 4</span>
                       </Text>
                     </Flex>

@@ -181,7 +181,7 @@ jobs:
       - name: Run tests
         working-directory: ./E2E
         run: |
-          NODE_ENV=test bun install
+          bun install
           bunx playwright install --with-deps
           BASE_URL=http://localhost bunx playwright test
 
