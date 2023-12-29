@@ -17,7 +17,7 @@ if ($_SERVER['APP_DEBUG']) {
 if ('test' === $_SERVER['APP_ENV']) {
     // Reset the test database
     exec(sprintf(
-        'php "%s/../bin/console" doctrine:database:drop --force --env=test',
+        'php "%s/../bin/console" doctrine:database:drop --if-exists --force --env=test',
         __DIR__
     ));
     exec(sprintf(
