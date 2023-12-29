@@ -172,10 +172,11 @@ jobs:
           sudo apt update
           sudo apt install caddy
       
-      - name: Run Caddy
-        run: |
-          export CADDY_ADMIN=127.0.0.1:50654
-          sudo caddy run --config docker/CI/caddy/Caddyfile &
+      - name: Copy Caddyfile
+        run: cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
+
+      - name: Restart Caddy
+        run: sudo systemctl reload caddy
 
       - name: Echo GITHUB_WORKSPACE
         run: echo ${GITHUB_WORKSPACE}
