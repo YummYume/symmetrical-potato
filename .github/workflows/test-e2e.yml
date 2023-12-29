@@ -175,8 +175,7 @@ jobs:
       - name: Run Caddy
         run: |
           export CADDY_ADMIN=localhost:50654
-          caddy adapt --config docker/CI/caddy/Caddyfile
-          caddy run &
+          caddy run --config docker/CI/caddy/Caddyfile &
 
       - name: Run tests
         working-directory: ./E2E
