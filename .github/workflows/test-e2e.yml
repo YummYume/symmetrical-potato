@@ -175,7 +175,7 @@ jobs:
       - name: Run Caddy
         run: |
           sudo systemctl stop caddy
-          caddy run --config docker/CI/caddy/Caddyfile &
+          sudo caddy run --config docker/CI/caddy/Caddyfile &
 
       # DEBUG
 
