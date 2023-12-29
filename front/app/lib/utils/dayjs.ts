@@ -13,4 +13,4 @@ dayjs.extend(isSameOrAfter);
 // Defaults
 dayjs.tz.setDefault('America/New_York');
 
-export default { dayjs };
+export default dayjs;
