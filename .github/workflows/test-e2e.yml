@@ -187,6 +187,12 @@ jobs:
           php bin/console doctrine:fixtures:load --env=test --no-interaction
           php bin/console lexik:jwt:generate-keypair --skip-if-exists
 
+      - name: Curl localhost
+        run: curl http://localhost
+
+      - name: Curl graphql
+        run: curl http://localhost:9000/graphql
+
       - name: Run tests
         working-directory: ./E2E
         run: |
