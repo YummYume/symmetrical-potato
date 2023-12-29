@@ -19,6 +19,7 @@ export const adminUserValidationSchema = z.object({
       required_error: 'user.balance.required',
     },
   ),
+  description: z.optional(z.string().max(1000, { message: 'user.description.max' })),
   // locale: z.nativeEnum(UserLocaleEnum, {
   //   required_error: 'user.locale.required',
   //   invalid_type_error: 'user.locale.invalid',

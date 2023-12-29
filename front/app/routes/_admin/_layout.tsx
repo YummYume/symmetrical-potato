@@ -1,7 +1,7 @@
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { Button, DropdownMenu, Flex } from '@radix-ui/themes';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState, type ComponentProps, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Drawer } from '~/lib/components/Drawer';
@@ -30,32 +30,21 @@ export type Loader = typeof loader;
 const Menu = ({
   isChangingPreferences,
   locale,
-  setIsChangingPreferences,
+  onChange,
   useDarkMode,
   user,
 }: {
   isChangingPreferences: boolean;
   locale: SerializeFrom<Loader>['locale'];
-  setIsChangingPreferences: Dispatch<SetStateAction<boolean>>;
+  onChange: ComponentProps<typeof Form>['onChange'];
   useDarkMode: SerializeFrom<Loader>['useDarkMode'];
   user: SerializeFrom<Loader>['user'];
 }) => {
   const { t } = useTranslation();
-  const submit = useSubmit();
 
   return (
     <Flex align="center" gap="4" justify="end">
-      <Form
-        method="post"
-        className="flex items-center justify-end gap-4"
-        onChange={(event) => {
-          setIsChangingPreferences(true);
-          submit(event.currentTarget, {
-            navigate: false,
-            unstable_viewTransition: true,
-          });
-        }}
-      >
+      <Form method="post" className="flex items-center justify-end gap-4" onChange={onChange}>
         <Locale defaultValue={locale} disabled={isChangingPreferences} />
         <Lightswitch defaultChecked={useDarkMode} disabled={isChangingPreferences} />
         <noscript>
@@ -81,7 +70,7 @@ export default function AdminLayout() {
   const { user, locale, useDarkMode } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const [isChangingPreferences, setIsChangingPreferences] = useState(false);
-
+  const submit = useSubmit();
   const LINKS = [
     { to: '/admin', label: t('home') },
     { to: '/admin/users', label: t('users') },
@@ -91,6 +80,14 @@ export default function AdminLayout() {
     { to: '/admin/assets', label: t('assets') },
     { to: '/admin/establishments', label: t('establishments') },
   ];
+
+  const onChange = (event: FormEvent<HTMLFormElement>) => {
+    setIsChangingPreferences(true);
+    submit(event.currentTarget, {
+      navigate: false,
+      unstable_viewTransition: true,
+    });
+  };
 
   useEffect(() => {
     setIsChangingPreferences(false);
@@ -115,7 +112,7 @@ export default function AdminLayout() {
               <Menu
                 isChangingPreferences={isChangingPreferences}
                 locale={locale}
-                setIsChangingPreferences={setIsChangingPreferences}
+                onChange={onChange}
                 useDarkMode={useDarkMode}
                 user={user}
               />
@@ -125,7 +122,7 @@ export default function AdminLayout() {
             <Menu
               isChangingPreferences={isChangingPreferences}
               locale={locale}
-              setIsChangingPreferences={setIsChangingPreferences}
+              onChange={onChange}
               useDarkMode={useDarkMode}
               user={user}
             />

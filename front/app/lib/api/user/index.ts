@@ -18,6 +18,8 @@ import type {
   MutationDeleteUserArgs,
   MutationKillUserArgs,
   MutationReviveUserArgs,
+  MutationUpdateProfileArgs,
+  UpdateProfileInput,
 } from '~api/types';
 
 /**
@@ -122,6 +124,10 @@ export const getUser = async (client: GraphQLClient, id: string) => {
           reason
           locale
           status
+          profile {
+            id
+            description
+          }
         }
       }
     `,
@@ -140,6 +146,10 @@ export const getPublicUser = async (client: GraphQLClient, id: string) => {
           id
           username
           globalRating
+          profile {
+            id
+            description
+          }
         }
       }
     `,
@@ -168,6 +178,34 @@ export const updateUser = async (
             reason
             locale
             status
+            profile {
+              id
+              description
+            }
+          }
+        }
+      }
+    `,
+    {
+      input,
+    },
+  );
+};
+
+/**
+ * Update a user profile.
+ */
+export const updateUserProfile = async (
+  client: GraphQLClient,
+  input: Omit<UpdateProfileInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'updateProfile'>, MutationUpdateProfileArgs>(
+    gql`
+      mutation UpdateProfile($input: updateProfileInput!) {
+        updateProfile(input: $input) {
+          profile {
+            id
+            description
           }
         }
       }

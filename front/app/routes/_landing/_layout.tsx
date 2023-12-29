@@ -2,7 +2,7 @@ import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { Button, Flex } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs, type SerializeFrom } from '@remix-run/node';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState, type FormEvent, type ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Drawer } from '~/lib/components/Drawer';
@@ -28,31 +28,20 @@ export type Loader = typeof loader;
 const Menu = ({
   isChangingPreferences,
   locale,
-  setIsChangingPreferences,
+  onChange,
   useDarkMode,
 }: {
   isChangingPreferences: boolean;
   locale: SerializeFrom<Loader>['locale'];
-  setIsChangingPreferences: Dispatch<SetStateAction<boolean>>;
+  onChange: ComponentProps<typeof Form>['onChange'];
   useDarkMode: SerializeFrom<Loader>['useDarkMode'];
 }) => {
   const { t } = useTranslation();
-  const submit = useSubmit();
 
   return (
     <>
       <Flex align="center" gap="4" justify="end">
-        <Form
-          method="post"
-          className="flex items-center justify-end gap-4"
-          onChange={(event) => {
-            setIsChangingPreferences(true);
-            submit(event.currentTarget, {
-              navigate: false,
-              unstable_viewTransition: true,
-            });
-          }}
-        >
+        <Form method="post" className="flex items-center justify-end gap-4" onChange={onChange}>
           <Locale defaultValue={locale} disabled={isChangingPreferences} />
           <Lightswitch defaultChecked={useDarkMode} disabled={isChangingPreferences} />
           <noscript>
@@ -77,6 +66,15 @@ export default function Layout() {
   const { locale, useDarkMode } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const [isChangingPreferences, setIsChangingPreferences] = useState(false);
+  const submit = useSubmit();
+
+  const onChange = (event: FormEvent<HTMLFormElement>) => {
+    setIsChangingPreferences(true);
+    submit(event.currentTarget, {
+      navigate: false,
+      unstable_viewTransition: true,
+    });
+  };
 
   useEffect(() => {
     setIsChangingPreferences(false);
@@ -101,7 +99,7 @@ export default function Layout() {
               <Menu
                 isChangingPreferences={isChangingPreferences}
                 locale={locale}
-                setIsChangingPreferences={setIsChangingPreferences}
+                onChange={onChange}
                 useDarkMode={useDarkMode}
               />
             </Drawer>
@@ -110,7 +108,7 @@ export default function Layout() {
             <Menu
               isChangingPreferences={isChangingPreferences}
               locale={locale}
-              setIsChangingPreferences={setIsChangingPreferences}
+              onChange={onChange}
               useDarkMode={useDarkMode}
             />
           </div>

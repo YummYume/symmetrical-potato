@@ -6,6 +6,8 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
+use App\Entity\Employee;
+use App\Entity\Profile;
 use App\Entity\User;
 use App\Enum\UserStatusEnum;
 use Doctrine\ORM\QueryBuilder;
@@ -16,7 +18,7 @@ final class VerifiedUserExtension implements QueryCollectionExtensionInterface, 
     /**
      * Operations that are allowed to access unverified users.
      */
-    private const ALLOWED_OPERATIONS = ['validate'];
+    private const ALLOWED_OPERATIONS = ['validate', 'kill', 'revive'];
 
     public function __construct(private readonly Security $security)
     {
@@ -53,10 +55,14 @@ final class VerifiedUserExtension implements QueryCollectionExtensionInterface, 
     /**
      * @param array<string, mixed> $context
      */
-    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass, array $context, QueryNameGeneratorInterface $queryNameGenerator): void
-    {
+    private function addWhere(
+        QueryBuilder $queryBuilder,
+        string $resourceClass,
+        array $context,
+        QueryNameGeneratorInterface $queryNameGenerator
+    ): void {
         if (
-            User::class !== $resourceClass
+            !\in_array($resourceClass, [User::class, Profile::class, Employee::class], true)
             || $this->security->isGranted(User::ROLE_ADMIN)
             || \in_array($context['operation_name'] ?? [], self::ALLOWED_OPERATIONS, true)
         ) {
@@ -65,6 +71,18 @@ final class VerifiedUserExtension implements QueryCollectionExtensionInterface, 
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $verifiedParameter = $queryNameGenerator->generateParameterName('verified');
+
+        if (Profile::class === $resourceClass || Employee::class === $resourceClass) {
+            $userAlias = $queryNameGenerator->generateJoinAlias('user');
+
+            $queryBuilder
+                ->join(sprintf('%s.user', $rootAlias), $userAlias)
+                ->andWhere(sprintf('%s.status = :%s', $userAlias, $verifiedParameter))
+                ->setParameter($verifiedParameter, UserStatusEnum::Verified)
+            ;
+
+            return;
+        }
 
         $queryBuilder
             ->andWhere(sprintf('%s.status = :%s', $rootAlias, $verifiedParameter))

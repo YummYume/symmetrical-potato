@@ -35,3 +35,4 @@ user.balance.max: Please enter a valid balance. This number is too large.
 user.balance.required: Please enter a balance.
 user.locale.required: Please select a locale.
 user.locale.invalid: The selected locale is invalid.
+user.description.max: The description must be at most 1000 characters long.

@@ -26,7 +26,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Query(
             normalizationContext: [
                 'groups' => [self::READ],
-            ]
+            ],
+            security: 'is_granted("READ_PUBLIC", object.getUser())'
         ),
         new QueryCollection(
             normalizationContext: [

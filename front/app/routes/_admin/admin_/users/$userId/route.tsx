@@ -6,12 +6,13 @@ import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
+import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { adminUserResolver } from '~/lib/validators/admin/user';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { UserStatusEnum } from '~api/types';
-import { getUser, updateUser } from '~api/user';
+import { getUser, updateUser, updateUserProfile } from '~api/user';
 import { FormAlertDialog } from '~components/dialog/FormAlertDialog';
 import { SubmitButton } from '~components/form/SubmitButton';
 import { FieldInput } from '~components/form/custom/FieldInput';
@@ -73,9 +74,16 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   let errorMessage: string | null = null;
 
   try {
-    await updateUser(context.client, {
+    const { description, ...userData } = data;
+
+    const updatedUser = await updateUser(context.client, {
       id: `/users/${params.userId}`,
-      ...data,
+      ...userData,
+    });
+
+    await updateUserProfile(context.client, {
+      id: updatedUser.updateUser.user.profile.id,
+      description,
     });
 
     session.flash(FLASH_MESSAGE_KEY, {
@@ -125,6 +133,7 @@ export default function User() {
     defaultValues: {
       email: user.email,
       balance: user.balance,
+      description: user.profile.description ?? '',
     },
   });
 
@@ -169,6 +178,16 @@ export default function User() {
                   ))}
                 </ul>
               </Flex>
+              <section className="space-y-4">
+                <Heading as="h3">{t('user.profile')}</Heading>
+                <TextAreaInput
+                  name="description"
+                  label={t('user.description')}
+                  defaultValue={user.profile.description}
+                  disabled={user.status !== UserStatusEnum.Verified}
+                  rows={5}
+                />
+              </section>
             </form>
           </RemixFormProvider>
         </ScrollArea>

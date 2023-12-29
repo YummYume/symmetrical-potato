@@ -48,3 +48,5 @@ user.status: Status
 user.status.verified: Verified
 user.status.unverified: Unverified
 user.status.dead: Dead
+user.profile: Profile
+user.description: Description

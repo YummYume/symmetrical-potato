@@ -35,3 +35,4 @@ user.balance.max: Veuillez saisir un solde valide. Ce nombre est trop grand.
 user.balance.required: Veuillez saisir un solde.
 user.locale.required: Veuillez sélectionner une langue.
 user.locale.invalid: La langue sélectionnée est invalide.
+user.description.max: La description doit comporter au plus 1000 caractères.
