@@ -4,6 +4,10 @@
 }
 
 http://127.0.0.1:9000 {
+    log {
+        output file /home/runner/work/symmetrical-potato/symmetrical-potato/access.log
+    }
+
     root * /home/runner/work/symmetrical-potato/symmetrical-potato/api/public
     encode zstd gzip
     file_server

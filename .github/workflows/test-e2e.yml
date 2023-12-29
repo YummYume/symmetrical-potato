@@ -207,6 +207,12 @@ jobs:
           curl http://127.0.0.1:9000/graphql
           curl http://127.0.0.1:9000/doesntexist
 
+      - name: Check logs
+        run: cat /home/runner/work/symmetrical-potato/symmetrical-potato/access.log
+
+      - name: Check Caddy groups
+        run: groups caddy
+
       # END DEBUG
 
       - name: Load Fixtures
