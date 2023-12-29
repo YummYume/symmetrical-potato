@@ -208,10 +208,13 @@ jobs:
           curl http://127.0.0.1:9000/doesntexist
 
       - name: Check logs
-        run: cat /home/runner/work/symmetrical-potato/symmetrical-potato/access.log
+        run: sudo systemctl status caddy
 
       - name: Check Caddy groups
         run: groups caddy
+
+      - name: Check PHP FPM logs
+        run: sudo cat /var/log/php8.2-fpm.log
 
       # END DEBUG
 
