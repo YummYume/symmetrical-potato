@@ -29,9 +29,11 @@ export function handleError(error: unknown, { request }: { request: Request }) {
   }
 }
 
-if (process.env.NODE_ENV === 'production') {
+const dsn = process.env.SENTRY_DSN;
+
+if (process.env.NODE_ENV === 'production' && !!dsn) {
   Sentry.init({
-    dsn: process.env.SENTRY_DSN ?? '',
+    dsn,
     tracesSampleRate: 1,
   });
 }

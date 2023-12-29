@@ -139,30 +139,30 @@ jobs:
       - name: Install dependencies
         if: steps.cache-modules.outputs.cache-hit != 'true'
         working-directory: ./front
-        run: NODE_ENV=test bun install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Build CSS
         if: steps.cache-css.outputs.cache-hit != 'true'
         working-directory: ./front
-        run: NODE_ENV=test bun run build:css
+        run: bun run build:css
 
       - name: Build translations
         if: steps.cache-translations.outputs.cache-hit != 'true'
         working-directory: ./front
-        run: NODE_ENV=test bun run build:translations
+        run: bun run build:translations
 
       - name: Front building phase
         if: steps.cache-client.outputs.cache-hit != 'true' || steps.cache-server.outputs.cache-hit != 'true' || steps.cache-css.outputs.cache-hit != 'true'
         working-directory: ./front
-        run: NODE_ENV=test bun run build:remix
+        run: bun run build:remix
 
       - name: Server building phase
         working-directory: ./front
-        run: NODE_ENV=test bun run build:server
+        run: bun run build:server
 
       - name: Start server
         working-directory: ./front
-        run: NODE_ENV=test bun run start &
+        run: bun run start &
 
       - name: Install Caddy
         run: |
