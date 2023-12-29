@@ -180,6 +180,12 @@ jobs:
       - name: Echo GITHUB_WORKSPACE
         run: echo ${GITHUB_WORKSPACE}
 
+      - name: Check port 80
+        run: sudo lsof -i :80
+
+      - name: Check Caddy
+        run: sudo systemctl status caddy
+
       - name: Curl localhost
         run: curl http://127.0.0.1
 
