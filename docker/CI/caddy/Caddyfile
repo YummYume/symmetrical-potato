@@ -4,7 +4,7 @@
 }
 
 http://127.0.0.1:9000 {
-    root * /home/runner/work/symmetrical-potato/symmetrical-potato/api/public
+    root * {$GITHUB_WORKSPACE}/api/public
     encode zstd gzip
     file_server
 

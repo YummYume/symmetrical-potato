@@ -172,12 +172,36 @@ jobs:
           sudo apt update
           sudo apt install caddy
 
-      - name: Run Caddy
+      - name: Fix permissions
         run: |
-          sudo systemctl stop caddy
-          sudo caddy run --config docker/CI/caddy/Caddyfile &
+          sudo chown -R www-data:docker api
+          sudo usermod -a -G runner www-data
+
+      - name: Copy Caddyfile
+        run: sudo cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
+
+      - name: Restart Caddy
+        run: sudo systemctl reload caddy
 
       # DEBUG
+
+      - name: Echo GITHUB_WORKSPACE
+        run: echo ${GITHUB_WORKSPACE}
+
+      - name: Check port 80
+        run: sudo lsof -i :80
+
+      - name: Check port 9000
+        run: sudo lsof -i :9000
+
+      - name: Check /run/php
+        run: ls -a -l /run/php
+
+      - name: Check /home/**/api/public
+        run: ls -a -l /home/runner/work/symmetrical-potato/symmetrical-potato/api/public
+
+      - name: Check Caddy
+        run: sudo systemctl status caddy
 
       - name: Curl localhost
         run: curl http://127.0.0.1
@@ -190,9 +214,6 @@ jobs:
 
       - name: Check logs
         run: sudo systemctl status caddy
-
-      - name: Check PHP FPM logs
-        run: sudo cat /var/log/php8.2-fpm.log
 
       # END DEBUG
 
