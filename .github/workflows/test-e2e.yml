@@ -177,6 +177,25 @@ jobs:
           sudo systemctl stop caddy
           sudo caddy run --config docker/CI/caddy/Caddyfile &
 
+      # DEBUG
+
+      - name: Curl localhost
+        run: curl http://127.0.0.1
+
+      - name: Curl graphql
+        run: |
+          curl http://127.0.0.1:9000
+          curl http://127.0.0.1:9000/graphql
+          curl http://127.0.0.1:9000/doesntexist
+
+      - name: Check logs
+        run: sudo systemctl status caddy
+
+      - name: Check PHP FPM logs
+        run: sudo cat /var/log/php8.2-fpm.log
+
+      # END DEBUG
+
       - name: Load Fixtures
         working-directory: ./api
         run: |
