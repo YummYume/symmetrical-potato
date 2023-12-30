@@ -173,11 +173,22 @@ jobs:
           sudo apt update
           sudo apt install caddy
 
-      - name: Copy Caddyfile
-        run: sudo cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
+      # - name: Copy Caddyfile
+      #   run: sudo cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
 
-      - name: Restart Caddy
-        run: sudo systemctl reload caddy
+      # - name: Restart Caddy
+      #   run: sudo systemctl reload caddy
+
+      - name: Stop Caddy
+        run: sudo systemctl stop caddy
+
+      - name: Start Caddy
+        run: sudo caddy run --config docker/CI/caddy/Caddyfile --adapter caddyfile &
+        env:
+          CADDY_API_ROOT: ${{ github.workspace }}
+
+      - name: Print github workspace
+        run: echo ${{ github.workspace }}
 
       # DEBUG
 
