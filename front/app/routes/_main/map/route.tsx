@@ -35,7 +35,7 @@ export default function MapPage() {
   };
 
   useEffect(() => {
-    if (matches.at(-1)?.id === 'routes/_main/map/$placeId/route') {
+    if (matches.at(-1)?.id.startsWith('routes/_main/map/$placeId')) {
       setDrawerOpen(true);
 
       return;
@@ -63,8 +63,8 @@ export default function MapPage() {
               className="drawer drawer--left"
               onInteractOutside={(e) => e.preventDefault()}
             >
-              <Outlet />
               <Dialog.Close>Close</Dialog.Close>
+              <Outlet />
             </Dialog.Content>
           </Dialog.Portal>
         </Dialog.Root>

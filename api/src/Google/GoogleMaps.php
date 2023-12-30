@@ -173,7 +173,7 @@ final class GoogleMaps
     /**
      * Get the details of a place from a given placeId.
      *
-     * @return array{placeId: string, displayName: array{text: string, languageCode: string}, types: array<int, string>}
+     * @return array{id: string, displayName: array{text: string, languageCode: string}, types: array<int, string>, formattedAddress: string, location: array{latitude: float, longitude: float}}
      */
     public function getPlaceDetailsById(string $placeId): array
     {
@@ -183,7 +183,7 @@ final class GoogleMaps
                 sprintf('https://places.googleapis.com/v1/places/%s', $placeId),
                 [
                     'query' => [
-                        'fields' => 'id,displayName,types',
+                        'fields' => 'id,displayName,types,formattedAddress,location',
                         'key' => $this->apiKey,
                     ],
                 ]
@@ -200,14 +200,14 @@ final class GoogleMaps
     /**
      * Get informations of a place from a given latitude and longitude.
      *
-     * @return array{address: string, placeId: string, displayName: array{text: string, languageCode: string}, types: array<int, string>, coordinates: array{latitude: float, longitude: float}}
+     * @return array{id: string, displayName: array{text: string, languageCode: string}, types: array<int, string>, formattedAddress: string, location: array{latitude: float, longitude: float}}
      */
     public function getPlaceInfornationsByCoordinates(float $latitude, float $longitude): array
     {
         $place = $this->getGeoCodingReverse($latitude, $longitude);
         $placeDetails = $this->getPlaceDetailsById($place['placeId']);
 
-        return array_unique(array_merge($place, $placeDetails, ['coordinates' => ['latitude' => $latitude, 'longitude' => $longitude]]), \SORT_REGULAR);
+        return $placeDetails;
     }
 
     /**
