@@ -192,7 +192,7 @@ jobs:
           curl http://127.0.0.1:9000/doesntexist
 
       - name: Check PHP FPM logs
-        run: sudo tail -f /var/log/php8.2-fpm.log
+        run: sudo tail -n 100 /var/log/php8.2-fpm.log
 
       - name: Check Caddy logs
         run: journalctl -u caddy --no-pager
