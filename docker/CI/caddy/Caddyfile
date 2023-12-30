@@ -7,7 +7,7 @@
 }
 
 http://127.0.0.1:9000 {
-    root * {$GITHUB_WORKSPACE}/api/public
+    root * {$CADDY_API_ROOT}/api/public
     encode zstd gzip
     file_server
 
