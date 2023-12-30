@@ -1388,13 +1388,12 @@ export type CreateHeistInput = {
   establishment: Scalars['String']['input'];
   forbiddenAssets?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   forbiddenUsers?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  latitude?: InputMaybe<Scalars['Float']['input']>;
-  longitude?: InputMaybe<Scalars['Float']['input']>;
   maximumPayout: Scalars['Float']['input'];
   minimumPayout: Scalars['Float']['input'];
   minimumRequiredRating?: InputMaybe<Scalars['Float']['input']>;
   name: Scalars['String']['input'];
   objectives: Scalars['Iterable']['input'];
+  placeId?: InputMaybe<Scalars['String']['input']>;
   preferedTactic: HeistPreferedTacticEnum;
   shouldEndAt: Scalars['String']['input'];
   startAt: Scalars['String']['input'];

@@ -24,7 +24,7 @@ register.username.max_length: The username must be less than 100 characters long
 register.password.required: Please enter a password.
 register.password.min_length: The password must be at least 8 characters long.
 register.password.max_length: The password must be less than 100 characters long.
-register.password.at_least_one_digit: The password must contain at least one digit.
+register.password.at_least_one_digit: The password muestablishmentst contain at least one digit.
 register.password.at_least_one_uppercase_letter: The password must contain at least one uppercase letter.
 register.password.at_least_one_lowercase_letter: The password must contain at least one lowercase letter.
 register.password.at_least_one_special_character: The password must contain at least one special character.
@@ -78,3 +78,29 @@ establishment.employee_cut.max: The employee cut must be at most 99%.
 establishment.crew_cut.min: The crew cut must be at least 1%.
 establishment.crew_cut.max: The crew cut must be at most 99%.
 establishment.cuts.sum_not_100: The contractor, employee, and crew cuts must sum to 100%.
+# Heist
+heist.name.required: Please enter a name.
+heist.name.min_length: The name must be at least 2 characters long.
+heist.name.max_length: The name must be less than 100 characters long.
+heist.description.required: Please enter a description.
+heist.description.min_length: The description must be at least 10 characters long.
+heist.description.max_length: The description must be less than 255 characters long.
+heist.start_at.required: Please enter a start date.
+heist.start_at.invalid_type: The start date is invalid.
+heist.should_end_at.required: Please enter an planned end date.
+heist.should_end_at.invalid_type: The planned end date is invalid.
+heist.start_at.is_past_date: The start date must be after the current date.
+heist.should_end_at.is_before_start_at: The planned end date must be after the start date.
+heist.minimum_payout.required: Please enter a minimum payout.
+heist.minimum_payout.invalid_type: The minimum payout is invalid.
+heist.minimum_payout.positive: The minimum payout must be positive.
+heist.maximum_payout.required: Please enter a maximum payout.
+heist.maximum_payout.invalid_type: The maximum payout is invalid.
+heist.maximum_payout.positive: The maximum payout must be positive.
+heist.maximum_payout_is_lower_than_minimum_payout: The maximum payout must be greater than the minimum payout.
+heist.establishment.required: Please select an establishment.
+heist.establishment.invalid: The selected establishment is invalid.
+heist.prefered_tactic.required: Please select a prefered tactic.
+heist.prefered_tactic.invalid_type: The selected prefered tactic is invalid.
+heist.difficulty.required: Please select a difficulty.
+heist.difficulty.invalid_type: The selected difficulty is invalid.

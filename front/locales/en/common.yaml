@@ -2,9 +2,12 @@ homepage: Homepage
 login: Login
 register: Register
 email: Email address
+name: Name
+description: Description
 username: Username
 password: Password
 password_confirm: Confirm password
+start_at: Start date
 reason: Reason
 logging_in: Logging in...
 registering: Registering...
@@ -25,6 +28,7 @@ user: User
 users: Users
 locations: Locations
 assets: Assets
+establishment: Establishment
 establishments: Establishments
 contractor_requests: Contractor requests
 home: Home
@@ -40,6 +44,7 @@ close: Close
 create: Create
 creating: Creating...
 owner: Owner
+back: Back
 
 # History info
 history_info: History info
@@ -51,6 +56,9 @@ history_info.updated_by: Updated by {name}.
 history_info.updated_at: Updated on {date} at {time}.
 
 # Heist
+heist.should_end_at: Estimated end date
+heist.prefered_tactic: Prefered tactic
+heist.objective: Objective
 heist.minimum_payout: Minimum payout
 heist.maximum_payout: Maximum payout
 heist.difficulty: Difficulty

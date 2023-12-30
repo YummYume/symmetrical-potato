@@ -2,9 +2,12 @@ homepage: Page d'accueil
 login: S'identifier
 register: S'inscrire
 email: Adresse e-mail
+name: Nom
+description: Description
 username: Nom d'utilisateur
 password: Mot de passe
 password_confirm: Confirmer le mot de passe
+start_at: Date de début
 reason: Raison
 logging_in: Connexion...
 registering: Inscription...
@@ -25,6 +28,7 @@ user: Utilisateur
 users: Utilisateurs
 locations: Lieux
 assets: Assets
+establishment: Établissement
 establishments: Établissements
 contractor_requests: Demandes de contractant
 home: Accueil
@@ -40,6 +44,7 @@ close: Fermer
 create: Créer
 creating: Création...
 owner: Propriétaire
+back: Retour
 
 # History info
 history_info: Information sur l'historique
@@ -51,6 +56,9 @@ history_info.updated_by: Mis à jour par {name}.
 history_info.updated_at: Mis à jour le {date} à {time}.
 
 # Heist
+heist.should_end_at: Date de fin estimée
+heist.prefered_tactic: Tactique préférée
+heist.objective: Objectif
 heist.minimum_payout: Paiement minimum
 heist.maximum_payout: Paiement maximum
 heist.difficulty: Difficulté

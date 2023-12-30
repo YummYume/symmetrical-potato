@@ -1,3 +1,5 @@
 heist.add: Add a heist
 heist.edit: Edit
 heist.delete: Delete
+
+heist.add_objective: Add an objective

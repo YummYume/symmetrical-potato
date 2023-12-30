@@ -76,3 +76,29 @@ establishment.employee_cut.max: La part de l'employé doit être au maximum de 9
 establishment.crew_cut.min: La part de l'équipe doit être au moins de 1 %.
 establishment.crew_cut.max: La part de l'équipe doit être au maximum de 99 %.
 establishment.cuts.sum_not_100: Les parts de l'entrepreneur, de l'employé et de l'équipe doivent totaliser 100 %.
+# Heist
+heist.name.required: Veuillez saisir un nom.
+heist.name.min_length: Le nom doit comporter au moins 2 caractères.
+heist.name.max_length: Le nom doit comporter moins de 100 caractères.
+heist.description.required: Veuillez saisir une description.
+heist.description.min_length: La description doit comporter au moins 10 caractères.
+heist.description.max_length: La description doit comporter moins de 255 caractères.
+heist.start_at.required: Veuillez saisir une date de début.
+heist.start_at.invalid_type: La date de début est invalide.
+heist.should_end_at.required: Veuillez saisir une date de fin prévue.
+heist.should_end_at.invalid_type: La date de fin prévue est invalide.
+heist.start_at.is_past_date: La date de début doit être postérieure à la date actuelle.
+heist.should_end_at.is_before_start_at: La date de fin prévue doit être postérieure à la date de début.
+heist.minimum_payout.required: Veuillez saisir un paiement minimum.
+heist.minimum_payout.invalid_type: Le paiement minimum est invalide.
+heist.minimum_payout.positive: Le paiement minimum doit être positif.
+heist.maximum_payout.required: Veuillez saisir un paiement maximum.
+heist.maximum_payout.invalid_type: Le paiement maximum est invalide.
+heist.maximum_payout.positive: Le paiement maximum doit être positif.
+heist.maximum_payout_is_lower_than_minimum_payout: Le paiement maximum doit être supérieur au paiement minimum.
+heist.establishment.required: Veuillez sélectionner un établissement.
+heist.establishment.invalid: L'établissement sélectionné est invalide.
+heist.prefered_tactic.required: Veuillez sélectionner une tactique préférée.
+heist.prefered_tactic.invalid_type: La tactique préférée sélectionnée est invalide.
+heist.difficulty.required: Veuillez sélectionner une difficulté.
+heist.difficulty.invalid_type: La difficulté sélectionnée est invalide.
