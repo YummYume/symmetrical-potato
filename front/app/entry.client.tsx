@@ -30,7 +30,7 @@ const hydrate = async () => {
     });
   }
 
-  const dsn = getEnv('SENTRY_DSN');
+  const dsn = getEnv('SENTRY_DSN').trim();
 
   if (process.env.NODE_ENV === 'production' && !!dsn) {
     Sentry.init({
