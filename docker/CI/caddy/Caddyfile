@@ -1,6 +1,9 @@
 {
     auto_https off
     admin off
+    log {
+        level DEBUG
+    }
 }
 
 http://127.0.0.1:9000 {

@@ -201,7 +201,7 @@ jobs:
         run: sudo systemctl status caddy
 
       - name: Check Caddy config
-        run: sudo caddy fmt --config /etc/caddy/Caddyfile --overwrite
+        run: sudo caddy validate --config /etc/caddy/Caddyfile
 
       - name: Check PHP FPM status
         run: sudo systemctl status php8.2-fpm
