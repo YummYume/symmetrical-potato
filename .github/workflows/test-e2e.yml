@@ -184,11 +184,12 @@ jobs:
 
       - name: Start Caddy
         run: sudo caddy run --config docker/CI/caddy/Caddyfile --adapter caddyfile &
-        env:
-          CADDY_API_ROOT: ${{ github.workspace }}
 
-      - name: Print github workspace
-        run: echo ${{ github.workspace }}
+      - name: Update PHP FPM configuration
+        run: |
+          sudo sed -i 's/user = www-data/user = runner/' /etc/php/8.2/fpm/pool.d/www.conf
+          sudo sed -i 's/group = www-data/group = docker/' /etc/php/8.2/fpm/pool.d/www.conf
+          sudo systemctl restart php8.2-fpm
 
       # DEBUG
 
@@ -198,8 +199,8 @@ jobs:
           curl http://127.0.0.1:9000/graphql
           curl http://127.0.0.1:9000/doesntexist
 
-      - name: Check PHP FPM logs
-        run: sudo tail -n 100 /var/log/php8.2-fpm.log
+      # - name: Check PHP FPM logs
+      #   run: sudo tail -n 100 /var/log/php8.2-fpm.log
 
       # - name: Check Caddy logs
       #   run: journalctl -u caddy --no-pager
