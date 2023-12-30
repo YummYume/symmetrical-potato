@@ -1,0 +1,29 @@
+{
+    auto_https off
+    admin off
+}
+
+http://127.0.0.1:9000 {
+    # TODO: this should use the {$GITHUB_WORKSPACE} variable, but it doesn't work
+    root * /home/runner/work/symmetrical-potato/symmetrical-potato/api/public
+    encode zstd gzip
+    file_server
+
+    php_fastcgi unix//run/php/php8.2-fpm.sock {
+        resolve_root_symlink
+    }
+
+    @phpFile {
+        path *.php*
+    }
+
+    error @phpFile "Not found" 404
+}
+
+http://127.0.0.1 {
+    reverse_proxy * 127.0.0.1:3000
+}
+
+http:// {
+    respond "Not found" 404
+}

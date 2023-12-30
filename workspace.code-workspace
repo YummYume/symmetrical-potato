@@ -9,6 +9,10 @@
       "path": "front"
     },
     {
+      "name": "E2E",
+      "path": "E2E"
+    },
+    {
       "name": "Root",
       "path": "./"
     }

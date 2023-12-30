@@ -78,7 +78,7 @@ jobs:
       - name: Copy .env.ci to .env.test.local
         run: cp ./api/.env.ci ./api/.env.test.local
 
-      - name: Copy google credentials
+      - name: Copy Google credentials
         run: echo 'GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}' >> ./api/.env.test.local
 
       - name: Install dependencies
