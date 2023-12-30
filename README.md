@@ -14,6 +14,7 @@ Remix + API Platform + GraphQL.
   - [Generating TypeScript types from the API](#generating-typescript-types-from-the-api)
   - [Authentication](#authentication)
   - [Structure](#structure)
+  - [E2E Testing](#e2e-testing)
 
 ## Installation
 
@@ -98,3 +99,12 @@ The Remix app uses the `app/routes` folder for routing, along with the following
 | `app/lib/api/`       | `~api/`        | The `lib/api` folder which contains calls to the API (for reusability) and the generated types. |
 | `app/lib/components` | `~components/` | The `lib/components` folder which contains all the reusable components.                         |
 | `app/lib/utils/`     | `~utils/`      | The `lib/utils` folder containing all the reusable utils.                                       |
+
+## E2E Testing
+
+To run tests, cd into the `E2E` folder and run `make e2e` to run the Playwright tests.
+
+You can launch the UI by running `make e2e-ui` instead.
+
+> [!NOTE]
+> If this is your first time running the tests, you will need to run `make e2e-install` to install the dependencies. If you are not using Bun, you can check the Makefile and replace the bun/bunx commands with npm/npx, but do not commit another lockfile.
