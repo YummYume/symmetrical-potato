@@ -64,7 +64,7 @@ const Menu = ({
           </noscript>
         </Form>
 
-        {user && <UserDropdown isAdmin username={user.username} />}
+        {user && <UserDropdown username={user.username} />}
       </Flex>
       <nav>
         <ul className="grid items-center gap-4 text-right md:grid-flow-col">

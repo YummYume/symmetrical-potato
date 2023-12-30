@@ -61,7 +61,7 @@ final class HeistProcessor implements ProcessorInterface
             if (null === $location) {
                 // Get informations from Google Maps for the location
                 $place = $this->googleMaps->getPlaceDetailsById($heist->getPlaceId());
-                dump($place);
+
                 $location = (new Location())
                     ->setLatitude($place['location']['latitude'])
                     ->setLongitude($place['location']['longitude'])

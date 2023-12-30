@@ -173,7 +173,7 @@ final class GoogleMaps
     /**
      * Get the details of a place from a given placeId.
      *
-     * @return array{placeId: string, displayName: array{text: string, languageCode: string}, types: array<int, string>}
+     * @return array{id: string, displayName: array{text: string, languageCode: string}, types: array<int, string>, formattedAddress: string, location: array{latitude: float, longitude: float}}
      */
     public function getPlaceDetailsById(string $placeId): array
     {
@@ -200,7 +200,7 @@ final class GoogleMaps
     /**
      * Get informations of a place from a given latitude and longitude.
      *
-     * @return array{address: string, placeId: string, displayName: array{text: string, languageCode: string}, location: array{latitude: float, longitude: float}, formattedAddress: string}
+     * @return array{id: string, displayName: array{text: string, languageCode: string}, types: array<int, string>, formattedAddress: string, location: array{latitude: float, longitude: float}}
      */
     public function getPlaceInfornationsByCoordinates(float $latitude, float $longitude): array
     {
