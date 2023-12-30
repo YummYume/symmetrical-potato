@@ -213,11 +213,11 @@ jobs:
       - name: Check PHP FPM status
         run: sudo systemctl status php8.2-fpm
 
-      - name: Check index.php file
-        run: ls /home/runner/work/symmetrical-potato/symmetrical-potato/api/public/index.php
+      - name: Print php-fpm config
+        run: sudo cat /etc/php/8.2/fpm/pool.d/www.conf
 
       - name: Check index.php permissions
-        run: ls -l /home/runner/work/symmetrical-potato/symmetrical-potato/api/public/index.php
+        run: namei -l /home/runner/work/symmetrical-potato/symmetrical-potato/api/public/index.php
 
       # END DEBUG
 
