@@ -172,13 +172,13 @@ jobs:
           sudo apt update
           sudo apt install caddy
 
-      - name: Copy Caddyfile
-        run: sudo cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
+      - name: Stop Caddy service
+        run: sudo systemctl stop caddy
 
-      - name: Restart Caddy to apply configuration
-        run: sudo systemctl reload caddy
+      - name: Start Caddy with configuration and runner user
+        run: sudo caddy run --config docker/CI/caddy/Caddyfile --adapter caddyfile &
 
-      - name: Update PHP FPM configuration (permissions)
+      - name: Update PHP FPM configuration
         run: |
           sudo sed -i 's/user = www-data/user = runner/' /etc/php/8.2/fpm/pool.d/www.conf
           sudo sed -i 's/group = www-data/group = docker/' /etc/php/8.2/fpm/pool.d/www.conf
