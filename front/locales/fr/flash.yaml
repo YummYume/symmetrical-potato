@@ -4,3 +4,6 @@ user.verified: Utilisateur vérifié avec succès.
 user.deleted: Utilisateur supprimé avec succès.
 user.killed: Utilisateur tué avec succès.
 user.revived: Utilisateur réanimé avec succès.
+
+# Heist
+heist.created_successfully: Heist créé avec succès.

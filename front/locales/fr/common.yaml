@@ -2,9 +2,12 @@ homepage: Page d'accueil
 login: S'identifier
 register: S'inscrire
 email: Adresse e-mail
+name: Nom
+description: Description
 username: Nom d'utilisateur
 password: Mot de passe
 password_confirm: Confirmer le mot de passe
+start_at: Date de début
 reason: Raison
 logging_in: Connexion...
 registering: Inscription...
@@ -24,6 +27,7 @@ heists: Braquages
 users: Utilisateurs
 locations: Lieux
 assets: Assets
+establishment: Établissement
 establishments: Établissements
 contractor_requests: Demandes de contractant
 home: Accueil
@@ -35,8 +39,13 @@ kill: Tuer
 revive: Réanimer
 cancel: Annuler
 confirm: Confirmer
+back: Retour
+create: Créer
 
 # Heist
+heist.should_end_at: Date de fin estimée
+heist.prefered_tactic: Tactique préférée
+heist.objective: Objectif
 heist.minimum_payout: Paiement minimum
 heist.maximum_payout: Paiement maximum
 heist.difficulty: Difficulté

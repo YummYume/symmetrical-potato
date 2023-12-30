@@ -4,3 +4,6 @@ user.verified: User verified successfully.
 user.deleted: User deleted successfully.
 user.killed: User killed successfully.
 user.revived: User revived successfully.
+
+# Heist
+heist.created_successfully: Heist created successfully.

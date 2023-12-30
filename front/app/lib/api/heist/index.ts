@@ -1,55 +1,18 @@
 import { type GraphQLClient, gql } from 'graphql-request';
 
-import type { CreateHeistInput, DeleteHeistInput, Mutation } from '~api/types';
+import type { CreateHeistInput, Mutation, MutationCreateHeistArgs } from '~api/types';
 
-export const createHeist = async (client: GraphQLClient, input: CreateHeistInput) => {
-  return client.request<Mutation>(
+export const createHeist = async (
+  client: GraphQLClient,
+  input: Omit<CreateHeistInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'createHeist'>, MutationCreateHeistArgs>(
     gql`
       mutation CreateHeist($input: createHeistInput!) {
         createHeist(input: $input) {
           heist {
+            id
             name
-            description
-            startTime
-            endTime
-            status
-            totalAmount
-          }
-        }
-      }
-    `,
-    {
-      input,
-    },
-  );
-};
-
-export const editHeist = async (client: GraphQLClient, id: string) => {
-  return client.request<Mutation>(
-    gql`
-      mutation EditHeist($input: editHeistInput!) {
-        editHeist(input: $input) {
-          heist {
-            id
-          }
-        }
-      }
-    `,
-    {
-      input: {
-        id,
-      },
-    },
-  );
-};
-
-export const deleteHeist = async (client: GraphQLClient, input: DeleteHeistInput) => {
-  return client.request<Mutation>(
-    gql`
-      mutation DeleteHeist($input: deleteHeistInput!) {
-        deleteHeist(input: $input) {
-          heist {
-            id
           }
         }
       }
