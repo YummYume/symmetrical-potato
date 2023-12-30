@@ -49,7 +49,6 @@ jobs:
     env:
       extensions: amqp, intl, pdo_mysql, pcntl
       php_version: '8.2'
-      CADDY_API_ROOT: ${{ github.workspace }}
 
     steps:
       - name: Checkout
@@ -84,7 +83,7 @@ jobs:
       - name: Copy .env.ci to .env.test.local
         run: cp ./api/.env.ci ./api/.env.test.local
 
-      - name: Copy google credentials
+      - name: Copy Google credentials (API)
         run: echo 'GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}' >> ./api/.env.test.local
 
       - name: Install dependencies
@@ -94,7 +93,7 @@ jobs:
       - name: Copy .env.ci to .env.local
         run: cp ./front/.env.ci ./front/.env.local
 
-      - name: Copy google credentials
+      - name: Copy Google credentials (front)
         run: echo 'GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}' >> ./front/.env.local
 
       - name: Setup Bun
@@ -173,54 +172,17 @@ jobs:
           sudo apt update
           sudo apt install caddy
 
-      # - name: Copy Caddyfile
-      #   run: sudo cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
+      - name: Copy Caddyfile
+        run: sudo cp docker/CI/caddy/Caddyfile /etc/caddy/Caddyfile
 
-      # - name: Restart Caddy
-      #   run: sudo systemctl reload caddy
+      - name: Restart Caddy to apply configuration
+        run: sudo systemctl reload caddy
 
-      - name: Stop Caddy
-        run: sudo systemctl stop caddy
-
-      - name: Start Caddy
-        run: sudo caddy run --config docker/CI/caddy/Caddyfile --adapter caddyfile &
-
-      - name: Update PHP FPM configuration
+      - name: Update PHP FPM configuration (permissions)
         run: |
           sudo sed -i 's/user = www-data/user = runner/' /etc/php/8.2/fpm/pool.d/www.conf
           sudo sed -i 's/group = www-data/group = docker/' /etc/php/8.2/fpm/pool.d/www.conf
           sudo systemctl restart php8.2-fpm
-
-      # DEBUG
-
-      - name: Curl graphql
-        run: |
-          curl http://127.0.0.1:9000
-          curl http://127.0.0.1:9000/graphql
-          curl http://127.0.0.1:9000/doesntexist
-
-      # - name: Check PHP FPM logs
-      #   run: sudo tail -n 100 /var/log/php8.2-fpm.log
-
-      # - name: Check Caddy logs
-      #   run: journalctl -u caddy --no-pager
-
-      # - name: Check Caddy status
-      #   run: sudo systemctl status caddy
-
-      # - name: Check Caddy config
-      #   run: sudo caddy validate --config /etc/caddy/Caddyfile
-
-      - name: Check PHP FPM status
-        run: sudo systemctl status php8.2-fpm
-
-      - name: Print php-fpm config
-        run: sudo cat /etc/php/8.2/fpm/pool.d/www.conf
-
-      - name: Check index.php permissions
-        run: namei -l /home/runner/work/symmetrical-potato/symmetrical-potato/api/public/index.php
-
-      # END DEBUG
 
       - name: Load Fixtures
         working-directory: ./api
