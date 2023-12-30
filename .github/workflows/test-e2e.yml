@@ -201,14 +201,14 @@ jobs:
       - name: Check PHP FPM logs
         run: sudo tail -n 100 /var/log/php8.2-fpm.log
 
-      - name: Check Caddy logs
-        run: journalctl -u caddy --no-pager
+      # - name: Check Caddy logs
+      #   run: journalctl -u caddy --no-pager
 
-      - name: Check Caddy status
-        run: sudo systemctl status caddy
+      # - name: Check Caddy status
+      #   run: sudo systemctl status caddy
 
-      - name: Check Caddy config
-        run: sudo caddy validate --config /etc/caddy/Caddyfile
+      # - name: Check Caddy config
+      #   run: sudo caddy validate --config /etc/caddy/Caddyfile
 
       - name: Check PHP FPM status
         run: sudo systemctl status php8.2-fpm
