@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Button, Heading, Section } from '@radix-ui/themes';
+import { Button, Heading, Section, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -98,24 +98,28 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
 export default function Add() {
   const { t } = useTranslation();
-  const [objectivesFields, setObjectivesFields] = useState<string[]>([]);
+  const [objectivesIndexs, setObjectivesIndexs] = useState<number[]>([]);
   const [counter, setCounter] = useState<number>(0);
   const { placeId, establishments } = useLoaderData<Loader>();
-
-  const addObjective = () => {
-    setObjectivesFields((prev) => [...prev, `objectives[${counter}]`]);
-    setCounter((prev) => prev + 1);
-  };
-
-  const removeObjective = (field: string) => {
-    setObjectivesFields((prev) => prev.filter((f) => f !== field));
-    setCounter((prev) => prev - 1);
-  };
 
   const methods = useRemixForm<CreateHeistFormData>({
     mode: 'onSubmit',
     resolver: createHeistResolver,
   });
+
+  const addObjective = () => {
+    setObjectivesIndexs((prev) => [...prev, counter]);
+    setCounter((prev) => prev + 1);
+  };
+
+  const removeObjective = (index: number) => {
+    setObjectivesIndexs((prev) => prev.filter((i) => i !== index));
+    setCounter((prev) => prev - 1);
+
+    methods.clearErrors([`objectives.${index}.name`, `objectives.${index}.description`]);
+    methods.unregister([`objectives.${index}.name`, `objectives.${index}.description`]);
+  };
+
   return (
     <div>
       <Dialog.Title asChild>
@@ -165,14 +169,19 @@ export default function Add() {
                 })}
               </>
             </FieldSelect>
-            {objectivesFields.map((field, key) => (
-              <div key={field}>
-                <FieldInput name={field} label={`${t('heist.objective')} ${key + 1}`} />
-                <Button type="button" onClick={() => removeObjective(field)}>
-                  {t('delete')}
-                </Button>
-              </div>
-            ))}
+            {objectivesIndexs.map((objectiveIndex, key) => {
+              const fieldName = `objectives[${objectiveIndex}]`;
+              return (
+                <div key={fieldName}>
+                  <Text>{`${t('heist.objective')} ${key + 1}`}</Text>
+                  <FieldInput name={`${fieldName}.name`} label={t('name')} />
+                  <FieldInput name={`${fieldName}.description`} label={t('description')} />
+                  <Button type="button" onClick={() => removeObjective(objectiveIndex)}>
+                    {t('delete')}
+                  </Button>
+                </div>
+              );
+            })}
             <Button type="button" onClick={addObjective}>
               {t('heist.add_objective', { ns: 'heist' })}
             </Button>

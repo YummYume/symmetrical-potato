@@ -37,7 +37,7 @@ final class HeistRepository extends ServiceEntityRepository
                 'h.phase = :planning',
                 'h.phase = :inProgress',
             ))
-            ->andWhere('l.latitude = :placeId')
+            ->andWhere('l.placeId = :placeId')
             ->andWhere($qb->expr()->andX(
                 'h.shouldEndAt >= :startAt',
                 'h.startAt <= :shouldEndAt',

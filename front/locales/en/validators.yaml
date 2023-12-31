@@ -104,3 +104,7 @@ heist.prefered_tactic.required: Please select a prefered tactic.
 heist.prefered_tactic.invalid_type: The selected prefered tactic is invalid.
 heist.difficulty.required: Please select a difficulty.
 heist.difficulty.invalid_type: The selected difficulty is invalid.
+heist.objectives.name.min_length: The name must be at least 2 characters long.
+heist.objectives.name.max_length: The name must be less than 100 characters long.
+heist.objectives.description.min_length: The description must be at least 10 characters long.
+heist.objectives.description.max_length: The description must be less than 255 characters long.
