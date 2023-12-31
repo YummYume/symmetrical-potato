@@ -56,6 +56,9 @@ export default async function handleRequest(
     .use(ICU)
     .init({
       ...config,
+      interpolation: {
+        escapeValue: false,
+      },
       lng: loadContext.locale,
       ns,
       backend: { loadPath: resolve('./public/locales/{{lng}}/{{ns}}.json') },

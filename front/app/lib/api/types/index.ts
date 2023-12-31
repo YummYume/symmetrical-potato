@@ -129,7 +129,14 @@ export enum ContractorRequestStatusEnum {
 
 export type CrewMember = Node & {
   __typename?: 'CrewMember';
+  civilianCasualties: Maybe<Scalars['Int']['output']>;
+  heist: Heist;
   id: Scalars['ID']['output'];
+  kills: Maybe<Scalars['Int']['output']>;
+  objectivesCompleted: Maybe<Scalars['Int']['output']>;
+  payout: Maybe<Scalars['Float']['output']>;
+  status: Maybe<CrewMemberStatusEnum>;
+  user: User;
 };
 
 /** Cursor connection for CrewMember. */
@@ -1172,13 +1179,13 @@ export type CreateCrewMemberInput = {
 /** Creates a CrewMember. */
 export type CreateCrewMemberNestedPayload = Node & {
   __typename?: 'createCrewMemberNestedPayload';
-  civilianCasualties: Scalars['Int']['output'];
+  civilianCasualties: Maybe<Scalars['Int']['output']>;
   heist: CreateHeistNestedPayload;
   id: Scalars['ID']['output'];
-  kills: Scalars['Int']['output'];
-  objectivesCompleted: Scalars['Int']['output'];
+  kills: Maybe<Scalars['Int']['output']>;
+  objectivesCompleted: Maybe<Scalars['Int']['output']>;
   payout: Maybe<Scalars['Float']['output']>;
-  status: CrewMemberStatusEnum;
+  status: Maybe<CrewMemberStatusEnum>;
   user: CreateUserNestedPayload;
 };
 
@@ -1216,13 +1223,13 @@ export type CreateCrewMemberPayload = {
 /** Creates a CrewMember. */
 export type CreateCrewMemberPayloadData = Node & {
   __typename?: 'createCrewMemberPayloadData';
-  civilianCasualties: Scalars['Int']['output'];
+  civilianCasualties: Maybe<Scalars['Int']['output']>;
   heist: CreateHeistNestedPayload;
   id: Scalars['ID']['output'];
-  kills: Scalars['Int']['output'];
-  objectivesCompleted: Scalars['Int']['output'];
+  kills: Maybe<Scalars['Int']['output']>;
+  objectivesCompleted: Maybe<Scalars['Int']['output']>;
   payout: Maybe<Scalars['Float']['output']>;
-  status: CrewMemberStatusEnum;
+  status: Maybe<CrewMemberStatusEnum>;
   user: CreateUserNestedPayload;
 };
 

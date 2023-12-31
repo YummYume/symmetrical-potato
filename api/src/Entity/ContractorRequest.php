@@ -86,7 +86,6 @@ class ContractorRequest
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups([self::READ, User::READ])]
     private ?Uuid $id = null;
 
     #[ORM\Column(type: Types::TEXT)]

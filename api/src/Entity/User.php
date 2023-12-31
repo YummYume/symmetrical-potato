@@ -169,7 +169,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups([self::READ, self::READ_PUBLIC, self::REGISTER, ContractorRequest::READ, Heist::READ, Review::READ_PUBLIC])]
+    #[Groups([
+        self::READ,
+        self::READ_PUBLIC,
+        self::REGISTER,
+        ContractorRequest::READ,
+        Heist::READ,
+        Review::READ_PUBLIC,
+        CrewMember::READ,
+        CrewMember::READ_PUBLIC,
+    ])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.username.not_blank')]
     #[Assert\Length(
         groups: [self::REGISTER],

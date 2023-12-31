@@ -107,7 +107,6 @@ class Review
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups([self::READ_PUBLIC])]
     private ?Uuid $id = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
