@@ -6,7 +6,7 @@ import type { Query, QueryHeistsArgs } from '~api/types';
 export const getDayHeists = async (client: GraphQLClient) => {
   return client.request<Pick<Query, 'heists'>, QueryHeistsArgs>(
     gql`
-      query ($startAt: HeistFilter_startAt) {
+      query ($startAt: [HeistFilter_startAt]!) {
         heists(startAt: $startAt) {
           pageInfo {
             endCursor
