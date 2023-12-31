@@ -47,6 +47,6 @@ final class EmployeeAttributeNormalizer implements NormalizerInterface, Normaliz
      */
     public function getSupportedTypes(): array
     {
-        return ['*' => true];
+        return [];
     }
 }
