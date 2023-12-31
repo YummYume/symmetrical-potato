@@ -41,6 +41,7 @@ cancel: Annuler
 confirm: Confirmer
 back: Retour
 create: Créer
+update: Mettre à jour
 
 # Heist
 heist.should_end_at: Date de fin estimée
