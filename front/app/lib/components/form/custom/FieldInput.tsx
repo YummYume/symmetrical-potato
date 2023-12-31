@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useRemixFormContext } from 'remix-hook-form';
 
 import { getFormErrorField } from '~/lib/utils/error';
+import { extractIndex } from '~/lib/utils/tools';
 
 import type { Path } from 'react-hook-form';
 import type { FormErrorField } from '~/lib/utils/error';
@@ -40,7 +41,27 @@ export function FieldInput<T extends FormData>({
 
   const ariaDescribedBy = `${name}-error`;
 
-  const error = getFormErrorField(errors[name] as FormErrorField);
+  let error: string | null = null;
+
+  // Check if the field is a multi field (e.g. name[0].firstName) or a single field (e.g. name), before accessing the error
+  if (errors) {
+    const nameSplit = name.split('[');
+
+    if (nameSplit.length > 1) {
+      const parentFieldName = nameSplit[0];
+      const errorParentField = errors[parentFieldName];
+      const index = extractIndex(name);
+      const property = nameSplit[1].split('.')[1];
+
+      if (errorParentField !== undefined && index !== null && property !== undefined) {
+        if (Array.isArray(errorParentField) && errorParentField[index] !== undefined) {
+          error = getFormErrorField(errorParentField[index][property] as FormErrorField);
+        }
+      }
+    } else {
+      error = getFormErrorField(errors[name] as FormErrorField);
+    }
+  }
 
   return (
     <Grid className={containerClassName} gap="1">

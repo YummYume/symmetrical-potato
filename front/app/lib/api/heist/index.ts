@@ -2,6 +2,9 @@ import { type GraphQLClient, gql } from 'graphql-request';
 
 import type { CreateHeistInput, Mutation, MutationCreateHeistArgs } from '~api/types';
 
+/**
+ * Create a Heist
+ */
 export const createHeist = async (
   client: GraphQLClient,
   input: Omit<CreateHeistInput, 'clientMutationId'>,

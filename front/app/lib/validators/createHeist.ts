@@ -71,7 +71,19 @@ export const createHeistValidationSchema = z
       required_error: 'heist.difficulty.required',
       invalid_type_error: 'heist.difficulty.invalid_type',
     }),
-    objectives: z.string().array().optional(),
+    objectives: z
+      .object({
+        name: z
+          .string()
+          .min(2, { message: 'heist.objectives.name.min_length' })
+          .max(100, { message: 'heist.objectives.name.max_length' }),
+        description: z
+          .string()
+          .min(10, { message: 'heist.objectives.description.min_length' })
+          .max(255, { message: 'heist.objectives.description.max_length' }),
+      })
+      .array()
+      .optional(),
   })
   .refine((data) => dayjs().isSameOrBefore(dayjs(data.startAt), 'minute'), {
     message: 'heist.start_at.is_past_date',
