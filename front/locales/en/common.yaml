@@ -45,6 +45,7 @@ create: Create
 creating: Creating...
 owner: Owner
 back: Back
+update: Update
 
 # History info
 history_info: History info
