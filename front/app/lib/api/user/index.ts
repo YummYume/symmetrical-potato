@@ -11,15 +11,12 @@ import {
   type UpdateUserInput,
   type MutationUpdateUserArgs,
   type MutationValidateUserArgs,
+  type MutationDeleteUserArgs,
+  type MutationKillUserArgs,
+  type MutationReviveUserArgs,
+  type MutationUpdateProfileArgs,
+  type UpdateProfileInput,
   UserStatusEnum,
-} from '~api/types';
-
-import type {
-  MutationDeleteUserArgs,
-  MutationKillUserArgs,
-  MutationReviveUserArgs,
-  MutationUpdateProfileArgs,
-  UpdateProfileInput,
 } from '~api/types';
 
 /**

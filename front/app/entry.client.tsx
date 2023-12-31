@@ -49,6 +49,9 @@ const hydrate = async () => {
     .use(ICU)
     .init({
       ...config,
+      interpolation: {
+        escapeValue: false,
+      },
       ns: getInitialNamespaces(),
       backend: {
         loadPath: '/locales/{{lng}}/{{ns}}.json',

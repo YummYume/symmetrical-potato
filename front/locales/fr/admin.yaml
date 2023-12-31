@@ -13,3 +13,76 @@ user.roles.role_heister: Braqueur
 user.roles.role_employee: Employé
 user.roles.role_contractor: Contractant
 user.roles.role_admin: Admin
+
+# Dashboard
+## Heists
+dashboard.heists: >-
+  {heists, plural,
+    =0 {Aucun braquage}
+    =1 {Un braquage}
+    other {# braquages}
+  }
+dashboard.heists.last_90_days: Statistiques des braquages des 90 derniers jours
+dashboard.heists.failed: Braquages échoués
+dashboard.heists.successful: Braquages réussis
+dashboard.heists.cancelled: Braquages annulés
+dashboard.heists.total: >-
+  {total, plural,
+    =0 {Aucun braquage}
+    =1 {Un braquage}
+    other {# braquages}
+  }
+dashboard.heists.summary: >-
+  {successful, plural,
+    =0 {aucun braquage réussi}
+    one {un braquage réussi}
+    other {# braquages réussis}
+  }, {failed, plural,
+    =0 {Aucun braquage échoué}
+    one {Un braquage échoué}
+    other {# braquages échoués}
+  } et {cancelled, plural,
+    =0 {aucun braquage annulé}
+    one {un braquage annulé}
+    other {# braquages annulés}
+  } pour un total de {total, plural,
+    =0 {aucun braquage}
+    one {un braquage}
+    other {# braquages}
+  }.
+
+## Crew members
+dashboard.crew_members: >-
+  {crew_members, plural,
+    =0 {Aucun braqueur}
+    =1 {Un braqueur}
+    other {# braqueurs}
+  }
+dashboard.crew_members.last_90_days: Statistiques des braqueurs des 90 derniers jours
+dashboard.crew_members.free: Braqueurs libres
+dashboard.crew_members.jailed: Braqueurs en prison
+dashboard.crew_members.dead: Braqueurs morts
+dashboard.crew_members.total: >-
+  {total, plural,
+    =0 {Aucun braqueur}
+    =1 {Un braqueur}
+    other {# braqueurs}
+  }
+dashboard.crew_members.summary: >-
+  {free, plural,
+    =0 {aucun braqueur libre}
+    one {un braqueur libre}
+    other {# braqueurs libres}
+  }, {jailed, plural,
+    =0 {Aucun braqueur en prison}
+    one {Un braqueur en prison}
+    other {# braqueurs en prison}
+  } et {dead, plural,
+    =0 {aucun braqueur mort}
+    one {un braqueur mort}
+    other {# braqueurs morts}
+  } pour un total de {total, plural,
+    =0 {aucun braqueur}
+    one {un braqueur}
+    other {# braqueurs}
+  }.

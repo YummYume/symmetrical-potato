@@ -30,13 +30,13 @@ use Symfony\Component\Uid\Uuid;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [self::READ_PUBLIC],
+                'groups' => [self::READ, self::READ_PUBLIC],
             ],
             security: 'is_granted("READ", object)'
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ_PUBLIC],
+                'groups' => [self::READ, self::READ_PUBLIC],
             ]
         ),
         new Mutation(
@@ -82,37 +82,41 @@ class CrewMember
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups([self::READ])]
     private ?Uuid $id = null;
 
     #[ORM\Column]
-    #[Groups([self::READ])]
+    #[ApiProperty(security: '')]
+    #[Groups([self::READ, Heist::READ])]
     private int $civilianCasualties = 0;
 
     #[ORM\Column]
-    #[Groups([self::READ])]
+    #[ApiProperty(security: '')]
+    #[Groups([self::READ, Heist::READ])]
     private int $kills = 0;
 
     #[ORM\Column]
-    #[Groups([self::READ])]
+    #[ApiProperty(security: '')]
+    #[Groups([self::READ, Heist::READ])]
     private int $objectivesCompleted = 0;
 
     #[ORM\Column(nullable: true)]
-    #[Groups([self::READ])]
+    #[ApiProperty(security: '')]
+    #[Groups([self::READ, Heist::READ])]
     private ?float $payout = null;
 
     #[ORM\Column(length: 50, enumType: CrewMemberStatusEnum::class)]
-    #[Groups([self::READ])]
+    #[ApiProperty(security: '')]
+    #[Groups([self::READ, Heist::READ])]
     private CrewMemberStatusEnum $status = CrewMemberStatusEnum::Free;
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ])]
+    #[Groups([self::READ, self::READ_PUBLIC])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ, self::JOIN])]
+    #[Groups([self::READ, self::READ_PUBLIC, self::JOIN])]
     private ?Heist $heist = null;
 
     /** @var ArrayCollection<int, HeistAsset> */

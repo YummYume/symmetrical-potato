@@ -82,9 +82,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
+#[SlotAvailable(groups: [self::CREATE, self::UPDATE])]
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
-#[SlotAvailable(groups: [self::CREATE, self::UPDATE])]
 #[ApiFilter(SearchFilter::class, properties: ['location.placeId' => 'exact'])]
 class Heist
 {
@@ -107,7 +107,6 @@ class Heist
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    #[Groups([self::READ, self::CREATE])]
     private ?Uuid $id = null;
 
     #[ORM\Column]

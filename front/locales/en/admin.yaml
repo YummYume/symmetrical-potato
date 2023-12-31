@@ -10,3 +10,76 @@ user.roles.role_heister: Heister
 user.roles.role_employee: Employee
 user.roles.role_contractor: Contractor
 user.roles.role_admin: Admin
+
+# Dashboard
+## Heists
+dashboard.heists: >-
+  {heists, plural,
+    =0 {No heists}
+    =1 {One heist}
+    other {# heists}
+  }
+dashboard.heists.last_90_days: Heist statistics for the last 90 days
+dashboard.heists.failed: Failed heists
+dashboard.heists.successful: Successful heists
+dashboard.heists.cancelled: Cancelled heists
+dashboard.heists.total: >-
+  {total, plural,
+    =0 {No heists}
+    =1 {One heist}
+    other {# heists}
+  }
+dashboard.heists.summary: >-
+  {successful, plural,
+    =0 {no successful heists}
+    one {one successful heist}
+    other {# successful heists}
+  }, {failed, plural,
+    =0 {No failed heists}
+    one {One failed heist}
+    other {# failed heists}
+  } and {cancelled, plural,
+    =0 {no cancelled heists}
+    one {one cancelled heist}
+    other {# cancelled heists}
+  } for a total of {total, plural,
+    =0 {no heists}
+    one {one heist}
+    other {# heists}
+  }.
+
+## Crew members
+dashboard.crew_members: >-
+  {crew_members, plural,
+    =0 {No heisters}
+    =1 {One heister}
+    other {# heisters}
+  }
+dashboard.crew_members.last_90_days: Heister statistics for the last 90 days
+dashboard.crew_members.free: Free heisters
+dashboard.crew_members.jailed: Jailed heisters
+dashboard.crew_members.dead: Dead heisters
+dashboard.crew_members.total: >-
+  {total, plural,
+    =0 {No heisters}
+    =1 {One heister}
+    other {# heisters}
+  }
+dashboard.crew_members.summary: >-
+  {free, plural,
+    =0 {no free heisters}
+    one {one free heister}
+    other {# free heisters}
+  }, {jailed, plural,
+    =0 {no jailed heisters}
+    one {one jailed heister}
+    other {# jailed heisters}
+  } and {dead, plural,
+    =0 {no dead heisters}
+    one {one dead heister}
+    other {# dead heisters}
+  } for a total of {total, plural,
+    =0 {no heisters}
+    one {one heister}
+    other {# heisters}
+  }.
