@@ -46,8 +46,8 @@ dashboard.heists.summary: >-
     one {un braquage annulé}
     other {# braquages annulés}
   } pour un total de {total, plural,
-    =0 {aucun braquage}
-    one {un braquage}
+    =0 {0 braquage}
+    one {1 braquage}
     other {# braquages}
   }.
 
@@ -82,7 +82,7 @@ dashboard.crew_members.summary: >-
     one {un braqueur mort}
     other {# braqueurs morts}
   } pour un total de {total, plural,
-    =0 {aucun braqueur}
-    one {un braqueur}
+    =0 {0 braqueur}
+    one {1 braqueur}
     other {# braqueurs}
   }.
