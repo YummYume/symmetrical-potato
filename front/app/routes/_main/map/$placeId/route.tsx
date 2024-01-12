@@ -6,6 +6,7 @@ import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 
 import { getEnv } from '~/lib/utils/env';
+import { getUriId } from '~/lib/utils/path';
 import { getGoogleLocation, getLocationInfo } from '~api/location';
 import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
@@ -75,48 +76,6 @@ export default function PlaceId() {
       (review): review is ReviewEdgeWithNode => !!review?.node,
     ) ?? [];
 
-  const AddHeistLink = () => {
-    return (
-      <Link
-        to={`/map/${placeId}/add`}
-        className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
-        unstyled
-      >
-        {t('heist.add', {
-          ns: 'heist',
-        })}
-      </Link>
-    );
-  };
-
-  const EditHeistLink = () => {
-    return (
-      <Link
-        to={`/map/${placeId}/edit`}
-        className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
-        unstyled
-      >
-        {t('heist.edit', {
-          ns: 'heist',
-        })}
-      </Link>
-    );
-  };
-
-  const DelelteHeistLink = () => {
-    return (
-      <Link
-        to={`/map/${placeId}/delete`}
-        className="block w-auto rounded-1 bg-red-10 p-2 text-center font-medium transition-colors hover:bg-red-8"
-        unstyled
-      >
-        {t('heist.delete', {
-          ns: 'heist',
-        })}
-      </Link>
-    );
-  };
-
   if (!locationInfo?.location) {
     return (
       place && (
@@ -130,7 +89,17 @@ export default function PlaceId() {
             <Section className="space-y-3" size="1">
               <Dialog.Description>{place.formattedAddress}</Dialog.Description>
             </Section>
-            {isAllowed && <AddHeistLink />}
+            {isAllowed && (
+              <Link
+                to={`/map/${placeId}/add`}
+                className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
+                unstyled
+              >
+                {t('heist.add', {
+                  ns: 'heist',
+                })}
+              </Link>
+            )}
           </div>
         </>
       )
@@ -154,7 +123,17 @@ export default function PlaceId() {
           )}
         </Section>
       </div>
-      {isAllowed && <AddHeistLink />}
+      {isAllowed && (
+        <Link
+          to={`/map/${placeId}/add`}
+          className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
+          unstyled
+        >
+          {t('heist.add', {
+            ns: 'heist',
+          })}
+        </Link>
+      )}
 
       {/* TODO tabs ? */}
       {reviews.length > 0 && (
@@ -200,8 +179,24 @@ export default function PlaceId() {
                 </Link>
                 {isAllowed && (
                   <div className="flex items-center">
-                    <EditHeistLink />
-                    <DelelteHeistLink />
+                    <Link
+                      to={`/map/${placeId}/${getUriId(heist.node?.id)}/edit`}
+                      className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
+                      unstyled
+                    >
+                      {t('heist.edit', {
+                        ns: 'heist',
+                      })}
+                    </Link>
+                    <Link
+                      to={`/map/${placeId}/delete`}
+                      className="block w-auto rounded-1 bg-red-10 p-2 text-center font-medium transition-colors hover:bg-red-8"
+                      unstyled
+                    >
+                      {t('heist.delete', {
+                        ns: 'heist',
+                      })}
+                    </Link>
                   </div>
                 )}
               </div>

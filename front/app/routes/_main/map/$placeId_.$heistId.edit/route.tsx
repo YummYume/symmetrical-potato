@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
 import { getEstablishmentsOfContractor } from '~/lib/api/establishment';
-import { updateHeist } from '~/lib/api/heist';
+import { getHeist, updateHeist } from '~/lib/api/heist';
 import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
 import { Link } from '~/lib/components/Link';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
@@ -28,10 +28,16 @@ import type { FlashMessage } from '~/root';
 export async function loader({ context, params }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user, ROLES.CONTRACTOR);
 
-  const response = await getEstablishmentsOfContractor(context.client, user.id);
+  if (!params.heistId) {
+    throw redirect(`/map/${params.placeId}`);
+  }
+
+  const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
+  const { heist } = await getHeist(context.client, params.heistId);
 
   return {
-    establishments: response.establishments,
+    establishments,
+    heist,
     placeId: params.placeId,
     locale: context.locale,
   };
@@ -52,13 +58,17 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     return json({ errors }, { status: 400 });
   }
 
+  if (!params?.heistId) {
+    throw redirect(`/map/${params.placeId}`);
+  }
+
   let errorMessage: string | null = null;
   const session = await getSession(request.headers.get('Cookie'));
 
   try {
     await updateHeist(context.client, {
       ...data,
-      id: 'params.heistId',
+      id: params?.heistId,
       startAt: data.startAt.toISOString(),
       shouldEndAt: data.shouldEndAt.toISOString(),
       visibility: HeistVisibilityEnum.Draft,
@@ -100,7 +110,7 @@ export default function Add() {
   const { t } = useTranslation();
   const [objectivesIndexs, setObjectivesIndexs] = useState<number[]>([]);
   const [counter, setCounter] = useState<number>(0);
-  const { placeId, establishments } = useLoaderData<Loader>();
+  const { placeId, establishments, heist } = useLoaderData<Loader>();
 
   const methods = useRemixForm<UpdateHeistFormData>({
     mode: 'onSubmit',
@@ -139,7 +149,7 @@ export default function Add() {
     <div>
       <Dialog.Title asChild>
         <Heading as="h2" size="8">
-          Add
+          Edit {heist.name}
         </Heading>
       </Dialog.Title>
       <Section className="space-y-3" size="1">
