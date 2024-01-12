@@ -58,6 +58,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   try {
     await updateHeist(context.client, {
       ...data,
+      id: 'params.heistId',
       startAt: data.startAt.toISOString(),
       shouldEndAt: data.shouldEndAt.toISOString(),
       visibility: HeistVisibilityEnum.Draft,
@@ -119,6 +120,21 @@ export default function Add() {
     methods.unregister([`objectives.${index}.name`, `objectives.${index}.description`]);
   };
 
+  const establishmentsFormatted = establishments.edges.map((edge) => ({
+    label: edge.node.name,
+    value: edge.node.id,
+  }));
+
+  const heistPreferedTactics = Object.values(HeistPreferedTacticEnum).map((value: string) => ({
+    label: value,
+    value,
+  }));
+
+  const heistDifficulties = Object.values(HeistDifficultyEnum).map((value: string) => ({
+    label: value,
+    value,
+  }));
+
   return (
     <div>
       <Dialog.Title asChild>
@@ -135,39 +151,21 @@ export default function Add() {
             <FieldInput name="shouldEndAt" label={t('heist.should_end_at')} type="datetime-local" />
             <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
             <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
-            <FieldSelect name="establishment" label={t('establishment')}>
-              <>
-                {establishments.edges.map((edge) => {
-                  return (
-                    <option key={edge.node.id} value={edge.node.id}>
-                      {edge.node.name}
-                    </option>
-                  );
-                })}
-              </>
-            </FieldSelect>
-            <FieldSelect name="preferedTactic" label={t('heist.prefered_tactic')}>
-              <>
-                {Object.entries(HeistPreferedTacticEnum).map(([key, value]) => {
-                  return (
-                    <option key={key} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-              </>
-            </FieldSelect>
-            <FieldSelect name="difficulty" label={t('heist.difficulty')}>
-              <>
-                {Object.entries(HeistDifficultyEnum).map(([key, value]) => {
-                  return (
-                    <option key={key} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-              </>
-            </FieldSelect>
+            <FieldSelect
+              name="establishment"
+              label={t('establishment')}
+              options={establishmentsFormatted}
+            />
+            <FieldSelect
+              name="preferedTactic"
+              label={t('heist.prefered_tactic')}
+              options={heistPreferedTactics}
+            />
+            <FieldSelect
+              name="difficulty"
+              label={t('heist.difficulty')}
+              options={heistDifficulties}
+            />
             {objectivesIndexs.map((objectiveIndex, key) => {
               const fieldName = `objectives[${objectiveIndex}]`;
               return (
