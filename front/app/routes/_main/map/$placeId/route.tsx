@@ -3,7 +3,6 @@ import { Grid, Heading, Section, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { getEnv } from '~/lib/utils/env';
