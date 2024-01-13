@@ -64,10 +64,8 @@ final class GetHeistExtension implements QueryCollectionExtensionInterface, Quer
                     "$rootAlias.visibility = :$publicParameter",
                     "$establishementAlias.contractor = :$contractorIdParameter"
                 ))
-                ->setParameters([
-                    "$publicParameter" => HeistVisibilityEnum::Public,
-                    "$contractorIdParameter" => $user->getId()->toBinary(),
-                ]);
+                ->setParameter("$publicParameter", HeistVisibilityEnum::Public)
+                ->setParameter("$contractorIdParameter", $user->getId()->toBinary());
         }
     }
 }
