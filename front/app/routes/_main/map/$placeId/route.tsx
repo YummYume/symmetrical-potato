@@ -16,7 +16,8 @@ import type { Heist, HeistEdge, Review, ReviewEdge } from '~api/types';
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
   denyAccessUnlessGranted(context.user);
-  const isAllowed = hasRoles(context.user, ROLES.CONTRACTOR);
+  const isContractor = hasRoles(context.user, ROLES.CONTRACTOR);
+  const isAdmin = hasRoles(context.user, ROLES.ADMIN);
 
   if (!params.placeId) {
     throw redirect('/dashboard');
@@ -30,7 +31,9 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
       locationInfo,
       place: null,
       placeId: params.placeId,
-      isAllowed,
+      isContractor,
+      isAdmin,
+      user: context.user,
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'location')) {
@@ -53,7 +56,9 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     locationInfo: null,
     place,
     placeId: params.placeId,
-    isAllowed,
+    isContractor,
+    isAdmin,
+    user: context.user,
   };
 }
 
@@ -63,7 +68,8 @@ type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
 export default function PlaceId() {
-  const { locationInfo, locale, place, placeId, isAllowed } = useLoaderData<Loader>();
+  const { locationInfo, locale, place, placeId, isContractor, isAdmin, user } =
+    useLoaderData<Loader>();
   const { t } = useTranslation();
 
   const heists =
@@ -89,7 +95,7 @@ export default function PlaceId() {
             <Section className="space-y-3" size="1">
               <Dialog.Description>{place.formattedAddress}</Dialog.Description>
             </Section>
-            {isAllowed && (
+            {isContractor && (
               <Link
                 to={`/map/${placeId}/add`}
                 className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
@@ -123,7 +129,7 @@ export default function PlaceId() {
           )}
         </Section>
       </div>
-      {isAllowed && (
+      {(isContractor || isAdmin) && (
         <Link
           to={`/map/${placeId}/add`}
           className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
@@ -177,28 +183,29 @@ export default function PlaceId() {
                     {heist.node.name}
                   </Heading>
                 </Link>
-                {isAllowed && (
-                  <div className="flex items-center">
-                    <Link
-                      to={`/map/${placeId}/${getUriId(heist.node?.id)}/edit`}
-                      className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
-                      unstyled
-                    >
-                      {t('heist.edit', {
-                        ns: 'heist',
-                      })}
-                    </Link>
-                    <Link
-                      to={`/map/${placeId}/delete`}
-                      className="block w-auto rounded-1 bg-red-10 p-2 text-center font-medium transition-colors hover:bg-red-8"
-                      unstyled
-                    >
-                      {t('heist.delete', {
-                        ns: 'heist',
-                      })}
-                    </Link>
-                  </div>
-                )}
+                {isAdmin ||
+                  (isContractor && heist.node.establishment.contractor.id === user?.id && (
+                    <div className="flex items-center">
+                      <Link
+                        to={`/map/${placeId}/${getUriId(heist.node?.id)}/edit`}
+                        className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
+                        unstyled
+                      >
+                        {t('heist.edit', {
+                          ns: 'heist',
+                        })}
+                      </Link>
+                      <Link
+                        to={`/map/${placeId}/delete`}
+                        className="block w-auto rounded-1 bg-red-10 p-2 text-center font-medium transition-colors hover:bg-red-8"
+                        unstyled
+                      >
+                        {t('heist.delete', {
+                          ns: 'heist',
+                        })}
+                      </Link>
+                    </div>
+                  ))}
               </div>
               <Text as="p" className="underline">
                 {new Date(heist.node.startAt).toLocaleDateString(locale, {

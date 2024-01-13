@@ -35,6 +35,10 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
   const { heist } = await getHeist(context.client, params.heistId);
 
+  if (establishments.edges.find((edge) => edge.node.id === heist.establishment.id) === undefined) {
+    throw redirect(`/map/${params.placeId}`);
+  }
+
   return {
     establishments,
     heist,
@@ -106,7 +110,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   );
 }
 
-export default function Add() {
+export default function Edit() {
   const { t } = useTranslation();
   const [objectivesIndexs, setObjectivesIndexs] = useState<number[]>([]);
   const [counter, setCounter] = useState<number>(0);
@@ -115,6 +119,18 @@ export default function Add() {
   const methods = useRemixForm<UpdateHeistFormData>({
     mode: 'onSubmit',
     resolver: updateHeistResolver,
+    defaultValues: {
+      name: heist.name,
+      description: heist.description,
+      startAt: new Date(heist.startAt),
+      shouldEndAt: new Date(heist.shouldEndAt),
+      minimumPayout: heist.minimumPayout,
+      maximumPayout: heist.maximumPayout,
+      establishment: heist.establishment.id,
+      preferedTactic: heist.preferedTactic,
+      difficulty: heist.difficulty,
+      objectives: heist.objectives,
+    },
   });
 
   const addObjective = () => {
