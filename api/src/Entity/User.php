@@ -173,6 +173,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         self::READ,
         self::READ_PUBLIC,
         self::REGISTER,
+        self::BLAMEABLE,
         ContractorRequest::READ,
         Heist::READ,
         Review::READ_PUBLIC,

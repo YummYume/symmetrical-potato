@@ -77,7 +77,7 @@ final class HeistVoter extends Voter
             return true;
         }
 
-        return $heist->getEstablishment()->getContractor() === $user;
+        return $this->security->isGranted(User::ROLE_CONTRACTOR) && $heist->getEstablishment()->getContractor() === $user;
     }
 
     private function canDelete(Heist $heist, User $user): bool

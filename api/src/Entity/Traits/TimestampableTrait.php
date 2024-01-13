@@ -14,13 +14,13 @@ trait TimestampableTrait
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'create')]
-    #[ApiProperty]
+    #[ApiProperty(security: 'is_granted("ROLE_ADMIN")')]
     #[Groups([self::TIMESTAMPABLE])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'update')]
-    #[ApiProperty]
+    #[ApiProperty(security: 'is_granted("ROLE_ADMIN")')]
     #[Groups([self::TIMESTAMPABLE])]
     private ?\DateTimeInterface $updatedAt = null;
 

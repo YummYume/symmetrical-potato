@@ -36,8 +36,8 @@ export default function Users() {
 
       <Section>
         <Container>
-          <div className="grid h-[32rem] grid-cols-[25%_75%] overflow-hidden">
-            <div className="h-[32rem] rounded-l-5 border-2 ">
+          <div className="panel">
+            <div className="panel__sidebar">
               <ScrollArea type="auto" scrollbars="both">
                 <nav>
                   <ul>
@@ -45,7 +45,7 @@ export default function Users() {
                       <li key={edge.node.id}>
                         <NavLink
                           to={getUriId(edge.node.id)}
-                          className="group relative flex justify-between gap-1 p-5"
+                          className="panel__sidebar-item group"
                           unstyled
                         >
                           {({ isActive, isPending }) => (
@@ -53,13 +53,10 @@ export default function Users() {
                               <span>{edge.node.username}</span>
                               <UserStatusBadge status={edge.node.status} />
                               <div
-                                className={clsx(
-                                  'absolute inset-0 -z-10 transition-colors group-hover:bg-accent-8 group-focus-visible:bg-accent-8 motion-reduce:transition-none',
-                                  {
-                                    'bg-accent-8': isActive,
-                                    'bg-accent-10 opacity-50': isPending,
-                                  },
-                                )}
+                                className={clsx('panel__sidebar-item-background', {
+                                  'panel__sidebar-item-background--active': isActive,
+                                  'panel__sidebar-item-background--pending': isPending,
+                                })}
                                 aria-hidden="true"
                                 style={{
                                   viewTransitionName: isActive ? 'active-user-link' : undefined,
@@ -74,7 +71,7 @@ export default function Users() {
                 </nav>
               </ScrollArea>
             </div>
-            <div className="h-[32rem] rounded-r-5 border-2 border-l-0 p-4">
+            <div className="panel__content">
               <Outlet key={pathname} />
             </div>
           </div>

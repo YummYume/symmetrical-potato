@@ -15,14 +15,14 @@ trait BlameableTrait
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'created_by_id', referencedColumnName: 'id', nullable: true)]
     #[Gedmo\Blameable(on: 'create')]
-    #[ApiProperty]
+    #[ApiProperty(security: 'is_granted("ROLE_ADMIN")')]
     #[Groups([self::BLAMEABLE])]
     private ?User $createdBy = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'updated_by_id', referencedColumnName: 'id', nullable: true)]
     #[Gedmo\Blameable(on: 'update')]
-    #[ApiProperty]
+    #[ApiProperty(security: 'is_granted("ROLE_ADMIN")')]
     #[Groups([self::BLAMEABLE])]
     private ?User $updatedBy = null;
 

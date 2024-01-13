@@ -6,6 +6,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\DeleteMutation;
+use ApiPlatform\Metadata\GraphQl\Mutation;
 use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
@@ -36,6 +38,23 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: [
                 'groups' => [self::READ],
             ]
+        ),
+        new Mutation(
+            name: 'update',
+            normalizationContext: [
+                'groups' => [self::WRITE],
+            ],
+            denormalizationContext: [
+                'groups' => [self::READ],
+            ],
+            validationContext: [
+                'groups' => [self::READ],
+            ],
+            security: 'is_granted("UPDATE", object)'
+        ),
+        new DeleteMutation(
+            name: 'delete',
+            security: 'is_granted("DELETE", object)'
         ),
     ]
 )]

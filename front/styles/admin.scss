@@ -1,0 +1,27 @@
+.panel {
+  @apply grid h-[32rem] grid-cols-[25%_75%] overflow-hidden;
+
+  &__sidebar {
+    @apply h-[32rem] rounded-l-5 border-2;
+  }
+
+  &__sidebar-item {
+    @apply relative flex justify-between gap-1 p-5;
+  }
+
+  &__sidebar-item-background {
+    @apply absolute inset-0 -z-10 transition-colors group-hover:bg-accent-8 group-focus-visible:bg-accent-8 motion-reduce:transition-none;
+
+    &--active {
+      @apply bg-accent-8;
+    }
+
+    &--pending {
+      @apply bg-accent-10 opacity-50;
+    }
+  }
+
+  &__content {
+    @apply h-[32rem] rounded-r-5 border-2 border-l-0 p-4;
+  }
+}

@@ -119,7 +119,7 @@ class ContractorRequest
     private ?string $adminComment = null;
 
     #[ORM\OneToOne(mappedBy: 'contractorRequest', targetEntity: User::class)]
-    #[Groups(['contractor_request:read:admin'])]
+    #[Groups([self::READ])]
     private ?User $user = null;
 
     public function getId(): ?Uuid

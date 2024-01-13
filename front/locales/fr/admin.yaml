@@ -6,7 +6,7 @@ user.delete.confirm: >
 user.revive.confirm: >
   Êtes-vous sûr de vouloir réanimer cet utilisateur ? Il sera considéré comme vivant et pourra se connecter.
 user.kill.confirm: >
-  Êtes-vous sûr de vouloir tuer cet utilisateur ? Des tueurs à gages seront envoyés à son emplacement. Il sera considéré comme mort et ne pourra pas se connecter.
+  Êtes-vous sûr de vouloir tuer cet utilisateur ? Des tueurs à gages seront envoyés à son emplacement. Il sera considéré comme mort et ne pourra plus se connecter.
 user.roles.roles: Rôles
 user.roles.role_user: Utilisateur
 user.roles.role_heister: Braqueur

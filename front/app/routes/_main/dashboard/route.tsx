@@ -3,7 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { getDayHeists } from '~/lib/api/heist';
+import { getHeistsForToday } from '~/lib/api/heist';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link } from '~components/Link';
 
@@ -12,7 +12,7 @@ import type { LoaderFunctionArgs } from '@remix-run/node';
 export async function loader({ context }: LoaderFunctionArgs) {
   denyAccessUnlessGranted(context.user);
 
-  const response = await getDayHeists(context.client);
+  const response = await getHeistsForToday(context.client);
 
   return {
     heists: response.heists.edges,

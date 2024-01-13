@@ -95,6 +95,7 @@ export type ContractorRequest = Node & {
   id: Scalars['ID']['output'];
   reason: Scalars['String']['output'];
   status: ContractorRequestStatusEnum;
+  user: Maybe<User>;
 };
 
 /** Cursor connection for ContractorRequest. */
@@ -543,6 +544,8 @@ export type Mutation = {
   deleteHeist: Maybe<DeleteHeistPayload>;
   /** Deletes a HeistAsset. */
   deleteHeistAsset: Maybe<DeleteHeistAssetPayload>;
+  /** Deletes a Location. */
+  deleteLocation: Maybe<DeleteLocationPayload>;
   /** Deletes a Review. */
   deleteReview: Maybe<DeleteReviewPayload>;
   /** Deletes a User. */
@@ -569,6 +572,8 @@ export type Mutation = {
   updateHeist: Maybe<UpdateHeistPayload>;
   /** Updates a HeistAsset. */
   updateHeistAsset: Maybe<UpdateHeistAssetPayload>;
+  /** Updates a Location. */
+  updateLocation: Maybe<UpdateLocationPayload>;
   /** Updates a Profile. */
   updateProfile: Maybe<UpdateProfilePayload>;
   /** Updates a Review. */
@@ -653,6 +658,10 @@ export type MutationDeleteHeistAssetArgs = {
   input: DeleteHeistAssetInput;
 };
 
+export type MutationDeleteLocationArgs = {
+  input: DeleteLocationInput;
+};
+
 export type MutationDeleteReviewArgs = {
   input: DeleteReviewInput;
 };
@@ -703,6 +712,10 @@ export type MutationUpdateHeistArgs = {
 
 export type MutationUpdateHeistAssetArgs = {
   input: UpdateHeistAssetInput;
+};
+
+export type MutationUpdateLocationArgs = {
+  input: UpdateLocationInput;
 };
 
 export type MutationUpdateProfileArgs = {
@@ -1696,6 +1709,25 @@ export type DeleteHeistPayloadData = Node & {
   id: Scalars['ID']['output'];
 };
 
+/** Deletes a Location. */
+export type DeleteLocationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+};
+
+/** Deletes a Location. */
+export type DeleteLocationPayload = {
+  __typename?: 'deleteLocationPayload';
+  clientMutationId: Maybe<Scalars['String']['output']>;
+  location: Maybe<DeleteLocationPayloadData>;
+};
+
+/** Deletes a Location. */
+export type DeleteLocationPayloadData = Node & {
+  __typename?: 'deleteLocationPayloadData';
+  id: Scalars['ID']['output'];
+};
+
 /** Deletes a Review. */
 export type DeleteReviewInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
@@ -1899,6 +1931,7 @@ export type UpdateContractorRequestNestedPayload = Node & {
   id: Scalars['ID']['output'];
   reason: Maybe<Scalars['String']['output']>;
   status: Maybe<ContractorRequestStatusEnum>;
+  user: Maybe<UpdateUserNestedPayload>;
 };
 
 /** Updates a ContractorRequest. */
@@ -2212,7 +2245,7 @@ export type UpdateHeistNestedPayload = Node & {
   forbiddenAssets: Maybe<UpdateAssetNestedPayloadCursorConnection>;
   forbiddenUsers: Maybe<UpdateUserNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
-  location: Maybe<Location>;
+  location: Maybe<UpdateLocationNestedPayload>;
   maximumPayout: Maybe<Scalars['Float']['output']>;
   minimumPayout: Maybe<Scalars['Float']['output']>;
   minimumRequiredRating: Maybe<Scalars['Float']['output']>;
@@ -2254,6 +2287,38 @@ export type UpdateHeistPayload = {
   __typename?: 'updateHeistPayload';
   clientMutationId: Maybe<Scalars['String']['output']>;
   heist: Maybe<Heist>;
+};
+
+/** Updates a Location. */
+export type UpdateLocationInput = {
+  address?: InputMaybe<Scalars['String']['input']>;
+  averageRating?: InputMaybe<Scalars['Float']['input']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  latitude?: InputMaybe<Scalars['Float']['input']>;
+  longitude?: InputMaybe<Scalars['Float']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  placeId?: InputMaybe<Scalars['String']['input']>;
+  reviewCount?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** Updates a Location. */
+export type UpdateLocationNestedPayload = Node & {
+  __typename?: 'updateLocationNestedPayload';
+  id: Scalars['ID']['output'];
+};
+
+/** Updates a Location. */
+export type UpdateLocationPayload = {
+  __typename?: 'updateLocationPayload';
+  clientMutationId: Maybe<Scalars['String']['output']>;
+  location: Maybe<UpdateLocationPayloadData>;
+};
+
+/** Updates a Location. */
+export type UpdateLocationPayloadData = Node & {
+  __typename?: 'updateLocationPayloadData';
+  id: Scalars['ID']['output'];
 };
 
 /** Updates a Profile. */
