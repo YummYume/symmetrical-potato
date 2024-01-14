@@ -165,37 +165,6 @@ export const getHeist = async (client: GraphQLClient, id: string) => {
 };
 
 /**
- * Get a heist by id
- */
-export const getHeist = async (client: GraphQLClient, id: string) => {
-  return client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
-    gql`
-      query ($id: ID!) {
-        heist(id: $id) {
-          id
-          name
-          description
-          startAt
-          shouldEndAt
-          minimumPayout
-          maximumPayout
-          establishment {
-            id
-          }
-          preferedTactic
-          difficulty
-          visibility
-          objectives
-        }
-      }
-    `,
-    {
-      id: `/heists/${id}`,
-    },
-  );
-};
-
-/**
  * Create a Heist
  */
 export const createHeist = async (

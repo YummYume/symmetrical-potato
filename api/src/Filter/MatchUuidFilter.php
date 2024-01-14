@@ -10,7 +10,7 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\PropertyInfo\Type;
 use Symfony\Component\Uid\Uuid;
 
-final class UuidFilter extends AbstractFilter
+final class MatchUuidFilter extends AbstractFilter
 {
     use UtilsFilterTrait;
 
@@ -33,13 +33,13 @@ final class UuidFilter extends AbstractFilter
             $propertyName = $this->normalizePropertyName($property);
             $description[$propertyName] = [
                 'property' => $propertyName,
-                'type' => Type::BUILTIN_TYPE_STRING,
+                'type' => Type::BUILTIN_TYPE_ARRAY,
                 'required' => false,
                 'openapi' => [
-                    'example' => 'If the property is "employee__user__id" the filter will be applied to the property "employee.user.id" of the entity.',
-                    'description' => 'Recursively filter by UUID',
-                    'name' => 'UUID filter',
-                    'type' => Type::BUILTIN_TYPE_STRING,
+                    'example' => 'If the property is `contractor__id: ["uuid_0", "uuid_1", "uuid_2"]` the filter will be applied a `WHERE contractor.id IN ("uuid_0", "uuid_1", "uuid_2")` clause.',
+                    'description' => 'Matches a property uuid against a list of uuids.',
+                    'name' => 'Match uuid filter',
+                    'type' => Type::BUILTIN_TYPE_ARRAY,
                 ],
             ];
         }
@@ -63,11 +63,14 @@ final class UuidFilter extends AbstractFilter
             return;
         }
 
-        // Check if the value is a valid UUID and convert it to binary
-        try {
-            $value = Uuid::fromString($this->getIdFromURI($value))->toBinary();
-        } catch (\Exception $e) {
-            return;
+        // Check if values are valid UUID and convert it to binary
+        foreach ($value as $key => $item) {
+            try {
+                $uuid = Uuid::fromString($this->getIdFromURI($item))->toBinary();
+                $value[$key] = $uuid;
+            } catch (\Exception $e) {
+                return;
+            }
         }
 
         $alias = $queryBuilder->getRootAliases()[0];
@@ -80,7 +83,8 @@ final class UuidFilter extends AbstractFilter
         $valueParameter = $queryNameGenerator->generateParameterName($field);
 
         $queryBuilder
-            ->andWhere(sprintf('%s.%s = :%s', $alias, $field, $valueParameter))
-            ->setParameter($valueParameter, $value);
+            ->andWhere($queryBuilder->expr()->in(sprintf('%s.%s', $alias, $field), ":$valueParameter"))
+            ->setParameter($valueParameter, $value)
+        ;
     }
 }

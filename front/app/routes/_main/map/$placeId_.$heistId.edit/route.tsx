@@ -32,9 +32,13 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     throw redirect(`/map/${params.placeId}`);
   }
 
+  // Get the establishments of the current user
   const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
+
+  // Get the current heist
   const { heist } = await getHeist(context.client, params.heistId);
 
+  // Redirect if the heist is not owned by a establishment of the current user
   if (establishments.edges.find((edge) => edge.node.id === heist.establishment.id) === undefined) {
     throw redirect(`/map/${params.placeId}`);
   }

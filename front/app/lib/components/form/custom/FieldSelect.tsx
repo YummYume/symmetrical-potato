@@ -9,25 +9,22 @@ import { getFormErrorField } from '~/lib/utils/error';
 
 import type { Control } from 'react-hook-form';
 import type { Path } from 'react-hook-form';
-import type { PropsValue } from 'react-select';
+import type { GroupBase, Props } from 'react-select';
 import type { FormErrorField } from '~/lib/utils/error';
 
 type FormData = Record<string, unknown>;
 
 type Option = { value: string; label: string };
 
-export type DefaultValue = (PropsValue<Option> & (string | number | readonly string[])) | undefined;
-
-export type FieldSelectProps<T> = {
+export type FieldSelectProps<T, Group extends GroupBase<Option> = GroupBase<Option>> = {
   name: Path<T>;
   label: string;
   error?: string;
-  options: Option[];
   hideLabel?: boolean;
   containerClassName?: string;
   errorClassName?: string;
   children?: JSX.Element;
-} & React.ComponentProps<typeof Select<Option>> &
+} & Props<Option, boolean, Group> &
   React.SelectHTMLAttributes<HTMLSelectElement>;
 
 export function FieldSelect<T extends FormData>({
@@ -64,8 +61,8 @@ export function FieldSelect<T extends FormData>({
             {...registerField}
             {...rest}
             options={options}
-            value={options.find((o) => o.value === field.value)}
-            onChange={(newValue) => newValue && field.onChange(newValue.value)}
+            value={options?.find((o) => o.value === field.value)}
+            onChange={(newValue) => newValue && field.onChange(newValue)}
           />
         )}
       />

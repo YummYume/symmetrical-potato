@@ -212,6 +212,7 @@ class Establishment
     private ?User $contractor = null;
 
     /** @var ArrayCollection<int, Employee> */
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
     #[ORM\OneToMany(mappedBy: 'establishment', targetEntity: Employee::class, orphanRemoval: true)]
     private Collection $employees;
 

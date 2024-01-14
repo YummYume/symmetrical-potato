@@ -3,10 +3,11 @@ import { Button, Heading, Section, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
+import { getEmployeesEstablishments } from '~/lib/api/employee';
 import { getEstablishmentsOfContractor } from '~/lib/api/establishment';
 import { createHeist } from '~/lib/api/heist';
 import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
@@ -28,10 +29,15 @@ import type { FlashMessage } from '~/root';
 export async function loader({ context, params }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user, ROLES.CONTRACTOR);
 
-  const response = await getEstablishmentsOfContractor(context.client, user.id);
+  // Get the establishments of the current user
+  const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
+  const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
+
+  const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
 
   return {
-    establishments: response.establishments,
+    employees,
+    establishments,
     placeId: params.placeId,
     locale: context.locale,
   };
@@ -96,11 +102,36 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   );
 }
 
+type Option = { label: string; value: string };
+
 export default function Add() {
   const { t } = useTranslation();
-  const [objectivesIndexs, setObjectivesIndexs] = useState<number[]>([]);
-  const [counter, setCounter] = useState<number>(0);
-  const { placeId, establishments } = useLoaderData<Loader>();
+  const { placeId, establishments, employees } = useLoaderData<Loader>();
+
+  const employeesFormatted: (Option & { establishmentId: string })[] = employees.edges.map(
+    (edge) => ({
+      establishmentId: edge.node.establishment.id,
+      label: edge.node.user.username,
+      value: edge.node.id,
+    }),
+  );
+
+  const establishmentsFormatted: Option[] = establishments.edges.map((edge) => ({
+    label: edge.node.name,
+    value: edge.node.id,
+  }));
+
+  const heistPreferedTactics: Option[] = Object.values(HeistPreferedTacticEnum).map(
+    (value: string) => ({
+      label: value,
+      value,
+    }),
+  );
+
+  const heistDifficulties: Option[] = Object.values(HeistDifficultyEnum).map((value: string) => ({
+    label: value,
+    value,
+  }));
 
   const methods = useRemixForm<CreateHeistFormData>({
     mode: 'onSubmit',
@@ -114,6 +145,22 @@ export default function Add() {
     },
   });
 
+  const watchEstablishment = methods.watch('establishment');
+
+  const [employeesOptions, setEmployeesOptions] = useState<
+    (Option & { establishmentId: string })[]
+  >(employeesFormatted.filter((employee) => employee.establishmentId === watchEstablishment));
+
+  const [objectivesIndexs, setObjectivesIndexs] = useState<number[]>([]);
+  const [counter, setCounter] = useState<number>(0);
+
+  // useEffect(() => {
+  //   setEmployeesOptions([
+  //     ...employeesFormatted.filter((employee) => employee.establishmentId === watchEstablishment),
+  //   ]);
+  //   methods.setValue('employees', []);
+  // }, [watchEstablishment]);
+
   const addObjective = () => {
     setObjectivesIndexs((prev) => [...prev, counter]);
     setCounter((prev) => prev + 1);
@@ -126,21 +173,6 @@ export default function Add() {
     methods.clearErrors([`objectives.${index}.name`, `objectives.${index}.description`]);
     methods.unregister([`objectives.${index}.name`, `objectives.${index}.description`]);
   };
-
-  const establishmentsFormatted = establishments.edges.map((edge) => ({
-    label: edge.node.name,
-    value: edge.node.id,
-  }));
-
-  const heistPreferedTactics = Object.values(HeistPreferedTacticEnum).map((value: string) => ({
-    label: value,
-    value,
-  }));
-
-  const heistDifficulties = Object.values(HeistDifficultyEnum).map((value: string) => ({
-    label: value,
-    value,
-  }));
 
   return (
     <div>
@@ -163,6 +195,12 @@ export default function Add() {
               label={t('establishment')}
               options={establishmentsFormatted}
             />
+            {/* <FieldSelect
+              name="employees"
+              label="employees"
+              options={employeesOptions}
+              isMulti={false}
+            /> */}
             <FieldSelect
               name="preferedTactic"
               label={t('heist.prefered_tactic')}

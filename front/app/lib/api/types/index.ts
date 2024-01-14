@@ -158,7 +158,7 @@ export type Employee = Node & {
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
   status: Maybe<EmployeeStatusEnum>;
-  user: Maybe<User>;
+  user: User;
   weeklySchedule: Maybe<Scalars['Iterable']['output']>;
 };
 
@@ -247,6 +247,7 @@ export type Establishment = Node & {
   crewCut: Scalars['Float']['output'];
   description: Maybe<Scalars['String']['output']>;
   employeeCut: Scalars['Float']['output'];
+  employees: Maybe<EmployeeCursorConnection>;
   id: Scalars['ID']['output'];
   minimumWage: Scalars['Float']['output'];
   minimumWorkTimePerWeek: Scalars['Int']['output'];
@@ -254,6 +255,14 @@ export type Establishment = Node & {
   reviewCount: Scalars['Int']['output'];
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<User>;
+};
+
+export type EstablishmentEmployeesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Cursor connection for Establishment. */
@@ -309,6 +318,7 @@ export type Heist = Node & {
 export type HeistAllowedEmployeesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -850,6 +860,7 @@ export type QueryEmployeeTimeOffsArgs = {
 export type QueryEmployeesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -1250,7 +1261,7 @@ export type CreateEmployeeNestedPayload = Node & {
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
   status: Maybe<EmployeeStatusEnum>;
-  user: Maybe<CreateUserNestedPayload>;
+  user: CreateUserNestedPayload;
   weeklySchedule: Maybe<Scalars['Iterable']['output']>;
 };
 
@@ -1294,7 +1305,7 @@ export type CreateEmployeePayloadData = Node & {
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
   status: Maybe<EmployeeStatusEnum>;
-  user: Maybe<CreateUserNestedPayload>;
+  user: CreateUserNestedPayload;
   weeklySchedule: Maybe<Scalars['Iterable']['output']>;
 };
 
@@ -1326,6 +1337,7 @@ export type CreateEstablishmentInput = {
   crewCut: Scalars['Float']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   employeeCut: Scalars['Float']['input'];
+  employees?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   minimumWage: Scalars['Float']['input'];
   minimumWorkTimePerWeek: Scalars['Int']['input'];
   name: Scalars['String']['input'];
@@ -1342,6 +1354,7 @@ export type CreateEstablishmentNestedPayload = Node & {
   crewCut: Scalars['Float']['output'];
   description: Maybe<Scalars['String']['output']>;
   employeeCut: Scalars['Float']['output'];
+  employees: Maybe<CreateEmployeeNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   minimumWage: Scalars['Float']['output'];
   minimumWorkTimePerWeek: Scalars['Int']['output'];
@@ -2117,6 +2130,7 @@ export type UpdateEstablishmentInput = {
   crewCut?: InputMaybe<Scalars['Float']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   employeeCut?: InputMaybe<Scalars['Float']['input']>;
+  employees?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   id: Scalars['ID']['input'];
   minimumWage?: InputMaybe<Scalars['Float']['input']>;
   minimumWorkTimePerWeek?: InputMaybe<Scalars['Int']['input']>;
@@ -2134,6 +2148,7 @@ export type UpdateEstablishmentNestedPayload = Node & {
   crewCut: Maybe<Scalars['Float']['output']>;
   description: Maybe<Scalars['String']['output']>;
   employeeCut: Maybe<Scalars['Float']['output']>;
+  employees: Maybe<UpdateEmployeeNestedPayloadCursorConnection>;
   id: Scalars['ID']['output'];
   minimumWage: Maybe<Scalars['Float']['output']>;
   minimumWorkTimePerWeek: Maybe<Scalars['Int']['output']>;
@@ -2438,7 +2453,7 @@ export type ValidateEmployeeNestedPayload = Node & {
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
   status: Maybe<EmployeeStatusEnum>;
-  user: Maybe<ValidateUserNestedPayload>;
+  user: ValidateUserNestedPayload;
   weeklySchedule: Maybe<Scalars['Iterable']['output']>;
 };
 
@@ -2458,7 +2473,7 @@ export type ValidateEmployeePayloadData = Node & {
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
   status: Maybe<EmployeeStatusEnum>;
-  user: Maybe<ValidateUserNestedPayload>;
+  user: ValidateUserNestedPayload;
   weeklySchedule: Maybe<Scalars['Iterable']['output']>;
 };
 

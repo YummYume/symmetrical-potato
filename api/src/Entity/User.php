@@ -180,6 +180,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         CrewMember::READ,
         CrewMember::READ_PUBLIC,
         Establishment::READ_PUBLIC,
+        Employee::READ,
     ])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.username.not_blank')]
     #[Assert\Length(
