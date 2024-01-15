@@ -33,6 +33,8 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
   const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
 
+  establishmentsIds.push('/establishments/1eeb2ebb-daaf-6cca-9d1e-f71b5fde5239');
+
   const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
 
   return {
@@ -121,6 +123,11 @@ export default function Add() {
     value: edge.node.id,
   }));
 
+  establishmentsFormatted.push({
+    label: 'bob parc',
+    value: '/establishments/1eeb2ebb-daaf-6cca-9d1e-f71b5fde5239',
+  });
+
   const heistPreferedTactics: Option[] = Object.values(HeistPreferedTacticEnum).map(
     (value: string) => ({
       label: value,
@@ -145,7 +152,8 @@ export default function Add() {
     },
   });
 
-  const watchEstablishment = methods.watch('establishment');
+  const watchEstablishment = methods.watch('establishment') as Option | string;
+  console.log(watchEstablishment?.value ?? watchEstablishment);
 
   const [employeesOptions, setEmployeesOptions] = useState<
     (Option & { establishmentId: string })[]
@@ -154,11 +162,19 @@ export default function Add() {
   const [objectivesIndexs, setObjectivesIndexs] = useState<number[]>([]);
   const [counter, setCounter] = useState<number>(0);
 
-  // useEffect(() => {
-  //   setEmployeesOptions([
-  //     ...employeesFormatted.filter((employee) => employee.establishmentId === watchEstablishment),
-  //   ]);
-  //   methods.setValue('employees', []);
+  useEffect(() => {
+    setEmployeesOptions(
+      employeesFormatted.filter((employee) => employee.establishmentId === watchEstablishment),
+    );
+    // methods.setValue('employees', []);
+  }, [watchEstablishment]);
+
+  // const select2Options = useMemo<(Option & { establishmentId: string })[]>(() => {
+  //   let value = employeesFormatted.filter(
+  //     (employee) => employee.establishmentId === watchEstablishment,
+  //   );
+  //   console.log(value);
+  //   return value;
   // }, [watchEstablishment]);
 
   const addObjective = () => {
@@ -195,12 +211,9 @@ export default function Add() {
               label={t('establishment')}
               options={establishmentsFormatted}
             />
-            {/* <FieldSelect
-              name="employees"
-              label="employees"
-              options={employeesOptions}
-              isMulti={false}
-            /> */}
+            {watchEstablishment && (
+              <FieldSelect name="employees" label="employees" options={employeesOptions} isMulti />
+            )}
             <FieldSelect
               name="preferedTactic"
               label={t('heist.prefered_tactic')}

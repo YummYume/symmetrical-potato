@@ -1,5 +1,4 @@
 import { Grid, Text } from '@radix-ui/themes';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
@@ -14,29 +13,36 @@ import type { FormErrorField } from '~/lib/utils/error';
 
 type FormData = Record<string, unknown>;
 
-type Option = { value: string; label: string };
+type OptionFormat = { value: string; label: string };
 
-export type FieldSelectProps<T, Group extends GroupBase<Option> = GroupBase<Option>> = {
+export type FieldSelectProps<
+  T,
+  Option,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+> = {
   name: Path<T>;
   label: string;
   error?: string;
+  options: Option[];
+  isMulti?: IsMulti;
   hideLabel?: boolean;
   containerClassName?: string;
   errorClassName?: string;
   children?: JSX.Element;
-} & Props<Option, boolean, Group> &
-  React.SelectHTMLAttributes<HTMLSelectElement>;
+} & Props<Option, IsMulti, Group>;
 
-export function FieldSelect<T extends FormData>({
+export function FieldSelect<T extends FormData, B extends boolean = false>({
   name,
   label,
   options,
+  isMulti,
   hideLabel = false,
   containerClassName = '',
   errorClassName = 'text-accent-6',
   children,
   ...rest
-}: FieldSelectProps<T>) {
+}: FieldSelectProps<T, OptionFormat, B>) {
   const { t } = useTranslation();
   const {
     control,
@@ -60,6 +66,7 @@ export function FieldSelect<T extends FormData>({
           <Select
             {...registerField}
             {...rest}
+            isMulti={isMulti}
             options={options}
             value={options?.find((o) => o.value === field.value)}
             onChange={(newValue) => newValue && field.onChange(newValue)}

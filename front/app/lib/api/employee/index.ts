@@ -54,6 +54,9 @@ export const getEmployeesEstablishments = async (client: GraphQLClient, ids: str
           edges {
             node {
               id
+              establishment {
+                id
+              }
               user {
                 id
                 username

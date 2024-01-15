@@ -53,6 +53,11 @@ export const createHeistValidationSchema = z
           message: 'heist.maximum_payout.positive',
         }),
     ),
+    employees: z
+      .string()
+      .array()
+      .min(1, { message: 'heist.employees.min_length' })
+      .max(10, { message: 'heist.employees.max_length' }),
     establishment: z
       .string({
         required_error: 'heist.establishment.required',
