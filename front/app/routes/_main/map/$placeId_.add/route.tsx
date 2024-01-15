@@ -152,30 +152,22 @@ export default function Add() {
     },
   });
 
-  const watchEstablishment = methods.watch('establishment') as Option | string;
-  console.log(watchEstablishment?.value ?? watchEstablishment);
-
-  const [employeesOptions, setEmployeesOptions] = useState<
-    (Option & { establishmentId: string })[]
-  >(employeesFormatted.filter((employee) => employee.establishmentId === watchEstablishment));
-
   const [objectivesIndexs, setObjectivesIndexs] = useState<number[]>([]);
   const [counter, setCounter] = useState<number>(0);
 
+  const watchEstablishment = methods.watch('establishment') as Option | string;
+  const currentEstablishment =
+    typeof watchEstablishment === 'string' ? watchEstablishment : watchEstablishment?.value;
+
+  const [employeesOptions, setEmployeesOptions] = useState<
+    (Option & { establishmentId: string })[]
+  >(employeesFormatted.filter((employee) => employee.establishmentId === currentEstablishment));
+
   useEffect(() => {
     setEmployeesOptions(
-      employeesFormatted.filter((employee) => employee.establishmentId === watchEstablishment),
+      employeesFormatted.filter((employee) => employee.establishmentId === currentEstablishment),
     );
-    // methods.setValue('employees', []);
   }, [watchEstablishment]);
-
-  // const select2Options = useMemo<(Option & { establishmentId: string })[]>(() => {
-  //   let value = employeesFormatted.filter(
-  //     (employee) => employee.establishmentId === watchEstablishment,
-  //   );
-  //   console.log(value);
-  //   return value;
-  // }, [watchEstablishment]);
 
   const addObjective = () => {
     setObjectivesIndexs((prev) => [...prev, counter]);
@@ -211,9 +203,13 @@ export default function Add() {
               label={t('establishment')}
               options={establishmentsFormatted}
             />
-            {watchEstablishment && (
-              <FieldSelect name="employees" label="employees" options={employeesOptions} isMulti />
-            )}
+            <FieldSelect
+              name="employees"
+              label="employees"
+              options={employeesOptions}
+              isMulti
+              isDisabled={!watchEstablishment}
+            />
             <FieldSelect
               name="preferedTactic"
               label={t('heist.prefered_tactic')}

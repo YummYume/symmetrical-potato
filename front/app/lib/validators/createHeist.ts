@@ -54,7 +54,11 @@ export const createHeistValidationSchema = z
         }),
     ),
     employees: z
-      .string()
+      .object({
+        value: z.string({
+          required_error: 'heist.employees.required',
+        }),
+      })
       .array()
       .min(1, { message: 'heist.employees.min_length' })
       .max(10, { message: 'heist.employees.max_length' }),

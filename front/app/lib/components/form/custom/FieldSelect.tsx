@@ -62,16 +62,22 @@ export function FieldSelect<T extends FormData, B extends boolean = false>({
       <Controller
         name={name}
         control={control as Control<T>}
-        render={({ field }) => (
-          <Select
-            {...registerField}
-            {...rest}
-            isMulti={isMulti}
-            options={options}
-            value={options?.find((o) => o.value === field.value)}
-            onChange={(newValue) => newValue && field.onChange(newValue)}
-          />
-        )}
+        render={({ field }) => {
+          const selectedValue = Array.isArray(field.value)
+            ? options?.find((o) => (field.value as OptionFormat[]).find((v) => v.value === o.value))
+            : options?.find((o) => o.value === field.value);
+          return (
+            <Select
+              key={`field_select_key_${JSON.stringify(options)}`}
+              {...registerField}
+              {...rest}
+              isMulti={isMulti}
+              options={options}
+              value={selectedValue}
+              onChange={(newValue) => newValue && field.onChange(newValue)}
+            />
+          );
+        }}
       />
       {error && (
         <Text as="p" id={ariaDescribedBy} className={errorClassName}>
