@@ -46,6 +46,7 @@ creating: Creating...
 owner: Owner
 back: Back
 update: Update
+add: Add
 
 # History info
 history_info: History info
@@ -59,10 +60,11 @@ history_info.updated_at: Updated on {date} at {time}.
 # Heist
 heist.should_end_at: Estimated end date
 heist.prefered_tactic: Prefered tactic
-heist.objective: Objective
+heist.objective: Objectives
 heist.minimum_payout: Minimum payout
 heist.maximum_payout: Maximum payout
 heist.difficulty: Difficulty
+heist.allowed_employees: Allowed employees
 
 # User
 user.balance: Balance

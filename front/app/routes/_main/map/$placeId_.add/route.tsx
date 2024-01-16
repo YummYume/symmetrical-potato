@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Button, Heading, Section, Text } from '@radix-ui/themes';
+import { Heading, Section } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -14,6 +14,7 @@ import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } fro
 import { Link } from '~/lib/components/Link';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
+import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
@@ -69,6 +70,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       startAt: data.startAt.toISOString(),
       shouldEndAt: data.shouldEndAt.toISOString(),
       visibility: HeistVisibilityEnum.Draft,
+      allowedEmployees: data.employees.map((employee) => employee.value),
       objectives: data.objectives ?? [],
       placeId: params.placeId,
     });
@@ -123,6 +125,12 @@ export default function Add() {
     value: edge.node.id,
   }));
 
+  employeesFormatted.push({
+    establishmentId: '/establishments/1eeb2ebb-dab0-60da-b388-f71b5fde5239',
+    label: 'bobby',
+    value: '/employees/1eeb2ebb-daaf-6cca-9d1e-f71b5fde52zz9',
+  });
+
   establishmentsFormatted.push({
     label: 'bob parc',
     value: '/establishments/1eeb2ebb-daaf-6cca-9d1e-f71b5fde5239',
@@ -143,44 +151,44 @@ export default function Add() {
   const methods = useRemixForm<CreateHeistFormData>({
     mode: 'onSubmit',
     resolver: createHeistResolver,
+    submitHandlers: {
+      onInvalid: async (errors) => {
+        console.error('errors:', errors);
+      },
+      onValid: async (data) => {
+        console.error('data:', data);
+      },
+    },
     defaultValues: {
       startAt: new Date(),
       shouldEndAt: new Date(),
       establishment: establishments.edges[0].node.id,
       preferedTactic: HeistPreferedTacticEnum.Loud,
       difficulty: HeistDifficultyEnum.Normal,
+      employees: [],
     },
   });
 
-  const [objectivesIndexs, setObjectivesIndexs] = useState<number[]>([]);
-  const [counter, setCounter] = useState<number>(0);
-
+  // Watch when the establishment changes to update the employees options
   const watchEstablishment = methods.watch('establishment') as Option | string;
+
+  // console.log(methods.watch('employees'));
+
+  // Get the current establishment (string or Option)
   const currentEstablishment =
     typeof watchEstablishment === 'string' ? watchEstablishment : watchEstablishment?.value;
 
+  // Get the employees of the current establishment
   const [employeesOptions, setEmployeesOptions] = useState<
     (Option & { establishmentId: string })[]
   >(employeesFormatted.filter((employee) => employee.establishmentId === currentEstablishment));
 
+  // Update the employees options when the establishment changes
   useEffect(() => {
     setEmployeesOptions(
       employeesFormatted.filter((employee) => employee.establishmentId === currentEstablishment),
     );
   }, [watchEstablishment]);
-
-  const addObjective = () => {
-    setObjectivesIndexs((prev) => [...prev, counter]);
-    setCounter((prev) => prev + 1);
-  };
-
-  const removeObjective = (index: number) => {
-    setObjectivesIndexs((prev) => prev.filter((i) => i !== index));
-    setCounter((prev) => prev - 1);
-
-    methods.clearErrors([`objectives.${index}.name`, `objectives.${index}.description`]);
-    methods.unregister([`objectives.${index}.name`, `objectives.${index}.description`]);
-  };
 
   return (
     <div>
@@ -204,8 +212,8 @@ export default function Add() {
               options={establishmentsFormatted}
             />
             <FieldSelect
-              name="employees"
-              label="employees"
+              name="allowedEmployees"
+              label={t('heist.allowed_employees')}
               options={employeesOptions}
               isMulti
               isDisabled={!watchEstablishment}
@@ -220,22 +228,31 @@ export default function Add() {
               label={t('heist.difficulty')}
               options={heistDifficulties}
             />
-            {objectivesIndexs.map((objectiveIndex, key) => {
-              const fieldName = `objectives[${objectiveIndex}]`;
-              return (
-                <div key={fieldName}>
-                  <Text>{`${t('heist.objective')} ${key + 1}`}</Text>
-                  <FieldInput name={`${fieldName}.name`} label={t('name')} />
-                  <FieldInput name={`${fieldName}.description`} label={t('description')} />
-                  <Button type="button" onClick={() => removeObjective(objectiveIndex)}>
-                    {t('delete')}
-                  </Button>
-                </div>
-              );
-            })}
-            <Button type="button" onClick={addObjective}>
-              {t('heist.add_objective', { ns: 'heist' })}
-            </Button>
+            <FieldInputArray
+              name="objectives"
+              label={t('heist.objective')}
+              config={{
+                defaultAppendValue: {
+                  name: '',
+                  description: '',
+                },
+                add: {
+                  text: t('heist.add_objective', { ns: 'heist' }),
+                },
+                fields: [
+                  {
+                    name: 'name',
+                    label: t('name'),
+                    type: 'text',
+                  },
+                  {
+                    name: 'description',
+                    label: t('description'),
+                    type: 'text',
+                  },
+                ],
+              }}
+            />
             <SubmitButton text={t('create')} />
           </form>
         </RemixFormProvider>

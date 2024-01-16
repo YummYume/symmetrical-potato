@@ -8,7 +8,7 @@ import { getFormErrorField } from '~/lib/utils/error';
 
 import type { Control } from 'react-hook-form';
 import type { Path } from 'react-hook-form';
-import type { GroupBase, Props } from 'react-select';
+import type { GroupBase, Props, PropsValue } from 'react-select';
 import type { FormErrorField } from '~/lib/utils/error';
 
 type FormData = Record<string, unknown>;
@@ -51,8 +51,8 @@ export function FieldSelect<T extends FormData, B extends boolean = false>({
   } = useRemixFormContext<T>();
   const ariaLabelledBy = `${name}-label`;
   const ariaDescribedBy = `${name}-error`;
+
   const error = getFormErrorField(errors[name] as FormErrorField);
-  const registerField = register(name);
 
   return (
     <Grid className={containerClassName} gap="1">
@@ -63,13 +63,32 @@ export function FieldSelect<T extends FormData, B extends boolean = false>({
         name={name}
         control={control as Control<T>}
         render={({ field }) => {
-          const selectedValue = Array.isArray(field.value)
+          const selectValue = () => {
+            if (field.value) {
+              if (isMulti && Array.isArray(field.value)) {
+                return field.value.map((v) => options.find((o) => o.value === v.value));
+              }
+              return (
+                options.find((o) => o.value === field.value) ?? {
+                  value: '',
+                  label: '',
+                }
+              );
+            }
+            return isNulti
+              ? []
+              : {
+                  value: '',
+                  label: '',
+                };
+          };
+          /**const selectedValue = Array.isArray(field.value)
             ? options?.find((o) => (field.value as OptionFormat[]).find((v) => v.value === o.value))
-            : options?.find((o) => o.value === field.value);
+            : options?.find((o) => o.value === field.value);**/
           return (
             <Select
               key={`field_select_key_${JSON.stringify(options)}`}
-              {...registerField}
+              {...register(name)}
               {...rest}
               isMulti={isMulti}
               options={options}
