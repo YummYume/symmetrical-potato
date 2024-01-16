@@ -39,7 +39,7 @@ export default function Users() {
           <div className="panel">
             <div className="panel__sidebar">
               <ScrollArea type="auto" scrollbars="both">
-                <nav>
+                <nav className="panel__sidebar-list">
                   <ul>
                     {users.edges.map((edge) => (
                       <li key={edge.node.id}>
@@ -51,7 +51,7 @@ export default function Users() {
                           {({ isActive, isPending }) => (
                             <>
                               <span>{edge.node.username}</span>
-                              <UserStatusBadge status={edge.node.status} />
+                              <UserStatusBadge status={edge.node.status} variant="solid" />
                               <div
                                 className={clsx('panel__sidebar-item-background', {
                                   'panel__sidebar-item-background--active': isActive,

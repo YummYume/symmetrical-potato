@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\Entity\Heist;
 use App\Entity\User;
+use App\Enum\HeistPhaseEnum;
 use App\Enum\HeistVisibilityEnum;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -77,7 +78,10 @@ final class HeistVoter extends Voter
             return true;
         }
 
-        return $this->security->isGranted(User::ROLE_CONTRACTOR) && $heist->getEstablishment()->getContractor() === $user;
+        return $this->security->isGranted(User::ROLE_CONTRACTOR)
+            && $heist->getEstablishment()->getContractor() === $user
+            && HeistPhaseEnum::Planning === $heist->getPhase()
+        ;
     }
 
     private function canDelete(Heist $heist, User $user): bool

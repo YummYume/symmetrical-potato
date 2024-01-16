@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [self::READ_PUBLIC, self::READ],
+                'groups' => [self::READ_PUBLIC, self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             security: 'is_granted("READ_PUBLIC", object)'
         ),
@@ -48,19 +48,19 @@ use Symfony\Component\Validator\Constraints as Assert;
             resolver: UserQueryResolver::class,
             args: [],
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ_PUBLIC, self::READ],
+                'groups' => [self::READ_PUBLIC, self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             security: 'is_granted("ROLE_USER")'
         ),
         new Mutation(
             name: 'create',
             normalizationContext: [
-                'groups' => [self::REGISTER_READ],
+                'groups' => [self::REGISTER_READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::REGISTER],
@@ -73,7 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'update',
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::UPDATE, self::UPDATE_ADMIN],
@@ -86,7 +86,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'validate',
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::VALIDATE],
@@ -99,7 +99,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'kill',
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::KILL],
@@ -112,7 +112,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'revive',
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::REVIVE],
@@ -288,7 +288,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ, self::READ_PUBLIC])]
+    #[Groups([self::READ, self::READ_PUBLIC, ContractorRequest::READ])]
     private ?Profile $profile = null;
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: ContractorRequest::class, orphanRemoval: true)]

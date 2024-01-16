@@ -35,6 +35,16 @@ kill: Kill
 revive: Revive
 cancel: Cancel
 confirm: Confirm
+close: Close
+
+# History info
+history_info: History info
+history_info.created_by_at: Created by {name} on {date} at {time}.
+history_info.created_by: Created by {name}.
+history_info.created_at: Created on {date} at {time}.
+history_info.updated_by_at: Updated by {name} on {date} at {time}.
+history_info.updated_by: Updated by {name}.
+history_info.updated_at: Updated on {date} at {time}.
 
 # Heist
 heist.minimum_payout: Minimum payout
@@ -50,3 +60,23 @@ user.status.unverified: Unverified
 user.status.dead: Dead
 user.profile: Profile
 user.description: Description
+
+# Asset
+asset.name: Name
+asset.description: Description
+asset.price: Price
+asset.type: Type
+asset.type.asset: Asset
+asset.type.equipment: Equipment
+asset.type.weapon: Weapon
+asset.max_quantity: Max quantity
+asset.team_asset: Team asset
+asset.heist: Associated heist
+
+# Contractor Request
+contractor_request.reason: Reason for the request
+contractor_request.status: Status
+contractor_request.status.pending: Pending
+contractor_request.status.accepted: Accepted
+contractor_request.status.rejected: Rejected
+contractor_request.admin_comment: Comment for the decision

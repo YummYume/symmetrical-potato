@@ -68,10 +68,12 @@ final class AssetVoter extends Voter
 
     private function canUpdate(Asset $asset): bool
     {
-        $establishment = $asset->getHeist()?->getEstablishment();
+        if ($this->security->isGranted(User::ROLE_ADMIN)) {
+            return true;
+        }
 
         // If the user can update the asset's establishment, they can also update the asset
-        return $this->security->isGranted(HeistVoter::UPDATE, $establishment);
+        return $this->security->isGranted(HeistVoter::UPDATE, $asset->getHeist());
     }
 
     private function canDelete(Asset $asset): bool

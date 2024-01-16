@@ -1,3 +1,12 @@
+# Number
+number.required: Veuillez saisir un nombre.
+number.not_a_number: Veuillez saisir un nombre valide.
+number.not_safe: Ce nombre est trop grand ou trop petit. Veuillez saisir un autre nombre.
+number.must_be_integer: Ce nombre doit être un entier.
+
+# Boolean
+boolean.not_a_boolean: Cette valeur doit être soit vrai, soit fausse.
+
 # Login
 login.username.required: Veuillez saisir votre nom d'utilisateur.
 login.password.required: Veuillez saisir votre mot de passe.
@@ -36,3 +45,18 @@ user.balance.required: Veuillez saisir un solde.
 user.locale.required: Veuillez sélectionner une langue.
 user.locale.invalid: La langue sélectionnée est invalide.
 user.description.max: La description doit comporter au plus 1000 caractères.
+
+# Asset
+asset.name.required: Veuillez saisir un nom.
+asset.name.min: Le nom doit comporter au moins 3 caractères.
+asset.name.max: Le nom doit comporter au plus 100 caractères.
+asset.price.required: Veuillez saisir un prix.
+asset.price.min: Le prix doit être au moins de 0,01 $.
+asset.max_quantity.required: Veuillez saisir une quantité maximale.
+asset.max_quantity.min: La quantité maximale doit être au moins de 1.
+asset.max_quantity.max: La quantité maximale doit être au plus de 100.
+
+# Contractor Request
+contractor_request.status.required: Veuillez sélectionner un statut.
+contractor_request.status.invalid_type: Le statut sélectionné doit être 'accepté' ou 'rejeté'.
+contractor_request.admin_comment.max: Le commentaire de l'administrateur doit comporter au plus 1000 caractères.

@@ -4,3 +4,12 @@ user.verified: Utilisateur vérifié avec succès.
 user.deleted: Utilisateur supprimé avec succès.
 user.killed: Utilisateur tué avec succès.
 user.revived: Utilisateur réanimé avec succès.
+
+# Asset
+asset.created: Asset créé avec succès.
+asset.updated: Asset mis à jour avec succès.
+asset.deleted: Asset supprimé avec succès.
+
+# Contractor Request
+contractor_request.updated: Demande de contractant mise à jour avec succès.
+contractor_request.deleted: Demande de contractant supprimée avec succès.

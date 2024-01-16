@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getContractorRequests } from '~/lib/api/contractor-request';
 import { NavLink } from '~/lib/components/Link';
+import { ContractorRequestStatusBadge } from '~/lib/components/contractor_request/ContractorRequestStatusBadge';
 import { getUriId } from '~/lib/utils/path';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
@@ -38,7 +39,7 @@ export default function ContractorRequests() {
           <div className="panel">
             <div className="panel__sidebar">
               <ScrollArea type="auto" scrollbars="both">
-                <nav>
+                <nav className="panel__sidebar-list">
                   <ul>
                     {contractorRequests.edges.map((edge) => (
                       <li key={edge.node.id}>
@@ -50,6 +51,10 @@ export default function ContractorRequests() {
                           {({ isActive, isPending }) => (
                             <>
                               <span>{edge.node.user.username}</span>
+                              <ContractorRequestStatusBadge
+                                status={edge.node.status}
+                                variant="solid"
+                              />
                               <div
                                 className={clsx('panel__sidebar-item-background', {
                                   'panel__sidebar-item-background--active': isActive,

@@ -1,4 +1,5 @@
-import { Blockquote, Button, Flex, Heading, ScrollArea, Text } from '@radix-ui/themes';
+import { InfoCircledIcon } from '@radix-ui/react-icons';
+import { Blockquote, Button, Flex, Heading, IconButton, ScrollArea, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
@@ -6,6 +7,7 @@ import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
+import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
@@ -32,7 +34,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   }
 
   try {
-    const response = await getUser(context.client, `/users/${params.userId}`);
+    const response = await getUser(context.client, params.userId);
 
     return {
       user: response.user,
@@ -130,6 +132,9 @@ export default function User() {
     disabled: user.status !== UserStatusEnum.Verified,
     mode: 'onSubmit',
     resolver: adminUserResolver,
+    submitConfig: {
+      unstable_viewTransition: true,
+    },
     defaultValues: {
       email: user.email,
       balance: user.balance,
@@ -140,32 +145,32 @@ export default function User() {
   return (
     <Flex gap="4" direction="column" height="100%">
       <Flex justify="between">
-        <Heading as="h2">{user.username}</Heading>
-        <UserStatusBadge status={user.status} />
+        <Flex gap="2" justify="center" align="center">
+          <Heading as="h2">{user.username}</Heading>
+          <UserStatusBadge status={user.status} />
+        </Flex>
+        <HistoryInfoPopover
+          createdAt={user.createdAt}
+          createdBy={user.createdBy?.username}
+          updatedAt={user.updatedAt}
+          updatedBy={user.updatedBy?.username}
+        >
+          <IconButton aria-label={t('history_info')} size="2" variant="soft" radius="full">
+            <InfoCircledIcon width="18" height="18" />
+          </IconButton>
+        </HistoryInfoPopover>
       </Flex>
       <div className="h-[23.875rem]">
         <ScrollArea type="auto" scrollbars="both">
           <RemixFormProvider {...methods}>
             <form
               method="post"
-              className="space-y-4"
+              className="panel__content-form"
               onSubmit={methods.handleSubmit}
               id="user-form"
             >
-              <FieldInput
-                type="email"
-                name="email"
-                label={t('email')}
-                defaultValue={user.email}
-                required
-              />
-              <FieldInput
-                type="number"
-                name="balance"
-                label={t('user.balance')}
-                defaultValue={user.balance}
-                required
-              />
+              <FieldInput type="email" name="email" label={t('email')} required />
+              <FieldInput type="number" name="balance" label={t('user.balance')} required />
               <Flex direction="column" gap="2">
                 <Text>{t('user.reason')}</Text>
                 <Blockquote>{user.reason}</Blockquote>
@@ -183,7 +188,6 @@ export default function User() {
                 <TextAreaInput
                   name="description"
                   label={t('user.description')}
-                  defaultValue={user.profile.description}
                   disabled={user.status !== UserStatusEnum.Verified}
                   rows={5}
                 />

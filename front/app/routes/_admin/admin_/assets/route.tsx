@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getAssets } from '~/lib/api/asset';
 import { NavLink } from '~/lib/components/Link';
+import { AssetTypeBadge } from '~/lib/components/asset/AssetTypeBadge';
 import { getUriId } from '~/lib/utils/path';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
@@ -38,7 +39,7 @@ export default function Assets() {
           <div className="panel">
             <div className="panel__sidebar">
               <ScrollArea type="auto" scrollbars="both">
-                <nav>
+                <nav className="panel__sidebar-list">
                   <ul>
                     {assets.edges.map((edge) => (
                       <li key={edge.node.id}>
@@ -50,6 +51,7 @@ export default function Assets() {
                           {({ isActive, isPending }) => (
                             <>
                               <span>{edge.node.name}</span>
+                              <AssetTypeBadge type={edge.node.type} variant="solid" />
                               <div
                                 className={clsx('panel__sidebar-item-background', {
                                   'panel__sidebar-item-background--active': isActive,

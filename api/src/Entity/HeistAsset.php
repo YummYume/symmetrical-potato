@@ -41,6 +41,9 @@ class HeistAsset
     #[ORM\Column]
     private ?int $quantity = 1;
 
+    #[ORM\Column]
+    private float $totalSpent = 0.0;
+
     #[ORM\ManyToOne(inversedBy: 'heistAssets')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Asset $asset = null;
@@ -62,6 +65,18 @@ class HeistAsset
     public function setQuantity(?int $quantity): static
     {
         $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getTotalSpent(): float
+    {
+        return $this->totalSpent;
+    }
+
+    public function setTotalSpent(float $totalSpent): static
+    {
+        $this->totalSpent = $totalSpent;
 
         return $this;
     }

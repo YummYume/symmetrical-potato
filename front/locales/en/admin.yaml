@@ -11,6 +11,24 @@ user.roles.role_employee: Employee
 user.roles.role_contractor: Contractor
 user.roles.role_admin: Admin
 
+# Asset
+asset.delete.confirm: >-
+  Are you sure you want to delete this asset? All data associated with this asset will be deleted.
+  All crew members who purchased this asset will be refunded. If this asset belongs to a heist, its contractor will be the one to refund the crew members.
+
+# Contractor Request
+contractor_request.request_of: Request of {name}
+contractor_request.reject: Reject
+contractor_request.rejecting: Rejecting...
+contractor_request.accept: Accept
+contractor_request.accepting: Accepting...
+contractor_request.delete.confirm: >-
+  Are you sure you want to delete this contractor request? To keep track of the requests, it is recommended to keep them by simply rejecting them.
+contractor_request.accept.confirm: >-
+  Are you sure you want to accept this contractor request? The user will become a contractor and will be able to create establishments.
+contractor_request.reject.confirm: >-
+  Are you sure you want to reject this contractor request? The user will be informed of the rejection and will be able to read the reason why it was rejected.
+
 # Dashboard
 ## Heists
 dashboard.heists: >-

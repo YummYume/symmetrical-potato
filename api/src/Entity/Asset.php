@@ -11,6 +11,7 @@ use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\AssetTypeEnum;
 use App\Repository\AssetRepository;
+use App\State\AssetProcessor;
 use App\Validator\CanAddHeistAsset;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -26,6 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
+    processor: AssetProcessor::class,
     operations: [],
     graphQlOperations: [
         new Query(
@@ -70,7 +72,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
-#[UniqueEntity(fields: ['name', 'heist'], errorPath: 'name', message: 'asset.name.unique')]
+#[UniqueEntity(
+    fields: ['name', 'heist'],
+    errorPath: 'name',
+    message: 'asset.name.unique',
+    groups: [self::CREATE, self::UPDATE],
+    ignoreNull: false
+)]
 class Asset
 {
     use BlameableTrait;
@@ -115,7 +123,13 @@ class Asset
 
     #[ORM\Column]
     #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(groups: [self::CREATE, self::UPDATE], message: 'asset.max_quantity.not_blank')]
     #[Assert\Positive(groups: [self::CREATE, self::UPDATE], message: 'asset.max_quantity.positive')]
+    #[Assert\LessThanOrEqual(
+        value: 100,
+        groups: [self::CREATE, self::UPDATE],
+        message: 'asset.max_quantity.max'
+    )]
     private ?int $maxQuantity = null;
 
     #[ORM\Column]

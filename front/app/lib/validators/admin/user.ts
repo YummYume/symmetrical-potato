@@ -11,13 +11,12 @@ export const adminUserValidationSchema = z.object({
     })
     .email({ message: 'user.email.invalid' }),
   balance: zu.number(
-    z
-      .number()
-      .min(Number.MIN_SAFE_INTEGER, { message: 'user.balance.min' })
-      .max(Number.MAX_SAFE_INTEGER, { message: 'user.balance.max' }),
-    {
-      required_error: 'user.balance.required',
-    },
+    z.coerce
+      .number({
+        required_error: 'user.balance.required',
+        invalid_type_error: 'number.not_a_number',
+      })
+      .safe({ message: 'number.not_safe' }),
   ),
   description: z.optional(z.string().max(1000, { message: 'user.description.max' })),
   // locale: z.nativeEnum(UserLocaleEnum, {

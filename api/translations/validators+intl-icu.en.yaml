@@ -152,6 +152,8 @@ asset.name.max_length: The name cannot exceed {limit} characters.
 asset.price.not_blank: Please enter a price.
 asset.price.positive: The price must be a positive number.
 asset.description.max_length: The description cannot exceed {limit} characters.
+asset.max_quantity.not_blank: Please enter a maximum quantity.
 asset.max_quantity.positive: The maximum quantity must be a positive number if specified.
+asset.max_quantity.max: The maximum quantity cannot be greater than {compared_value}.
 asset.heist.cannot_add: You cannot add this asset to this heist.
 asset.heist.must_add: You must specify a heist for this asset.

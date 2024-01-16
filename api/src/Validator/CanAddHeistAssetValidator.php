@@ -44,8 +44,8 @@ final class CanAddHeistAssetValidator extends ConstraintValidator
         }
 
         if (
-            ($user !== $value->getEstablishment()->getContractor() || HeistPhaseEnum::Planning !== $value->getPhase())
-            && !$this->security->isGranted(User::ROLE_ADMIN)
+            !$this->security->isGranted(User::ROLE_ADMIN)
+            && ($user !== $value->getEstablishment()?->getContractor() || HeistPhaseEnum::Planning !== $value->getPhase())
         ) {
             $this->context
                 ->buildViolation($constraint->cannotAddMessage)

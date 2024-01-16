@@ -158,5 +158,8 @@ asset.name.max_length: Le nom ne peut pas comporter plus de {limit} caractères.
 asset.price.not_blank: Veuillez saisir un prix.
 asset.price.positive: Le prix doit être un nombre positif.
 asset.description.max_length: La description ne peut pas comporter plus de {limit} caractères.
+asset.max_quantity.not_blank: Veuillez saisir une quantité maximale.
+asset.max_quantity.positive: La quantité maximale doit être un nombre positif.
+asset.max_quantity.max: La quantité maximale ne peut pas être supérieure à {limit}.
 asset.heist.cannot_add: Vous ne pouvez pas ajouter cet asset à ce braquage.
 asset.heist.must_add: Vous devez associer cet asset à un braquage.

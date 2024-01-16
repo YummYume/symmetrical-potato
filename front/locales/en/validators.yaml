@@ -1,3 +1,12 @@
+# Number
+number.required: Please enter a number.
+number.not_a_number: Please enter a valid number.
+number.not_safe: This number is either too big or too small. Please enter another number.
+number.must_be_integer: This number must be an integer.
+
+# Boolean
+boolean.not_a_boolean: This value must be either true or false.
+
 # Login
 login.username.required: Please enter your username.
 login.password.required: Please enter your password.
@@ -30,9 +39,22 @@ locale.locale.invalid: The selected locale is invalid.
 # User
 user.email.required: Please enter an email address.
 user.email.invalid: The email address is invalid.
-user.balance.min: Please enter a valid balance. This number is too small.
-user.balance.max: Please enter a valid balance. This number is too large.
 user.balance.required: Please enter a balance.
 user.locale.required: Please select a locale.
 user.locale.invalid: The selected locale is invalid.
 user.description.max: The description must be at most 1000 characters long.
+
+# Asset
+asset.name.required: Please enter a name.
+asset.name.min: The name must be at least 3 characters long.
+asset.name.max: The name must be at most 100 characters long.
+asset.price.required: Please enter a price.
+asset.price.min: The price must be at least $0.01.
+asset.max_quantity.required: Please enter a maximum quantity.
+asset.max_quantity.min: The maximum quantity must be at least 1.
+asset.max_quantity.max: The maximum quantity must be at most 100.
+
+# Contractor Request
+contractor_request.status.required: Please select a status.
+contractor_request.status.invalid_type: The selected status must either be 'accepted' or 'rejected'.
+contractor_request.admin_comment.max: The admin comment must be at most 1000 characters long.

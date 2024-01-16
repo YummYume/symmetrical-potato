@@ -5,12 +5,16 @@
     @apply h-[32rem] rounded-l-5 border-2;
   }
 
+  &__sidebar-list {
+    @apply pr-3;
+  }
+
   &__sidebar-item {
-    @apply relative flex justify-between gap-1 p-5;
+    @apply relative flex items-center justify-between gap-1 p-5;
   }
 
   &__sidebar-item-background {
-    @apply absolute inset-0 -z-10 transition-colors group-hover:bg-accent-8 group-focus-visible:bg-accent-8 motion-reduce:transition-none;
+    @apply absolute inset-0 -z-10 rounded-r-1 transition-colors group-hover:bg-accent-8 group-focus-visible:bg-accent-8 motion-reduce:transition-none;
 
     &--active {
       @apply bg-accent-8;
@@ -23,5 +27,9 @@
 
   &__content {
     @apply h-[32rem] rounded-r-5 border-2 border-l-0 p-4;
+  }
+
+  &__content-form {
+    @apply space-y-4 py-2 pl-2 pr-4;
   }
 }

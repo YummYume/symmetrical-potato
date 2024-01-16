@@ -125,10 +125,20 @@ export const getUser = async (client: GraphQLClient, id: string) => {
             id
             description
           }
+          createdAt
+          updatedAt
+          createdBy {
+            id
+            username
+          }
+          updatedBy {
+            id
+            username
+          }
         }
       }
     `,
-    { id },
+    { id: `/users/${id}` },
   );
 };
 
@@ -150,7 +160,7 @@ export const getPublicUser = async (client: GraphQLClient, id: string) => {
         }
       }
     `,
-    { id },
+    { id: `/users/${id}` },
   );
 };
 

@@ -5,6 +5,8 @@ import type {
   MutationDeleteContractorRequestArgs,
   MutationUpdateContractorRequestArgs,
   Query,
+  QueryContractorRequestArgs,
+  QueryContractorRequestsArgs,
   UpdateContractorRequestInput,
 } from '~api/types';
 
@@ -12,23 +14,65 @@ import type {
  * Query all contractor requests.
  */
 export const getContractorRequests = async (client: GraphQLClient) => {
-  return client.request<Pick<Query, 'contractorRequests'>>(gql`
-    query {
-      contractorRequests {
-        edges {
-          node {
-            id
-            reason
-            status
-            adminComment
-            user {
-              username
+  return client.request<Pick<Query, 'contractorRequests'>, QueryContractorRequestsArgs>(
+    gql`
+      query {
+        contractorRequests {
+          edges {
+            node {
+              id
+              reason
+              status
+              adminComment
+              user {
+                username
+              }
             }
           }
         }
       }
-    }
-  `);
+    `,
+    {},
+  );
+};
+
+/**
+ * Query a contractor request by id.
+ */
+export const getContractorRequest = async (client: GraphQLClient, id: string) => {
+  return client.request<Pick<Query, 'contractorRequest'>, QueryContractorRequestArgs>(
+    gql`
+      query GetContractorRequest($id: ID!) {
+        contractorRequest(id: $id) {
+          id
+          reason
+          status
+          adminComment
+          user {
+            id
+            username
+            email
+            profile {
+              description
+            }
+          }
+          createdAt
+          updatedAt
+          createdBy {
+            id
+            username
+          }
+          updatedBy {
+            id
+            username
+          }
+        }
+      }
+    `,
+    {
+      id: `/contractor_requests/${id}`,
+    },
+  );
 };
 
 /**
