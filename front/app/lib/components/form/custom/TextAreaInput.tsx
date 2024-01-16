@@ -17,8 +17,7 @@ export type TextAreaInputProps<T extends FormData> = {
   hideLabel?: boolean;
   containerClassName?: string;
   errorClassName?: string;
-} & React.ComponentProps<typeof TextArea> &
-  React.RefAttributes<HTMLInputElement>;
+} & React.ComponentProps<typeof TextArea>;
 
 export function TextAreaInput<T extends FormData>({
   name,

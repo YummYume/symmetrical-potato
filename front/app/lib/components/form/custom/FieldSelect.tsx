@@ -4,12 +4,9 @@ import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import { useRemixFormContext } from 'remix-hook-form';
 
-import { getFormErrorField } from '~/lib/utils/error';
-
 import type { Control } from 'react-hook-form';
 import type { Path } from 'react-hook-form';
-import type { GroupBase, Props, PropsValue } from 'react-select';
-import type { FormErrorField } from '~/lib/utils/error';
+import type { GroupBase, Props } from 'react-select';
 
 type FormData = Record<string, unknown>;
 
@@ -44,15 +41,9 @@ export function FieldSelect<T extends FormData, B extends boolean = false>({
   ...rest
 }: FieldSelectProps<T, OptionFormat, B>) {
   const { t } = useTranslation();
-  const {
-    control,
-    register,
-    formState: { errors },
-  } = useRemixFormContext<T>();
+  const { control, register } = useRemixFormContext<T>();
   const ariaLabelledBy = `${name}-label`;
   const ariaDescribedBy = `${name}-error`;
-
-  const error = getFormErrorField(errors[name] as FormErrorField);
 
   return (
     <Grid className={containerClassName} gap="1">
@@ -62,47 +53,34 @@ export function FieldSelect<T extends FormData, B extends boolean = false>({
       <Controller
         name={name}
         control={control as Control<T>}
-        render={({ field }) => {
-          const selectValue = () => {
-            if (field.value) {
-              if (isMulti && Array.isArray(field.value)) {
-                return field.value.map((v) => options.find((o) => o.value === v.value));
-              }
-              return (
-                options.find((o) => o.value === field.value) ?? {
-                  value: '',
-                  label: '',
-                }
-              );
-            }
-            return isNulti
-              ? []
-              : {
-                  value: '',
-                  label: '',
-                };
-          };
-          /**const selectedValue = Array.isArray(field.value)
-            ? options?.find((o) => (field.value as OptionFormat[]).find((v) => v.value === o.value))
-            : options?.find((o) => o.value === field.value);**/
+        render={({ field, fieldState: { error } }) => {
+          // Get the default value from the options
+          const defaultValue = Array.isArray(field.value)
+            ? options?.filter((o) =>
+                (field.value as OptionFormat[]).find((v) => v.value === o.value),
+              )
+            : options?.find((o) => o.value === field.value);
           return (
-            <Select
-              key={`field_select_key_${JSON.stringify(options)}`}
-              {...register(name)}
-              {...rest}
-              isMulti={isMulti}
-              options={options}
-              value={selectedValue}
-              onChange={(newValue) => newValue && field.onChange(newValue)}
-            />
+            <>
+              <Select
+                id={field.name}
+                key={`field_select_key_${JSON.stringify(options)}`}
+                {...register(name)}
+                {...rest}
+                isMulti={isMulti}
+                options={options}
+                defaultValue={defaultValue}
+                onChange={(newValue) => newValue && field.onChange(newValue)}
+              />
+              {error?.message && (
+                <Text as="p" id={ariaDescribedBy} className={errorClassName}>
+                  {t(error.message, { ns: 'validators' })}
+                </Text>
+              )}
+            </>
           );
         }}
       />
-      {error && (
-        <Text as="p" id={ariaDescribedBy} className={errorClassName}>
-          {t(error, { ns: 'validators' })}
-        </Text>
-      )}
     </Grid>
   );
 }

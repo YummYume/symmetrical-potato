@@ -148,20 +148,24 @@ export default function Add() {
     value,
   }));
 
+  const defaultDate = new Date();
+  defaultDate.setMinutes(defaultDate.getMinutes() + 15);
+
   const methods = useRemixForm<CreateHeistFormData>({
     mode: 'onSubmit',
     resolver: createHeistResolver,
     submitHandlers: {
       onInvalid: async (errors) => {
         console.error('errors:', errors);
+        console.log(methods.getValues());
       },
       onValid: async (data) => {
         console.error('data:', data);
       },
     },
     defaultValues: {
-      startAt: new Date(),
-      shouldEndAt: new Date(),
+      startAt: defaultDate,
+      shouldEndAt: defaultDate,
       establishment: establishments.edges[0].node.id,
       preferedTactic: HeistPreferedTacticEnum.Loud,
       difficulty: HeistDifficultyEnum.Normal,
@@ -172,7 +176,7 @@ export default function Add() {
   // Watch when the establishment changes to update the employees options
   const watchEstablishment = methods.watch('establishment') as Option | string;
 
-  // console.log(methods.watch('employees'));
+  // console.log(methods.watch());
 
   // Get the current establishment (string or Option)
   const currentEstablishment =
