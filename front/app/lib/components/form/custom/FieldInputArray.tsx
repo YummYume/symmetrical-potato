@@ -76,15 +76,17 @@ export function FieldInputArray<T extends FormData>({
                         >
                           {`${fieldInput.label} ${key + 1}`}
                         </Text>
+
                         <TextField.Root className={inputContainerClassName}>
                           <TextField.Input
-                            id={field.name}
-                            aria-describedby={error ? `${field.name}-error` : ''}
                             {...register(field.name)}
                             {...rest}
+                            id={field.name}
+                            aria-describedby={error ? `${field.name}-error` : ''}
                             type={fieldInput.type}
                           />
                         </TextField.Root>
+
                         {error?.message && (
                           <Text as="p" id={`${field.name}-error`} className={errorClassName}>
                             {t(error.message, { ns: 'validators' })}

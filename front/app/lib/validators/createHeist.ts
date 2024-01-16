@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { HeistDifficultyEnum, HeistPreferedTacticEnum } from '../api/types';
-import dayjs from '../utils/dayjs';
-import { zu } from '../utils/zod';
+import { HeistDifficultyEnum, HeistPreferedTacticEnum } from '~/lib//api/types';
+import dayjs from '~/lib/utils/dayjs';
+import { zu } from '~/lib/utils/zod';
 
 export const createHeistValidationSchema = z
   .object({
@@ -21,18 +21,14 @@ export const createHeistValidationSchema = z
       .max(255, {
         message: 'heist.description.max_length',
       }),
-    startAt: zu.date(
-      z.coerce.date({
-        required_error: 'heist.start_at.required',
-        invalid_type_error: 'heist.start_at.invalid_type',
-      }),
-    ),
-    shouldEndAt: zu.date(
-      z.coerce.date({
-        required_error: 'heist.should_end_at.required',
-        invalid_type_error: 'heist.should_end_at.invalid_type',
-      }),
-    ),
+    startAt: z.string({
+      required_error: 'heist.start_at.required',
+      invalid_type_error: 'heist.start_at.invalid_type',
+    }),
+    shouldEndAt: z.string({
+      required_error: 'heist.should_end_at.required',
+      invalid_type_error: 'heist.should_end_at.invalid_type',
+    }),
     minimumPayout: zu.number(
       z.coerce
         .number({
@@ -93,6 +89,14 @@ export const createHeistValidationSchema = z
       })
       .array()
       .optional(),
+  })
+  .refine((data) => dayjs(data.startAt).isValid(), {
+    message: 'heist.start_at.invalid_date',
+    path: ['startAt'],
+  })
+  .refine((data) => dayjs(data.shouldEndAt).isValid(), {
+    message: 'heist.should_end_at.invalid_date',
+    path: ['shouldEndAt'],
   })
   .refine((data) => dayjs().isSameOrBefore(dayjs(data.startAt), 'minute'), {
     message: 'heist.start_at.is_past_date',

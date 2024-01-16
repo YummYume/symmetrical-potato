@@ -19,6 +19,7 @@ import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
+import dayjs from '~/lib/utils/dayjs';
 import { createHeistResolver } from '~/lib/validators/createHeist';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { ROLES, denyAccessUnlessGranted } from '~utils/security.server';
@@ -67,8 +68,8 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   try {
     await createHeist(context.client, {
       ...data,
-      startAt: data.startAt.toISOString(),
-      shouldEndAt: data.shouldEndAt.toISOString(),
+      startAt: data.startAt,
+      shouldEndAt: data.shouldEndAt,
       visibility: HeistVisibilityEnum.Draft,
       allowedEmployees: data.employees.map((employee) => employee.value),
       objectives: data.objectives ?? [],
@@ -148,8 +149,12 @@ export default function Add() {
     value,
   }));
 
-  const defaultDate = new Date();
-  defaultDate.setMinutes(defaultDate.getMinutes() + 15);
+  // TODO: find solution date now in dayjs
+  const dateNow = dayjs();
+  const startAt = dateNow.add(15, 'minutes').toISOString();
+  const shouldEndAt = dateNow.add(30, 'minutes').toISOString();
+
+  console.log(dayjs().toString(), dayjs(startAt).toString());
 
   const methods = useRemixForm<CreateHeistFormData>({
     mode: 'onSubmit',
@@ -164,19 +169,19 @@ export default function Add() {
       },
     },
     defaultValues: {
-      startAt: defaultDate,
-      shouldEndAt: defaultDate,
+      startAt,
+      shouldEndAt,
       establishment: establishments.edges[0].node.id,
       preferedTactic: HeistPreferedTacticEnum.Loud,
       difficulty: HeistDifficultyEnum.Normal,
+      minimumPayout: 100000,
+      maximumPayout: 1000000,
       employees: [],
     },
   });
 
   // Watch when the establishment changes to update the employees options
   const watchEstablishment = methods.watch('establishment') as Option | string;
-
-  // console.log(methods.watch());
 
   // Get the current establishment (string or Option)
   const currentEstablishment =

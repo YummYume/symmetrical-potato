@@ -7,7 +7,6 @@ import type { Control } from 'react-hook-form';
 import type { Path } from 'react-hook-form';
 
 type FormData = Record<string, unknown>;
-type FieldValueFormat = string | number | Date | undefined;
 
 export type FieldInputProps<T extends FormData> = {
   name: Path<T>;
@@ -18,8 +17,7 @@ export type FieldInputProps<T extends FormData> = {
   containerClassName?: string;
   inputContainerClassName?: string;
   errorClassName?: string;
-} & React.ComponentProps<typeof TextField.Input> &
-  React.RefAttributes<HTMLInputElement>;
+} & React.ComponentProps<typeof TextField.Input>;
 
 export function FieldInput<T extends FormData>({
   name,
@@ -37,14 +35,6 @@ export function FieldInput<T extends FormData>({
 
   const ariaDescribedBy = `${name}-error`;
 
-  const getValue = (value: FieldValueFormat) => {
-    if (value && value !== undefined && value instanceof Date) {
-      return value.toISOString().slice(0, -8);
-    }
-
-    return value;
-  };
-
   return (
     <Grid className={containerClassName} gap="1">
       <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
@@ -54,20 +44,15 @@ export function FieldInput<T extends FormData>({
         name={name}
         control={control as Control<T>}
         render={({ field, fieldState: { error }, formState: { defaultValues } }) => {
-          console.log(field.value);
           return (
             <>
               <TextField.Root className={inputContainerClassName}>
                 {leftSlot}
                 <TextField.Input
-                  id={field.name}
-                  value={
-                    getValue(field.value as FieldValueFormat) ??
-                    (defaultValues ? getValue(defaultValues[name] as FieldValueFormat) : undefined)
-                  }
-                  aria-describedby={error ? ariaDescribedBy : ''}
-                  {...register(name)}
+                  {...register(field.name)}
                   {...rest}
+                  id={field.name}
+                  aria-describedby={error ? ariaDescribedBy : ''}
                 />
                 {rightSlot}
               </TextField.Root>

@@ -63,10 +63,11 @@ export function FieldSelect<T extends FormData, B extends boolean = false>({
           return (
             <>
               <Select
-                id={field.name}
-                key={`field_select_key_${JSON.stringify(options)}`}
                 {...register(name)}
                 {...rest}
+                id={field.name}
+                key={`field_select_key_${JSON.stringify(options)}`}
+                ref={(ref) => field.ref(ref)}
                 isMulti={isMulti}
                 options={options}
                 defaultValue={defaultValue}
