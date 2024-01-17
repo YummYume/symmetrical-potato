@@ -59,7 +59,7 @@ export function FieldSelect<T extends FormData, B extends boolean = false>({
             ? options?.filter((o) =>
                 (field.value as OptionFormat[]).find((v) => v.value === o.value),
               )
-            : options?.find((o) => o.value === field.value);
+            : options?.find((o) => o.value === (field.value as OptionFormat).value);
           return (
             <>
               <Select

@@ -83,10 +83,14 @@ heist.name.max_length: Le nom doit comporter moins de 100 caractères.
 heist.description.required: Veuillez saisir une description.
 heist.description.min_length: La description doit comporter au moins 10 caractères.
 heist.description.max_length: La description doit comporter moins de 255 caractères.
-heist.start_at.required: Veuillez saisir une date de début.
-heist.start_at.invalid_type: La date de début est invalide.
-heist.should_end_at.required: Veuillez saisir une date de fin prévue.
-heist.should_end_at.invalid_type: La date de fin prévue est invalide.
+heist.start_at.date.required: Veuillez saisir une date de début.
+heist.start_at.date.invalid_type: La date de début est invalide.
+heist.start_at.time.required: Veuillez saisir une heure de début.
+heist.start_at.time.invalid_type: L'heure de début est invalide.
+heist.should_end_at.date.required: Veuillez saisir une date de fin prévue.
+heist.should_end_at.date.invalid_type: La date de fin prévue est invalide.
+heist.should_end_at.time.required: Veuillez saisir une heure de fin prévue.
+heist.should_end_at.time.invalid_type: L'heure de fin prévue est invalide.
 heist.start_at.is_past_date: La date de début doit être postérieure à la date actuelle.
 heist.should_end_at.is_before_start_at: La date de fin prévue doit être postérieure à la date de début.
 heist.minimum_payout.required: Veuillez saisir un paiement minimum.
@@ -100,6 +104,10 @@ heist.establishment.required: Veuillez sélectionner un établissement.
 heist.establishment.invalid: L'établissement sélectionné est invalide.
 heist.prefered_tactic.required: Veuillez sélectionner une tactique préférée.
 heist.prefered_tactic.invalid_type: La tactique préférée sélectionnée est invalide.
+heist.allowedEmployees.value.required: Veuillez sélectionner des employés autorisés.
+heist.allowedEmployees.value.invalid_type: Les employés autorisés sélectionnés sont invalides.
+heist.allowedEmployees.min_length: Veuillez sélectionner au moins un employé autorisé.
+heist.allowedEmployees.max_length: Veuillez sélectionner moins de 10 employés autorisés.
 heist.difficulty.required: Veuillez sélectionner une difficulté.
 heist.difficulty.invalid_type: La difficulté sélectionnée est invalide.
 heist.objectives.name.min_length: Le nom doit comporter au moins 2 caractères.

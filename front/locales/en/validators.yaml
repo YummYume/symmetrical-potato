@@ -85,10 +85,13 @@ heist.name.max_length: The name must be less than 100 characters long.
 heist.description.required: Please enter a description.
 heist.description.min_length: The description must be at least 10 characters long.
 heist.description.max_length: The description must be less than 255 characters long.
-heist.start_at.required: Please enter a start date.
-heist.start_at.invalid_type: The start date is invalid.
-heist.should_end_at.required: Please enter an planned end date.
-heist.should_end_at.invalid_type: The planned end date is invalid.
+heist.start_at.date.required: Please enter a start date.
+heist.start_at.date.invalid_type: The start date is invalid.
+heist.start_at.time.required: Please enter a start time.
+heist.start_at.time.invalid_type: The start time is invalid.
+heist.should_end_at.date.required: Please enter an planned end date.
+heist.should_end_at.date.invalid_type: The planned end date is invalid.
+heist.should_end_at.time.required: Please enter an planned end time.
 heist.start_at.is_past_date: The start date must be after the current date.
 heist.should_end_at.is_before_start_at: The planned end date must be after the start date.
 heist.minimum_payout.required: Please enter a minimum payout.
@@ -102,6 +105,10 @@ heist.establishment.required: Please select an establishment.
 heist.establishment.invalid: The selected establishment is invalid.
 heist.prefered_tactic.required: Please select a prefered tactic.
 heist.prefered_tactic.invalid_type: The selected prefered tactic is invalid.
+heist.allowedEmployees.value.required: Please select allowed employees.
+heist.allowedEmployees.value.invalid: The selected allowed employees are invalid.
+heist.allowedEmployees.min_length: Please select at least 1 allowed employee.
+heist.allowedEmployees.max_length: Please select at most 10 allowed employees.
 heist.difficulty.required: Please select a difficulty.
 heist.difficulty.invalid_type: The selected difficulty is invalid.
 heist.objectives.name.min_length: The name must be at least 2 characters long.

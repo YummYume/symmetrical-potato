@@ -58,7 +58,10 @@ history_info.updated_by: Mis à jour par {name}.
 history_info.updated_at: Mis à jour le {date} à {time}.
 
 # Heist
-heist.should_end_at: Date de fin estimée
+heist.start_at.date: Date de début
+heist.start_at.time: Heure de début
+heist.should_end_at.date: Date de fin estimée
+heist.should_end_at.time: Heure de fin estimée
 heist.prefered_tactic: Tactique préférée
 heist.objective: Objectifs
 heist.minimum_payout: Paiement minimum

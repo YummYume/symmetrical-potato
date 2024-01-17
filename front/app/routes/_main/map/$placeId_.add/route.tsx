@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Heading, Section } from '@radix-ui/themes';
+import { Grid, Heading, Section } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -25,7 +25,6 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { ROLES, denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import type { FormEvent } from 'react';
 import type { CreateHeistFormData } from '~/lib/validators/createHeist';
 import type { FlashMessage } from '~/root';
 
@@ -35,8 +34,6 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   // Get the establishments of the current user
   const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
   const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
-
-  establishmentsIds.push('/establishments/1eeb2ebb-daaf-6cca-9d1e-f71b5fde5239');
 
   const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
 
@@ -68,10 +65,16 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
   try {
     await createHeist(context.client, {
-      ...data,
-      startAt: data.startAt,
-      shouldEndAt: data.shouldEndAt,
+      name: data.name,
+      description: data.description,
+      minimumPayout: data.minimumPayout,
+      maximumPayout: data.maximumPayout,
+      startAt: dayjs(`${data.startAtDate} ${data.startAtTime}`).toISOString(),
+      shouldEndAt: dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`).toISOString(),
+      difficulty: data.difficulty.value,
+      preferedTactic: data.preferedTactic.value,
       visibility: HeistVisibilityEnum.Draft,
+      establishment: data.establishment.value,
       allowedEmployees: data.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
       objectives: data.objectives ?? [],
       placeId: params.placeId,
@@ -127,17 +130,6 @@ export default function Add() {
     value: edge.node.id,
   }));
 
-  employeesFormatted.push({
-    establishmentId: '/establishments/1eeb2ebb-dab0-60da-b388-f71b5fde5239',
-    label: 'bobby',
-    value: '/employees/1eeb2ebb-daaf-6cca-9d1e-f71b5fde52zz9',
-  });
-
-  establishmentsFormatted.push({
-    label: 'bob parc',
-    value: '/establishments/1eeb2ebb-daaf-6cca-9d1e-f71b5fde5239',
-  });
-
   const heistPreferedTactics: Option[] = Object.values(HeistPreferedTacticEnum).map(
     (value: string) => ({
       label: value,
@@ -150,29 +142,27 @@ export default function Add() {
     value,
   }));
 
-  // TODO: find solution date now in dayjs
   const dateNow = dayjs();
-  const startAt = dateNow.add(15, 'minutes').toISOString().slice(0, -8);
-  const shouldEndAt = dateNow.add(30, 'minutes').toISOString().slice(0, -8);
+  const startAt = dateNow.add(15, 'minutes');
+  const shouldEndAt = startAt.add(15, 'minutes');
 
   const methods = useRemixForm<CreateHeistFormData>({
     mode: 'onSubmit',
     resolver: createHeistResolver,
-    submitHandlers: {
-      onInvalid: async (errors) => {
-        console.error('errors:', errors);
-        console.log(methods.getValues());
-      },
-      onValid: async (data) => {
-        console.error('data:', data);
-      },
-    },
     defaultValues: {
-      startAt,
-      shouldEndAt,
-      establishment: establishments.edges[0].node.id,
-      preferedTactic: HeistPreferedTacticEnum.Loud,
-      difficulty: HeistDifficultyEnum.Normal,
+      startAtDate: startAt.format('YYYY-MM-DD'),
+      startAtTime: startAt.format('HH:mm'),
+      shouldEndAtDate: shouldEndAt.format('YYYY-MM-DD'),
+      shouldEndAtTime: shouldEndAt.format('HH:mm'),
+      establishment: {
+        value: establishments.edges[0].node.id,
+      },
+      preferedTactic: {
+        value: HeistPreferedTacticEnum.Loud,
+      },
+      difficulty: {
+        value: HeistDifficultyEnum.Normal,
+      },
       minimumPayout: 100000,
       maximumPayout: 1000000,
       allowedEmployees: [],
@@ -196,32 +186,38 @@ export default function Add() {
     setAllowedEmployeesOptions(
       employeesFormatted.filter((employee) => employee.establishmentId === currentEstablishment),
     );
+
+    methods.setValue('allowedEmployees', []);
   }, [watchEstablishment]);
-
-  const handleSubmit: <T extends HTMLFormElement>(e: FormEvent<T>) => Promise<void> = async (e) => {
-    e.preventDefault();
-
-    let $form = e.currentTarget;
-    let formData = new FormData($form);
-    console.log(formData);
-
-    return await methods.handleSubmit(e);
-  };
 
   return (
     <div>
       <Dialog.Title asChild>
         <Heading as="h2" size="8">
-          Add
+          {t('add')}
         </Heading>
       </Dialog.Title>
       <Section className="space-y-3" size="1">
         <RemixFormProvider {...methods}>
-          <form method="post" className="space-y-4" onSubmit={handleSubmit}>
+          <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
             <FieldInput name="name" label={t('name')} type="text" />
             <FieldInput name="description" label={t('description')} type="text" />
-            <FieldInput name="startAt" label={t('start_at')} type="datetime-local" />
-            <FieldInput name="shouldEndAt" label={t('heist.should_end_at')} type="datetime-local" />
+            <Grid columns="2" gap="2">
+              <FieldInput name="startAtDate" label={t('heist.start_at.date')} type="date" />
+              <FieldInput name="startAtTime" label={t('heist.start_at.time')} type="time" />
+            </Grid>
+            <Grid columns="2" gap="2">
+              <FieldInput
+                name="shouldEndAtDate"
+                label={t('heist.should_end_at.date')}
+                type="date"
+              />
+              <FieldInput
+                name="shouldEndAtTime"
+                label={t('heist.should_end_at.time')}
+                type="time"
+              />
+            </Grid>
             <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
             <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
             <FieldSelect

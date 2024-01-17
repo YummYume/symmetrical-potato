@@ -74,7 +74,7 @@ export function FieldInputArray<T extends FormData>({
                           htmlFor={field.name}
                           className={hideLabel ? 'sr-only' : ''}
                         >
-                          {`${fieldInput.label} ${key + 1}`}
+                          {`${fieldInput.label} ${index + 1}`}
                         </Text>
 
                         <TextField.Root className={inputContainerClassName}>
