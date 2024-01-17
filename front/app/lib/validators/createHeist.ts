@@ -49,7 +49,7 @@ export const createHeistValidationSchema = z
           message: 'heist.maximum_payout.positive',
         }),
     ),
-    employees: z
+    allowedEmployees: z
       .object({
         value: z.string({
           required_error: 'heist.employees.value.required',

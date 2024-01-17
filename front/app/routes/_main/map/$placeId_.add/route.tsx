@@ -25,6 +25,7 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { ROLES, denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import type { FormEvent } from 'react';
 import type { CreateHeistFormData } from '~/lib/validators/createHeist';
 import type { FlashMessage } from '~/root';
 
@@ -71,7 +72,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       startAt: data.startAt,
       shouldEndAt: data.shouldEndAt,
       visibility: HeistVisibilityEnum.Draft,
-      allowedEmployees: data.employees.map((employee) => employee.value),
+      allowedEmployees: data.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
       objectives: data.objectives ?? [],
       placeId: params.placeId,
     });
@@ -151,10 +152,8 @@ export default function Add() {
 
   // TODO: find solution date now in dayjs
   const dateNow = dayjs();
-  const startAt = dateNow.add(15, 'minutes').toISOString();
-  const shouldEndAt = dateNow.add(30, 'minutes').toISOString();
-
-  console.log(dayjs().toString(), dayjs(startAt).toString());
+  const startAt = dateNow.add(15, 'minutes').toISOString().slice(0, -8);
+  const shouldEndAt = dateNow.add(30, 'minutes').toISOString().slice(0, -8);
 
   const methods = useRemixForm<CreateHeistFormData>({
     mode: 'onSubmit',
@@ -176,7 +175,7 @@ export default function Add() {
       difficulty: HeistDifficultyEnum.Normal,
       minimumPayout: 100000,
       maximumPayout: 1000000,
-      employees: [],
+      allowedEmployees: [],
     },
   });
 
@@ -188,16 +187,26 @@ export default function Add() {
     typeof watchEstablishment === 'string' ? watchEstablishment : watchEstablishment?.value;
 
   // Get the employees of the current establishment
-  const [employeesOptions, setEmployeesOptions] = useState<
+  const [allowedEmployeesOptions, setAllowedEmployeesOptions] = useState<
     (Option & { establishmentId: string })[]
   >(employeesFormatted.filter((employee) => employee.establishmentId === currentEstablishment));
 
   // Update the employees options when the establishment changes
   useEffect(() => {
-    setEmployeesOptions(
+    setAllowedEmployeesOptions(
       employeesFormatted.filter((employee) => employee.establishmentId === currentEstablishment),
     );
   }, [watchEstablishment]);
+
+  const handleSubmit: <T extends HTMLFormElement>(e: FormEvent<T>) => Promise<void> = async (e) => {
+    e.preventDefault();
+
+    let $form = e.currentTarget;
+    let formData = new FormData($form);
+    console.log(formData);
+
+    return await methods.handleSubmit(e);
+  };
 
   return (
     <div>
@@ -208,7 +217,7 @@ export default function Add() {
       </Dialog.Title>
       <Section className="space-y-3" size="1">
         <RemixFormProvider {...methods}>
-          <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
+          <form method="post" className="space-y-4" onSubmit={handleSubmit}>
             <FieldInput name="name" label={t('name')} type="text" />
             <FieldInput name="description" label={t('description')} type="text" />
             <FieldInput name="startAt" label={t('start_at')} type="datetime-local" />
@@ -223,7 +232,7 @@ export default function Add() {
             <FieldSelect
               name="allowedEmployees"
               label={t('heist.allowed_employees')}
-              options={employeesOptions}
+              options={allowedEmployeesOptions}
               isMulti
               isDisabled={!watchEstablishment}
             />
