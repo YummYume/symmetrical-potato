@@ -7,10 +7,12 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
+import { getAssets } from '~/lib/api/asset';
 import { getEmployeesEstablishments } from '~/lib/api/employee';
 import { getEstablishmentsOfContractor } from '~/lib/api/establishment';
 import { createHeist } from '~/lib/api/heist';
 import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
+import { getUsersByRoles } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
@@ -36,8 +38,13 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
 
   const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
+  const { assets } = await getAssets(context.client);
+
+  const { users } = await getUsersByRoles(context.client, ['[ROLE_HEISTER]']);
 
   return {
+    users,
+    assets,
     employees,
     establishments,
     placeId: params.placeId,
@@ -69,6 +76,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       description: data.description,
       minimumPayout: data.minimumPayout,
       maximumPayout: data.maximumPayout,
+      minimumRequiredRating: data.minimumRequiredRating,
       startAt: dayjs(`${data.startAtDate} ${data.startAtTime}`).toISOString(),
       shouldEndAt: dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`).toISOString(),
       difficulty: data.difficulty.value,
@@ -76,7 +84,8 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       visibility: HeistVisibilityEnum.Draft,
       establishment: data.establishment.value,
       allowedEmployees: data.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
-      objectives: data.objectives ?? [],
+      forbiddenAssets: data.forbiddenAssets?.map((asset) => asset.value),
+      objectives: data.objectives,
       placeId: params.placeId,
     });
 
@@ -115,7 +124,14 @@ type Option = { label: string; value: string };
 
 export default function Add() {
   const { t } = useTranslation();
-  const { placeId, establishments, employees } = useLoaderData<Loader>();
+  const { placeId, establishments, employees, assets, users } = useLoaderData<Loader>();
+
+  console.log(users);
+
+  const assetsFormatted: Option[] = assets.edges.map((edge) => ({
+    label: edge.node.name,
+    value: edge.node.id,
+  }));
 
   const employeesFormatted: (Option & { establishmentId: string })[] = employees.edges.map(
     (edge) => ({
@@ -166,6 +182,8 @@ export default function Add() {
       minimumPayout: 100000,
       maximumPayout: 1000000,
       allowedEmployees: [],
+      forbiddenAssets: [],
+      objectives: [],
     },
   });
 
@@ -220,6 +238,13 @@ export default function Add() {
             </Grid>
             <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
             <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
+            <FieldInput
+              name="minimumRequiredRating"
+              label={t('heist.minimum_required_rating')}
+              type="number"
+              min={0}
+              max={5}
+            />
             <FieldSelect
               name="establishment"
               label={t('establishment')}
@@ -231,6 +256,12 @@ export default function Add() {
               options={allowedEmployeesOptions}
               isMulti
               isDisabled={!watchEstablishment}
+            />
+            <FieldSelect
+              name="forbiddenAssets"
+              label={t('heist.forbidden_assets')}
+              options={assetsFormatted}
+              isMulti
             />
             <FieldSelect
               name="preferedTactic"

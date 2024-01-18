@@ -57,6 +57,19 @@ export const createHeistValidationSchema = z
           message: 'heist.maximum_payout.positive',
         }),
     ),
+    minimumRequiredRating: zu.number(
+      z.coerce
+        .number({
+          invalid_type_error: 'heist.minimum_required_rating.invalid_type',
+        })
+        .positive({
+          message: 'heist.minimum_required_rating.positive',
+        })
+        .max(5, {
+          message: 'heist.minimum_required_rating.max',
+        })
+        .optional(),
+    ),
     allowedEmployees: z
       .object({
         value: z.string({
@@ -67,6 +80,15 @@ export const createHeistValidationSchema = z
       .array()
       .min(1, { message: 'heist.allowedEmployees.min_length' })
       .max(10, { message: 'heist.allowedEmployees.max_length' }),
+    forbiddenAssets: z
+      .object({
+        value: z.string({
+          required_error: 'heist.forbiddenAssets.value.required',
+          invalid_type_error: 'heist.forbiddenAssets.value.invalid_type',
+        }),
+      })
+      .array()
+      .optional(),
     establishment: z.object({
       value: z
         .string({

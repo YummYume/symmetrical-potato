@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
@@ -13,6 +15,7 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\UserLocaleEnum;
 use App\Enum\UserStatusEnum;
+use App\Filter\RoleFilter;
 use App\Repository\UserRepository;
 use App\Resolver\UserQueryResolver;
 use App\State\UserProcessor;
@@ -140,6 +143,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'user.email.unique',
     groups: [self::REGISTER, self::UPDATE]
 )]
+// #[ApiFilter(RoleFilter::class, properties: ['roles'], arguments: ['include' => 'role', 'exclude' => '[role]'])]
+// #[ApiFilter(SearchFilter::class, properties: ['roles'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use BlameableTrait;

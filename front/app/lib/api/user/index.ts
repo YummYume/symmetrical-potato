@@ -19,6 +19,8 @@ import {
   UserStatusEnum,
 } from '~api/types';
 
+import type { QueryUsersArgs } from '~api/types';
+
 /**
  * Query the currently logged in user.
  */
@@ -102,6 +104,25 @@ export const getUsers = async (client: GraphQLClient) => {
       }
     }
   `);
+};
+
+export const getUsersByRoles = async (client: GraphQLClient, roles: string[]) => {
+  return client.request<Pick<Query, 'users'>, QueryUsersArgs>(
+    gql`
+      query ($roles: Iterable!) {
+        users(roles: $roles) {
+          edges {
+            node {
+              id
+              username
+              status
+            }
+          }
+        }
+      }
+    `,
+    { roles },
+  );
 };
 
 /**

@@ -349,6 +349,7 @@ export type HeistForbiddenUsersArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  roles?: InputMaybe<Scalars['Iterable']['input']>;
 };
 
 export type HeistAsset = Node & {
@@ -967,6 +968,7 @@ export type QueryUsersArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  roles?: InputMaybe<Scalars['Iterable']['input']>;
 };
 
 export type Review = Node & {

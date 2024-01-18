@@ -1,6 +1,6 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
-import type { Query, QueryEstablishmentsArgs } from '../types';
+import type { Query, QueryEstablishmentsArgs } from '~api/types';
 
 /**
  * Query the list of all establishments of a contractor.

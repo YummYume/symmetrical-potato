@@ -1,6 +1,6 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
-import type { Query, QueryEmployeeArgs, QueryEmployeesArgs } from '../types';
+import type { Query, QueryEmployeeArgs, QueryEmployeesArgs } from '~api/types';
 
 /**
  * Query the list of employees.

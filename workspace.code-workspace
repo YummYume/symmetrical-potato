@@ -182,6 +182,7 @@
     ],
     "tailwindCSS.experimental.classRegex": [
       ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-    ]
+    ],
+    "yaml.format.enable": false
   }
 }
