@@ -143,7 +143,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'user.email.unique',
     groups: [self::REGISTER, self::UPDATE]
 )]
-// #[ApiFilter(RoleFilter::class, properties: ['roles'], arguments: ['include' => 'role', 'exclude' => '[role]'])]
+#[ApiFilter(RoleFilter::class, properties: ['roles'])]
 // #[ApiFilter(SearchFilter::class, properties: ['roles'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

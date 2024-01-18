@@ -5,11 +5,23 @@ namespace App\Filter;
 use ApiPlatform\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
+use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\PropertyInfo\Type;
 
 final class RoleFilter extends AbstractFilter
 {
+    private string $includeParameterName = 'include';
+    private string $excludeParameterName = 'exclude';
+
+    public const ROLES = [
+        User::ROLE_ADMIN,
+        User::ROLE_CONTRACTOR,
+        User::ROLE_EMPLOYEE,
+        User::ROLE_HEISTER,
+        User::ROLE_USER,
+    ];
+
     /**
      * @return array<string, mixed>
      */
@@ -27,37 +39,77 @@ final class RoleFilter extends AbstractFilter
                 continue;
             }
             $propertyName = $this->normalizePropertyName($property);
-            $description[$propertyName] = [
+            $description[sprintf('%s[%s]', $propertyName, $this->includeParameterName)] = [
                 'property' => $propertyName,
-                'type' => Type::BUILTIN_TYPE_ITERABLE,
-                'required' => false,
+                'type' => Type::BUILTIN_TYPE_STRING,
+                'required' => true,
+                'schema' => [
+                    'type' => Type::BUILTIN_TYPE_STRING,
+                    'enum' => [
+                        strtolower(User::ROLE_ADMIN),
+                        strtolower(User::ROLE_CONTRACTOR),
+                        strtolower(User::ROLE_EMPLOYEE),
+                        strtolower(User::ROLE_HEISTER),
+                        strtolower(User::ROLE_USER),
+                    ],
+                ],
                 'openapi' => [
-                    'example' => 'If the property roles: ["ROLE_HEISTER", "ROLE_CONTRACTOR"]` the filter will be applied a `WHERE phase IN ("succeeded", "failed", "cancelled")` clause.',
-                    'description' => '',
                     'name' => 'Role filter',
-                    'type' => Type::BUILTIN_TYPE_ITERABLE,
+                    'type' => Type::BUILTIN_TYPE_STRING,
+                    'description' => 'Matches a property role against a list of roles.',
+                    'example' => 'If the property is `roles: { include: "ROLE_HEISTER" }` the filter will be applied a `WHERE JSON_CONTAINS(roles, "ROLE_HEISTER") = 1` clause.',
+                    'schema' => [
+                        'type' => Type::BUILTIN_TYPE_STRING,
+                        'enum' => [
+                            strtolower(User::ROLE_ADMIN),
+                            strtolower(User::ROLE_CONTRACTOR),
+                            strtolower(User::ROLE_EMPLOYEE),
+                            strtolower(User::ROLE_HEISTER),
+                            strtolower(User::ROLE_USER),
+                        ],
+                    ],
+                ],
+            ];
+            $description[sprintf('%s[%s]', $propertyName, $this->excludeParameterName)] = [
+                'property' => $propertyName,
+                'type' => Type::BUILTIN_TYPE_ARRAY,
+                'required' => false,
+                'schema' => [
+                    'type' => Type::BUILTIN_TYPE_ARRAY,
+                    'items' => [
+                        'type' => Type::BUILTIN_TYPE_STRING,
+                        'enum' => [
+                            strtolower(User::ROLE_ADMIN),
+                            strtolower(User::ROLE_CONTRACTOR),
+                            strtolower(User::ROLE_EMPLOYEE),
+                            strtolower(User::ROLE_HEISTER),
+                            strtolower(User::ROLE_USER),
+                        ],
+                    ],
+                ],
+                'openapi' => [
+                    'name' => 'Role filter',
+                    'type' => Type::BUILTIN_TYPE_ARRAY,
+                    'description' => 'Matches a property role against a list of roles.',
+                    'example' => 'If the property is `roles: { include: "ROLE_HEISTER", exclude: ["ROLE_ADMIN", "ROLE_CONTRACTOR"] }` the filter will be applied a `WHERE JSON_CONTAINS(roles, "ROLE_HEISTER") = 1 AND JSON_CONTAINS(roles, "ROLE_ADMIN") = 0 AND JSON_CONTAINS(roles, "ROLE_CONTRACTOR") = 0` clause.',
+                    'schema' => [
+                        'type' => Type::BUILTIN_TYPE_ARRAY,
+                        'items' => [
+                            'type' => Type::BUILTIN_TYPE_STRING,
+                            'enum' => [
+                                strtolower(User::ROLE_ADMIN),
+                                strtolower(User::ROLE_CONTRACTOR),
+                                strtolower(User::ROLE_EMPLOYEE),
+                                strtolower(User::ROLE_HEISTER),
+                                strtolower(User::ROLE_USER),
+                            ],
+                        ],
+                    ],
                 ],
             ];
         }
 
         return $description;
-    }
-
-    public function apply(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
-    {
-        if (isset($context['filters']) && !isset($context['filters'][$this->inc])) {
-            return;
-        }
-
-        if (!isset($context['filters'][$this->orderParameterName]) || !\is_array($context['filters'][$this->orderParameterName])) {
-            parent::apply($queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);
-
-            return;
-        }
-
-        foreach ($context['filters'][$this->orderParameterName] as $property => $value) {
-            $this->filterProperty($this->denormalizePropertyName($property), $value, $queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);
-        }
     }
 
     /**
@@ -76,19 +128,49 @@ final class RoleFilter extends AbstractFilter
             return;
         }
 
+        if (null === $value) {
+            return;
+        }
+
+        /**
+         * @var string $include
+         */
+        $include = $value[$this->includeParameterName];
+
+        /**
+         * @var array<string> $exclude
+         */
+        $exclude = $value[$this->excludeParameterName] ?? [];
+
+        if (null === $include || !in_array($include, self::ROLES)) {
+            return;
+        }
+
+        if (count($exclude) > 0) {
+            foreach ($exclude as $role) {
+                if (!in_array($role, self::ROLES)) {
+                    return;
+                }
+            }
+        }
+
         $alias = $queryBuilder->getRootAliases()[0];
         $field = $property;
 
         $valueParameter = $queryNameGenerator->generateParameterName($field);
-        $valueParameter2 = $queryNameGenerator->generateParameterName($field.'2');
 
         $queryBuilder
-            ->andWhere('JSON_CONTAINS('.sprintf('%s.%s', $alias, $field).", :$valueParameter) = 1")
-            ->andWhere($queryBuilder->expr()->not('JSON_CONTAINS('.sprintf('%s.%s', $alias, $field).", :$valueParameter2) = 1"))
-            ->setParameter($valueParameter, '"'.$value.'"')
-            ->setParameter($valueParameter2, '"ROLE_ADMIN"')
-            // ->andWhere($queryBuilder->expr()->like(sprintf('%s.%s', $alias, $field), ":$valueParameter"))
-            // ->setParameter($valueParameter, "%$value%")
+            ->andWhere(sprintf('JSON_CONTAINS(%s.%s, :%s) = 1', $alias, $field, $valueParameter))
+            ->setParameter($valueParameter, sprintf('"%s"', $include))
         ;
+
+        foreach ($exclude as $key => $role) {
+            $valueParameter = $queryNameGenerator->generateParameterName($field.$key);
+
+            $queryBuilder
+                ->andWhere($queryBuilder->expr()->not(sprintf('JSON_CONTAINS(%s.%s, :%s) = 1', $alias, $field, $valueParameter)))
+                ->setParameter($valueParameter, sprintf('"%s"', $role))
+            ;
+        }
     }
 }
