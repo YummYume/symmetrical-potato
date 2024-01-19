@@ -120,3 +120,5 @@ heist.objectives.name.min_length: The name must be at least 2 characters long.
 heist.objectives.name.max_length: The name must be less than 100 characters long.
 heist.objectives.description.min_length: The description must be at least 10 characters long.
 heist.objectives.description.max_length: The description must be less than 255 characters long.
+heist.visibility.required: The visibility is required.
+heist.visibility.invalid_type: The visibility is invalid.

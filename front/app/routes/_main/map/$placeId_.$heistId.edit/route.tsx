@@ -36,12 +36,16 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     throw redirect(`/map/${params.placeId}`);
   }
 
+  // Get the current heist
+  const { heist } = await getHeist(context.client, params.heistId);
+
+  if (!heist || heist.establishment.contractor.id !== user.id) {
+    throw redirect(`/map/${params.placeId}`);
+  }
+
   // Get the establishments of the current user
   const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
   const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
-
-  // Get the current heist
-  const { heist } = await getHeist(context.client, params.heistId);
 
   const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
   const { assets } = await getAssets(context.client);
