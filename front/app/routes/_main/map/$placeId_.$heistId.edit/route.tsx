@@ -3,7 +3,6 @@ import { Grid, Heading, Section } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
@@ -104,12 +103,13 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       preferedTactic: data.preferedTactic.value,
       visibility: HeistVisibilityEnum.Draft,
       allowedEmployees: data.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
+      forbiddenUsers: data.forbiddenUsers?.map((user) => user.value),
       forbiddenAssets: data.forbiddenAssets?.map((asset) => asset.value),
       objectives: data.objectives,
     });
 
     session.flash(FLASH_MESSAGE_KEY, {
-      content: t('heist.created_successfully', { ns: 'flash' }),
+      content: t('heist.updated_successfully', { ns: 'flash' }),
       type: 'success',
     } as FlashMessage);
 
@@ -155,20 +155,16 @@ export default function Edit() {
     value: edge.node.id,
   }));
 
-  const employeesFormatted = employees.edges.reduce(
-    (acc, curr) => {
-      if (heist.establishment.id === curr.node.establishment.id) {
-        acc.push({
-          label: curr.node.user.username,
-          value: curr.node.id,
-          establishmentId: curr.node.establishment.id,
-        });
-      }
+  const employeesFormatted = employees.edges.reduce((acc, curr) => {
+    if (heist.establishment.id === curr.node.establishment.id) {
+      acc.push({
+        label: curr.node.user.username,
+        value: curr.node.id,
+      });
+    }
 
-      return acc;
-    },
-    [] as (Option & { establishmentId: string })[],
-  );
+    return acc;
+  }, [] as Option[]);
 
   const heistPreferedTactics: Option[] = Object.values(HeistPreferedTacticEnum).map(
     (value: string) => ({
@@ -201,9 +197,21 @@ export default function Edit() {
       minimumPayout: heist.minimumPayout,
       maximumPayout: heist.maximumPayout,
       minimumRequiredRating: heist.minimumRequiredRating,
-      allowedEmployees: [],
-      forbiddenUsers: [],
-      forbiddenAssets: [],
+      allowedEmployees: heist.allowedEmployees.edges.map((edge) => ({
+        value: edge.node.id,
+        label: edge.node.user.username,
+      })),
+      forbiddenUsers: heist.forbiddenUsers.edges.map((edge) => ({
+        value: edge.node.id,
+        label: edge.node.username,
+      })),
+      forbiddenAssets: heist.forbiddenAssets.edges.map((edge) => ({
+        value: edge.node.id,
+        label: edge.node.name,
+      })),
+      visibility: {
+        value: heist.visibility,
+      },
       objectives: heist.objectives,
     },
   });
@@ -273,6 +281,11 @@ export default function Edit() {
             <FieldSelect
               name="difficulty"
               label={t('heist.difficulty')}
+              options={heistDifficulties}
+            />
+            <FieldSelect
+              name="visibility"
+              label={t('heist.visibility')}
               options={heistDifficulties}
             />
             <FieldInputArray

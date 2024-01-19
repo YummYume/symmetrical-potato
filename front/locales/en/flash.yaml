@@ -23,3 +23,4 @@ establishment.updated: Establishment updated successfully.
 establishment.deleted: Establishment deleted successfully.
 # Heist
 heist.created_successfully: Heist created successfully.
+heist.updated_successfully: Heist updated successfully.

@@ -1,5 +1,6 @@
 heist.add: Add a heist
 heist.edit: Edit
 heist.delete: Delete
+heist.delete.confirm: Are you sure you want to delete this heist?
 
 heist.add_objective: Add an objective

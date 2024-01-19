@@ -1,10 +1,11 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Grid, Heading, Section, Text } from '@radix-ui/themes';
+import { Button, Grid, Heading, Section, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Form, useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 
+import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { getEnv } from '~/lib/utils/env';
 import { getUriId } from '~/lib/utils/path';
 import { getGoogleLocation, getLocationInfo } from '~api/location';
@@ -195,15 +196,24 @@ export default function PlaceId() {
                           ns: 'heist',
                         })}
                       </Link>
-                      <Link
-                        to={`/map/${placeId}/delete`}
-                        className="block w-auto rounded-1 bg-red-10 p-2 text-center font-medium transition-colors hover:bg-red-8"
-                        unstyled
-                      >
-                        {t('heist.delete', {
+                      <Form
+                        id="heist-delete-form"
+                        action={`/map/${placeId}/${getUriId(heist.node?.id)}/delete`}
+                        method="post"
+                        className="hidden"
+                        unstable_viewTransition
+                      />
+                      <FormAlertDialog
+                        title={t('delete')}
+                        description={t('heist.delete.confirm', {
                           ns: 'heist',
                         })}
-                      </Link>
+                        formId="heist-delete-form"
+                      >
+                        <Button type="button" color="red">
+                          {t('delete')}
+                        </Button>
+                      </FormAlertDialog>
                     </div>
                   ))}
               </div>

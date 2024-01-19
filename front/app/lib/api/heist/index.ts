@@ -39,68 +39,6 @@ export const getHeists = async (client: GraphQLClient) => {
   `);
 };
 
-type heistIsMadeByParams = {
-  id: string;
-  userId: string;
-};
-
-/**
- * Check if a heist is made by a user
- */
-export const heistIsMadeBy = async (
-  client: GraphQLClient,
-  { id, userId }: heistIsMadeByParams,
-): Promise<boolean> => {
-  if (!id || !userId) return false;
-
-  const { heist } = await client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
-    gql`
-      query ($id: ID!) {
-        heist(id: $id) {
-          establishment {
-            contractor {
-              id
-            }
-          }
-        }
-      }
-    `,
-    {
-      id: `/heists/${id}`,
-    },
-  );
-
-  if (!heist) {
-    return false;
-  }
-
-  return heist.establishment.contractor.id === userId;
-};
-
-/**
- * Check if a heist is public
- */
-export const heistIsPublic = async (client: GraphQLClient, id: string): Promise<boolean> => {
-  const { heist } = await client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
-    gql`
-      query ($id: ID!) {
-        heist(id: $id) {
-          visibility
-        }
-      }
-    `,
-    {
-      id: `/heists/${id}`,
-    },
-  );
-
-  if (!heist) {
-    return false;
-  }
-
-  return heist.visibility === HeistVisibilityEnum.Public;
-};
-
 /**
  * Get a heist by id
  */
@@ -162,6 +100,68 @@ export const getHeist = async (client: GraphQLClient, id: string) => {
       id: `/heists/${id}`,
     },
   );
+};
+
+/**
+ * Check if a heist is public
+ */
+export const heistIsPublic = async (client: GraphQLClient, id: string): Promise<boolean> => {
+  const { heist } = await client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
+    gql`
+      query ($id: ID!) {
+        heist(id: $id) {
+          visibility
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
+
+  if (!heist) {
+    return false;
+  }
+
+  return heist.visibility === HeistVisibilityEnum.Public;
+};
+
+type heistIsMadeByParams = {
+  id: string;
+  userId: string;
+};
+
+/**
+ * Check if a heist is made by a user
+ */
+export const heistIsMadeBy = async (
+  client: GraphQLClient,
+  { id, userId }: heistIsMadeByParams,
+): Promise<boolean> => {
+  if (!id || !userId) return false;
+
+  const { heist } = await client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
+    gql`
+      query ($id: ID!) {
+        heist(id: $id) {
+          establishment {
+            contractor {
+              id
+            }
+          }
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
+
+  if (!heist) {
+    return false;
+  }
+
+  return heist.establishment.contractor.id === userId;
 };
 
 /**

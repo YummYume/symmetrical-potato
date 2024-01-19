@@ -1,5 +1,6 @@
 heist.add: Ajouter un braquage
 heist.edit: Modifier
 heist.delete: Supprimer
+heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
 
 heist.add_objective: Ajouter un objectif
