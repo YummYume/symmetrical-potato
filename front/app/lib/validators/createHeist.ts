@@ -73,18 +73,25 @@ export const createHeistValidationSchema = z
     allowedEmployees: z
       .object({
         value: z.string({
-          required_error: 'heist.allowedEmployees.value.required',
-          invalid_type_error: 'heist.allowedEmployees.value.invalid_type',
+          required_error: 'heist.allowed_employees.value.required',
+          invalid_type_error: 'heist.allowed_employees.value.invalid_type',
         }),
       })
       .array()
-      .min(1, { message: 'heist.allowedEmployees.min_length' })
-      .max(10, { message: 'heist.allowedEmployees.max_length' }),
+      .min(1, { message: 'heist.allowed_employees.min_length' })
+      .max(10, { message: 'heist.allowed_employees.max_length' }),
     forbiddenAssets: z
       .object({
         value: z.string({
-          required_error: 'heist.forbiddenAssets.value.required',
-          invalid_type_error: 'heist.forbiddenAssets.value.invalid_type',
+          invalid_type_error: 'heist.forbidden_assets.value.invalid_type',
+        }),
+      })
+      .array()
+      .optional(),
+    forbiddenUsers: z
+      .object({
+        value: z.string({
+          invalid_type_error: 'heist.forbidden_users.value.invalid_type',
         }),
       })
       .array()

@@ -349,7 +349,7 @@ export type HeistForbiddenUsersArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-  roles?: InputMaybe<Scalars['Iterable']['input']>;
+  roles?: InputMaybe<Array<InputMaybe<UserFilter_Roles>>>;
 };
 
 export type HeistAsset = Node & {
@@ -968,7 +968,7 @@ export type QueryUsersArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-  roles?: InputMaybe<Scalars['Iterable']['input']>;
+  roles?: InputMaybe<Array<InputMaybe<UserFilter_Roles>>>;
 };
 
 export type Review = Node & {
@@ -1088,6 +1088,11 @@ export type UserEdge = {
   __typename?: 'UserEdge';
   cursor: Scalars['String']['output'];
   node: Maybe<User>;
+};
+
+export type UserFilter_Roles = {
+  exclude?: InputMaybe<Scalars['Iterable']['input']>;
+  include: Scalars['String']['input'];
 };
 
 export enum UserLocaleEnum {

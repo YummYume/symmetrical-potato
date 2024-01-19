@@ -1,22 +1,27 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Button, Heading, Section, Text } from '@radix-ui/themes';
+import { Grid, Heading, Section } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
+import { getAssets } from '~/lib/api/asset';
+import { getEmployeesEstablishments } from '~/lib/api/employee';
 import { getEstablishmentsOfContractor } from '~/lib/api/establishment';
 import { getHeist, updateHeist } from '~/lib/api/heist';
 import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
+import { getUsersByRoles } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
+import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
+import dayjs from '~/lib/utils/dayjs';
 import { updateHeistResolver } from '~/lib/validators/updateHeist';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { ROLES, denyAccessUnlessGranted } from '~utils/security.server';
@@ -34,9 +39,18 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
 
   // Get the establishments of the current user
   const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
+  const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
 
   // Get the current heist
   const { heist } = await getHeist(context.client, params.heistId);
+
+  const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
+  const { assets } = await getAssets(context.client);
+
+  const { users } = await getUsersByRoles(context.client, {
+    include: 'ROLE_HEISTER',
+    exclude: ['ROLE_ADMIN'],
+  });
 
   // Redirect if the heist is not owned by a establishment of the current user
   if (establishments.edges.find((edge) => edge.node.id === heist.establishment.id) === undefined) {
@@ -44,8 +58,11 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   }
 
   return {
-    establishments,
     heist,
+    users,
+    assets,
+    employees,
+    establishments,
     placeId: params.placeId,
     locale: context.locale,
   };
@@ -75,12 +92,20 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
   try {
     await updateHeist(context.client, {
-      ...data,
       id: params?.heistId,
-      startAt: data.startAt.toISOString(),
-      shouldEndAt: data.shouldEndAt.toISOString(),
+      name: data.name,
+      description: data.description,
+      minimumPayout: +data.minimumPayout,
+      maximumPayout: +data.maximumPayout,
+      minimumRequiredRating: +(data?.minimumRequiredRating ?? 0),
+      startAt: dayjs(`${data.startAtDate} ${data.startAtTime}`).toISOString(),
+      shouldEndAt: dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`).toISOString(),
+      difficulty: data.difficulty.value,
+      preferedTactic: data.preferedTactic.value,
       visibility: HeistVisibilityEnum.Draft,
-      objectives: data.objectives ?? [],
+      allowedEmployees: data.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
+      forbiddenAssets: data.forbiddenAssets?.map((asset) => asset.value),
+      objectives: data.objectives,
     });
 
     session.flash(FLASH_MESSAGE_KEY, {
@@ -114,11 +139,48 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   );
 }
 
+type Option = { label: string; value: string };
+
 export default function Edit() {
   const { t } = useTranslation();
-  const [objectivesIndexs, setObjectivesIndexs] = useState<number[]>([]);
-  const [counter, setCounter] = useState<number>(0);
-  const { placeId, establishments, heist } = useLoaderData<Loader>();
+  const { placeId, heist, employees, assets, users } = useLoaderData<Loader>();
+
+  const usersFormatted: Option[] = users.edges.map((edge) => ({
+    label: edge.node.username,
+    value: edge.node.id,
+  }));
+
+  const assetsFormatted: Option[] = assets.edges.map((edge) => ({
+    label: edge.node.name,
+    value: edge.node.id,
+  }));
+
+  const employeesFormatted = employees.edges.reduce(
+    (acc, curr) => {
+      if (heist.establishment.id === curr.node.establishment.id) {
+        acc.push({
+          label: curr.node.user.username,
+          value: curr.node.id,
+          establishmentId: curr.node.establishment.id,
+        });
+      }
+
+      return acc;
+    },
+    [] as (Option & { establishmentId: string })[],
+  );
+
+  const heistPreferedTactics: Option[] = Object.values(HeistPreferedTacticEnum).map(
+    (value: string) => ({
+      label: value,
+      value,
+    }),
+  );
+
+  const heistDifficulties: Option[] = Object.values(HeistDifficultyEnum).map((value: string) => ({
+    label: value,
+    value,
+  }));
 
   const methods = useRemixForm<UpdateHeistFormData>({
     mode: 'onSubmit',
@@ -126,44 +188,25 @@ export default function Edit() {
     defaultValues: {
       name: heist.name,
       description: heist.description,
-      startAt: new Date(heist.startAt),
-      shouldEndAt: new Date(heist.shouldEndAt),
+      startAtDate: dayjs(heist.startAt).format('YYYY-MM-DD'),
+      startAtTime: dayjs(heist.startAt).format('HH:mm'),
+      shouldEndAtDate: dayjs(heist.shouldEndAt).format('YYYY-MM-DD'),
+      shouldEndAtTime: dayjs(heist.shouldEndAt).format('HH:mm'),
+      preferedTactic: {
+        value: heist.preferedTactic,
+      },
+      difficulty: {
+        value: heist.difficulty,
+      },
       minimumPayout: heist.minimumPayout,
       maximumPayout: heist.maximumPayout,
-      establishment: heist.establishment.id,
-      preferedTactic: heist.preferedTactic,
-      difficulty: heist.difficulty,
+      minimumRequiredRating: heist.minimumRequiredRating,
+      allowedEmployees: [],
+      forbiddenUsers: [],
+      forbiddenAssets: [],
       objectives: heist.objectives,
     },
   });
-
-  const addObjective = () => {
-    setObjectivesIndexs((prev) => [...prev, counter]);
-    setCounter((prev) => prev + 1);
-  };
-
-  const removeObjective = (index: number) => {
-    setObjectivesIndexs((prev) => prev.filter((i) => i !== index));
-    setCounter((prev) => prev - 1);
-
-    methods.clearErrors([`objectives.${index}.name`, `objectives.${index}.description`]);
-    methods.unregister([`objectives.${index}.name`, `objectives.${index}.description`]);
-  };
-
-  const establishmentsFormatted = establishments.edges.map((edge) => ({
-    label: edge.node.name,
-    value: edge.node.id,
-  }));
-
-  const heistPreferedTactics = Object.values(HeistPreferedTacticEnum).map((value: string) => ({
-    label: value,
-    value,
-  }));
-
-  const heistDifficulties = Object.values(HeistDifficultyEnum).map((value: string) => ({
-    label: value,
-    value,
-  }));
 
   return (
     <div>
@@ -177,14 +220,50 @@ export default function Edit() {
           <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
             <FieldInput name="name" label={t('name')} type="text" />
             <FieldInput name="description" label={t('description')} type="text" />
-            <FieldInput name="startAt" label={t('start_at')} type="datetime-local" />
-            <FieldInput name="shouldEndAt" label={t('heist.should_end_at')} type="datetime-local" />
-            <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
-            <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
+            <Grid columns="2" gap="2">
+              <FieldInput name="startAtDate" label={t('heist.start_at.date')} type="date" />
+              <FieldInput name="startAtTime" label={t('heist.start_at.time')} type="time" />
+            </Grid>
+            <Grid columns="2" gap="2">
+              <FieldInput
+                name="shouldEndAtDate"
+                label={t('heist.should_end_at.date')}
+                type="date"
+              />
+              <FieldInput
+                name="shouldEndAtTime"
+                label={t('heist.should_end_at.time')}
+                type="time"
+              />
+            </Grid>
+            <Grid columns="2" gap="2">
+              <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
+              <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
+            </Grid>
+            <FieldInput
+              name="minimumRequiredRating"
+              label={t('heist.minimum_required_rating')}
+              type="number"
+              min={0}
+              max={5}
+            />
             <FieldSelect
-              name="establishment"
-              label={t('establishment')}
-              options={establishmentsFormatted}
+              name="allowedEmployees"
+              label={t('heist.allowed_employees')}
+              options={employeesFormatted}
+              isMulti
+            />
+            <FieldSelect
+              name="forbiddenUsers"
+              label={t('heist.forbidden_users')}
+              options={usersFormatted}
+              isMulti
+            />
+            <FieldSelect
+              name="forbiddenAssets"
+              label={t('heist.forbidden_assets')}
+              options={assetsFormatted}
+              isMulti
             />
             <FieldSelect
               name="preferedTactic"
@@ -196,22 +275,31 @@ export default function Edit() {
               label={t('heist.difficulty')}
               options={heistDifficulties}
             />
-            {objectivesIndexs.map((objectiveIndex, key) => {
-              const fieldName = `objectives[${objectiveIndex}]`;
-              return (
-                <div key={fieldName}>
-                  <Text>{`${t('heist.objective')} ${key + 1}`}</Text>
-                  <FieldInput name={`${fieldName}.name`} label={t('name')} />
-                  <FieldInput name={`${fieldName}.description`} label={t('description')} />
-                  <Button type="button" onClick={() => removeObjective(objectiveIndex)}>
-                    {t('delete')}
-                  </Button>
-                </div>
-              );
-            })}
-            <Button type="button" onClick={addObjective}>
-              {t('heist.add_objective', { ns: 'heist' })}
-            </Button>
+            <FieldInputArray
+              name="objectives"
+              label={t('heist.objective')}
+              config={{
+                defaultAppendValue: {
+                  name: '',
+                  description: '',
+                },
+                add: {
+                  text: t('heist.add_objective', { ns: 'heist' }),
+                },
+                fields: [
+                  {
+                    name: 'name',
+                    label: t('name'),
+                    type: 'text',
+                  },
+                  {
+                    name: 'description',
+                    label: t('description'),
+                    type: 'text',
+                  },
+                ],
+              }}
+            />
             <SubmitButton text={t('update')} />
           </form>
         </RemixFormProvider>

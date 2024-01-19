@@ -40,7 +40,10 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
   const { assets } = await getAssets(context.client);
 
-  const { users } = await getUsersByRoles(context.client, ['[ROLE_HEISTER]']);
+  const { users } = await getUsersByRoles(context.client, {
+    include: 'ROLE_HEISTER',
+    exclude: ['ROLE_ADMIN'],
+  });
 
   return {
     users,
@@ -74,9 +77,9 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     await createHeist(context.client, {
       name: data.name,
       description: data.description,
-      minimumPayout: data.minimumPayout,
-      maximumPayout: data.maximumPayout,
-      minimumRequiredRating: data.minimumRequiredRating,
+      minimumPayout: +data.minimumPayout,
+      maximumPayout: +data.maximumPayout,
+      minimumRequiredRating: +(data?.minimumRequiredRating ?? 0),
       startAt: dayjs(`${data.startAtDate} ${data.startAtTime}`).toISOString(),
       shouldEndAt: dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`).toISOString(),
       difficulty: data.difficulty.value,
@@ -126,7 +129,10 @@ export default function Add() {
   const { t } = useTranslation();
   const { placeId, establishments, employees, assets, users } = useLoaderData<Loader>();
 
-  console.log(users);
+  const usersFormatted: Option[] = users.edges.map((edge) => ({
+    label: edge.node.username,
+    value: edge.node.id,
+  }));
 
   const assetsFormatted: Option[] = assets.edges.map((edge) => ({
     label: edge.node.name,
@@ -165,6 +171,15 @@ export default function Add() {
   const methods = useRemixForm<CreateHeistFormData>({
     mode: 'onSubmit',
     resolver: createHeistResolver,
+    submitHandlers: {
+      onInvalid: async (errors) => {
+        console.log(errors);
+        console.log(methods.getValues());
+      },
+      onValid: async (data) => {
+        console.log(data);
+      },
+    },
     defaultValues: {
       startAtDate: startAt.format('YYYY-MM-DD'),
       startAtTime: startAt.format('HH:mm'),
@@ -181,7 +196,9 @@ export default function Add() {
       },
       minimumPayout: 100000,
       maximumPayout: 1000000,
+      minimumRequiredRating: 0,
       allowedEmployees: [],
+      forbiddenUsers: [],
       forbiddenAssets: [],
       objectives: [],
     },
@@ -236,8 +253,10 @@ export default function Add() {
                 type="time"
               />
             </Grid>
-            <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
-            <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
+            <Grid columns="2" gap="2">
+              <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
+              <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
+            </Grid>
             <FieldInput
               name="minimumRequiredRating"
               label={t('heist.minimum_required_rating')}
@@ -256,6 +275,12 @@ export default function Add() {
               options={allowedEmployeesOptions}
               isMulti
               isDisabled={!watchEstablishment}
+            />
+            <FieldSelect
+              name="forbiddenUsers"
+              label={t('heist.forbidden_users')}
+              options={usersFormatted}
+              isMulti
             />
             <FieldSelect
               name="forbiddenAssets"

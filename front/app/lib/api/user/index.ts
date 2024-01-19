@@ -19,8 +19,6 @@ import {
   UserStatusEnum,
 } from '~api/types';
 
-import type { QueryUsersArgs } from '~api/types';
-
 /**
  * Query the currently logged in user.
  */
@@ -106,22 +104,30 @@ export const getUsers = async (client: GraphQLClient) => {
   `);
 };
 
-export const getUsersByRoles = async (client: GraphQLClient, roles: string[]) => {
-  return client.request<Pick<Query, 'users'>, QueryUsersArgs>(
+type RolesParam = { include: string; exclude: string[] };
+
+/**
+ * Query users by roles.
+ * e.g. getUsersByRoles(client, { include: 'ROLE_HEISTER', exclude: ['ROLE_ADMIN', ROLE_CONTRACTOR] })
+ */
+export const getUsersByRoles = async (client: GraphQLClient, roles: RolesParam) => {
+  return client.request<Pick<Query, 'users'>>(
     gql`
-      query ($roles: Iterable!) {
-        users(roles: $roles) {
+      query ($include: String!, $exclude: Iterable) {
+        users(roles: { include: $include, exclude: $exclude }) {
           edges {
             node {
               id
               username
-              status
             }
           }
         }
       }
     `,
-    { roles },
+    {
+      include: roles.include,
+      exclude: roles.exclude,
+    },
   );
 };
 

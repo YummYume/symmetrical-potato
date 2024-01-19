@@ -21,18 +21,22 @@ export const updateHeistValidationSchema = z
       .max(255, {
         message: 'heist.description.max_length',
       }),
-    startAt: zu.date(
-      z.coerce.date({
-        required_error: 'heist.start_at.required',
-        invalid_type_error: 'heist.start_at.invalid_type',
-      }),
-    ),
-    shouldEndAt: zu.date(
-      z.coerce.date({
-        required_error: 'heist.should_end_at.required',
-        invalid_type_error: 'heist.should_end_at.invalid_type',
-      }),
-    ),
+    startAtDate: z.string({
+      required_error: 'heist.start_at.date.required',
+      invalid_type_error: 'heist.start_at.date.invalid_type',
+    }),
+    startAtTime: z.string({
+      required_error: 'heist.start_at.time.required',
+      invalid_type_error: 'heist.start_at.time.invalid_type',
+    }),
+    shouldEndAtDate: z.string({
+      required_error: 'heist.should_end_at.date.required',
+      invalid_type_error: 'heist.should_end_at.date.invalid_type',
+    }),
+    shouldEndAtTime: z.string({
+      required_error: 'heist.should_end_at.time.required',
+      invalid_type_error: 'heist.should_end_at.time.invalid_type',
+    }),
     minimumPayout: zu.number(
       z.coerce
         .number({
@@ -53,23 +57,68 @@ export const updateHeistValidationSchema = z
           message: 'heist.maximum_payout.positive',
         }),
     ),
-    establishment: z
-      .string({
-        required_error: 'heist.establishment.required',
+    minimumRequiredRating: zu.number(
+      z.coerce
+        .number({
+          invalid_type_error: 'heist.minimum_required_rating.invalid_type',
+        })
+        .positive({
+          message: 'heist.minimum_required_rating.positive',
+        })
+        .max(5, {
+          message: 'heist.minimum_required_rating.max',
+        })
+        .optional(),
+    ),
+    allowedEmployees: z
+      .object({
+        value: z.string({
+          required_error: 'heist.allowed_employees.value.required',
+          invalid_type_error: 'heist.allowed_employees.value.invalid_type',
+        }),
       })
-      .min(1, {
-        message: 'heist.establishment.required',
+      .array()
+      .min(1, { message: 'heist.allowed_employees.min_length' })
+      .max(10, { message: 'heist.allowed_employees.max_length' }),
+    forbiddenAssets: z
+      .object({
+        value: z.string({
+          invalid_type_error: 'heist.forbidden_assets.value.invalid_type',
+        }),
       })
-      .includes('establishment', {
-        message: 'heist.establishment.invalid_type',
-      }),
-    preferedTactic: z.nativeEnum(HeistPreferedTacticEnum, {
-      required_error: 'heist.prefered_tactic.required',
-      invalid_type_error: 'heist.prefered_tactic.invalid_type',
+      .array()
+      .optional(),
+    forbiddenUsers: z
+      .object({
+        value: z.string({
+          invalid_type_error: 'heist.forbidden_users.value.invalid_type',
+        }),
+      })
+      .array()
+      .optional(),
+    establishment: z.object({
+      value: z
+        .string({
+          required_error: 'heist.establishment.required',
+        })
+        .min(1, {
+          message: 'heist.establishment.required',
+        })
+        .includes('establishment', {
+          message: 'heist.establishment.invalid_type',
+        }),
     }),
-    difficulty: z.nativeEnum(HeistDifficultyEnum, {
-      required_error: 'heist.difficulty.required',
-      invalid_type_error: 'heist.difficulty.invalid_type',
+    preferedTactic: z.object({
+      value: z.nativeEnum(HeistPreferedTacticEnum, {
+        required_error: 'heist.prefered_tactic.required',
+        invalid_type_error: 'heist.prefered_tactic.invalid_type',
+      }),
+    }),
+    difficulty: z.object({
+      value: z.nativeEnum(HeistDifficultyEnum, {
+        required_error: 'heist.difficulty.required',
+        invalid_type_error: 'heist.difficulty.invalid_type',
+      }),
     }),
     objectives: z
       .object({
@@ -85,14 +134,32 @@ export const updateHeistValidationSchema = z
       .array()
       .optional(),
   })
-  .refine((data) => dayjs().isSameOrBefore(dayjs(data.startAt), 'minute'), {
-    message: 'heist.start_at.is_past_date',
-    path: ['startAt'],
+  .refine((data) => dayjs(`${data.startAtDate} ${data.startAtTime}`).isValid(), {
+    message: 'heist.start_at.invalid_date',
+    path: ['startAtDate'],
   })
-  .refine((data) => dayjs(data.startAt).isBefore(dayjs(data.shouldEndAt), 'minute'), {
-    message: 'heist.should_end_at.is_before_start_at',
-    path: ['shouldEndAt'],
-  })
+  .refine((data) => dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`).isValid(), {
+    message: 'heist.should_end_at.invalid_date',
+    path: ['shouldEndAtDate'],
+  }) // Check if startAt is after current date
+  .refine(
+    (data) => dayjs().isSameOrBefore(dayjs(`${data.startAtDate} ${data.startAtTime}`), 'minute'),
+    {
+      message: 'heist.start_at.is_past_date',
+      path: ['startAtDate'],
+    },
+  ) // Check if startAt is before shouldEndAt
+  .refine(
+    (data) =>
+      dayjs(`${data.startAtDate} ${data.startAtTime}`).isBefore(
+        dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`),
+        'minute',
+      ),
+    {
+      message: 'heist.should_end_at.is_before_start_at',
+      path: ['shouldEndAtDate'],
+    },
+  )
   .refine((data) => data.minimumPayout < data.maximumPayout, {
     message: 'heist.maximum_payout_is_lower_than_minimum_payout',
     path: ['maximumPayout'],

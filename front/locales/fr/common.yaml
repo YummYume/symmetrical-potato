@@ -68,6 +68,9 @@ heist.minimum_payout: Paiement minimum
 heist.maximum_payout: Paiement maximum
 heist.difficulty: Difficulté
 heist.allowed_employees: Employés autorisés
+heist.forbidden_users: Braqueurs interdits
+heist.forbidden_assets: Assets interdits
+heist.minimum_required_rating: Note minimale requise
 
 # User
 user.balance: Solde

@@ -105,10 +105,15 @@ heist.establishment.required: Please select an establishment.
 heist.establishment.invalid: The selected establishment is invalid.
 heist.prefered_tactic.required: Please select a prefered tactic.
 heist.prefered_tactic.invalid_type: The selected prefered tactic is invalid.
-heist.allowedEmployees.value.required: Please select allowed employees.
-heist.allowedEmployees.value.invalid: The selected allowed employees are invalid.
-heist.allowedEmployees.min_length: Please select at least 1 allowed employee.
-heist.allowedEmployees.max_length: Please select at most 10 allowed employees.
+heist.allowed_employees.value.required: Please select allowed employees.
+heist.allowed_employees.value.invalid: The selected allowed employees are invalid.
+heist.allowed_employees.min_length: Please select at least 1 allowed employee.
+heist.allowed_employees.max_length: Please select at most 10 allowed employees.
+heist.forbidden_assets.value.invalid: The selected forbidden asset is invalid.
+heist.forbidden_users.value.invalid_type: The selected forbidden heister is invalid.
+heist.minimum_required_rating.invalid_type: The minimum required rating is invalid.
+heist.minimum_required_rating.positive: The minimum required rating must be positive.
+heist.minimum_required_rating.max: The minimum rating must be 5 or less.
 heist.difficulty.required: Please select a difficulty.
 heist.difficulty.invalid_type: The selected difficulty is invalid.
 heist.objectives.name.min_length: The name must be at least 2 characters long.
