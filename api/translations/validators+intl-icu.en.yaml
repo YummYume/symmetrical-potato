@@ -72,9 +72,11 @@ location.name.max_length: The name cannot exceed {limit} characters.
 location.name.unique: This name is already taken. Please choose another one.
 location.latlng.unique: This location already exists. Please choose another one.
 location.latitude.not_blank: Please enter a latitude.
-location.latitude.invalid: Please enter a valid latitude.
+location.latitude.type: Please enter a valid latitude.
+location.latitude.range: Please enter a valid latitude (between {min} and {max}).
 location.longitude.not_blank: Please enter a longitude.
-location.longitude.invalid: Please enter a valid longitude.
+location.longitude.type: Please enter a valid longitude.
+location.longitude.range: Please enter a valid longitude (between {min} and {max}).
 location.address.not_blank: Please enter an address.
 location.address.max_length: The address cannot exceed {limit} characters.
 location.address.unique: This address is already taken. Please choose another one.
@@ -86,6 +88,7 @@ contractor_request.reason.min_length: Your reason must be at least {limit} chara
 contractor_request.reason.max_length: Your reason cannot be longer than {limit} characters.
 contractor_request.status.not_pending: You must either accept or reject the contractor request.
 contractor_request.admin_comment.max_length: The comment cannot be longer than {limit} characters.
+contractor_request.status.cannot_change: You cannot change the status of this contractor request.
 
 # Review
 review.establishment.unique: You have already reviewed this establishment.
@@ -142,3 +145,17 @@ employee.weekly_schedule.total_hours_less_than_minimum: >-
 
 # CrewMember
 crew_member.cannot_join: You cannot join this heist.
+
+# Asset
+asset.name.unique: An asset with this name already exists. Please choose another one.
+asset.name.not_blank: Please enter a name.
+asset.name.min_length: The name must be at least {limit} characters long.
+asset.name.max_length: The name cannot exceed {limit} characters.
+asset.price.not_blank: Please enter a price.
+asset.price.positive: The price must be a positive number.
+asset.description.max_length: The description cannot exceed {limit} characters.
+asset.max_quantity.not_blank: Please enter a maximum quantity.
+asset.max_quantity.positive: The maximum quantity must be a positive number if specified.
+asset.max_quantity.max: The maximum quantity cannot be greater than {compared_value}.
+asset.heist.cannot_add: You cannot add this asset to this heist.
+asset.heist.must_add: You must specify a heist for this asset.

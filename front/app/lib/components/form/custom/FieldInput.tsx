@@ -1,8 +1,10 @@
 import { Grid, Text, TextField } from '@radix-ui/themes';
+import { Controller, type Control } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useRemixFormContext } from 'remix-hook-form';
 
 import { getFormErrorField } from '~/lib/utils/error';
+import { toString } from '~/lib/utils/form';
 
 import type { Path } from 'react-hook-form';
 import type { FormErrorField } from '~/lib/utils/error';
@@ -36,10 +38,9 @@ export function FieldInput<T extends FormData>({
   const {
     register,
     formState: { errors },
+    control,
   } = useRemixFormContext<T>();
-
   const ariaDescribedBy = `${name}-error`;
-
   const error = getFormErrorField(errors[name] as FormErrorField);
 
   return (
@@ -49,11 +50,21 @@ export function FieldInput<T extends FormData>({
       </Text>
       <TextField.Root className={inputContainerClassName}>
         {leftSlot}
-        <TextField.Input
-          id={name}
-          aria-describedby={error ? ariaDescribedBy : ''}
-          {...register(name)}
-          {...rest}
+        <Controller
+          name={name}
+          control={control as Control<T>}
+          render={({ field }) => (
+            <TextField.Input
+              {...register(name)}
+              {...rest}
+              id={name}
+              aria-describedby={error ? ariaDescribedBy : ''}
+              disabled={field.disabled}
+              defaultValue={toString(field.value)}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+            />
+          )}
         />
         {rightSlot}
       </TextField.Root>

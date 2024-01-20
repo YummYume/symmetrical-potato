@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GraphQl\Mutation;
 use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Resolver\JwtMutationResolver;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ApiResource(
     shortName: 'Token',
@@ -91,6 +92,7 @@ class Token
         return $this;
     }
 
+    #[Ignore]
     public static function getResource(): null
     {
         return null;
@@ -99,6 +101,7 @@ class Token
     /**
      * @return array<string, mixed>
      */
+    #[Ignore]
     public static function getResources(): array
     {
         return [];

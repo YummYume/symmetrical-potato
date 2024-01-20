@@ -11,9 +11,11 @@ import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { Header } from '~/lib/components/layout/Header';
 import { UserDropdown } from '~/lib/components/layout/UserDropdown';
 import { denyAdminAccessUnlessGranted } from '~/lib/utils/security.server';
+import { links as rootLinks } from '~/root';
 import { Link, NavLink, NavLinkActiveIndicator } from '~components/Link';
+import adminStyles from '~styles/admin.css';
 
-import type { LoaderFunctionArgs, SerializeFrom } from '@remix-run/node';
+import type { LinksFunction, LoaderFunctionArgs, SerializeFrom } from '@remix-run/node';
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const user = denyAdminAccessUnlessGranted(context.user);
@@ -26,6 +28,11 @@ export async function loader({ context }: LoaderFunctionArgs) {
 }
 
 export type Loader = typeof loader;
+
+export const links: LinksFunction = () => [
+  ...rootLinks(),
+  { rel: 'stylesheet', href: adminStyles },
+];
 
 const Menu = ({
   isChangingPreferences,

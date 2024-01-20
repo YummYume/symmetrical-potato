@@ -378,8 +378,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 100000,
             'maximumPayout' => 300000,
             'description' => 'A bank heist in the middle of the day, the most classic of all heists.',
-            'startAt' => '2024-01-01 10:00:00',
-            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Loud,
             'difficulty' => HeistDifficultyEnum::Normal,
             'phase' => HeistPhaseEnum::Planning,
@@ -425,8 +423,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 350000,
             'maximumPayout' => 850000,
             'description' => 'Hijack a truck full of money and minerals.',
-            'startAt' => '2024-01-01 10:00:00',
-            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Loud,
             'difficulty' => HeistDifficultyEnum::Overkill,
             'phase' => HeistPhaseEnum::Planning,
@@ -472,8 +468,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 80000,
             'maximumPayout' => 500000,
             'description' => 'Steal all sorts of diamonds from a jewelry store. We still do not know if we will go in loud or stealthy. Be prepared for both.',
-            'startAt' => '2024-01-01 10:00:00',
-            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Unknown,
             'difficulty' => HeistDifficultyEnum::Overkill,
             'phase' => HeistPhaseEnum::Planning,
@@ -519,8 +513,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 100000,
             'maximumPayout' => 600000,
             'description' => 'Find and secure the crypto wallet from a nightclub.',
-            'startAt' => '2024-01-01 10:00:00',
-            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Stealth,
             'difficulty' => HeistDifficultyEnum::Hard,
             'phase' => HeistPhaseEnum::Planning,
@@ -566,8 +558,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 500000,
             'maximumPayout' => 950000,
             'description' => 'Infiltrate the modern art museum and steal the most expensive paintings. My client will not tolerate any damage to the paintings.',
-            'startAt' => '2024-01-01 10:00:00',
-            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::SemiStealth,
             'difficulty' => HeistDifficultyEnum::Hard,
             'phase' => HeistPhaseEnum::Planning,
@@ -613,8 +603,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 600000,
             'maximumPayout' => 1000000,
             'description' => 'Steal the gold from the bank vault. The bank is in the middle of the city, so be prepared for a lot of cops.',
-            'startAt' => '2024-01-01 10:00:00',
-            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Loud,
             'difficulty' => HeistDifficultyEnum::VeryHard,
             'phase' => HeistPhaseEnum::Planning,
@@ -660,8 +648,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 450000,
             'maximumPayout' => 900000,
             'description' => 'A warehouse full of boxes. You need to secure the components fast before they deteriorate.',
-            'startAt' => '2024-01-01 10:00:00',
-            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Loud,
             'difficulty' => HeistDifficultyEnum::VeryHard,
             'phase' => HeistPhaseEnum::Planning,
@@ -707,8 +693,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'minimumPayout' => 350000,
             'maximumPayout' => 1000000,
             'description' => 'A fancy penthouse next to the water. The owner is a rich guy who is not afraid to use his money to get what he wants.',
-            'startAt' => '2024-01-01 10:00:00',
-            'shouldEndAt' => '2024-01-01 11:15:00',
             'preferedTactic' => HeistPreferedTacticEnum::Stealth,
             'difficulty' => HeistDifficultyEnum::Overkill,
             'phase' => HeistPhaseEnum::Planning,
@@ -777,13 +761,16 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
                 $visibility = HeistVisibilityEnum::Public;
             }
 
+            $startAt = $heist['startAt'] ?? (new \DateTime())->format('Y-m-d G:i:s');
+            $shouldEndAt = $heist['shouldEndAt'] ?? (new \DateTime())->modify('+2 hours')->format('Y-m-d G:i:s');
+
             $newHeist = (new Heist())
                 ->setName($heist['name'])
                 ->setMinimumPayout($heist['minimumPayout'])
                 ->setMaximumPayout($heist['maximumPayout'])
                 ->setDescription($heist['description'] ?? null)
-                ->setStartAt(\DateTime::createFromFormat('Y-m-d G:i:s', $heist['startAt']))
-                ->setShouldEndAt(\DateTime::createFromFormat('Y-m-d G:i:s', $heist['shouldEndAt']))
+                ->setStartAt(\DateTime::createFromFormat('Y-m-d G:i:s', $startAt))
+                ->setShouldEndAt(\DateTime::createFromFormat('Y-m-d G:i:s', $shouldEndAt))
                 ->setEndedAt($endedAt ? \DateTime::createFromFormat('Y-m-d G:i:s', $heist['endedAt']) : null)
                 ->setPreferedTactic($heist['preferedTactic'])
                 ->setDifficulty($heist['difficulty'])

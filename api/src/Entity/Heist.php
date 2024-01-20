@@ -122,7 +122,7 @@ class Heist
     private ?float $maximumPayout = null;
 
     #[ORM\Column]
-    #[Groups([self::READ, self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ, self::READ_PUBLIC, self::CREATE, self::UPDATE, Asset::READ])]
     #[Assert\NotBlank(groups: [self::CREATE, self::UPDATE], message: 'heist.name.not_blank')]
     #[Assert\Length(
         groups: [self::CREATE, self::UPDATE],
@@ -213,7 +213,7 @@ class Heist
     #[Groups([self::READ])]
     private Collection $crewMembers;
 
-    #[ORM\ManyToOne(inversedBy: 'heists')]
+    #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Location::class, cascade: ['remove'])]
     #[Groups([self::READ])]
     private ?Location $location = null;
 

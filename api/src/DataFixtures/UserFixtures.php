@@ -111,7 +111,7 @@ final class UserFixtures extends Fixture
             'balance' => 1000,
         ],
         self::EMPLOYEE_PENDING => [
-            'role' => User::ROLE_EMPLOYEE,
+            'role' => User::ROLE_HEISTER,
             'balance' => 1000,
         ],
         self::CONTRACTOR_SHADE => [
@@ -143,11 +143,11 @@ final class UserFixtures extends Fixture
             'balance' => 10_000_000,
         ],
         self::CONTRACTOR_PENDING => [
-            'role' => User::ROLE_CONTRACTOR,
+            'role' => User::ROLE_HEISTER,
             'balance' => 10_000_000,
         ],
         self::CONTRACTOR_REJECTED => [
-            'role' => User::ROLE_CONTRACTOR,
+            'role' => User::ROLE_HEISTER,
             'balance' => 10_000_000,
         ],
         self::ADMIN_BAIN => [

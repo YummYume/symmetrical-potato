@@ -4,3 +4,20 @@ user.verified: User verified successfully.
 user.deleted: User deleted successfully.
 user.killed: User killed successfully.
 user.revived: User revived successfully.
+
+# Asset
+asset.created: Asset created successfully.
+asset.updated: Asset updated successfully.
+asset.deleted: Asset deleted successfully.
+
+# Contractor Request
+contractor_request.updated: Contractor request updated successfully.
+contractor_request.deleted: Contractor request deleted successfully.
+
+# Location
+location.updated: Location updated successfully.
+location.deleted: Location deleted successfully.
+
+# Establishment
+establishment.updated: Establishment updated successfully.
+establishment.deleted: Establishment deleted successfully.

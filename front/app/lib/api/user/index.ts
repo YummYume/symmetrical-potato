@@ -121,14 +121,25 @@ export const getUser = async (client: GraphQLClient, id: string) => {
           reason
           locale
           status
+          mainRole
           profile {
             id
             description
           }
+          createdAt
+          updatedAt
+          createdBy {
+            id
+            username
+          }
+          updatedBy {
+            id
+            username
+          }
         }
       }
     `,
-    { id },
+    { id: `/users/${id}` },
   );
 };
 
@@ -143,6 +154,7 @@ export const getPublicUser = async (client: GraphQLClient, id: string) => {
           id
           username
           globalRating
+          mainRole
           profile {
             id
             description
@@ -150,7 +162,7 @@ export const getPublicUser = async (client: GraphQLClient, id: string) => {
         }
       }
     `,
-    { id },
+    { id: `/users/${id}` },
   );
 };
 
@@ -175,6 +187,7 @@ export const updateUser = async (
             reason
             locale
             status
+            mainRole
             profile {
               id
               description
@@ -231,6 +244,7 @@ export const validateUser = async (client: GraphQLClient, id: string) => {
             reason
             locale
             status
+            mainRole
           }
         }
       }
@@ -262,6 +276,7 @@ export const killUser = async (client: GraphQLClient, id: string) => {
             reason
             locale
             status
+            mainRole
           }
         }
       }
@@ -293,6 +308,7 @@ export const reviveUser = async (client: GraphQLClient, id: string) => {
             reason
             locale
             status
+            mainRole
           }
         }
       }

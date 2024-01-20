@@ -6,13 +6,39 @@ user.delete.confirm: >
 user.revive.confirm: >
   Êtes-vous sûr de vouloir réanimer cet utilisateur ? Il sera considéré comme vivant et pourra se connecter.
 user.kill.confirm: >
-  Êtes-vous sûr de vouloir tuer cet utilisateur ? Des tueurs à gages seront envoyés à son emplacement. Il sera considéré comme mort et ne pourra pas se connecter.
+  Êtes-vous sûr de vouloir tuer cet utilisateur ? Des tueurs à gages seront envoyés à son emplacement. Il sera considéré comme mort et ne pourra plus se connecter.
 user.roles.roles: Rôles
 user.roles.role_user: Utilisateur
 user.roles.role_heister: Braqueur
 user.roles.role_employee: Employé
 user.roles.role_contractor: Contractant
 user.roles.role_admin: Admin
+
+# Asset
+asset.create: Créer un asset
+asset.create_global: Créer un asset global
+asset.delete.confirm: >-
+  Êtes-vous sûr de vouloir supprimer cet asset ? Toutes les données associées à cet asset seront supprimées.
+  Tous les braqueurs qui ont acheté cet asset seront remboursés. Si cet asset appartient à un braquage, son contractant sera celui qui remboursera les braqueurs.
+
+# Contractor Request
+contractor_request.request_of: Demande de {name}
+contractor_request.reject: Rejeter
+contractor_request.accept: Accepter
+contractor_request.delete.confirm: >-
+  Êtes-vous sûr de vouloir supprimer cette demande de contractant ? Pour suivre les demandes, il est recommandé de les conserver en les rejetant simplement.
+contractor_request.accept.confirm: >-
+  Êtes-vous sûr de vouloir accepter cette demande de contractant ? L'utilisateur deviendra un contractant et pourra créer des établissements.
+contractor_request.reject.confirm: >-
+  Êtes-vous sûr de vouloir rejeter cette demande de contractant ? L'utilisateur sera informé du rejet et pourra lire la raison pour laquelle il a été rejeté.
+
+# Location
+location.delete.confirm: >-
+  Êtes-vous sûr de vouloir supprimer ce lieu ? Toutes les données associées à ce lieu seront supprimées.
+
+# Establishment
+establishment.delete.confirm: >-
+  Êtes-vous sûr de vouloir supprimer cet établissement ? Toutes les données associées à cet établissement seront supprimées.
 
 # Dashboard
 ## Heists

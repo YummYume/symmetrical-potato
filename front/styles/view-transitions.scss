@@ -1,0 +1,18 @@
+@supports (view-transition-name: none) {
+  @media (prefers-reduced-motion) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
+    }
+  }
+
+  ::view-transition-group(active-contractor_request-link),
+  ::view-transition-group(active-asset-link),
+  ::view-transition-group(active-user-link),
+  ::view-transition-group(active-location-link),
+  ::view-transition-group(active-establishment-link),
+  ::view-transition-group(active-heist-link) {
+    @apply opacity-50;
+  }
+}

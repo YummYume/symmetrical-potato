@@ -1,9 +1,37 @@
-import dayjs from 'dayjs';
 import { gql, type GraphQLClient } from 'graphql-request';
 
 import { CrewMemberStatusEnum, HeistPhaseEnum, type Query, type QueryHeistsArgs } from '~api/types';
+import dayjs from '~utils/dayjs';
 
-export const getDayHeists = async (client: GraphQLClient) => {
+/**
+ * Query all heists.
+ */
+export const getHeists = async (client: GraphQLClient) => {
+  return client.request<Pick<Query, 'heists'>>(gql`
+    query {
+      heists {
+        edges {
+          node {
+            id
+            name
+            startAt
+            location {
+              name
+            }
+            crewMembers {
+              totalCount
+            }
+          }
+        }
+      }
+    }
+  `);
+};
+
+/**
+ * Will return heists for today.
+ */
+export const getHeistsForToday = async (client: GraphQLClient) => {
   return client.request<Pick<Query, 'heists'>, QueryHeistsArgs>(
     gql`
       query ($startAt: [HeistFilter_startAt]!) {

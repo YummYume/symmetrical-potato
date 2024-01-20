@@ -1,30 +1,28 @@
 import { z } from 'zod';
 
-import type { RawCreateParams as ParamsZod } from 'zod';
-
 /**
  * Check if a value is a number or a string that can be parsed to a number
  */
-export const number = (zodNumber: z.ZodNumber, params: ParamsZod = {}) =>
-  z.union([z.number(), z.string()]).pipe(z.coerce.number(params).pipe(zodNumber));
+export const number = <ZodType extends z.ZodTypeAny>(zodNumber: ZodType) =>
+  z.union([z.number(), z.string()]).pipe<ZodType>(zodNumber);
 
 /**
  * Check if a value is a date or a string that can be parsed to a date
  */
-export const date = (zodDate: z.ZodDate, params: ParamsZod) =>
-  z.union([z.date(), z.string()]).pipe(z.coerce.date(params).pipe(zodDate));
+export const date = <ZodType extends z.ZodTypeAny>(zodDate: ZodType) =>
+  z.union([z.date(), z.string(), z.number()]).pipe<ZodType>(zodDate);
 
 /**
  * Check if a value is a boolean or a string that can be parsed to a boolean
  */
-export const boolean = (zodBoolean: z.ZodBoolean, params: ParamsZod) =>
-  z.union([z.boolean(), z.string()]).pipe(z.coerce.boolean(params).pipe(zodBoolean));
+export const boolean = <ZodType extends z.ZodTypeAny>(zodBoolean: ZodType) =>
+  z.union([z.boolean(), z.string()]).pipe<ZodType>(zodBoolean);
 
 /**
- * Check if a value is a string or a number
+ * Check if a value is a string or a number that can be parsed to a string
  */
-export const string = (zodString: z.ZodString, params: ParamsZod) =>
-  z.union([z.string(), z.number()]).pipe(z.coerce.string(params).pipe(zodString));
+export const string = <ZodType extends z.ZodTypeAny>(zodString: ZodType) =>
+  z.union([z.string(), z.number()]).pipe<ZodType>(zodString);
 
 export const zu = {
   number,

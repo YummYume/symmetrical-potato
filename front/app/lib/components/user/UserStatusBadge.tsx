@@ -14,7 +14,7 @@ export const UserStatusBadge = ({ status, ...rest }: UserStatusBadgeProps) => {
 
   if (status === UserStatusEnum.Verified) {
     return (
-      <Badge color="green" {...rest}>
+      <Badge color="green" size="1" className="h-fit" {...rest}>
         {t('user.status.verified')}
       </Badge>
     );
@@ -22,14 +22,14 @@ export const UserStatusBadge = ({ status, ...rest }: UserStatusBadgeProps) => {
 
   if (status === UserStatusEnum.Unverified) {
     return (
-      <Badge color="orange" {...rest}>
+      <Badge color="orange" size="1" className="h-fit" {...rest}>
         {t('user.status.unverified')}
       </Badge>
     );
   }
 
   return (
-    <Badge color="red" {...rest}>
+    <Badge color="red" size="1" className="h-fit" {...rest}>
       {t('user.status.dead')}
     </Badge>
   );

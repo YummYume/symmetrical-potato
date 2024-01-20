@@ -15,6 +15,16 @@ final class CrewMemberFixtures extends Fixture implements DependentFixtureInterf
     public const REFERENCE_IDENTIFIER = 'crew_member_';
     public const DATA = [
         // No Rest for the Wicked
+        // Planning
+        [
+            'civilianCasualties' => 0,
+            'kills' => 0,
+            'objectivesCompleted' => 0,
+            'payout' => 0,
+            'status' => CrewMemberStatusEnum::Free,
+            'user' => UserFixtures::HEISTER_DALLAS,
+            'heist' => HeistFixtures::HEIST_NO_REST_FOR_THE_WICKED_PLANNING,
+        ],
         // Success
         [
             'civilianCasualties' => 0,

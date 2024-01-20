@@ -31,13 +31,13 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             security: 'is_granted("READ", object)',
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             security: 'is_granted("ROLE_ADMIN")',
         ),
@@ -47,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'groups' => [self::WRITE],
             ],
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             validationContext: ['groups' => [self::WRITE]],
             securityPostDenormalize: 'is_granted("CREATE", object)'
@@ -58,11 +58,11 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'groups' => [self::WRITE_ADMIN],
             ],
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
-            validationContext: ['groups' => [
-                self::WRITE_ADMIN,
-            ]],
+            validationContext: [
+                'groups' => [self::WRITE_ADMIN],
+            ],
             security: 'is_granted("UPDATE", object)'
         ),
         new DeleteMutation(
@@ -119,7 +119,7 @@ class ContractorRequest
     private ?string $adminComment = null;
 
     #[ORM\OneToOne(mappedBy: 'contractorRequest', targetEntity: User::class)]
-    #[Groups(['contractor_request:read:admin'])]
+    #[Groups([self::READ])]
     private ?User $user = null;
 
     public function getId(): ?Uuid

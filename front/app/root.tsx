@@ -22,6 +22,7 @@ import { useChangeLanguage } from 'remix-i18next';
 
 import tailwindStylesheet from '~/styles/tailwind.css';
 import themeStylesheet from '~/styles/theme.css';
+import viewTransitionsStylesheet from '~/styles/view-transitions.css';
 import { Link } from '~components/Link';
 import { ProgressBar } from '~components/ProgressBar';
 import { Toast } from '~components/Toast';
@@ -103,6 +104,7 @@ export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
   { rel: 'stylesheet', href: tailwindStylesheet },
   { rel: 'stylesheet', href: themeStylesheet },
+  { rel: 'stylesheet', href: viewTransitionsStylesheet },
 ];
 
 export let handle = {
@@ -185,8 +187,7 @@ export default function App() {
                   }}
                 />
               )}
-              {/* TODO look at this for better toasts */}
-              <RadixToast.Viewport />
+              <RadixToast.Viewport className="fixed bottom-0 right-0 z-[2147483647] m-0 flex w-[390px] max-w-[100vw] list-none flex-col gap-[10px] p-[var(--viewport-padding)] outline-none [--viewport-padding:_25px]" />
               <Outlet />
             </RadixToast.Provider>
           </ThemeContext.Provider>
