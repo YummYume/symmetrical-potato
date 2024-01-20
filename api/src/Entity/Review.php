@@ -119,17 +119,17 @@ class Review
     #[Assert\NotBlank(message: 'review.rating.not_blank', groups: [self::CREATE, self::UPDATE])]
     private ?ReviewRatingEnum $rating = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\ManyToOne(inversedBy: 'reviews', targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups([self::READ_PUBLIC])]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\ManyToOne(inversedBy: 'reviews', targetEntity: Establishment::class)]
     #[Groups([self::READ_PUBLIC, self::CREATE])]
     #[CanReview(message: 'review.establishment.cannot_review', groups: [self::CREATE])]
     private ?Establishment $establishment = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\ManyToOne(inversedBy: 'reviews', targetEntity: Location::class)]
     #[Groups([self::READ_PUBLIC, self::CREATE])]
     #[CanReview(message: 'review.location.cannot_review', groups: [self::CREATE])]
     private ?Location $location = null;

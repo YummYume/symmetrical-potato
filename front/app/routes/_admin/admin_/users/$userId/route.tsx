@@ -9,6 +9,7 @@ import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hoo
 
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
+import { UserMainRoleBadge } from '~/lib/components/user/UserMainRoleBadge';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { adminUserResolver } from '~/lib/validators/admin/user';
@@ -148,6 +149,7 @@ export default function User() {
         <Flex gap="2" justify="center" align="center">
           <Heading as="h2">{user.username}</Heading>
           <UserStatusBadge status={user.status} />
+          <UserMainRoleBadge mainRole={user.mainRole} />
         </Flex>
         <HistoryInfoPopover
           createdAt={user.createdAt}

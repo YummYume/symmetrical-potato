@@ -23,7 +23,7 @@ export const SubmitButton = ({
   const isSubmitting = useMemo(() => navigation.state === 'submitting', [navigation.state]);
 
   return (
-    <Button type="submit" disabled={isSubmitting} {...rest}>
+    <Button type="submit" {...rest} disabled={rest.disabled || isSubmitting}>
       {Content && <Content text={text} submittingText={submittingText} />}
       {!Content && (isSubmitting && submittingText ? submittingText : text)}
     </Button>

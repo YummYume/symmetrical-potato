@@ -38,7 +38,7 @@ export default function Locations() {
           <div className="panel">
             <div className="panel__sidebar">
               <ScrollArea type="auto" scrollbars="both">
-                <nav>
+                <nav className="panel__sidebar-list">
                   <ul>
                     {locations.edges.map((edge) => (
                       <li key={edge.node.id}>

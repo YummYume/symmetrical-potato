@@ -5,6 +5,7 @@ import type {
   MutationDeleteLocationArgs,
   MutationUpdateLocationArgs,
   Query,
+  QueryLocationArgs,
   UpdateLocationInput,
 } from '~api/types';
 import type { GooglePlace } from '~api/types/maps';
@@ -13,7 +14,10 @@ import type { GooglePlace } from '~api/types/maps';
  * Get the location info for a place.
  */
 export const getLocationInfo = async (client: GraphQLClient, placeId: string) => {
-  return client.request<Query>(
+  return client.request<
+    Pick<Query, 'location' | 'heists' | 'reviews'>,
+    { place: string; placeId: string }
+  >(
     gql`
       query ($place: String!, $placeId: ID!) {
         location(id: $placeId) {
@@ -56,6 +60,40 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
     {
       placeId: `/locations/${placeId}`,
       place: placeId,
+    },
+  );
+};
+
+/**
+ * Get the location (not public).
+ */
+export const getLocation = async (client: GraphQLClient, placeId: string) => {
+  return client.request<Pick<Query, 'location'>, QueryLocationArgs>(
+    gql`
+      query ($id: ID!) {
+        location(id: $id) {
+          placeId
+          name
+          address
+          latitude
+          longitude
+          reviewCount
+          averageRating
+          createdAt
+          updatedAt
+          createdBy {
+            id
+            username
+          }
+          updatedBy {
+            id
+            username
+          }
+        }
+      }
+    `,
+    {
+      id: `/locations/${placeId}`,
     },
   );
 };

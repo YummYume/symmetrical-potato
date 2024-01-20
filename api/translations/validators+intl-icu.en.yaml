@@ -72,9 +72,11 @@ location.name.max_length: The name cannot exceed {limit} characters.
 location.name.unique: This name is already taken. Please choose another one.
 location.latlng.unique: This location already exists. Please choose another one.
 location.latitude.not_blank: Please enter a latitude.
-location.latitude.invalid: Please enter a valid latitude.
+location.latitude.type: Please enter a valid latitude.
+location.latitude.range: Please enter a valid latitude (between {min} and {max}).
 location.longitude.not_blank: Please enter a longitude.
-location.longitude.invalid: Please enter a valid longitude.
+location.longitude.type: Please enter a valid longitude.
+location.longitude.range: Please enter a valid longitude (between {min} and {max}).
 location.address.not_blank: Please enter an address.
 location.address.max_length: The address cannot exceed {limit} characters.
 location.address.unique: This address is already taken. Please choose another one.

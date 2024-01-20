@@ -52,6 +52,7 @@ export const getContractorRequest = async (client: GraphQLClient, id: string) =>
             id
             username
             email
+            mainRole
             profile {
               description
             }

@@ -1,3 +1,7 @@
+# String
+string.required: Please enter a value.
+string.not_a_string: This value must be a string.
+
 # Number
 number.required: Please enter a number.
 number.not_a_number: Please enter a valid number.
@@ -56,5 +60,21 @@ asset.max_quantity.max: The maximum quantity must be at most 100.
 
 # Contractor Request
 contractor_request.status.required: Please select a status.
-contractor_request.status.invalid_type: The selected status must either be 'accepted' or 'rejected'.
+contractor_request.status.invalid_type: The selected status must either be 'Accepted' or 'Rejected'.
 contractor_request.admin_comment.max: The admin comment must be at most 1000 characters long.
+
+# Establishment
+establishment.name.required: Please enter a name.
+establishment.name.min: The name must be at least 1 character long.
+establishment.name.max: The name must be at most 255 characters long.
+establishment.description.max: The description must be at most 5000 characters long.
+establishment.minimum_wage.min: The minimum wage must be at least $1,000.00.
+establishment.minimum_work_time_per_week.min: The minimum work time per week must be at least 1 hour.
+establishment.minimum_work_time_per_week.max: The minimum work time per week must be at most 84 hours.
+establishment.contractor_cut.min: The contractor cut must be at least 1%.
+establishment.contractor_cut.max: The contractor cut must be at most 99%.
+establishment.employee_cut.min: The employee cut must be at least 1%.
+establishment.employee_cut.max: The employee cut must be at most 99%.
+establishment.crew_cut.min: The crew cut must be at least 1%.
+establishment.crew_cut.max: The crew cut must be at most 99%.
+establishment.cuts.sum_not_100: The contractor, employee, and crew cuts must sum to 100%.

@@ -58,5 +58,21 @@ asset.max_quantity.max: La quantité maximale doit être au plus de 100.
 
 # Contractor Request
 contractor_request.status.required: Veuillez sélectionner un statut.
-contractor_request.status.invalid_type: Le statut sélectionné doit être 'accepté' ou 'rejeté'.
+contractor_request.status.invalid_type: Le statut sélectionné doit être 'Accepté' ou 'Rejeté'.
 contractor_request.admin_comment.max: Le commentaire de l'administrateur doit comporter au plus 1000 caractères.
+
+# Establishment
+establishment.name.required: Veuillez saisir un nom.
+establishment.name.min: Le nom doit comporter au moins 1 caractère.
+establishment.name.max: Le nom doit comporter au plus 255 caractères.
+establishment.description.max: La description doit comporter au plus 5000 caractères.
+establishment.minimum_wage.min: Le salaire minimum doit être au moins de 1 000,00 $.
+establishment.minimum_work_time_per_week.min: Le temps de travail minimum par semaine doit être au moins de 1 heure.
+establishment.minimum_work_time_per_week.max: Le temps de travail minimum par semaine doit être au plus de 84 heures.
+establishment.contractor_cut.min: La part de l'entrepreneur doit être au moins de 1 %.
+establishment.contractor_cut.max: La part de l'entrepreneur doit être au maximum de 99 %.
+establishment.employee_cut.min: La part de l'employé doit être au moins de 1 %.
+establishment.employee_cut.max: La part de l'employé doit être au maximum de 99 %.
+establishment.crew_cut.min: La part de l'équipe doit être au moins de 1 %.
+establishment.crew_cut.max: La part de l'équipe doit être au maximum de 99 %.
+establishment.cuts.sum_not_100: Les parts de l'entrepreneur, de l'employé et de l'équipe doivent totaliser 100 %.

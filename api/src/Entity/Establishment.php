@@ -33,19 +33,19 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE],
+                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE, self::BLAMEABLE],
             ],
             security: 'is_granted("READ", object)'
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE],
+                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE, self::BLAMEABLE],
             ]
         ),
         new Mutation(
             name: 'create',
             normalizationContext: [
-                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE],
+                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE, self::BLAMEABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::CREATE],
@@ -58,7 +58,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'update',
             normalizationContext: [
-                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE],
+                'groups' => [self::READ_PUBLIC, self::TIMESTAMPABLE, self::BLAMEABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::UPDATE],
@@ -88,7 +88,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(
     fields: ['name'],
     message: 'establishment.name.unique',
-    groups: [self::CREATE]
+    groups: [self::CREATE, self::UPDATE]
 )]
 class Establishment
 {
@@ -108,14 +108,14 @@ class Establishment
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups([self::READ_PUBLIC, self::CREATE])]
-    #[Assert\NotBlank(message: 'establishment.name.not_blank', groups: [self::CREATE])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Assert\NotBlank(message: 'establishment.name.not_blank', groups: [self::CREATE, self::UPDATE])]
     #[Assert\Length(
         min: 1,
         max: 150,
         minMessage: 'establishment.name.min_length',
         maxMessage: 'establishment.name.max_length',
-        groups: [self::CREATE]
+        groups: [self::CREATE, self::UPDATE]
     )]
     private ?string $name = null;
 

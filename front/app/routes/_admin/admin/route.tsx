@@ -1,4 +1,4 @@
-import { Container, Flex, Heading } from '@radix-ui/themes';
+import { Container, Flex, Heading, Section } from '@radix-ui/themes';
 import { useLoaderData } from '@remix-run/react';
 import { Chart as ChartJS, Tooltip, ArcElement, Legend, Title } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
@@ -47,125 +47,127 @@ export default function Admin() {
         {t('home')}
       </Heading>
 
-      <Container className="mt-10">
-        <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-          <Widget title={t('dashboard.heists.last_90_days', { ns: 'admin' })}>
-            <Doughnut
-              data={{
-                labels: [
-                  t('dashboard.heists.successful', { ns: 'admin' }),
-                  t('dashboard.heists.failed', { ns: 'admin' }),
-                  t('dashboard.heists.cancelled', { ns: 'admin' }),
-                ],
-                datasets: [
-                  {
-                    data: [
-                      heistsStatistics.successfulHeists,
-                      heistsStatistics.failedHeists,
-                      heistsStatistics.cancelledHeists,
-                    ],
-                    backgroundColor: ['#2196F3', '#F44336', '#FF9800'],
-                    hoverBackgroundColor: ['#2196F3', '#F44336', '#FF9800'],
-                  },
-                ],
-              }}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: 'bottom',
-                    align: 'center',
-                  },
-                  title: {
-                    display: true,
-                    fullSize: false,
-                    text: t('dashboard.heists.total', {
-                      ns: 'admin',
-                      total: heistsStatistics.totalHeists,
-                    }),
-                  },
-                  tooltip: {
-                    callbacks: {
-                      label: (context) => {
-                        return t('dashboard.heists', {
-                          ns: 'admin',
-                          heists: context.dataset.data[context.dataIndex],
-                        });
-                      },
+      <Section>
+        <Container>
+          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+            <Widget title={t('dashboard.heists.last_90_days', { ns: 'admin' })}>
+              <Doughnut
+                data={{
+                  labels: [
+                    t('dashboard.heists.successful', { ns: 'admin' }),
+                    t('dashboard.heists.failed', { ns: 'admin' }),
+                    t('dashboard.heists.cancelled', { ns: 'admin' }),
+                  ],
+                  datasets: [
+                    {
+                      data: [
+                        heistsStatistics.successfulHeists,
+                        heistsStatistics.failedHeists,
+                        heistsStatistics.cancelledHeists,
+                      ],
+                      backgroundColor: ['#2196F3', '#F44336', '#FF9800'],
+                      hoverBackgroundColor: ['#2196F3', '#F44336', '#FF9800'],
                     },
-                    boxPadding: 5,
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                      align: 'center',
+                    },
+                    title: {
+                      display: true,
+                      fullSize: false,
+                      text: t('dashboard.heists.total', {
+                        ns: 'admin',
+                        total: heistsStatistics.totalHeists,
+                      }),
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: (context) => {
+                          return t('dashboard.heists', {
+                            ns: 'admin',
+                            heists: context.dataset.data[context.dataIndex],
+                          });
+                        },
+                      },
+                      boxPadding: 5,
+                    },
                   },
-                },
-              }}
-              fallbackContent={t('dashboard.heists.summary', {
-                ns: 'admin',
-                successful: heistsStatistics.successfulHeists,
-                failed: heistsStatistics.failedHeists,
-                cancelled: heistsStatistics.cancelledHeists,
-                total: heistsStatistics.totalHeists,
-              })}
-            />
-          </Widget>
+                }}
+                fallbackContent={t('dashboard.heists.summary', {
+                  ns: 'admin',
+                  successful: heistsStatistics.successfulHeists,
+                  failed: heistsStatistics.failedHeists,
+                  cancelled: heistsStatistics.cancelledHeists,
+                  total: heistsStatistics.totalHeists,
+                })}
+              />
+            </Widget>
 
-          <Widget title={t('dashboard.crew_members.last_90_days', { ns: 'admin' })}>
-            <Doughnut
-              data={{
-                labels: [
-                  t('dashboard.crew_members.free', { ns: 'admin' }),
-                  t('dashboard.crew_members.jailed', { ns: 'admin' }),
-                  t('dashboard.crew_members.dead', { ns: 'admin' }),
-                ],
-                datasets: [
-                  {
-                    data: [
-                      heistsStatistics.freeHeisters,
-                      heistsStatistics.jailedHeisters,
-                      heistsStatistics.deadHeisters,
-                    ],
-                    backgroundColor: ['#4CAF50', '#FF9800', '#F44336'],
-                    hoverBackgroundColor: ['#4CAF50', '#FF9800', '#F44336'],
-                  },
-                ],
-              }}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: 'bottom',
-                    align: 'center',
-                  },
-                  title: {
-                    display: true,
-                    fullSize: false,
-                    text: t('dashboard.crew_members.total', {
-                      ns: 'admin',
-                      total: heistsStatistics.totalHeisters,
-                    }),
-                  },
-                  tooltip: {
-                    callbacks: {
-                      label: (context) => {
-                        return t('dashboard.crew_members', {
-                          ns: 'admin',
-                          crew_members: context.dataset.data[context.dataIndex],
-                        });
-                      },
+            <Widget title={t('dashboard.crew_members.last_90_days', { ns: 'admin' })}>
+              <Doughnut
+                data={{
+                  labels: [
+                    t('dashboard.crew_members.free', { ns: 'admin' }),
+                    t('dashboard.crew_members.jailed', { ns: 'admin' }),
+                    t('dashboard.crew_members.dead', { ns: 'admin' }),
+                  ],
+                  datasets: [
+                    {
+                      data: [
+                        heistsStatistics.freeHeisters,
+                        heistsStatistics.jailedHeisters,
+                        heistsStatistics.deadHeisters,
+                      ],
+                      backgroundColor: ['#4CAF50', '#FF9800', '#F44336'],
+                      hoverBackgroundColor: ['#4CAF50', '#FF9800', '#F44336'],
                     },
-                    boxPadding: 5,
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                      align: 'center',
+                    },
+                    title: {
+                      display: true,
+                      fullSize: false,
+                      text: t('dashboard.crew_members.total', {
+                        ns: 'admin',
+                        total: heistsStatistics.totalHeisters,
+                      }),
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: (context) => {
+                          return t('dashboard.crew_members', {
+                            ns: 'admin',
+                            crew_members: context.dataset.data[context.dataIndex],
+                          });
+                        },
+                      },
+                      boxPadding: 5,
+                    },
                   },
-                },
-              }}
-              fallbackContent={t('dashboard.crew_members.summary', {
-                ns: 'admin',
-                free: heistsStatistics.freeHeisters,
-                jailed: heistsStatistics.jailedHeisters,
-                dead: heistsStatistics.deadHeisters,
-                total: heistsStatistics.totalHeisters,
-              })}
-            />
-          </Widget>
-        </div>
-      </Container>
+                }}
+                fallbackContent={t('dashboard.crew_members.summary', {
+                  ns: 'admin',
+                  free: heistsStatistics.freeHeisters,
+                  jailed: heistsStatistics.jailedHeisters,
+                  dead: heistsStatistics.deadHeisters,
+                  total: heistsStatistics.totalHeisters,
+                })}
+              />
+            </Widget>
+          </div>
+        </Container>
+      </Section>
     </main>
   );
 }

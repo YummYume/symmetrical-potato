@@ -157,7 +157,7 @@ export const updateAsset = async (
 export const deleteAsset = async (client: GraphQLClient, id: string) => {
   return client.request<Pick<Mutation, 'deleteAsset'>, MutationDeleteAssetArgs>(
     gql`
-      mutation ($id: ID!) {
+      mutation ($input: deleteAssetInput!) {
         deleteAsset(input: $input) {
           asset {
             id

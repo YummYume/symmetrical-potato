@@ -37,39 +37,44 @@ export default function Assets() {
       <Section>
         <Container>
           <div className="panel">
-            <div className="panel__sidebar">
-              <ScrollArea type="auto" scrollbars="both">
-                <nav className="panel__sidebar-list">
-                  <ul>
-                    {assets.edges.map((edge) => (
-                      <li key={edge.node.id}>
-                        <NavLink
-                          to={getUriId(edge.node.id)}
-                          className="panel__sidebar-item group"
-                          unstyled
-                        >
-                          {({ isActive, isPending }) => (
-                            <>
-                              <span>{edge.node.name}</span>
-                              <AssetTypeBadge type={edge.node.type} variant="solid" />
-                              <div
-                                className={clsx('panel__sidebar-item-background', {
-                                  'panel__sidebar-item-background--active': isActive,
-                                  'panel__sidebar-item-background--pending': isPending,
-                                })}
-                                aria-hidden="true"
-                                style={{
-                                  viewTransitionName: isActive ? 'active-location-link' : undefined,
-                                }}
-                              />
-                            </>
-                          )}
-                        </NavLink>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </ScrollArea>
+            <div className="panel__sidebar flex flex-col justify-between">
+              <div className="h-[92%] w-full">
+                <ScrollArea type="auto" scrollbars="both">
+                  <nav className="panel__sidebar-list">
+                    <ul>
+                      {assets.edges.map((edge) => (
+                        <li key={edge.node.id}>
+                          <NavLink
+                            to={getUriId(edge.node.id)}
+                            className="panel__sidebar-item group"
+                            unstyled
+                          >
+                            {({ isActive, isPending }) => (
+                              <>
+                                <span>{edge.node.name}</span>
+                                <AssetTypeBadge type={edge.node.type} variant="solid" />
+                                <div
+                                  className={clsx('panel__sidebar-item-background', {
+                                    'panel__sidebar-item-background--active': isActive,
+                                    'panel__sidebar-item-background--pending': isPending,
+                                  })}
+                                  aria-hidden="true"
+                                  style={{
+                                    viewTransitionName: isActive ? 'active-asset-link' : undefined,
+                                  }}
+                                />
+                              </>
+                            )}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </ScrollArea>
+              </div>
+              <NavLink className="pb-2 pl-2" to="create">
+                {t('asset.create', { ns: 'admin' })}
+              </NavLink>
             </div>
             <div className="panel__content">
               <Outlet key={pathname} />

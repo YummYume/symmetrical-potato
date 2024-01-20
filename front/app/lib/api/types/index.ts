@@ -243,6 +243,7 @@ export type Establishment = Node & {
   contractor: User;
   contractorCut: Scalars['Float']['output'];
   createdAt: Maybe<Scalars['String']['output']>;
+  createdBy: Maybe<User>;
   crewCut: Scalars['Float']['output'];
   description: Maybe<Scalars['String']['output']>;
   employeeCut: Scalars['Float']['output'];
@@ -252,6 +253,7 @@ export type Establishment = Node & {
   name: Scalars['String']['output'];
   reviewCount: Scalars['Int']['output'];
   updatedAt: Maybe<Scalars['String']['output']>;
+  updatedBy: Maybe<User>;
 };
 
 /** Cursor connection for Establishment. */
@@ -438,12 +440,16 @@ export type Location = Node & {
   __typename?: 'Location';
   address: Maybe<Scalars['String']['output']>;
   averageRating: Maybe<Scalars['Float']['output']>;
+  createdAt: Maybe<Scalars['String']['output']>;
+  createdBy: Maybe<User>;
   id: Scalars['ID']['output'];
   latitude: Scalars['Float']['output'];
   longitude: Scalars['Float']['output'];
   name: Scalars['String']['output'];
   placeId: Scalars['String']['output'];
   reviewCount: Scalars['Int']['output'];
+  updatedAt: Maybe<Scalars['String']['output']>;
+  updatedBy: Maybe<User>;
 };
 
 /** Cursor connection for Location. */
@@ -482,6 +488,7 @@ export type MeUser = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Profile;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;
@@ -1045,6 +1052,7 @@ export type User = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Profile;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;
@@ -1330,6 +1338,7 @@ export type CreateEstablishmentNestedPayload = Node & {
   contractor: CreateUserNestedPayload;
   contractorCut: Scalars['Float']['output'];
   createdAt: Maybe<Scalars['String']['output']>;
+  createdBy: Maybe<CreateUserNestedPayload>;
   crewCut: Scalars['Float']['output'];
   description: Maybe<Scalars['String']['output']>;
   employeeCut: Scalars['Float']['output'];
@@ -1339,6 +1348,7 @@ export type CreateEstablishmentNestedPayload = Node & {
   name: Scalars['String']['output'];
   reviewCount: Scalars['Int']['output'];
   updatedAt: Maybe<Scalars['String']['output']>;
+  updatedBy: Maybe<CreateUserNestedPayload>;
 };
 
 /** Creates a Establishment. */
@@ -1721,6 +1731,7 @@ export type KillUserNestedPayload = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Profile;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;
@@ -1750,6 +1761,7 @@ export type KillUserPayloadData = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Profile;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;
@@ -1795,6 +1807,7 @@ export type ReviveUserNestedPayload = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Profile;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;
@@ -1824,6 +1837,7 @@ export type ReviveUserPayloadData = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Profile;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;
@@ -2107,6 +2121,7 @@ export type UpdateEstablishmentInput = {
   id: Scalars['ID']['input'];
   minimumWage?: InputMaybe<Scalars['Float']['input']>;
   minimumWorkTimePerWeek?: InputMaybe<Scalars['Int']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Updates a Establishment. */
@@ -2116,6 +2131,7 @@ export type UpdateEstablishmentNestedPayload = Node & {
   contractor: Maybe<UpdateUserNestedPayload>;
   contractorCut: Maybe<Scalars['Float']['output']>;
   createdAt: Maybe<Scalars['String']['output']>;
+  createdBy: Maybe<UpdateUserNestedPayload>;
   crewCut: Maybe<Scalars['Float']['output']>;
   description: Maybe<Scalars['String']['output']>;
   employeeCut: Maybe<Scalars['Float']['output']>;
@@ -2125,6 +2141,7 @@ export type UpdateEstablishmentNestedPayload = Node & {
   name: Maybe<Scalars['String']['output']>;
   reviewCount: Maybe<Scalars['Int']['output']>;
   updatedAt: Maybe<Scalars['String']['output']>;
+  updatedBy: Maybe<UpdateUserNestedPayload>;
 };
 
 /** Updates a Establishment. */
@@ -2251,33 +2268,35 @@ export type UpdateHeistPayload = {
 /** Updates a Location. */
 export type UpdateLocationInput = {
   address?: InputMaybe<Scalars['String']['input']>;
-  averageRating?: InputMaybe<Scalars['Float']['input']>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   latitude?: InputMaybe<Scalars['Float']['input']>;
   longitude?: InputMaybe<Scalars['Float']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  placeId?: InputMaybe<Scalars['String']['input']>;
-  reviewCount?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Updates a Location. */
 export type UpdateLocationNestedPayload = Node & {
   __typename?: 'updateLocationNestedPayload';
+  address: Maybe<Scalars['String']['output']>;
+  averageRating: Maybe<Scalars['Float']['output']>;
+  createdAt: Maybe<Scalars['String']['output']>;
+  createdBy: Maybe<UpdateUserNestedPayload>;
   id: Scalars['ID']['output'];
+  latitude: Maybe<Scalars['Float']['output']>;
+  longitude: Maybe<Scalars['Float']['output']>;
+  name: Maybe<Scalars['String']['output']>;
+  placeId: Maybe<Scalars['String']['output']>;
+  reviewCount: Maybe<Scalars['Int']['output']>;
+  updatedAt: Maybe<Scalars['String']['output']>;
+  updatedBy: Maybe<UpdateUserNestedPayload>;
 };
 
 /** Updates a Location. */
 export type UpdateLocationPayload = {
   __typename?: 'updateLocationPayload';
   clientMutationId: Maybe<Scalars['String']['output']>;
-  location: Maybe<UpdateLocationPayloadData>;
-};
-
-/** Updates a Location. */
-export type UpdateLocationPayloadData = Node & {
-  __typename?: 'updateLocationPayloadData';
-  id: Scalars['ID']['output'];
+  location: Maybe<Location>;
 };
 
 /** Updates a Profile. */
@@ -2339,6 +2358,7 @@ export type UpdateUserNestedPayload = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Maybe<UpdateProfileNestedPayload>;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;
@@ -2392,6 +2412,7 @@ export type UpdateUserPayloadData = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Maybe<UpdateProfileNestedPayload>;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;
@@ -2462,6 +2483,7 @@ export type ValidateUserNestedPayload = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Profile;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;
@@ -2491,6 +2513,7 @@ export type ValidateUserPayloadData = Node & {
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
   profile: Profile;
   reason: Maybe<Scalars['String']['output']>;
   roles: Maybe<Scalars['Iterable']['output']>;

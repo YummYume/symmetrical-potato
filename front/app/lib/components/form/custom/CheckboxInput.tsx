@@ -58,6 +58,7 @@ export function CheckboxInput<T extends FormData>({
                 id={name}
                 aria-describedby={error ? ariaDescribedBy : ''}
                 disabled={field.disabled}
+                value="true"
                 defaultChecked={!!field.value}
                 onCheckedChange={field.onChange}
                 onBlur={field.onBlur}

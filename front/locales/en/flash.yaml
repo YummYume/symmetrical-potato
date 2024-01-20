@@ -13,3 +13,11 @@ asset.deleted: Asset deleted successfully.
 # Contractor Request
 contractor_request.updated: Contractor request updated successfully.
 contractor_request.deleted: Contractor request deleted successfully.
+
+# Location
+location.updated: Location updated successfully.
+location.deleted: Location deleted successfully.
+
+# Establishment
+establishment.updated: Establishment updated successfully.
+establishment.deleted: Establishment deleted successfully.

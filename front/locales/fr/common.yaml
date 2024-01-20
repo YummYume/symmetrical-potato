@@ -21,6 +21,7 @@ navigation: Navigation principale
 map: Carte
 user_menu: Menu utilisateur
 heists: Braquages
+user: Utilisateur
 users: Utilisateurs
 locations: Lieux
 assets: Assets
@@ -36,6 +37,9 @@ revive: Réanimer
 cancel: Annuler
 confirm: Confirmer
 close: Fermer
+create: Créer
+creating: Création...
+owner: Propriétaire
 
 # History info
 history_info: Information sur l'historique
@@ -60,6 +64,10 @@ user.status.unverified: Non vérifié
 user.status.dead: Mort
 user.profile: Profil
 user.description: Description
+user.no_description: Aucune description disponible.
+user.role.heister: Braqueur
+user.role.employee: Employé
+user.role.contractor: Contractant
 
 # Asset
 asset.name: Nom
@@ -72,3 +80,33 @@ asset.type.weapon: Arme
 asset.max_quantity: Quantité maximale
 asset.team_asset: Asset d'équipe
 asset.heist: Braquage associé
+
+# Contractor Request
+contractor_request.reason: Raison de la demande
+contractor_request.status: Statut
+contractor_request.status.pending: En attente
+contractor_request.status.accepted: Accepté
+contractor_request.status.rejected: Rejeté
+contractor_request.admin_comment: Commentaire pour la décision
+
+# Location
+location.place_id: Place ID
+location.name: Nom
+location.address: Adresse
+location.latitude: Latitude
+location.longitude: Longitude
+location.average_rating: Note moyenne (sur 5)
+location.average_rating.none: Aucune note
+location.review_count: Nombre d'avis
+
+# Establishment
+establishment.name: Nom
+establishment.description: Description
+establishment.minimum_work_time_per_week: Temps de travail minimum par semaine
+establishment.minimum_wage: Salaire minimum
+establishment.contractor_cut: Part du contractant
+establishment.employee_cut: Part de l'employé
+establishment.crew_cut: Part de l'équipe
+establishment.average_rating: Note moyenne (sur 5)
+establishment.average_rating.none: Aucune note
+establishment.review_count: Nombre d'avis

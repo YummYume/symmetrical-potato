@@ -179,6 +179,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         Review::READ_PUBLIC,
         CrewMember::READ,
         CrewMember::READ_PUBLIC,
+        Establishment::READ_PUBLIC,
     ])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.username.not_blank')]
     #[Assert\Length(
@@ -288,10 +289,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ, self::READ_PUBLIC, ContractorRequest::READ])]
+    #[Groups([self::READ, self::READ_PUBLIC, ContractorRequest::READ, Establishment::READ_PUBLIC])]
     private ?Profile $profile = null;
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: ContractorRequest::class, orphanRemoval: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[ApiProperty(security: '')]
     #[Groups([self::READ])]
     private ?ContractorRequest $contractorRequest = null;
@@ -305,7 +307,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $crewMembers;
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: Employee::class, orphanRemoval: true)]
-    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups([self::READ, self::READ_PUBLIC])]
     private ?Employee $employee = null;
 
@@ -381,6 +383,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         };
 
         return array_values(array_unique($roles));
+    }
+
+    /**
+     * @return 'ROLE_HEISTER'|'ROLE_EMPLOYEE'|'ROLE_CONTRACTOR'|null
+     */
+    #[ApiProperty]
+    #[Groups([
+        self::READ,
+        self::READ_PUBLIC,
+        ContractorRequest::READ,
+        Heist::READ,
+        Review::READ_PUBLIC,
+        CrewMember::READ,
+        CrewMember::READ_PUBLIC,
+        Establishment::READ_PUBLIC,
+    ])]
+    public function getMainRole(): ?string
+    {
+        return match (true) {
+            \in_array(self::ROLE_HEISTER, $this->roles, true) => self::ROLE_HEISTER,
+            \in_array(self::ROLE_EMPLOYEE, $this->roles, true) => self::ROLE_EMPLOYEE,
+            \in_array(self::ROLE_CONTRACTOR, $this->roles, true) => self::ROLE_CONTRACTOR,
+            default => null,
+        };
     }
 
     /**

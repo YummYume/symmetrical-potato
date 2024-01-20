@@ -10,14 +10,16 @@ import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hoo
 import { getContractorRequest, updateContractorRequest } from '~/lib/api/contractor-request';
 import { ContractorRequestStatusEnum } from '~/lib/api/types';
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
+import { Link } from '~/lib/components/Link';
 import { ContractorRequestStatusBadge } from '~/lib/components/contractor_request/ContractorRequestStatusBadge';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
+import { UserHoverCard } from '~/lib/components/user/UserHoverCard';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
+import { getUriId } from '~/lib/utils/path';
 import { adminContractorRequestResolver } from '~/lib/validators/admin/contractor-request';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { FormAlertDialog } from '~components/dialog/FormAlertDialog';
-import { SubmitButton } from '~components/form/SubmitButton';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~utils/api';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
@@ -128,7 +130,7 @@ export default function User() {
       unstable_viewTransition: true,
     },
     defaultValues: {
-      adminComment: contractorRequest.adminComment,
+      adminComment: contractorRequest.adminComment || '',
     },
   });
 
@@ -168,6 +170,21 @@ export default function User() {
                 <Text>{t('contractor_request.reason')}</Text>
                 <Blockquote>{contractorRequest.reason}</Blockquote>
               </Flex>
+              <Flex direction="column" gap="2">
+                <Text>{t('user')}</Text>
+                <UserHoverCard
+                  username={contractorRequest.user.username}
+                  description={contractorRequest.user.profile.description}
+                  mainRole={contractorRequest.user.mainRole}
+                >
+                  <Link
+                    to={`/admin/users/${getUriId(contractorRequest.user.id)}`}
+                    className="w-fit"
+                  >
+                    {contractorRequest.user.username}
+                  </Link>
+                </UserHoverCard>
+              </Flex>
               <TextAreaInput
                 name="adminComment"
                 label={t('contractor_request.admin_comment')}
@@ -200,22 +217,48 @@ export default function User() {
         </Flex>
         {contractorRequest.status === ContractorRequestStatusEnum.Pending ? (
           <Flex align="center" gap="4">
-            <SubmitButton
-              form="contractor_request-form"
-              name="status"
-              value={ContractorRequestStatusEnum.Rejected}
-              color="tomato"
-              text={t('contractor_request.reject', { ns: 'admin' })}
-              submittingText={t('contractor_request.rejecting', { ns: 'admin' })}
-            />
-            <SubmitButton
-              form="contractor_request-form"
-              name="status"
-              value={ContractorRequestStatusEnum.Accepted}
-              color="green"
-              text={t('contractor_request.accept', { ns: 'admin' })}
-              submittingText={t('contractor_request.accepting', { ns: 'admin' })}
-            />
+            <FormAlertDialog
+              title={t('contractor_request.reject', {
+                ns: 'admin',
+              })}
+              description={t('contractor_request.reject.confirm', {
+                ns: 'admin',
+              })}
+              formId="contractor_request-form"
+              actionColor="tomato"
+              submitButtonProps={{
+                name: 'status',
+                value: ContractorRequestStatusEnum.Rejected,
+                onClick: () => {
+                  methods.setValue('status', ContractorRequestStatusEnum.Rejected);
+                },
+              }}
+            >
+              <Button type="button" color="tomato">
+                {t('contractor_request.reject', { ns: 'admin' })}
+              </Button>
+            </FormAlertDialog>
+            <FormAlertDialog
+              title={t('contractor_request.accept', {
+                ns: 'admin',
+              })}
+              description={t('contractor_request.accept.confirm', {
+                ns: 'admin',
+              })}
+              formId="contractor_request-form"
+              actionColor="green"
+              submitButtonProps={{
+                name: 'status',
+                value: ContractorRequestStatusEnum.Accepted,
+                onClick: () => {
+                  methods.setValue('status', ContractorRequestStatusEnum.Accepted);
+                },
+              }}
+            >
+              <Button type="button" color="green">
+                {t('contractor_request.accept', { ns: 'admin' })}
+              </Button>
+            </FormAlertDialog>
           </Flex>
         ) : (
           <div />

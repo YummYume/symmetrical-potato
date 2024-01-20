@@ -5,7 +5,7 @@ import {
   type NavLinkProps as RemixNavLinkProps,
 } from '@remix-run/react';
 import { clsx } from 'clsx';
-import { Children, cloneElement, isValidElement } from 'react';
+import { Children, cloneElement, forwardRef, isValidElement } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export type LinkProps = {
@@ -63,9 +63,13 @@ export type NavLinkProps = {
 /**
  * A wrapper around Remix's Link component that adds some default classes and uses view transitions.
  */
-export const Link = ({ to, className, unstyled = false, children, ...props }: LinkProps) => {
+export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
+  { to, className, unstyled = false, children, ...props },
+  forwardedRef,
+) {
   return (
     <RemixLink
+      ref={forwardedRef}
       to={to}
       prefetch="intent"
       className={twMerge(
@@ -80,7 +84,7 @@ export const Link = ({ to, className, unstyled = false, children, ...props }: Li
       {children}
     </RemixLink>
   );
-};
+});
 
 export const NavLinkActiveIndicator = ({
   isActive,

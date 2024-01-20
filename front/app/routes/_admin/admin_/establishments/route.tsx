@@ -38,7 +38,7 @@ export default function Establishments() {
           <div className="panel">
             <div className="panel__sidebar">
               <ScrollArea type="auto" scrollbars="both">
-                <nav>
+                <nav className="panel__sidebar-list">
                   <ul>
                     {establishments.edges.map((edge) => (
                       <li key={edge.node.id}>
@@ -57,7 +57,9 @@ export default function Establishments() {
                                 })}
                                 aria-hidden="true"
                                 style={{
-                                  viewTransitionName: isActive ? 'active-location-link' : undefined,
+                                  viewTransitionName: isActive
+                                    ? 'active-establishment-link'
+                                    : undefined,
                                 }}
                               />
                             </>

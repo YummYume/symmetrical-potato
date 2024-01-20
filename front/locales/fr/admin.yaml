@@ -15,6 +15,8 @@ user.roles.role_contractor: Contractant
 user.roles.role_admin: Admin
 
 # Asset
+asset.create: Créer un asset
+asset.create_global: Créer un asset global
 asset.delete.confirm: >-
   Êtes-vous sûr de vouloir supprimer cet asset ? Toutes les données associées à cet asset seront supprimées.
   Tous les braqueurs qui ont acheté cet asset seront remboursés. Si cet asset appartient à un braquage, son contractant sera celui qui remboursera les braqueurs.
@@ -22,15 +24,21 @@ asset.delete.confirm: >-
 # Contractor Request
 contractor_request.request_of: Demande de {name}
 contractor_request.reject: Rejeter
-contractor_request.rejecting: Rejet...
 contractor_request.accept: Accepter
-contractor_request.accepting: Acceptation...
 contractor_request.delete.confirm: >-
   Êtes-vous sûr de vouloir supprimer cette demande de contractant ? Pour suivre les demandes, il est recommandé de les conserver en les rejetant simplement.
 contractor_request.accept.confirm: >-
   Êtes-vous sûr de vouloir accepter cette demande de contractant ? L'utilisateur deviendra un contractant et pourra créer des établissements.
 contractor_request.reject.confirm: >-
   Êtes-vous sûr de vouloir rejeter cette demande de contractant ? L'utilisateur sera informé du rejet et pourra lire la raison pour laquelle il a été rejeté.
+
+# Location
+location.delete.confirm: >-
+  Êtes-vous sûr de vouloir supprimer ce lieu ? Toutes les données associées à ce lieu seront supprimées.
+
+# Establishment
+establishment.delete.confirm: >-
+  Êtes-vous sûr de vouloir supprimer cet établissement ? Toutes les données associées à cet établissement seront supprimées.
 
 # Dashboard
 ## Heists

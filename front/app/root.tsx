@@ -22,6 +22,7 @@ import { useChangeLanguage } from 'remix-i18next';
 
 import tailwindStylesheet from '~/styles/tailwind.css';
 import themeStylesheet from '~/styles/theme.css';
+import viewTransitionsStylesheet from '~/styles/view-transitions.css';
 import { Link } from '~components/Link';
 import { ProgressBar } from '~components/ProgressBar';
 import { Toast } from '~components/Toast';
@@ -103,6 +104,7 @@ export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
   { rel: 'stylesheet', href: tailwindStylesheet },
   { rel: 'stylesheet', href: themeStylesheet },
+  { rel: 'stylesheet', href: viewTransitionsStylesheet },
 ];
 
 export let handle = {

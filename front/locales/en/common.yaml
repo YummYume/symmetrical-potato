@@ -21,6 +21,7 @@ navigation: Main navigation
 map: Map
 user_menu: User menu
 heists: Heists
+user: User
 users: Users
 locations: Locations
 assets: Assets
@@ -36,6 +37,9 @@ revive: Revive
 cancel: Cancel
 confirm: Confirm
 close: Close
+create: Create
+creating: Creating...
+owner: Owner
 
 # History info
 history_info: History info
@@ -60,6 +64,10 @@ user.status.unverified: Unverified
 user.status.dead: Dead
 user.profile: Profile
 user.description: Description
+user.no_description: No description available.
+user.role.heister: Heister
+user.role.employee: Employee
+user.role.contractor: Contractor
 
 # Asset
 asset.name: Name
@@ -80,3 +88,25 @@ contractor_request.status.pending: Pending
 contractor_request.status.accepted: Accepted
 contractor_request.status.rejected: Rejected
 contractor_request.admin_comment: Comment for the decision
+
+# Location
+location.place_id: Place ID
+location.name: Name
+location.address: Address
+location.latitude: Latitude
+location.longitude: Longitude
+location.average_rating: Average rating (out of 5)
+location.average_rating.none: No rating
+location.review_count: Review count
+
+# Establishment
+establishment.name: Name
+establishment.description: Description
+establishment.minimum_work_time_per_week: Minimum work time per week
+establishment.minimum_wage: Minimum wage
+establishment.contractor_cut: Contractor cut
+establishment.employee_cut: Employee cut
+establishment.crew_cut: Crew cut
+establishment.average_rating: Average rating (out of 5)
+establishment.average_rating.none: No rating
+establishment.review_count: Review count

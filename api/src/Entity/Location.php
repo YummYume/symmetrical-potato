@@ -31,24 +31,24 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ]
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ]
         ),
         new Mutation(
             name: 'update',
             normalizationContext: [
-                'groups' => [self::WRITE],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::WRITE],
             ],
             validationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::WRITE],
             ],
             security: 'is_granted("UPDATE", object)'
         ),
@@ -90,25 +90,27 @@ class Location
     private ?Uuid $id = null;
 
     #[ORM\Column]
-    #[Groups([self::READ, Heist::READ])]
+    #[Groups([self::WRITE, self::READ, Heist::READ])]
     #[Assert\NotBlank(groups: [self::WRITE], message: 'location.latitude.not_blank')]
     #[Assert\Type(type: 'float', groups: [self::WRITE], message: 'location.latitude.type')]
+    #[Assert\Range(min: -90, max: 90, groups: [self::WRITE], notInRangeMessage: 'location.latitude.range')]
     private ?float $latitude = null;
 
     #[ORM\Column]
-    #[Groups([self::READ, Heist::READ])]
+    #[Groups([self::WRITE, self::READ, Heist::READ])]
     #[Assert\NotBlank(groups: [self::WRITE], message: 'location.longitude.not_blank')]
     #[Assert\Type(type: 'float', groups: [self::WRITE], message: 'location.longitude.type')]
+    #[Assert\Range(min: -180, max: 180, groups: [self::WRITE], notInRangeMessage: 'location.longitude.range')]
     private ?float $longitude = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups([self::READ, Heist::READ])]
+    #[Groups([self::WRITE, self::READ, Heist::READ])]
     #[Assert\NotBlank(groups: [self::WRITE], message: 'location.name.not_blank')]
     #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.name.max_length')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups([self::READ, Heist::READ])]
+    #[Groups([self::WRITE, self::READ, Heist::READ])]
     #[Assert\Length(max: 255, groups: [self::WRITE], maxMessage: 'location.address.max_length')]
     private ?string $address = null;
 
@@ -127,11 +129,11 @@ class Location
     private ?float $averageRating = null;
 
     /** @var ArrayCollection<int, Review> */
-    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Review::class)]
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Review::class, orphanRemoval: true)]
     private Collection $reviews;
 
     /** @var ArrayCollection<int, Heist> */
-    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Heist::class)]
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: Heist::class, orphanRemoval: true)]
     private Collection $heists;
 
     public function __construct()

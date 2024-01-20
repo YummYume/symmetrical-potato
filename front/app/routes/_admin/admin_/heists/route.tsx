@@ -38,7 +38,7 @@ export default function Heists() {
           <div className="panel">
             <div className="panel__sidebar">
               <ScrollArea type="auto" scrollbars="both">
-                <nav>
+                <nav className="panel__sidebar-list">
                   <ul>
                     {heists.edges.map((edge) => (
                       <li key={edge.node.id}>
@@ -58,7 +58,7 @@ export default function Heists() {
                                 })}
                                 aria-hidden="true"
                                 style={{
-                                  viewTransitionName: isActive ? 'active-location-link' : undefined,
+                                  viewTransitionName: isActive ? 'active-heist-link' : undefined,
                                 }}
                               />
                             </>

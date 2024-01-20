@@ -62,7 +62,9 @@ export default function ContractorRequests() {
                                 })}
                                 aria-hidden="true"
                                 style={{
-                                  viewTransitionName: isActive ? 'active-location-link' : undefined,
+                                  viewTransitionName: isActive
+                                    ? 'active-contractor_request-link'
+                                    : undefined,
                                 }}
                               />
                             </>
