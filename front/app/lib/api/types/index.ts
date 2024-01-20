@@ -259,6 +259,7 @@ export type Establishment = Node & {
 
 export type EstablishmentEmployeesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
+  allowedHeists__id?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -317,6 +318,7 @@ export type Heist = Node & {
 
 export type HeistAllowedEmployeesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
+  allowedHeists__id?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -327,6 +329,7 @@ export type HeistAssetsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -341,6 +344,7 @@ export type HeistForbiddenAssetsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -348,6 +352,7 @@ export type HeistForbiddenUsersArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   roles?: InputMaybe<Array<InputMaybe<UserFilter_Roles>>>;
 };
@@ -817,6 +822,7 @@ export type QueryAssetsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -860,6 +866,7 @@ export type QueryEmployeeTimeOffsArgs = {
 
 export type QueryEmployeesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
+  allowedHeists__id?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -967,6 +974,7 @@ export type QueryUsersArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   roles?: InputMaybe<Array<InputMaybe<UserFilter_Roles>>>;
 };

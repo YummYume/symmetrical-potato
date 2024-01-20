@@ -29,14 +29,12 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import type { UpdateHeistFormData } from '~/lib/validators/updateHeist';
 import type { FlashMessage } from '~/root';
 
-export async function loader({ context, params }: LoaderFunctionArgs) {
+export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user, ROLES.CONTRACTOR);
 
   if (!params.heistId) {
     throw redirect(`/map/${params.placeId}`);
   }
-
-  // Get the current heist
   const { heist } = await getHeist(context.client, params.heistId);
 
   if (!heist || heist.establishment.contractor.id !== user.id) {
@@ -148,6 +146,11 @@ type Option = { label: string; value: string };
 export default function Edit() {
   const { t } = useTranslation();
   const { placeId, heist, employees, assets, users } = useLoaderData<Loader>();
+
+  const heistVisibilities: Option[] = Object.values(HeistVisibilityEnum).map((value: string) => ({
+    label: value,
+    value,
+  }));
 
   const usersFormatted: Option[] = users.edges.map((edge) => ({
     label: edge.node.username,
@@ -290,7 +293,7 @@ export default function Edit() {
             <FieldSelect
               name="visibility"
               label={t('heist.visibility')}
-              options={heistDifficulties}
+              options={heistVisibilities}
             />
             <FieldInputArray
               name="objectives"

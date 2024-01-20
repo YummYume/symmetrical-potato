@@ -108,7 +108,17 @@ export const links: LinksFunction = () => [
 ];
 
 export let handle = {
-  i18n: ['common', 'login', 'register', 'validators', 'visitor', 'admin', 'flash', 'heist'],
+  i18n: [
+    'common',
+    'login',
+    'register',
+    'validators',
+    'visitor',
+    'admin',
+    'flash',
+    'heist',
+    'response',
+  ],
 };
 
 export const ErrorBoundary = () => {

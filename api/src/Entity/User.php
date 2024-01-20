@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
@@ -16,6 +15,7 @@ use App\Enum\HeistPhaseEnum;
 use App\Enum\UserLocaleEnum;
 use App\Enum\UserStatusEnum;
 use App\Filter\RoleFilter;
+use App\Filter\UuidFilter;
 use App\Repository\UserRepository;
 use App\Resolver\UserQueryResolver;
 use App\State\UserProcessor;
@@ -144,7 +144,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     groups: [self::REGISTER, self::UPDATE]
 )]
 #[ApiFilter(RoleFilter::class, properties: ['roles'])]
-// #[ApiFilter(SearchFilter::class, properties: ['roles'])]
+#[ApiFilter(UuidFilter::class, properties: ['forbiddenHeists.id'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use BlameableTrait;

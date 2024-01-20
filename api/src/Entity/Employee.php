@@ -13,6 +13,7 @@ use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\EmployeeStatusEnum;
 use App\Filter\MatchUuidFilter;
+use App\Filter\UuidFilter;
 use App\Repository\EmployeeRepository;
 use App\State\EmployeeProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -96,6 +97,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     groups: [self::VALIDATE],
 )]
 #[ApiFilter(MatchUuidFilter::class, properties: ['establishment.id'])]
+#[ApiFilter(UuidFilter::class, properties: ['allowedHeists.id'])]
 class Employee
 {
     use BlameableTrait;

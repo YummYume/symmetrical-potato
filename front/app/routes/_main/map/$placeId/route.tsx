@@ -9,11 +9,16 @@ import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { getEnv } from '~/lib/utils/env';
 import { getUriId } from '~/lib/utils/path';
 import { getGoogleLocation, getLocationInfo } from '~api/location';
+import {
+  HeistVisibilityEnum,
+  type Heist,
+  type HeistEdge,
+  type Review,
+  type ReviewEdge,
+} from '~api/types';
 import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
 import { ROLES, denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
-
-import type { Heist, HeistEdge, Review, ReviewEdge } from '~api/types';
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
   denyAccessUnlessGranted(context.user);
@@ -187,15 +192,17 @@ export default function PlaceId() {
                 {isAdmin ||
                   (isContractor && heist.node.establishment.contractor.id === user?.id && (
                     <div className="flex items-center">
-                      <Link
-                        to={`/map/${placeId}/${getUriId(heist.node?.id)}/edit`}
-                        className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
-                        unstyled
-                      >
-                        {t('heist.edit', {
-                          ns: 'heist',
-                        })}
-                      </Link>
+                      {heist.node.visibility === HeistVisibilityEnum.Draft && (
+                        <Link
+                          to={`/map/${placeId}/${getUriId(heist.node?.id)}/edit`}
+                          className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
+                          unstyled
+                        >
+                          {t('heist.edit', {
+                            ns: 'heist',
+                          })}
+                        </Link>
+                      )}
                       <Form
                         id="heist-delete-form"
                         action={`/map/${placeId}/${getUriId(heist.node?.id)}/delete`}
