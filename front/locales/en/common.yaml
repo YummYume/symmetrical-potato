@@ -71,6 +71,7 @@ heist.allowed_employees: Allowed employees
 heist.forbidden_users: Forbidden heisters
 heist.forbidden_assets: Forbidden assets
 heist.minimum_required_rating: Minimum required rating
+heist.visibility: Visibility
 
 # User
 user.balance: Balance

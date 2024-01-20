@@ -223,6 +223,7 @@ export default function Add() {
     );
 
     methods.setValue('allowedEmployees', []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchEstablishment]);
 
   return (

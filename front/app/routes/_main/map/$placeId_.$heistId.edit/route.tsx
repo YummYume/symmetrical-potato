@@ -19,7 +19,7 @@ import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
-import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
+import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~/lib/utils/api';
 import dayjs from '~/lib/utils/dayjs';
 import { updateHeistResolver } from '~/lib/validators/updateHeist';
 import { FLASH_MESSAGE_KEY } from '~/root';
@@ -35,38 +35,47 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   if (!params.heistId) {
     throw redirect(`/map/${params.placeId}`);
   }
-  const { heist } = await getHeist(context.client, params.heistId);
 
-  if (!heist || heist.establishment.contractor.id !== user.id) {
-    throw redirect(`/map/${params.placeId}`);
+  const t = await i18next.getFixedT(request, 'response');
+
+  try {
+    const { heist } = await getHeist(context.client, params.heistId);
+
+    if (heist.establishment.contractor.id !== user.id) {
+      return redirect(`/map/${params.placeId}`);
+    }
+
+    // Get the establishments of the current user
+    const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
+    const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
+
+    const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
+    const { assets } = await getAssets(context.client);
+
+    const { users } = await getUsersByRoles(context.client, {
+      include: 'ROLE_HEISTER',
+      exclude: ['ROLE_ADMIN'],
+    });
+
+    return {
+      heist,
+      users,
+      assets,
+      employees,
+      establishments,
+      placeId: params.placeId,
+      locale: context.locale,
+    };
+  } catch (e) {
+    if (!(e instanceof ClientError) || !hasPathError(e, 'heist')) {
+      throw e;
+    }
+
+    throw new Response(null, {
+      status: 404,
+      statusText: t('not_found', { ns: 'response' }),
+    });
   }
-
-  // Get the establishments of the current user
-  const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
-  const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
-
-  const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
-  const { assets } = await getAssets(context.client);
-
-  const { users } = await getUsersByRoles(context.client, {
-    include: 'ROLE_HEISTER',
-    exclude: ['ROLE_ADMIN'],
-  });
-
-  // Redirect if the heist is not owned by a establishment of the current user
-  if (establishments.edges.find((edge) => edge.node.id === heist.establishment.id) === undefined) {
-    throw redirect(`/map/${params.placeId}`);
-  }
-
-  return {
-    heist,
-    users,
-    assets,
-    employees,
-    establishments,
-    placeId: params.placeId,
-    locale: context.locale,
-  };
 }
 
 export type Loader = typeof loader;
