@@ -132,10 +132,12 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       maximumPayout: +data.maximumPayout,
       minimumRequiredRating: +(data?.minimumRequiredRating ?? 0),
       startAt: dayjs(`${data.startAtDate} ${data.startAtTime}`).toISOString(),
-      shouldEndAt: dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`).toISOString(),
+      shouldEndAt: dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`)
+        .utc(false)
+        .toISOString(),
       difficulty: data.difficulty.value,
       preferedTactic: data.preferedTactic.value,
-      visibility: HeistVisibilityEnum.Draft,
+      visibility: data.visibility.value,
       allowedEmployees: data.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
       forbiddenUsers: data.forbiddenUsers?.map((user) => user.value),
       forbiddenAssets: data.forbiddenAssets?.map((asset) => asset.value),
@@ -223,10 +225,10 @@ export default function Edit() {
     defaultValues: {
       name: heist.name,
       description: heist.description,
-      startAtDate: dayjs(heist.startAt).format('YYYY-MM-DD'),
-      startAtTime: dayjs(heist.startAt).format('HH:mm'),
-      shouldEndAtDate: dayjs(heist.shouldEndAt).format('YYYY-MM-DD'),
-      shouldEndAtTime: dayjs(heist.shouldEndAt).format('HH:mm'),
+      startAtDate: dayjs(heist.startAt).utc(false).format('YYYY-MM-DD'),
+      startAtTime: dayjs(heist.startAt).utc(false).format('HH:mm'),
+      shouldEndAtDate: dayjs(heist.shouldEndAt).utc(false).format('YYYY-MM-DD'),
+      shouldEndAtTime: dayjs(heist.shouldEndAt).utc(false).format('HH:mm'),
       preferedTactic: {
         value: heist.preferedTactic,
       },

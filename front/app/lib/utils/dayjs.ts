@@ -15,6 +15,6 @@ dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 
 // Defaults
-// dayjs.tz.setDefault('America/New_York');
+dayjs.tz.setDefault('America/New_York');
 
 export default dayjs;

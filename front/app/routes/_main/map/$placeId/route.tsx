@@ -226,6 +226,7 @@ export default function PlaceId() {
               </div>
               <Text as="p" className="underline">
                 {new Date(heist.node.startAt).toLocaleDateString(locale, {
+                  timeZone: 'UTC',
                   day: 'numeric',
                   hour: 'numeric',
                   minute: 'numeric',

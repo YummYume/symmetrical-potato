@@ -171,15 +171,6 @@ export default function Add() {
   const methods = useRemixForm<CreateHeistFormData>({
     mode: 'onSubmit',
     resolver: createHeistResolver,
-    submitHandlers: {
-      onInvalid: async (errors) => {
-        console.log(errors);
-        console.log(methods.getValues());
-      },
-      onValid: async (data) => {
-        console.log(data);
-      },
-    },
     defaultValues: {
       startAtDate: startAt.format('YYYY-MM-DD'),
       startAtTime: startAt.format('HH:mm'),

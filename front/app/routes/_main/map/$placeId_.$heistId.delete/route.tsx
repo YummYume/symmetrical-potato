@@ -37,7 +37,7 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
     await deleteHeist(context.client, params.heistId);
 
     session.flash(FLASH_MESSAGE_KEY, {
-      content: t('user.deleted', { ns: 'flash' }),
+      content: t('heist.deleted_successfully', { ns: 'flash' }),
       type: 'success',
     } as FlashMessage);
 
