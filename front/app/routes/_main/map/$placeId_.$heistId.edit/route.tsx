@@ -9,7 +9,7 @@ import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hoo
 import { getAssets } from '~/lib/api/asset';
 import { getEmployeesEstablishments } from '~/lib/api/employee';
 import { getEstablishmentsOfContractor } from '~/lib/api/establishment';
-import { getHeist, updateHeist } from '~/lib/api/heist';
+import { getHeist, heistIsMadeBy, heistIsPublic, updateHeist } from '~/lib/api/heist';
 import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
 import { getUsersByRoles } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
@@ -23,7 +23,7 @@ import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from
 import dayjs from '~/lib/utils/dayjs';
 import { updateHeistResolver } from '~/lib/validators/updateHeist';
 import { FLASH_MESSAGE_KEY } from '~/root';
-import { ROLES, denyAccessUnlessGranted } from '~utils/security.server';
+import { ROLES, denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import type { UpdateHeistFormData } from '~/lib/validators/updateHeist';
@@ -31,6 +31,7 @@ import type { FlashMessage } from '~/root';
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user, ROLES.CONTRACTOR);
+  const isAdmin = hasRoles(context.user, ROLES.ADMIN);
 
   if (!params.heistId) {
     throw redirect(`/map/${params.placeId}`);
@@ -39,9 +40,15 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const t = await i18next.getFixedT(request, 'response');
 
   try {
+    const isPublic = await heistIsPublic(context.client, params.heistId);
+
+    if (isPublic) {
+      return redirect(`/map/${params.placeId}`);
+    }
+
     const { heist } = await getHeist(context.client, params.heistId);
 
-    if (heist.establishment.contractor.id !== user.id) {
+    if (heist.establishment.contractor.id !== user.id && !isAdmin) {
       return redirect(`/map/${params.placeId}`);
     }
 
@@ -81,7 +88,27 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 export type Loader = typeof loader;
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
-  denyAccessUnlessGranted(context.user, ROLES.CONTRACTOR);
+  const user = denyAccessUnlessGranted(context.user, ROLES.CONTRACTOR);
+  const isAdmin = hasRoles(context.user, ROLES.ADMIN);
+
+  if (!params?.heistId) {
+    throw redirect(`/map/${params.placeId}`);
+  }
+
+  const isPublic = await heistIsPublic(context.client, params.heistId);
+
+  if (isPublic) {
+    return redirect(`/map/${params.placeId}`);
+  }
+
+  const isMadeBy = await heistIsMadeBy(context.client, {
+    id: params.heistId,
+    userId: user.id,
+  });
+
+  if (!isMadeBy && !isAdmin) {
+    throw redirect(`/map/${params.placeId}`);
+  }
 
   const t = await i18next.getFixedT(request, ['heist', 'validators', 'flash']);
   const { errors, data } = await getValidatedFormData<UpdateHeistFormData>(
@@ -91,10 +118,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
   if (errors) {
     return json({ errors }, { status: 400 });
-  }
-
-  if (!params?.heistId) {
-    throw redirect(`/map/${params.placeId}`);
   }
 
   let errorMessage: string | null = null;
