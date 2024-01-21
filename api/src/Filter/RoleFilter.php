@@ -142,7 +142,7 @@ final class RoleFilter extends AbstractFilter
          */
         $exclude = $value[$this->excludeParameterName] ?? [];
 
-        if (null === $include || !in_array($include, self::ROLES)) {
+        if (null == $include || !in_array($include, self::ROLES)) {
             return;
         }
 
