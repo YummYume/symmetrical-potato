@@ -15,6 +15,7 @@ use App\Enum\HeistPhaseEnum;
 use App\Enum\UserLocaleEnum;
 use App\Enum\UserStatusEnum;
 use App\Filter\UuidFilter;
+use App\Filter\RoleFilter;
 use App\Repository\UserRepository;
 use App\Resolver\UserQueryResolver;
 use App\State\UserProcessor;
@@ -143,6 +144,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     groups: [self::REGISTER, self::UPDATE]
 )]
 #[ApiFilter(UuidFilter::class, properties: ['forbiddenHeists.id'])]
+// TODO: Only with admin
+#[ApiFilter(RoleFilter::class, properties: ['roles'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use BlameableTrait;
@@ -163,6 +166,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_EMPLOYEE = 'ROLE_EMPLOYEE';
     public const ROLE_CONTRACTOR = 'ROLE_CONTRACTOR';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
+
+    public const ROLES = [
+        self::ROLE_ADMIN,
+        self::ROLE_CONTRACTOR,
+        self::ROLE_EMPLOYEE,
+        self::ROLE_HEISTER,
+        self::ROLE_USER,
+    ];
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
