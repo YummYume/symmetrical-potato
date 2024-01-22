@@ -60,7 +60,7 @@ export type Loader = typeof loader;
 export async function action({ request, context, params }: ActionFunctionArgs) {
   denyAccessUnlessGranted(context.user, ROLES.CONTRACTOR);
 
-  const t = await i18next.getFixedT(request, ['heist', 'validators', 'flash']);
+  const t = await i18next.getFixedT(request, ['validators', 'flash']);
   const { errors, data } = await getValidatedFormData<CreateHeistFormData>(
     request,
     createHeistResolver,
@@ -299,7 +299,7 @@ export default function Add() {
                   description: '',
                 },
                 add: {
-                  text: t('heist.add_objective', { ns: 'heist' }),
+                  text: t('heist.add_objective'),
                 },
                 fields: [
                   {

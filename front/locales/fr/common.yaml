@@ -15,7 +15,6 @@ page_loading: Chargement de la page...
 logout: Se déconnecter
 change_locale: Changer la langue
 enable_dark_mode: Activer le mode sombre
-submit: Envoyer
 open-menu: Ouvrir le menu de navigation
 dashboard: Tableau de bord
 logged-in-as: Connecté en tant que
@@ -31,6 +30,7 @@ assets: Assets
 establishment: Établissement
 establishments: Établissements
 contractor_requests: Demandes de contractant
+owner: Propriétaire
 home: Accueil
 delete: Supprimer
 save: Sauvegarder
@@ -43,10 +43,11 @@ confirm: Confirmer
 close: Fermer
 create: Créer
 creating: Création...
-owner: Propriétaire
 back: Retour
 update: Mettre à jour
+edit: Modifier
 add: Ajouter
+submit: Envoyer
 
 # History info
 history_info: Information sur l'historique
@@ -72,6 +73,9 @@ heist.forbidden_users: Braqueurs interdits
 heist.forbidden_assets: Assets interdits
 heist.minimum_required_rating: Note minimale requise
 heist.visibility: Visibilité
+heist.add: Ajouter un braquage
+heist.add_objective: Ajouter un objectif
+heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
 
 # User
 user.balance: Solde

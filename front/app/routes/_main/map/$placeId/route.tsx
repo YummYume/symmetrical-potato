@@ -107,9 +107,7 @@ export default function PlaceId() {
                 className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
                 unstyled
               >
-                {t('heist.add', {
-                  ns: 'heist',
-                })}
+                {t('heist.add')}
               </Link>
             )}
           </div>
@@ -141,9 +139,7 @@ export default function PlaceId() {
           className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
           unstyled
         >
-          {t('heist.add', {
-            ns: 'heist',
-          })}
+          {t('heist.add')}
         </Link>
       )}
 
@@ -198,9 +194,7 @@ export default function PlaceId() {
                           className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
                           unstyled
                         >
-                          {t('heist.edit', {
-                            ns: 'heist',
-                          })}
+                          {t('edit')}
                         </Link>
                       )}
                       <Form
@@ -212,9 +206,7 @@ export default function PlaceId() {
                       />
                       <FormAlertDialog
                         title={t('delete')}
-                        description={t('heist.delete.confirm', {
-                          ns: 'heist',
-                        })}
+                        description={t('heist.delete.confirm')}
                         formId="heist-delete-form"
                       >
                         <Button type="button" color="red">

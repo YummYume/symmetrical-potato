@@ -15,7 +15,6 @@ page_loading: Page is loading...
 logout: Logout
 change_locale: Change language
 enable_dark_mode: Enable dark mode
-submit: Submit
 open-menu: Open navigation menu
 dashboard: Dashboard
 logged-in-as: Logged in as
@@ -31,6 +30,7 @@ assets: Assets
 establishment: Establishment
 establishments: Establishments
 contractor_requests: Contractor requests
+owner: Owner
 home: Home
 delete: Delete
 save: Save
@@ -43,10 +43,11 @@ confirm: Confirm
 close: Close
 create: Create
 creating: Creating...
-owner: Owner
 back: Back
 update: Update
+edit: Edit
 add: Add
+submit: Submit
 
 # History info
 history_info: History info
@@ -72,6 +73,9 @@ heist.forbidden_users: Forbidden heisters
 heist.forbidden_assets: Forbidden assets
 heist.minimum_required_rating: Minimum required rating
 heist.visibility: Visibility
+heist.add: Add a heist
+heist.add_objective: Add an objective
+heist.delete.confirm: Are you sure you want to delete this heist?
 
 # User
 user.balance: Balance

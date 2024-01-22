@@ -24,7 +24,7 @@ register.username.max_length: The username must be less than 100 characters long
 register.password.required: Please enter a password.
 register.password.min_length: The password must be at least 8 characters long.
 register.password.max_length: The password must be less than 100 characters long.
-register.password.at_least_one_digit: The password muestablishmentst contain at least one digit.
+register.password.at_least_one_digit: The password must contain at least one digit.
 register.password.at_least_one_uppercase_letter: The password must contain at least one uppercase letter.
 register.password.at_least_one_lowercase_letter: The password must contain at least one lowercase letter.
 register.password.at_least_one_special_character: The password must contain at least one special character.

@@ -217,6 +217,9 @@ class Heist
     #[Groups([self::READ])]
     private ?Location $location = null;
 
+    /**
+     * Used to get or create the location of the heist on create, not mapped.
+     */
     #[Groups([self::CREATE])]
     #[Assert\NotBlank(groups: [self::CREATE], message: 'heist.place_id.not_blank')]
     private ?string $placeId = null;

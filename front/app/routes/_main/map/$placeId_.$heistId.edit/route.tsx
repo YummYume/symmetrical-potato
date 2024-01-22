@@ -21,6 +21,7 @@ import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~/lib/utils/api';
 import dayjs from '~/lib/utils/dayjs';
+import { formatEnums } from '~/lib/utils/tools';
 import { updateHeistResolver } from '~/lib/validators/updateHeist';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { ROLES, denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
@@ -110,7 +111,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     throw redirect(`/map/${params.placeId}`);
   }
 
-  const t = await i18next.getFixedT(request, ['heist', 'validators', 'flash']);
+  const t = await i18next.getFixedT(request, ['validators', 'flash']);
   const { errors, data } = await getValidatedFormData<UpdateHeistFormData>(
     request,
     updateHeistResolver,
@@ -125,9 +126,8 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
   try {
     await updateHeist(context.client, {
+      ...data,
       id: params?.heistId,
-      name: data.name,
-      description: data.description,
       minimumPayout: +data.minimumPayout,
       maximumPayout: +data.maximumPayout,
       minimumRequiredRating: +(data?.minimumRequiredRating ?? 0),
@@ -141,7 +141,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       allowedEmployees: data.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
       forbiddenUsers: data.forbiddenUsers?.map((user) => user.value),
       forbiddenAssets: data.forbiddenAssets?.map((asset) => asset.value),
-      objectives: data.objectives,
     });
 
     session.flash(FLASH_MESSAGE_KEY, {
@@ -181,11 +180,6 @@ export default function Edit() {
   const { t } = useTranslation();
   const { placeId, heist, employees, assets, users } = useLoaderData<Loader>();
 
-  const heistVisibilities: Option[] = Object.values(HeistVisibilityEnum).map((value: string) => ({
-    label: value,
-    value,
-  }));
-
   const usersFormatted: Option[] = users.edges.map((edge) => ({
     label: edge.node.username,
     value: edge.node.id,
@@ -207,17 +201,9 @@ export default function Edit() {
     return acc;
   }, [] as Option[]);
 
-  const heistPreferedTactics: Option[] = Object.values(HeistPreferedTacticEnum).map(
-    (value: string) => ({
-      label: value,
-      value,
-    }),
-  );
-
-  const heistDifficulties: Option[] = Object.values(HeistDifficultyEnum).map((value: string) => ({
-    label: value,
-    value,
-  }));
+  const heistVisibilities = formatEnums(Object.values(HeistVisibilityEnum));
+  const heistPreferedTactics = formatEnums(Object.values(HeistPreferedTacticEnum));
+  const heistDifficulties = formatEnums(Object.values(HeistDifficultyEnum));
 
   const methods = useRemixForm<UpdateHeistFormData>({
     mode: 'onSubmit',
@@ -261,7 +247,7 @@ export default function Edit() {
     <div>
       <Dialog.Title asChild>
         <Heading as="h2" size="8">
-          Edit {heist.name}
+          {t('edit')} - {heist.name}
         </Heading>
       </Dialog.Title>
       <Section className="space-y-3" size="1">
@@ -338,7 +324,7 @@ export default function Edit() {
                   description: '',
                 },
                 add: {
-                  text: t('heist.add_objective', { ns: 'heist' }),
+                  text: t('heist.add_objective'),
                 },
                 fields: [
                   {
