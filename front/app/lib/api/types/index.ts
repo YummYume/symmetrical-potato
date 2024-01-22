@@ -354,7 +354,6 @@ export type HeistForbiddenUsersArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-  roles?: InputMaybe<Array<InputMaybe<UserFilter_Roles>>>;
 };
 
 export type HeistAsset = Node & {
@@ -976,7 +975,6 @@ export type QueryUsersArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
-  roles?: InputMaybe<Array<InputMaybe<UserFilter_Roles>>>;
 };
 
 export type Review = Node & {
@@ -1096,11 +1094,6 @@ export type UserEdge = {
   __typename?: 'UserEdge';
   cursor: Scalars['String']['output'];
   node: Maybe<User>;
-};
-
-export type UserFilter_Roles = {
-  exclude?: InputMaybe<Scalars['Iterable']['input']>;
-  include: Scalars['String']['input'];
 };
 
 export enum UserLocaleEnum {
@@ -1421,6 +1414,7 @@ export type CreateHeistInput = {
   minimumRequiredRating?: InputMaybe<Scalars['Float']['input']>;
   name: Scalars['String']['input'];
   objectives: Scalars['Iterable']['input'];
+  /** Used to get or create the location of the heist on create, not mapped. */
   placeId?: InputMaybe<Scalars['String']['input']>;
   preferedTactic: HeistPreferedTacticEnum;
   shouldEndAt: Scalars['String']['input'];

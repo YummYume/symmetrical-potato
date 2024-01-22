@@ -12,7 +12,7 @@ import { getEmployeesEstablishments } from '~/lib/api/employee';
 import { getEstablishmentsOfContractor } from '~/lib/api/establishment';
 import { createHeist } from '~/lib/api/heist';
 import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
-import { getUsersByRoles } from '~/lib/api/user';
+import { getUsers } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
@@ -22,6 +22,7 @@ import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
 import dayjs from '~/lib/utils/dayjs';
+import { formatEnums } from '~/lib/utils/tools';
 import { createHeistResolver } from '~/lib/validators/createHeist';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { ROLES, denyAccessUnlessGranted } from '~utils/security.server';
@@ -39,13 +40,10 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
 
   const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
   const { assets } = await getAssets(context.client);
-
-  const { users } = await getUsersByRoles(context.client, {
-    include: 'ROLE_HEISTER',
-    exclude: ['ROLE_ADMIN'],
-  });
+  const { users } = await getUsers(context.client);
 
   return {
+    user,
     users,
     assets,
     employees,
@@ -127,12 +125,18 @@ type Option = { label: string; value: string };
 
 export default function Add() {
   const { t } = useTranslation();
-  const { placeId, establishments, employees, assets, users } = useLoaderData<Loader>();
+  const { placeId, establishments, employees, assets, users, user } = useLoaderData<Loader>();
 
-  const usersFormatted: Option[] = users.edges.map((edge) => ({
-    label: edge.node.username,
-    value: edge.node.id,
-  }));
+  const usersFormatted: Option[] = users.edges.reduce((acc, curr) => {
+    if (user.id !== curr.node.id) {
+      acc.push({
+        label: curr.node.username,
+        value: curr.node.id,
+      });
+    }
+
+    return acc;
+  }, [] as Option[]);
 
   const assetsFormatted: Option[] = assets.edges.map((edge) => ({
     label: edge.node.name,
@@ -152,17 +156,8 @@ export default function Add() {
     value: edge.node.id,
   }));
 
-  const heistPreferedTactics: Option[] = Object.values(HeistPreferedTacticEnum).map(
-    (value: string) => ({
-      label: value,
-      value,
-    }),
-  );
-
-  const heistDifficulties: Option[] = Object.values(HeistDifficultyEnum).map((value: string) => ({
-    label: value,
-    value,
-  }));
+  const heistPreferedTactics = formatEnums(Object.values(HeistPreferedTacticEnum));
+  const heistDifficulties = formatEnums(Object.values(HeistDifficultyEnum));
 
   const dateNow = dayjs();
   const startAt = dateNow.add(15, 'minutes');

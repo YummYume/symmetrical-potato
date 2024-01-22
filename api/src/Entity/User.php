@@ -14,7 +14,6 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\UserLocaleEnum;
 use App\Enum\UserStatusEnum;
-use App\Filter\RoleFilter;
 use App\Filter\UuidFilter;
 use App\Repository\UserRepository;
 use App\Resolver\UserQueryResolver;
@@ -143,7 +142,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'user.email.unique',
     groups: [self::REGISTER, self::UPDATE]
 )]
-#[ApiFilter(RoleFilter::class, properties: ['roles'])]
 #[ApiFilter(UuidFilter::class, properties: ['forbiddenHeists.id'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
