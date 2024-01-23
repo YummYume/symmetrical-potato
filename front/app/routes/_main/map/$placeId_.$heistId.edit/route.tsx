@@ -177,7 +177,7 @@ export default function Edit() {
   const { t } = useTranslation();
   const { placeId, heist, employees, assets, users, user } = useLoaderData<Loader>();
 
-  const usersFormatted: Option[] = users.edges.reduce((acc, curr) => {
+  const usersFormatted = users.edges.reduce<Option[]>((acc, curr) => {
     if (user.id !== curr.node.id) {
       acc.push({
         label: curr.node.username,
@@ -186,14 +186,14 @@ export default function Edit() {
     }
 
     return acc;
-  }, [] as Option[]);
+  }, []);
 
   const assetsFormatted: Option[] = assets.edges.map((edge) => ({
     label: edge.node.name,
     value: edge.node.id,
   }));
 
-  const employeesFormatted = employees.edges.reduce((acc, curr) => {
+  const employeesFormatted = employees.edges.reduce<Option[]>((acc, curr) => {
     if (heist.establishment.id === curr.node.establishment.id) {
       acc.push({
         label: curr.node.user.username,
@@ -202,7 +202,7 @@ export default function Edit() {
     }
 
     return acc;
-  }, [] as Option[]);
+  }, []);
 
   const heistVisibilities = formatEnums(Object.values(HeistVisibilityEnum));
   const heistPreferedTactics = formatEnums(Object.values(HeistPreferedTacticEnum));

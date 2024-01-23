@@ -127,7 +127,7 @@ export default function Add() {
   const { t } = useTranslation();
   const { placeId, establishments, employees, assets, users, user } = useLoaderData<Loader>();
 
-  const usersFormatted: Option[] = users.edges.reduce((acc, curr) => {
+  const usersFormatted = users.edges.reduce<Option[]>((acc, curr) => {
     if (user.id !== curr.node.id) {
       acc.push({
         label: curr.node.username,
@@ -136,7 +136,7 @@ export default function Add() {
     }
 
     return acc;
-  }, [] as Option[]);
+  }, []);
 
   const assetsFormatted: Option[] = assets.edges.map((edge) => ({
     label: edge.node.name,
