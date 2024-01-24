@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
@@ -13,6 +14,7 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\UserLocaleEnum;
 use App\Enum\UserStatusEnum;
+use App\Filter\UuidFilter;
 use App\Repository\UserRepository;
 use App\Resolver\UserQueryResolver;
 use App\State\UserProcessor;
@@ -140,6 +142,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'user.email.unique',
     groups: [self::REGISTER, self::UPDATE]
 )]
+#[ApiFilter(UuidFilter::class, properties: ['forbiddenHeists.id'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use BlameableTrait;
@@ -180,6 +183,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         CrewMember::READ,
         CrewMember::READ_PUBLIC,
         Establishment::READ_PUBLIC,
+        Employee::READ,
     ])]
     #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.username.not_blank')]
     #[Assert\Length(

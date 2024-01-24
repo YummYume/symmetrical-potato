@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
 use ApiPlatform\Metadata\GraphQl\Mutation;
@@ -10,6 +11,7 @@ use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\AssetTypeEnum;
+use App\Filter\UuidFilter;
 use App\Repository\AssetRepository;
 use App\State\AssetProcessor;
 use App\Validator\CanAddHeistAsset;
@@ -79,6 +81,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     groups: [self::CREATE, self::UPDATE],
     ignoreNull: false
 )]
+#[ApiFilter(UuidFilter::class, properties: ['forbiddenHeists.id'])]
 class Asset
 {
     use BlameableTrait;

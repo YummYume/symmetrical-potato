@@ -1,21 +1,29 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Grid, Heading, Section, Text } from '@radix-ui/themes';
+import { Button, Grid, Heading, Section, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Form, useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { getEnv } from '~/lib/utils/env';
+import { getUriId } from '~/lib/utils/path';
 import { getGoogleLocation, getLocationInfo } from '~api/location';
+import {
+  HeistVisibilityEnum,
+  type Heist,
+  type HeistEdge,
+  type Review,
+  type ReviewEdge,
+} from '~api/types';
 import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
-import { denyAccessUnlessGranted } from '~utils/security.server';
-
-import type { Heist, HeistEdge, Review, ReviewEdge } from '~api/types';
+import { ROLES, denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
-  const user = denyAccessUnlessGranted(context.user);
+  denyAccessUnlessGranted(context.user);
+  const isContractor = hasRoles(context.user, ROLES.CONTRACTOR);
+  const isAdmin = hasRoles(context.user, ROLES.ADMIN);
 
   if (!params.placeId) {
     throw redirect('/dashboard');
@@ -28,7 +36,10 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
       locale: context.locale,
       locationInfo,
       place: null,
-      user,
+      placeId: params.placeId,
+      isContractor,
+      isAdmin,
+      user: context.user,
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'location')) {
@@ -50,7 +61,10 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     locale: null,
     locationInfo: null,
     place,
-    user,
+    placeId: params.placeId,
+    isContractor,
+    isAdmin,
+    user: context.user,
   };
 }
 
@@ -60,8 +74,8 @@ type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
 export default function PlaceId() {
-  const { locationInfo, locale, place, user } = useLoaderData<Loader>();
-  const isContractor = useMemo(() => user.roles.includes('ROLE_CONTRACTOR'), [user.roles]);
+  const { locationInfo, locale, place, placeId, isContractor, isAdmin, user } =
+    useLoaderData<Loader>();
   const { t } = useTranslation();
 
   const heists =
@@ -77,17 +91,27 @@ export default function PlaceId() {
   if (!locationInfo?.location) {
     return (
       place && (
-        <div>
-          <Dialog.Title asChild>
-            <Heading as="h2" size="8">
-              {place.displayName.text}
-            </Heading>
-          </Dialog.Title>
-          <Section className="space-y-3" size="1">
-            {isContractor && <Link to="/">Create heist</Link>}
-            <Dialog.Description>{place.formattedAddress}</Dialog.Description>
-          </Section>
-        </div>
+        <>
+          <div>
+            <Dialog.Title asChild>
+              <Heading as="h2" size="8">
+                {place.displayName.text}
+              </Heading>
+            </Dialog.Title>
+            <Section className="space-y-3" size="1">
+              <Dialog.Description>{place.formattedAddress}</Dialog.Description>
+            </Section>
+            {isContractor && (
+              <Link
+                to={`/map/${placeId}/add`}
+                className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
+                unstyled
+              >
+                {t('heist.add')}
+              </Link>
+            )}
+          </div>
+        </>
       )
     );
   }
@@ -109,8 +133,15 @@ export default function PlaceId() {
           )}
         </Section>
       </div>
-
-      {isContractor && <Link to="/">Create heist</Link>}
+      {(isContractor || isAdmin) && (
+        <Link
+          to={`/map/${placeId}/add`}
+          className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
+          unstyled
+        >
+          {t('heist.add')}
+        </Link>
+      )}
 
       {/* TODO tabs ? */}
       {reviews.length > 0 && (
@@ -148,13 +179,46 @@ export default function PlaceId() {
           </Heading>
           {heists.map((heist) => (
             <Section className="space-y-3" key={heist.node?.id} size="1">
-              <Link className="w-fit" to="/">
-                <Heading as="h3" size="6">
-                  {heist.node.name}
-                </Heading>
-              </Link>
+              <div className="flex items-center justify-between">
+                <Link className="w-fit" to="/">
+                  <Heading as="h3" size="6">
+                    {heist.node.name}
+                  </Heading>
+                </Link>
+                {isAdmin ||
+                  (isContractor && heist.node.establishment.contractor.id === user?.id && (
+                    <div className="flex items-center">
+                      {heist.node.visibility === HeistVisibilityEnum.Draft && (
+                        <Link
+                          to={`/map/${placeId}/${getUriId(heist.node?.id)}/edit`}
+                          className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
+                          unstyled
+                        >
+                          {t('edit')}
+                        </Link>
+                      )}
+                      <Form
+                        id="heist-delete-form"
+                        action={`/map/${placeId}/${getUriId(heist.node?.id)}/delete`}
+                        method="post"
+                        className="hidden"
+                        unstable_viewTransition
+                      />
+                      <FormAlertDialog
+                        title={t('delete')}
+                        description={t('heist.delete.confirm')}
+                        formId="heist-delete-form"
+                      >
+                        <Button type="button" color="red">
+                          {t('delete')}
+                        </Button>
+                      </FormAlertDialog>
+                    </div>
+                  ))}
+              </div>
               <Text as="p" className="underline">
                 {new Date(heist.node.startAt).toLocaleDateString(locale, {
+                  timeZone: 'UTC',
                   day: 'numeric',
                   hour: 'numeric',
                   minute: 'numeric',

@@ -217,15 +217,12 @@ class Heist
     #[Groups([self::READ])]
     private ?Location $location = null;
 
+    /**
+     * Used to get or create the location of the heist on create, not mapped.
+     */
     #[Groups([self::CREATE])]
-    #[Assert\NotBlank(groups: [self::CREATE], message: 'heist.latitude.not_blank')]
-    #[Assert\Type(groups: [self::CREATE], type: 'float', message: 'heist.latitude.invalid')]
-    private ?float $latitude = null;
-
-    #[Groups([self::CREATE])]
-    #[Assert\NotBlank(groups: [self::CREATE], message: 'heist.longitude.not_blank')]
-    #[Assert\Type(groups: [self::CREATE], type: 'float', message: 'heist.longitude.invalid')]
-    private ?float $longitude = null;
+    #[Assert\NotBlank(groups: [self::CREATE], message: 'heist.place_id.not_blank')]
+    private ?string $placeId = null;
 
     /** @var ArrayCollection<int, Employee> */
     #[ORM\ManyToMany(targetEntity: Employee::class, inversedBy: 'allowedHeists')]
@@ -386,26 +383,14 @@ class Heist
         return \count($this->getRequiredObjectives());
     }
 
-    public function getLatitude(): ?float
+    public function getPlaceId(): ?string
     {
-        return $this->latitude;
+        return $this->placeId;
     }
 
-    public function setLatitude(?float $latitude): static
+    public function setPlaceId(?string $placeId): static
     {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    public function getLongitude(): ?float
-    {
-        return $this->longitude;
-    }
-
-    public function setLongitude(?float $longitude): static
-    {
-        $this->longitude = $longitude;
+        $this->placeId = $placeId;
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
@@ -11,6 +12,8 @@ use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\EmployeeStatusEnum;
+use App\Filter\MatchUuidFilter;
+use App\Filter\UuidFilter;
 use App\Repository\EmployeeRepository;
 use App\State\EmployeeProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -93,6 +96,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     errorPath: 'codeName',
     groups: [self::VALIDATE],
 )]
+#[ApiFilter(MatchUuidFilter::class, properties: ['establishment.id'])]
+#[ApiFilter(UuidFilter::class, properties: ['allowedHeists.id'])]
 class Employee
 {
     use BlameableTrait;
@@ -156,6 +161,7 @@ class Employee
     private ?string $codeName = null;
 
     #[ORM\OneToOne(mappedBy: 'employee', targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups([self::READ])]
     private ?User $user = null;
 

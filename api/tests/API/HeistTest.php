@@ -6,8 +6,7 @@ use App\Tests\AbstractTestCase;
 
 final class HeistTest extends AbstractTestCase
 {
-    public const MUSEUM_NYC_LATITUDE = 40.742949784543825;
-    public const MUSEUM_NYC_LONGITUDE = -74.17140255510886;
+    public const MUSEUM_NYC_PLACE_ID = 'ChIJ5fsDD4BUwokRxwsQqWQjEMM';
 
     public const HEISTER = 'dallas';
     public const ADMIN = 'bain';
@@ -384,8 +383,7 @@ final class HeistTest extends AbstractTestCase
                         difficulty: VeryHard,
                         visibility: Draft,
                         objectives: [],
-                        latitude: %s,
-                        longitude: %s
+                        placeId: "%s",
                     }) {
                         heist {
                             name
@@ -395,7 +393,7 @@ final class HeistTest extends AbstractTestCase
                             }
                         }
                     } 
-                }', $startAt, $shouldEndAt, $establishementId, self::MUSEUM_NYC_LATITUDE, self::MUSEUM_NYC_LONGITUDE),
+                }', $startAt, $shouldEndAt, $establishementId, self::MUSEUM_NYC_PLACE_ID),
             ],
         ]);
 

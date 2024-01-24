@@ -51,6 +51,7 @@
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-i18next": "^14.0.0",
+    "react-select": "^5.8.0",
     "remix-hook-form": "^3.2.3",
     "remix-i18next": "^5.5.0",
     "resolve-accept-language": "^2.1.14",

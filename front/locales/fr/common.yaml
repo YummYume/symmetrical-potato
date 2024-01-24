@@ -2,9 +2,12 @@ homepage: Page d'accueil
 login: S'identifier
 register: S'inscrire
 email: Adresse e-mail
+name: Nom
+description: Description
 username: Nom d'utilisateur
 password: Mot de passe
 password_confirm: Confirmer le mot de passe
+start_at: Date de début
 reason: Raison
 logging_in: Connexion...
 registering: Inscription...
@@ -12,7 +15,6 @@ page_loading: Chargement de la page...
 logout: Se déconnecter
 change_locale: Changer la langue
 enable_dark_mode: Activer le mode sombre
-submit: Envoyer
 open-menu: Ouvrir le menu de navigation
 dashboard: Tableau de bord
 logged-in-as: Connecté en tant que
@@ -25,8 +27,10 @@ user: Utilisateur
 users: Utilisateurs
 locations: Lieux
 assets: Assets
+establishment: Établissement
 establishments: Établissements
 contractor_requests: Demandes de contractant
+owner: Propriétaire
 home: Accueil
 delete: Supprimer
 save: Sauvegarder
@@ -39,7 +43,11 @@ confirm: Confirmer
 close: Fermer
 create: Créer
 creating: Création...
-owner: Propriétaire
+back: Retour
+update: Mettre à jour
+edit: Modifier
+add: Ajouter
+submit: Envoyer
 
 # History info
 history_info: Information sur l'historique
@@ -51,9 +59,23 @@ history_info.updated_by: Mis à jour par {name}.
 history_info.updated_at: Mis à jour le {date} à {time}.
 
 # Heist
+heist.start_at.date: Date de début
+heist.start_at.time: Heure de début
+heist.should_end_at.date: Date de fin estimée
+heist.should_end_at.time: Heure de fin estimée
+heist.prefered_tactic: Tactique préférée
+heist.objective: Objectifs
 heist.minimum_payout: Paiement minimum
 heist.maximum_payout: Paiement maximum
 heist.difficulty: Difficulté
+heist.allowed_employees: Employés autorisés
+heist.forbidden_users: Braqueurs interdits
+heist.forbidden_assets: Assets interdits
+heist.minimum_required_rating: Note minimale requise
+heist.visibility: Visibilité
+heist.add: Ajouter un braquage
+heist.add_objective: Ajouter un objectif
+heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
 
 # User
 user.balance: Solde

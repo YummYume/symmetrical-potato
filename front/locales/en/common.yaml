@@ -2,9 +2,12 @@ homepage: Homepage
 login: Login
 register: Register
 email: Email address
+name: Name
+description: Description
 username: Username
 password: Password
 password_confirm: Confirm password
+start_at: Start date
 reason: Reason
 logging_in: Logging in...
 registering: Registering...
@@ -12,7 +15,6 @@ page_loading: Page is loading...
 logout: Logout
 change_locale: Change language
 enable_dark_mode: Enable dark mode
-submit: Submit
 open-menu: Open navigation menu
 dashboard: Dashboard
 logged-in-as: Logged in as
@@ -25,8 +27,10 @@ user: User
 users: Users
 locations: Locations
 assets: Assets
+establishment: Establishment
 establishments: Establishments
 contractor_requests: Contractor requests
+owner: Owner
 home: Home
 delete: Delete
 save: Save
@@ -39,7 +43,11 @@ confirm: Confirm
 close: Close
 create: Create
 creating: Creating...
-owner: Owner
+back: Back
+update: Update
+edit: Edit
+add: Add
+submit: Submit
 
 # History info
 history_info: History info
@@ -51,9 +59,23 @@ history_info.updated_by: Updated by {name}.
 history_info.updated_at: Updated on {date} at {time}.
 
 # Heist
+heist.start_at.date: Start date
+heist.start_at.time: Start time
+heist.should_end_at.date: Estimated end date
+heist.should_end_at.time: Estimated end time
+heist.prefered_tactic: Prefered tactic
+heist.objective: Objectives
 heist.minimum_payout: Minimum payout
 heist.maximum_payout: Maximum payout
 heist.difficulty: Difficulty
+heist.allowed_employees: Allowed employees
+heist.forbidden_users: Forbidden heisters
+heist.forbidden_assets: Forbidden assets
+heist.minimum_required_rating: Minimum required rating
+heist.visibility: Visibility
+heist.add: Add a heist
+heist.add_objective: Add an objective
+heist.delete.confirm: Are you sure you want to delete this heist?
 
 # User
 user.balance: Balance

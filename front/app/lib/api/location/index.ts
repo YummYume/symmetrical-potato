@@ -37,6 +37,12 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
               name
               preferedTactic
               startAt
+              visibility
+              establishment {
+                contractor {
+                  id
+                }
+              }
             }
           }
         }

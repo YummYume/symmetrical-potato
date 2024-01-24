@@ -1,7 +1,18 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
-import { CrewMemberStatusEnum, HeistPhaseEnum, type Query, type QueryHeistsArgs } from '~api/types';
+import { CrewMemberStatusEnum, HeistPhaseEnum, HeistVisibilityEnum } from '~api/types';
 import dayjs from '~utils/dayjs';
+
+import type {
+  QueryHeistsArgs,
+  Query,
+  CreateHeistInput,
+  Mutation,
+  MutationCreateHeistArgs,
+  MutationUpdateHeistArgs,
+  UpdateHeistInput,
+  QueryHeistArgs,
+} from '~api/types';
 
 /**
  * Query all heists.
@@ -26,6 +37,199 @@ export const getHeists = async (client: GraphQLClient) => {
       }
     }
   `);
+};
+
+/**
+ * Get a heist by id
+ */
+export const getHeist = async (client: GraphQLClient, id: string) => {
+  return client.request<Pick<Query, 'heist'>>(
+    gql`
+      query ($id: ID!) {
+        heist(id: $id) {
+          id
+          name
+          description
+          startAt
+          shouldEndAt
+          minimumPayout
+          maximumPayout
+          visibility
+          minimumRequiredRating
+          forbiddenAssets {
+            edges {
+              node {
+                id
+                name
+              }
+            }
+          }
+          forbiddenUsers {
+            edges {
+              node {
+                id
+                username
+              }
+            }
+          }
+          allowedEmployees {
+            edges {
+              node {
+                id
+                user {
+                  id
+                  username
+                }
+              }
+            }
+          }
+          establishment {
+            id
+            contractor {
+              id
+            }
+          }
+          preferedTactic
+          difficulty
+          visibility
+          objectives
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
+};
+
+/**
+ * Check if a heist is public
+ */
+export const heistIsPublic = async (client: GraphQLClient, id: string): Promise<boolean> => {
+  const { heist } = await client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
+    gql`
+      query ($id: ID!) {
+        heist(id: $id) {
+          visibility
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
+
+  if (!heist) {
+    return false;
+  }
+
+  return heist.visibility === HeistVisibilityEnum.Public;
+};
+
+type heistIsMadeByParams = {
+  id: string;
+  userId: string;
+};
+
+/**
+ * Check if a heist is made by a user
+ */
+export const heistIsMadeBy = async (
+  client: GraphQLClient,
+  { id, userId }: heistIsMadeByParams,
+): Promise<boolean> => {
+  if (!id || !userId) return false;
+
+  const { heist } = await client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
+    gql`
+      query ($id: ID!) {
+        heist(id: $id) {
+          establishment {
+            contractor {
+              id
+            }
+          }
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
+
+  if (!heist) {
+    return false;
+  }
+
+  return heist.establishment.contractor.id === userId;
+};
+
+/**
+ * Create a Heist
+ */
+export const createHeist = async (
+  client: GraphQLClient,
+  input: Omit<CreateHeistInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'createHeist'>, MutationCreateHeistArgs>(
+    gql`
+      mutation CreateHeist($input: createHeistInput!) {
+        createHeist(input: $input) {
+          heist {
+            id
+            name
+          }
+        }
+      }
+    `,
+    {
+      input,
+    },
+  );
+};
+
+/**
+ * Update a Heist
+ */
+export const updateHeist = async (
+  client: GraphQLClient,
+  input: Omit<UpdateHeistInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'updateHeist'>, MutationUpdateHeistArgs>(
+    gql`
+      mutation UpdateHeist($input: updateHeistInput!) {
+        updateHeist(input: $input) {
+          heist {
+            id
+            name
+          }
+        }
+      }
+    `,
+    {
+      input: { ...input, id: `/heists/${input.id}` },
+    },
+  );
+};
+
+/**
+ * Delete a Heist
+ */
+export const deleteHeist = async (client: GraphQLClient, id: string) => {
+  return client.request<Pick<Mutation, 'deleteHeist'>>(
+    gql`
+      mutation DeleteHeist($id: ID!) {
+        deleteHeist(input: { id: $id }) {
+          heist {
+            id
+          }
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
 };
 
 /**

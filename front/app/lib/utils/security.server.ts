@@ -2,18 +2,33 @@ import { redirect } from '@remix-run/node';
 
 import type { MeUser } from '~api/types';
 
+type RolesKey = 'ADMIN' | 'USER' | 'CONTRACTOR' | 'EMPLOYEE';
+
+type Roles = {
+  [key in RolesKey]: `ROLE_${key}`;
+};
+
+export type Role = Roles[keyof Roles];
+
+export const ROLES: Roles = {
+  ADMIN: 'ROLE_ADMIN',
+  USER: 'ROLE_USER',
+  CONTRACTOR: 'ROLE_CONTRACTOR',
+  EMPLOYEE: 'ROLE_EMPLOYEE',
+};
+
 /**
  * Throw a redirect if the user is not logged in. Will return the user if logged in.
  */
 export const denyAccessUnlessGranted = (
   user: MeUser | null,
-  roles: string | string[] = 'ROLE_USER',
+  roles: Role | Role[] = ROLES.USER,
   redirectTo = '/login',
   init: number | ResponseInit | undefined = undefined,
 ): MeUser | never => {
   const securityRoles = Array.isArray(roles) ? roles : [roles];
 
-  if (!user || !user.roles.some((role: string) => securityRoles.includes(role))) {
+  if (!user || !user.roles.some((role: Role) => securityRoles.includes(role))) {
     throw redirect(redirectTo, init);
   }
 
@@ -28,3 +43,12 @@ export const denyAdminAccessUnlessGranted = (
   redirectTo = '/dashboard',
   init: number | ResponseInit | undefined = undefined,
 ) => denyAccessUnlessGranted(user, 'ROLE_ADMIN', redirectTo, init);
+
+/**
+ * Check if the user has the given roles.
+ */
+export const hasRoles = (user: MeUser | null, roles: Role | Role[] = ROLES.USER): boolean => {
+  const securityRoles = Array.isArray(roles) ? roles : [roles];
+
+  return user && user.roles.some((role: Role) => securityRoles.includes(role));
+};

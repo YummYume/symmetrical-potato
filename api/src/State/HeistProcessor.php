@@ -55,20 +55,19 @@ final class HeistProcessor implements ProcessorInterface
             }
 
             $location = $this->locationRepository->findOneBy([
-                'latitude' => $heist->getLatitude(),
-                'longitude' => $heist->getLongitude(),
+                'placeId' => $heist->getPlaceId(),
             ]);
 
             if (null === $location) {
                 // Get informations from Google Maps for the location
-                $place = $this->googleMaps->getPlaceInfornationsByCoordinates($heist->getLatitude(), $heist->getLongitude());
+                $place = $this->googleMaps->getPlaceDetailsById($heist->getPlaceId());
 
                 $location = (new Location())
-                    ->setLatitude($place['coordinates']['latitude'])
-                    ->setLongitude($place['coordinates']['longitude'])
+                    ->setLatitude($place['location']['latitude'])
+                    ->setLongitude($place['location']['longitude'])
                     ->setName($place['displayName']['text'])
-                    ->setAddress($place['address'])
-                    ->setPlaceId($place['placeId']);
+                    ->setAddress($place['formattedAddress'])
+                    ->setPlaceId($place['id']);
 
                 $this->validator->validate($location, ['groups' => Location::WRITE]);
 
