@@ -1248,6 +1248,7 @@ export type CreateContractorRequestPayload = {
 export type CreateCrewMemberInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   heist: Scalars['String']['input'];
+  user: Scalars['String']['input'];
 };
 
 /** Creates a CrewMember. */

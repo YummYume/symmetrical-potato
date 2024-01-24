@@ -103,11 +103,7 @@ export default function PlaceId() {
               <Dialog.Description>{place.formattedAddress}</Dialog.Description>
             </Section>
             {isContractor && (
-              <Link
-                to={`/map/${placeId}/add`}
-                className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
-                unstyled
-              >
+              <Link to={`/map/${placeId}/add`} className="link link--green" unstyled>
                 {t('heist.add')}
               </Link>
             )}
@@ -135,11 +131,7 @@ export default function PlaceId() {
         </Section>
       </div>
       {(isContractor || isAdmin) && (
-        <Link
-          to={`/map/${placeId}/add`}
-          className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
-          unstyled
-        >
+        <Link to={`/map/${placeId}/add`} className="link link--green" unstyled>
           {t('heist.add')}
         </Link>
       )}
@@ -186,13 +178,20 @@ export default function PlaceId() {
                     {heist.node.name}
                   </Heading>
                 </Link>
+                <Link
+                  to={`/map/${placeId}/${getUriId(heist.node?.id)}/join`}
+                  className="link link--blue"
+                  unstyled
+                >
+                  {t('join')}
+                </Link>
                 {isAdmin ||
                   (isContractor && heist.node.establishment.contractor.id === user?.id && (
                     <div className="flex items-center">
                       {heist.node.visibility === HeistVisibilityEnum.Draft && (
                         <Link
                           to={`/map/${placeId}/${getUriId(heist.node?.id)}/edit`}
-                          className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
+                          className="link link--blue"
                           unstyled
                         >
                           {t('edit')}

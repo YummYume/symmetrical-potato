@@ -107,7 +107,7 @@ class CrewMember
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ, self::READ_PUBLIC])]
+    #[Groups([self::READ, self::READ_PUBLIC, self::JOIN])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'crewMembers')]

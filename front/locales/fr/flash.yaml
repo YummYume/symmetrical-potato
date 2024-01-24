@@ -29,6 +29,7 @@ establishment.deleted: Établissement supprimé avec succès.
 heist.created_successfully: Heist créé avec succès.
 heist.updated_successfully: Heist mis à jour avec succès.
 heist.deleted_successfully: Heist supprimé avec succès.
+heist.join_successfully: Vous avez rejoint le heist avec succès.
 
 # Account
 account.updated: Compte mis à jour avec succès.
