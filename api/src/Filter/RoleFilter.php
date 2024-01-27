@@ -134,13 +134,13 @@ final class RoleFilter extends AbstractFilter
          */
         $exclude = $value[RoleFilter::EXCLUDE_PARAMETER_NAME] ?? [];
 
-        if (null == $include || !in_array($include, User::ROLES)) {
+        if (null === $include || !\in_array($include, User::ROLES, true)) {
             return;
         }
 
-        if (count($exclude) > 0) {
+        if (\count($exclude) > 0) {
             foreach ($exclude as $role) {
-                if (!in_array($role, User::ROLES)) {
+                if (!\in_array($role, User::ROLES, true)) {
                     return;
                 }
             }
