@@ -17,6 +17,7 @@ import { Link } from '~/lib/components/Link';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
+import { FieldMultiSelect } from '~/lib/components/form/custom/FieldMultiSelect';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
@@ -72,21 +73,19 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'));
 
   try {
+    const { startAtTime, startAtDate, shouldEndAtDate, shouldEndAtTime, ...heistData } = data;
     await createHeist(context.client, {
-      name: data.name,
-      description: data.description,
-      minimumPayout: +data.minimumPayout,
-      maximumPayout: +data.maximumPayout,
-      minimumRequiredRating: +(data?.minimumRequiredRating ?? 0),
-      startAt: dayjs(`${data.startAtDate} ${data.startAtTime}`).toISOString(),
-      shouldEndAt: dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`).toISOString(),
-      difficulty: data.difficulty.value,
-      preferedTactic: data.preferedTactic.value,
+      ...heistData,
+      minimumPayout: +heistData.minimumPayout,
+      maximumPayout: +heistData.maximumPayout,
+      minimumRequiredRating: +(heistData?.minimumRequiredRating ?? 0),
+      startAt: dayjs(`${startAtDate} ${startAtTime}`).toISOString(),
+      shouldEndAt: dayjs(`${shouldEndAtDate} ${shouldEndAtTime}`).toISOString(),
       visibility: HeistVisibilityEnum.Draft,
-      establishment: data.establishment.value,
-      allowedEmployees: data.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
-      forbiddenAssets: data.forbiddenAssets?.map((asset) => asset.value),
-      objectives: data.objectives,
+      allowedEmployees: heistData.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
+      forbiddenAssets: heistData.forbiddenAssets?.map((asset) => asset.value),
+      forbiddenUsers: heistData.forbiddenUsers?.map((user) => user.value),
+      objectives: heistData.objectives ?? [],
       placeId: params.placeId,
     });
 
@@ -171,15 +170,9 @@ export default function Add() {
       startAtTime: startAt.format('HH:mm'),
       shouldEndAtDate: shouldEndAt.format('YYYY-MM-DD'),
       shouldEndAtTime: shouldEndAt.format('HH:mm'),
-      establishment: {
-        value: establishments.edges[0].node.id,
-      },
-      preferedTactic: {
-        value: HeistPreferedTacticEnum.Loud,
-      },
-      difficulty: {
-        value: HeistDifficultyEnum.Normal,
-      },
+      establishment: establishments.edges[0].node.id,
+      preferedTactic: HeistPreferedTacticEnum.Loud,
+      difficulty: HeistDifficultyEnum.Normal,
       minimumPayout: 100000,
       maximumPayout: 1000000,
       minimumRequiredRating: 0,
@@ -256,24 +249,21 @@ export default function Add() {
               label={t('establishment')}
               options={establishmentsFormatted}
             />
-            <FieldSelect
+            <FieldMultiSelect
               name="allowedEmployees"
               label={t('heist.allowed_employees')}
               options={allowedEmployeesOptions}
-              isMulti
               isDisabled={!watchEstablishment}
             />
-            <FieldSelect
+            <FieldMultiSelect
               name="forbiddenUsers"
               label={t('heist.forbidden_users')}
               options={usersFormatted}
-              isMulti
             />
-            <FieldSelect
+            <FieldMultiSelect
               name="forbiddenAssets"
               label={t('heist.forbidden_assets')}
               options={assetsFormatted}
-              isMulti
             />
             <FieldSelect
               name="preferedTactic"

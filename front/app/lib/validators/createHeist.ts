@@ -96,29 +96,23 @@ export const createHeistValidationSchema = z
       })
       .array()
       .optional(),
-    establishment: z.object({
-      value: z
-        .string({
-          required_error: 'heist.establishment.required',
-        })
-        .min(1, {
-          message: 'heist.establishment.required',
-        })
-        .includes('establishment', {
-          message: 'heist.establishment.invalid_type',
-        }),
-    }),
-    preferedTactic: z.object({
-      value: z.nativeEnum(HeistPreferedTacticEnum, {
-        required_error: 'heist.prefered_tactic.required',
-        invalid_type_error: 'heist.prefered_tactic.invalid_type',
+    establishment: z
+      .string({
+        required_error: 'heist.establishment.required',
+      })
+      .min(1, {
+        message: 'heist.establishment.required',
+      })
+      .includes('establishment', {
+        message: 'heist.establishment.invalid_type',
       }),
+    preferedTactic: z.nativeEnum(HeistPreferedTacticEnum, {
+      required_error: 'heist.prefered_tactic.required',
+      invalid_type_error: 'heist.prefered_tactic.invalid_type',
     }),
-    difficulty: z.object({
-      value: z.nativeEnum(HeistDifficultyEnum, {
-        required_error: 'heist.difficulty.required',
-        invalid_type_error: 'heist.difficulty.invalid_type',
-      }),
+    difficulty: z.nativeEnum(HeistDifficultyEnum, {
+      required_error: 'heist.difficulty.required',
+      invalid_type_error: 'heist.difficulty.invalid_type',
     }),
     objectives: z
       .object({

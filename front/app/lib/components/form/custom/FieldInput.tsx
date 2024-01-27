@@ -3,7 +3,6 @@ import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useRemixFormContext } from 'remix-hook-form';
 
-import type { Control } from 'react-hook-form';
 import type { Path } from 'react-hook-form';
 
 type FormData = Record<string, unknown>;
@@ -42,7 +41,7 @@ export function FieldInput<T extends FormData>({
       </Text>
       <Controller
         name={name}
-        control={control as Control<T>}
+        control={control}
         render={({ field, fieldState: { error }, formState: { defaultValues } }) => {
           return (
             <>
