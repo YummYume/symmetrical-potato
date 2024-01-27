@@ -280,19 +280,16 @@ export default function Edit() {
               name="allowedEmployees"
               label={t('heist.allowed_employees')}
               options={employeesFormatted}
-              isMulti
             />
             <FieldMultiSelect
               name="forbiddenUsers"
               label={t('heist.forbidden_users')}
               options={usersFormatted}
-              isMulti
             />
             <FieldMultiSelect
               name="forbiddenAssets"
               label={t('heist.forbidden_assets')}
               options={assetsFormatted}
-              isMulti
             />
             <FieldSelect
               name="preferedTactic"

@@ -4,73 +4,66 @@ import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import { useRemixFormContext } from 'remix-hook-form';
 
-import type { Control } from 'react-hook-form';
 import type { Path } from 'react-hook-form';
-import type { GroupBase, Props } from 'react-select';
 
 type FormData = Record<string, unknown>;
 
-type OptionFormat = { value: string; label: string };
+type Option = { value: string; label: string };
 
-export type FieldSelectProps<
-  T,
-  Option,
-  IsMulti extends boolean = false,
-  Group extends GroupBase<Option> = GroupBase<Option>,
-> = {
+export type FieldSelectProps<T> = {
   name: Path<T>;
   label: string;
   error?: string;
   options: Option[];
-  isMulti?: IsMulti;
+  isDisabled?: boolean;
   hideLabel?: boolean;
   containerClassName?: string;
   errorClassName?: string;
   children?: JSX.Element;
-} & Props<Option, IsMulti, Group>;
+};
 
-export function FieldMultiSelect<T extends FormData, B extends boolean = false>({
+export function FieldMultiSelect<T extends FormData>({
   name,
   label,
   options,
-  isMulti,
+  isDisabled = false,
   hideLabel = false,
   containerClassName = '',
   errorClassName = 'text-accent-6',
   children,
   ...rest
-}: FieldSelectProps<T, OptionFormat, B>) {
+}: FieldSelectProps<T>) {
   const { t } = useTranslation();
   const { control, register } = useRemixFormContext<T>();
-  const ariaLabelledBy = `${name}-label`;
   const ariaDescribedBy = `${name}-error`;
 
   return (
     <Grid className={containerClassName} gap="1">
-      <Text as="span" id={ariaLabelledBy} className={hideLabel ? 'sr-only' : ''}>
+      <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
         {label}
       </Text>
       <Controller
         name={name}
-        control={control as Control<T>}
+        control={control}
         render={({ field, fieldState: { error } }) => {
-          // Get the default value from the options
-          const defaultValue = Array.isArray(field.value)
-            ? options?.filter((o) =>
-                (field.value as OptionFormat[]).find((v) => v.value === o.value),
-              )
-            : options?.find((o) => o.value === (field.value as OptionFormat).value);
+          let defaultValue: Option[] = [];
+          if (field.value && Array.isArray(field.value)) {
+            defaultValue = options.filter((o) =>
+              (field.value as Option[]).find((v) => v.value === o.value),
+            );
+          }
           return (
             <>
               <Select
                 {...register(name)}
                 {...rest}
                 id={field.name}
-                key={`field_select_key_${JSON.stringify(options)}`}
-                isMulti={isMulti}
+                key={`field_multi_select_key_${JSON.stringify(options)}`}
+                isMulti={true}
                 options={options}
                 defaultValue={defaultValue}
                 onChange={(newValue) => newValue && field.onChange(newValue)}
+                isDisabled={isDisabled}
               />
               {error?.message && (
                 <Text as="p" id={ariaDescribedBy} className={errorClassName}>

@@ -32,12 +32,11 @@ export function FieldSelect<T extends FormData>({
 }: FieldSelectProps<T>) {
   const { t } = useTranslation();
   const { control, register } = useRemixFormContext<T>();
-  const ariaLabelledBy = `${name}-label`;
   const ariaDescribedBy = `${name}-error`;
 
   return (
     <Grid className={containerClassName} gap="1">
-      <Text as="span" id={ariaLabelledBy} className={hideLabel ? 'sr-only' : ''}>
+      <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
         {label}
       </Text>
       <Controller
@@ -48,7 +47,7 @@ export function FieldSelect<T extends FormData>({
             <select
               {...register(name)}
               {...rest}
-              aria-describedby={error ? ariaDescribedBy : ''}
+              aria-describedby={error ? ariaDescribedBy : undefined}
               disabled={field.disabled}
               onBlur={field.onBlur}
               onChange={field.onChange}
