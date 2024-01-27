@@ -5,6 +5,7 @@ namespace App\Filter;
 use ApiPlatform\Doctrine\Orm\Filter\AbstractFilter;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
+use App\Filter\Traits\URIFilterTrait;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\PropertyInfo\Type;
@@ -12,7 +13,7 @@ use Symfony\Component\Uid\Uuid;
 
 final class MatchUuidFilter extends AbstractFilter
 {
-    use UtilsFilterTrait;
+    use URIFilterTrait;
 
     /**
      * @return array<string, mixed>
@@ -20,16 +21,17 @@ final class MatchUuidFilter extends AbstractFilter
     public function getDescription(string $resourceClass): array
     {
         $description = [];
-
         $properties = $this->getProperties();
+
         if (null === $properties) {
             $properties = array_fill_keys($this->getClassMetadata($resourceClass)->getFieldNames(), null);
         }
 
-        foreach ($properties as $property => $unused) {
+        foreach (array_keys($properties) as $property) {
             if (!$this->isPropertyMapped($property, $resourceClass)) {
                 continue;
             }
+
             $propertyName = $this->normalizePropertyName($property);
             $description[$propertyName] = [
                 'property' => $propertyName,

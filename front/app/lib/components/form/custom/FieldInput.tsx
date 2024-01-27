@@ -51,7 +51,7 @@ export function FieldInput<T extends FormData>({
                   {...register(field.name)}
                   {...rest}
                   id={field.name}
-                  aria-describedby={error ? ariaDescribedBy : ''}
+                  aria-describedby={error ? ariaDescribedBy : undefined}
                 />
                 {rightSlot}
               </TextField.Root>

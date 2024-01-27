@@ -25,19 +25,19 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             security: 'is_granted("READ_PUBLIC", object.getUser())'
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ]
         ),
         new Mutation(
             name: 'update',
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::UPDATE],

@@ -30,19 +30,19 @@ use Symfony\Component\Uid\Uuid;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [self::READ, self::READ_PUBLIC],
+                'groups' => [self::READ, self::READ_PUBLIC, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             security: 'is_granted("READ", object)'
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ, self::READ_PUBLIC],
+                'groups' => [self::READ, self::READ_PUBLIC, self::BLAMEABLE, self::TIMESTAMPABLE],
             ]
         ),
         new Mutation(
             name: 'create',
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::JOIN],
@@ -51,10 +51,6 @@ use Symfony\Component\Uid\Uuid;
                 'groups' => [self::JOIN],
             ],
             securityPostDenormalize: 'is_granted("CREATE", object)'
-        ),
-        new Mutation(
-            name: 'update',
-            security: 'is_granted("UPDATE", object)'
         ),
         new DeleteMutation(
             name: 'delete',

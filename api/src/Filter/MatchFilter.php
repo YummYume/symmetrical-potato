@@ -17,16 +17,17 @@ final class MatchFilter extends AbstractFilter
     public function getDescription(string $resourceClass): array
     {
         $description = [];
-
         $properties = $this->getProperties();
+
         if (null === $properties) {
             $properties = array_fill_keys($this->getClassMetadata($resourceClass)->getFieldNames(), null);
         }
 
-        foreach ($properties as $property => $unused) {
+        foreach (array_keys($properties) as $property) {
             if (!$this->isPropertyMapped($property, $resourceClass)) {
                 continue;
             }
+
             $propertyName = $this->normalizePropertyName($property);
             $description[$propertyName] = [
                 'property' => $propertyName,
