@@ -463,14 +463,17 @@ final class AssetTest extends AbstractTestCase
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertJsonContains([
-            'data' => [
-                'user' => [
-                    'id' => $dallasId,
-                    'username' => UserFixtures::HEISTER_DALLAS,
-                    'balance' => UserFixtures::DATA[UserFixtures::HEISTER_DALLAS]['balance'] + AssetFixtures::DATA[AssetFixtures::GLOBAL_ASSET_MEDIC_BAG]['price'],
-                ],
-            ],
-        ]);
+
+        $data = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertArrayHasKey('data', $data);
+        $this->assertEquals($dallasId, $data['data']['user']['id']);
+        $this->assertEquals(UserFixtures::HEISTER_DALLAS, $data['data']['user']['username']);
+        // This is necessary because the heist asset fixtures are all random (except for one)
+        // This means that there is a slight chance that Dallas bought other medic bags for other heists and thus got more money back
+        $this->assertGreaterThanOrEqual(
+            UserFixtures::DATA[UserFixtures::HEISTER_DALLAS]['balance'] + AssetFixtures::DATA[AssetFixtures::GLOBAL_ASSET_MEDIC_BAG]['price'],
+            $data['data']['user']['balance']
+        );
     }
 }
