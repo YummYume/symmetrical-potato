@@ -96,23 +96,17 @@ export const updateHeistValidationSchema = z
       })
       .array()
       .optional(),
-    preferedTactic: z.object({
-      value: z.nativeEnum(HeistPreferedTacticEnum, {
-        required_error: 'heist.prefered_tactic.required',
-        invalid_type_error: 'heist.prefered_tactic.invalid_type',
-      }),
+    preferedTactic: z.nativeEnum(HeistPreferedTacticEnum, {
+      required_error: 'heist.prefered_tactic.required',
+      invalid_type_error: 'heist.prefered_tactic.invalid_type',
     }),
-    difficulty: z.object({
-      value: z.nativeEnum(HeistDifficultyEnum, {
-        required_error: 'heist.difficulty.required',
-        invalid_type_error: 'heist.difficulty.invalid_type',
-      }),
+    difficulty: z.nativeEnum(HeistDifficultyEnum, {
+      required_error: 'heist.difficulty.required',
+      invalid_type_error: 'heist.difficulty.invalid_type',
     }),
-    visibility: z.object({
-      value: z.nativeEnum(HeistVisibilityEnum, {
-        required_error: 'heist.visibility.required',
-        invalid_type_error: 'heist.visibility.invalid_type',
-      }),
+    visibility: z.nativeEnum(HeistVisibilityEnum, {
+      required_error: 'heist.visibility.required',
+      invalid_type_error: 'heist.visibility.invalid_type',
     }),
     objectives: z
       .object({

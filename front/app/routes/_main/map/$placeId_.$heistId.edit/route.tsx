@@ -16,6 +16,7 @@ import { Link } from '~/lib/components/Link';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
+import { FieldMultiSelect } from '~/lib/components/form/custom/FieldMultiSelect';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
@@ -122,22 +123,18 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'));
 
   try {
+    const { startAtTime, startAtDate, shouldEndAtDate, shouldEndAtTime, ...heistData } = data;
     await updateHeist(context.client, {
-      ...data,
+      ...heistData,
       id: params?.heistId,
-      minimumPayout: +data.minimumPayout,
-      maximumPayout: +data.maximumPayout,
-      minimumRequiredRating: +(data?.minimumRequiredRating ?? 0),
-      startAt: dayjs(`${data.startAtDate} ${data.startAtTime}`).toISOString(),
-      shouldEndAt: dayjs(`${data.shouldEndAtDate} ${data.shouldEndAtTime}`)
-        .utc(false)
-        .toISOString(),
-      difficulty: data.difficulty.value,
-      preferedTactic: data.preferedTactic.value,
-      visibility: data.visibility.value,
-      allowedEmployees: data.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
-      forbiddenUsers: data.forbiddenUsers?.map((user) => user.value),
-      forbiddenAssets: data.forbiddenAssets?.map((asset) => asset.value),
+      minimumPayout: +heistData.minimumPayout,
+      maximumPayout: +heistData.maximumPayout,
+      minimumRequiredRating: +(heistData?.minimumRequiredRating ?? 0),
+      startAt: dayjs(`${startAtDate} ${startAtTime}`).toISOString(),
+      shouldEndAt: dayjs(`${shouldEndAtDate} ${shouldEndAtTime}`).utc(false).toISOString(),
+      allowedEmployees: heistData.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
+      forbiddenUsers: heistData.forbiddenUsers?.map((user) => user.value),
+      forbiddenAssets: heistData.forbiddenAssets?.map((asset) => asset.value),
     });
 
     session.flash(FLASH_MESSAGE_KEY, {
@@ -218,12 +215,8 @@ export default function Edit() {
       startAtTime: dayjs(heist.startAt).utc(false).format('HH:mm'),
       shouldEndAtDate: dayjs(heist.shouldEndAt).utc(false).format('YYYY-MM-DD'),
       shouldEndAtTime: dayjs(heist.shouldEndAt).utc(false).format('HH:mm'),
-      preferedTactic: {
-        value: heist.preferedTactic,
-      },
-      difficulty: {
-        value: heist.difficulty,
-      },
+      preferedTactic: heist.preferedTactic,
+      difficulty: heist.difficulty,
       minimumPayout: heist.minimumPayout,
       maximumPayout: heist.maximumPayout,
       minimumRequiredRating: heist.minimumRequiredRating,
@@ -239,9 +232,7 @@ export default function Edit() {
         value: edge.node.id,
         label: edge.node.name,
       })),
-      visibility: {
-        value: heist.visibility,
-      },
+      visibility: heist.visibility,
       objectives: heist.objectives,
     },
   });
@@ -285,19 +276,19 @@ export default function Edit() {
               min={0}
               max={5}
             />
-            <FieldSelect
+            <FieldMultiSelect
               name="allowedEmployees"
               label={t('heist.allowed_employees')}
               options={employeesFormatted}
               isMulti
             />
-            <FieldSelect
+            <FieldMultiSelect
               name="forbiddenUsers"
               label={t('heist.forbidden_users')}
               options={usersFormatted}
               isMulti
             />
-            <FieldSelect
+            <FieldMultiSelect
               name="forbiddenAssets"
               label={t('heist.forbidden_assets')}
               options={assetsFormatted}

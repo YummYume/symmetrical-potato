@@ -1,5 +1,5 @@
 import { Grid, Text, TextArea } from '@radix-ui/themes';
-import { Controller, type Control } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useRemixFormContext } from 'remix-hook-form';
 
@@ -32,7 +32,7 @@ export function TextAreaInput<T extends FormData>({
     <Grid className={containerClassName} gap="1">
       <Controller
         name={name}
-        control={control as Control<T>}
+        control={control}
         render={({ field, fieldState: { error } }) => (
           <>
             <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
