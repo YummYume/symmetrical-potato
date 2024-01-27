@@ -57,9 +57,7 @@ jobs:
         run: composer install
 
       - name: Run linter
-        working-directory: ./api
-        run: ./vendor/bin/php-cs-fixer fix src -v --dry-run --config .php-cs-fixer.php
+        run: ./api/vendor/bin/php-cs-fixer fix api/src -v --dry-run --config api/.php-cs-fixer.php
 
       - name: Run PHPStan
-        working-directory: ./api
-        run: ./vendor/bin/phpstan analyse -c phpstan.dist.neon
+        run: ./api/vendor/bin/phpstan analyse -c api/phpstan.dist.neon
