@@ -36,22 +36,22 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [self::READ, self::READ_PUBLIC],
+                'groups' => [self::READ, self::READ_PUBLIC, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             security: 'is_granted("READ_PUBLIC", object)',
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ, self::READ_PUBLIC],
+                'groups' => [self::READ, self::READ_PUBLIC, self::BLAMEABLE, self::TIMESTAMPABLE],
             ]
         ),
         new Mutation(
             name: 'create',
+            normalizationContext: [
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
+            ],
             denormalizationContext: [
                 'groups' => [self::CREATE],
-            ],
-            normalizationContext: [
-                'groups' => [self::READ],
             ],
             validationContext: [
                 'groups' => [self::CREATE],
@@ -60,11 +60,11 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
         ),
         new Mutation(
             name: 'validate',
+            normalizationContext: [
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
+            ],
             denormalizationContext: [
                 'groups' => [self::VALIDATE],
-            ],
-            normalizationContext: [
-                'groups' => [self::READ],
             ],
             validationContext: [
                 'groups' => [self::VALIDATE],
@@ -73,11 +73,11 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
         ),
         new Mutation(
             name: 'update',
+            normalizationContext: [
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
+            ],
             denormalizationContext: [
                 'groups' => [self::UPDATE],
-            ],
-            normalizationContext: [
-                'groups' => [self::READ],
             ],
             validationContext: [
                 'groups' => [self::VALIDATE],

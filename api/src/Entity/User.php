@@ -14,8 +14,8 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\UserLocaleEnum;
 use App\Enum\UserStatusEnum;
-use App\Filter\UuidFilter;
 use App\Filter\RoleFilter;
+use App\Filter\UuidFilter;
 use App\Repository\UserRepository;
 use App\Resolver\UserQueryResolver;
 use App\State\UserProcessor;
@@ -539,7 +539,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setBalance(float $balance): static
     {
-        $this->balance = $balance;
+        $this->balance = min(max($balance, \PHP_INT_MIN), \PHP_INT_MAX);
 
         return $this;
     }

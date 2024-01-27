@@ -40,20 +40,20 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphQlOperations: [
         new Query(
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             security: 'is_granted("READ", object)',
         ),
         new QueryCollection(
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ]
         ),
         new Mutation(
             name: 'create',
             processor: HeistProcessor::class,
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::CREATE],
@@ -66,7 +66,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Mutation(
             name: 'update',
             normalizationContext: [
-                'groups' => [self::READ],
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
             denormalizationContext: [
                 'groups' => [self::UPDATE],

@@ -13,7 +13,6 @@ final class CrewMemberVoter extends Voter
 {
     public const READ = 'READ';
     public const CREATE = 'CREATE';
-    public const UPDATE = 'UPDATE';
     public const DELETE = 'DELETE';
 
     public function __construct(private readonly Security $security)
@@ -22,7 +21,7 @@ final class CrewMemberVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!\in_array($attribute, [self::READ, self::CREATE, self::UPDATE, self::DELETE], true)) {
+        if (!\in_array($attribute, [self::READ, self::CREATE, self::DELETE], true)) {
             return false;
         }
 
@@ -47,7 +46,6 @@ final class CrewMemberVoter extends Voter
         return match ($attribute) {
             self::READ => $this->canRead(),
             self::CREATE => $this->canCreate($crewMember),
-            self::UPDATE => $this->canUpdate(),
             self::DELETE => $this->canDelete($crewMember, $user),
             default => throw new \LogicException('This code should not be reached!')
         };
@@ -62,12 +60,6 @@ final class CrewMemberVoter extends Voter
     private function canCreate(CrewMember $crewMember): bool
     {
         return $this->security->isGranted(User::ROLE_HEISTER) && HeistPhaseEnum::Planning === $crewMember->getHeist()->getPhase();
-    }
-
-    private function canUpdate(): bool
-    {
-        // TODO
-        return true;
     }
 
     private function canDelete(CrewMember $crewMember, User $user): bool
