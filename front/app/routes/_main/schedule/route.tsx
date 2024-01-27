@@ -1,6 +1,9 @@
-import { Container } from '@radix-ui/themes';
+import * as Tooltip from '@radix-ui/react-tooltip';
+import { Card, Container } from '@radix-ui/themes';
+import { useContext } from 'react';
 
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
+import { ThemeContext } from '~lib/context/Theme';
 
 import type { LoaderFunctionArgs } from '@remix-run/node';
 
@@ -43,40 +46,185 @@ export default function Schedule() {
       name: 'Monday',
       employees: [
         {
-          name: 'John Doe',
+          name: 'Michael Smith',
           hours: [
-            {
-              start: '8:00',
-              end: '12:00',
-            },
-            {
-              start: '13:00',
-              end: '17:00',
-            },
+            { start: '9:00', end: '12:00' },
+            { start: '13:00', end: '17:00' },
           ],
         },
         {
-          name: 'Jane Doe',
+          name: 'Emily Johnson',
           hours: [
-            {
-              start: '8:00',
-              end: '12:30',
-            },
-            {
-              start: '13:30',
-              end: '18:00',
-            },
+            { start: '8:30', end: '12:30' },
+            { start: '13:30', end: '16:30' },
+          ],
+        },
+        {
+          name: 'David Williams',
+          hours: [
+            { start: '10:00', end: '12:30' },
+            { start: '13:30', end: '18:00' },
           ],
         },
       ],
     },
-    { name: 'Tuesday' },
-    { name: 'Wednesday' },
-    { name: 'Thursday' },
-    { name: 'Friday' },
-    { name: 'Saturday' },
-    { name: 'Sunday' },
+    {
+      name: 'Tuesday',
+      employees: [
+        {
+          name: 'Michael Smith',
+          hours: [
+            { start: '9:00', end: '12:00' },
+            { start: '13:00', end: '17:00' },
+          ],
+        },
+        {
+          name: 'Emily Johnson',
+          hours: [
+            { start: '8:00', end: '12:00' },
+            { start: '13:00', end: '16:00' },
+          ],
+        },
+        {
+          name: 'Sophia Brown',
+          hours: [
+            { start: '10:30', end: '12:30' },
+            { start: '13:30', end: '18:30' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Wednesday',
+      employees: [
+        {
+          name: 'Michael Smith',
+          hours: [
+            { start: '9:00', end: '12:00' },
+            { start: '13:00', end: '17:00' },
+          ],
+        },
+        {
+          name: 'Emily Johnson',
+          hours: [
+            { start: '8:30', end: '12:30' },
+            { start: '13:30', end: '16:30' },
+          ],
+        },
+        {
+          name: 'James Wilson',
+          hours: [
+            { start: '10:00', end: '12:30' },
+            { start: '13:30', end: '18:00' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Thursday',
+      employees: [
+        {
+          name: 'Michael Smith',
+          hours: [
+            { start: '9:00', end: '12:00' },
+            { start: '13:00', end: '17:00' },
+          ],
+        },
+        {
+          name: 'Emily Johnson',
+          hours: [
+            { start: '8:00', end: '12:00' },
+            { start: '13:00', end: '16:00' },
+          ],
+        },
+        {
+          name: 'Olivia Taylor',
+          hours: [
+            { start: '10:30', end: '12:30' },
+            { start: '13:30', end: '18:30' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Friday',
+      employees: [
+        {
+          name: 'Michael Smith',
+          hours: [
+            { start: '9:00', end: '12:00' },
+            { start: '13:00', end: '17:00' },
+          ],
+        },
+        {
+          name: 'Emily Johnson',
+          hours: [
+            { start: '8:30', end: '12:30' },
+            { start: '13:30', end: '16:30' },
+          ],
+        },
+        {
+          name: 'Daniel Martinez',
+          hours: [
+            { start: '10:00', end: '12:30' },
+            { start: '13:30', end: '18:00' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Saturday',
+      employees: [
+        {
+          name: 'Sophia Brown',
+          hours: [
+            { start: '9:00', end: '14:00' },
+            { start: '14:30', end: '18:00' },
+          ],
+        },
+        {
+          name: 'James Wilson',
+          hours: [
+            { start: '8:30', end: '13:30' },
+            { start: '14:00', end: '17:30' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Sunday',
+      employees: [
+        {
+          name: 'Olivia Taylor',
+          hours: [
+            { start: '10:00', end: '15:00' },
+            { start: '15:30', end: '18:00' },
+          ],
+        },
+        {
+          name: 'Daniel Martinez',
+          hours: [
+            { start: '11:00', end: '16:00' },
+            { start: '16:30', end: '19:30' },
+          ],
+        },
+      ],
+    },
   ];
+
+  const theme = useContext(ThemeContext);
+
+  const randomColor = () => {
+    const randomNumber = Math.floor(Math.random() * 360) + 1;
+
+    return `oklch(66.6% 0.15 ${randomNumber} / 0.75)`;
+  };
+
+  const stringToMinutes = (time: string) => {
+    const [hours, minutes] = time.split(':');
+
+    return +hours * 60 + +minutes;
+  };
 
   return (
     <main className="py-10">
@@ -100,14 +248,47 @@ export default function Schedule() {
                 style={{ gridTemplateColumns: `repeat(${employees?.length}, 1fr` }}
               >
                 {/* Sub columns */}
-                {employees?.map(({ hours, name }) => (
-                  <div className="grid grid-rows-[repeat(calc(24*60),1fr)]" key={name}>
-                    {/* Employee hours */}
-                    {hours.map(({ end, start }, i) => (
-                      <div className="grid grid-rows-subgrid bg-red-5" key={i}></div>
-                    ))}
-                  </div>
-                ))}
+                {employees?.map(({ hours, name }) => {
+                  const customStyle: {
+                    [key: string]: string;
+                  } = {
+                    '--color': randomColor(),
+                  };
+
+                  return (
+                    <div
+                      className="grid grid-rows-[repeat(calc(24*60),1fr)]"
+                      key={name}
+                      style={customStyle}
+                    >
+                      {/* Employee hours */}
+                      {hours.map(({ end, start }, i) => (
+                        <Tooltip.Provider key={i}>
+                          <Tooltip.Root>
+                            <Tooltip.Trigger asChild>
+                              <div
+                                className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
+                                style={{
+                                  gridRowEnd: stringToMinutes(end),
+                                  gridRowStart: stringToMinutes(start),
+                                }}
+                              ></div>
+                            </Tooltip.Trigger>
+                            <Tooltip.Portal container={theme?.current}>
+                              <Tooltip.Content sideOffset={5}>
+                                <Card>
+                                  <p>{name}</p>
+                                  <p>Start : {start}</p>
+                                  <p>End : {end}</p>
+                                </Card>
+                              </Tooltip.Content>
+                            </Tooltip.Portal>
+                          </Tooltip.Root>
+                        </Tooltip.Provider>
+                      ))}
+                    </div>
+                  );
+                })}
               </div>
             ))}
           </div>
