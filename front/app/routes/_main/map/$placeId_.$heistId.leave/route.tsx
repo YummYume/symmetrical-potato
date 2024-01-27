@@ -1,7 +1,7 @@
 import { redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 
-import { createCrewMember, getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
+import { deleteCrewMember, getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
@@ -26,9 +26,9 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
   const t = await i18next.getFixedT(request, ['flash', 'validators']);
   const session = await getSession(request.headers.get('Cookie'));
 
-  if (crewMember) {
+  if (!crewMember) {
     session.flash(FLASH_MESSAGE_KEY, {
-      content: t('heist.already_in_crew', { ns: 'flash' }),
+      content: t('heist.not_in_crew', { ns: 'flash' }),
       type: 'error',
     } as FlashMessage);
 
@@ -42,10 +42,10 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
   let errorMessage: string | null = null;
 
   try {
-    await createCrewMember(context.client, { heist: params.heistId, user: user.id });
+    await deleteCrewMember(context.client, crewMember.id);
 
     session.flash(FLASH_MESSAGE_KEY, {
-      content: t('heist.join_successfully', { ns: 'flash' }),
+      content: t('heist.leave_successfully', { ns: 'flash' }),
       type: 'success',
     } as FlashMessage);
 

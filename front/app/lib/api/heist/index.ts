@@ -40,6 +40,29 @@ export const getHeists = async (client: GraphQLClient) => {
 };
 
 /**
+ * Query all heists where the user is a crew member.
+ */
+export const getHeistsByCrewMember = async (client: GraphQLClient, userId: string) => {
+  return client.request<Pick<Query, 'heists'>>(
+    gql`
+      query ($userId: String!) {
+        heists(crewMembers__user__id: $userId) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+    `,
+    {
+      userId,
+    },
+  );
+};
+
+/**
  * Get a heist by id
  */
 export const getHeist = async (client: GraphQLClient, id: string) => {

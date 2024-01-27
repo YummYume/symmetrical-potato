@@ -1,12 +1,38 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
-import type {
-  CreateCrewMemberInput,
-  DeleteCrewMemberInput,
-  Mutation,
-  UpdateCrewMemberInput,
-} from '~api/types';
+import type { CreateCrewMemberInput, Mutation, Query } from '~api/types';
 
+/**
+ * Query all crew members.
+ */
+export const getCrewMemberByUserAndHeist = async (
+  client: GraphQLClient,
+  input: { heist: string; user: string },
+) => {
+  const { crewMembers } = await client.request<Pick<Query, 'crewMembers'>>(
+    gql`
+      query ($heist: String, $user: String) {
+        crewMembers(heist__id: $heist, user__id: $user) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    `,
+    {
+      heist: `/heists/${input.heist}`,
+      user: input.user,
+    },
+  );
+
+  return crewMembers.edges.length === 1 ? crewMembers.edges[0].node : null;
+};
+
+/**
+ * Create a crew member.
+ */
 export const createCrewMember = async (
   client: GraphQLClient,
   input: Omit<CreateCrewMemberInput, 'clientMutationId'>,
@@ -15,7 +41,9 @@ export const createCrewMember = async (
     gql`
       mutation CreateCrewMember($heist: String!, $user: String!) {
         createCrewMember(input: { heist: $heist, user: $user }) {
-          id
+          crewMember {
+            id
+          }
         }
       }
     `,
@@ -26,14 +54,22 @@ export const createCrewMember = async (
   );
 };
 
-export const isAlreadyIn = async (client: GraphQLClient) => {};
-
-export const deleteCrewMember = async (
-  client: GraphQLClient,
-  input: Omit<DeleteCrewMemberInput, 'clientMutationId'>,
-) => {};
-
-export const updateCrewMember = async (
-  client: GraphQLClient,
-  input: Omit<UpdateCrewMemberInput, 'clientMutationId'>,
-) => {};
+/**
+ * Delete a crew member.
+ */
+export const deleteCrewMember = async (client: GraphQLClient, crewMemberId: string) => {
+  return client.request<Pick<Mutation, 'deleteCrewMember'>>(
+    gql`
+      mutation DeleteCrewMember($id: ID!) {
+        deleteCrewMember(input: { id: $id }) {
+          crewMember {
+            id
+          }
+        }
+      }
+    `,
+    {
+      id: crewMemberId,
+    },
+  );
+};

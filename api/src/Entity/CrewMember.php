@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
@@ -11,6 +12,7 @@ use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\CrewMemberStatusEnum;
+use App\Filter\UuidFilter;
 use App\Repository\CrewMemberRepository;
 use App\State\CrewMemberProcessor;
 use App\Validator\CanJoin;
@@ -58,6 +60,7 @@ use Symfony\Component\Uid\Uuid;
         ),
     ]
 )]
+#[ApiFilter(UuidFilter::class, properties: ['user.id', 'heist.id'])]
 #[CanJoin(groups: [self::JOIN])]
 class CrewMember
 {
@@ -67,6 +70,7 @@ class CrewMember
     public const READ = 'crew_member:read';
     public const READ_PUBLIC = 'crew_member:read:public';
     public const JOIN = 'crew_member:join';
+    public const LEAVE = 'crew_member:leave';
 
     public const REVIVE_COST = 5_000_000;
     public const MAX_RATING = 5;

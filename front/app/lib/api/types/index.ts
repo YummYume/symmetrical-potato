@@ -349,7 +349,9 @@ export type HeistCrewMembersArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  heist__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  user__id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type HeistForbiddenAssetsArgs = {
@@ -881,7 +883,9 @@ export type QueryCrewMembersArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  heist__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  user__id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type QueryEmployeeArgs = {

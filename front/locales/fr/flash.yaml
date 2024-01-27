@@ -30,6 +30,9 @@ heist.created_successfully: Heist créé avec succès.
 heist.updated_successfully: Heist mis à jour avec succès.
 heist.deleted_successfully: Heist supprimé avec succès.
 heist.join_successfully: Vous avez rejoint le heist avec succès.
+heist.leave_successfully: Vous avez quitté le heist avec succès.
+heist.already_in_crew: Vous êtes déjà dans l'équipe de ce heist.
+heist.not_in_crew: Vous n'êtes pas dans l'équipe de ce heist.
 
 # Account
 account.updated: Compte mis à jour avec succès.
