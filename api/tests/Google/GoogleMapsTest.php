@@ -20,7 +20,7 @@ final class GoogleMapsTest extends AbstractTestCase
 
     private GoogleMaps $googleMaps;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

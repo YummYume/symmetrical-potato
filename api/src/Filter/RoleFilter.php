@@ -125,7 +125,7 @@ final class RoleFilter extends AbstractFilter
         }
 
         /**
-         * @var string $include
+         * @var string|null $include
          */
         $include = $value[RoleFilter::INCLUDE_PARAMETER_NAME];
 

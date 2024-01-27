@@ -58,8 +58,8 @@ jobs:
 
       - name: Run linter
         working-directory: ./api
-        run: ./vendor/bin/php-cs-fixer fix src -v --dry-run
+        run: ./vendor/bin/php-cs-fixer fix src -v --dry-run --config .php-cs-fixer.php
 
       - name: Run PHPStan
         working-directory: ./api
-        run: ./vendor/bin/phpstan analyse
+        run: ./vendor/bin/phpstan analyse -c phpstan.dist.neon
