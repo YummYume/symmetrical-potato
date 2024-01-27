@@ -278,8 +278,9 @@ export default function Schedule() {
                               <Tooltip.Content sideOffset={5}>
                                 <Card>
                                   <p>{name}</p>
-                                  <p>Start : {start}</p>
-                                  <p>End : {end}</p>
+                                  <p>
+                                    {start} - {end}
+                                  </p>
                                 </Card>
                               </Tooltip.Content>
                             </Tooltip.Portal>
