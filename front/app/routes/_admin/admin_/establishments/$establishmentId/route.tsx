@@ -118,7 +118,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
 export type Action = typeof action;
 
-export default function User() {
+export default function EditEstablishment() {
   const { establishment } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const methods = useRemixForm<AdminEstablishmentFormData>({

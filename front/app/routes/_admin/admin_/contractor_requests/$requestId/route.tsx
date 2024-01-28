@@ -119,7 +119,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
 export type Action = typeof action;
 
-export default function User() {
+export default function EditContractorRequest() {
   const { contractorRequest } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const methods = useRemixForm<AdminContractorRequestFormData>({

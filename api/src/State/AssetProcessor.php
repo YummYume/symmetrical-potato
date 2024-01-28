@@ -11,13 +11,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
- * @implements ProcessorInterface<Asset>
+ * @implements ProcessorInterface<Asset, Asset>
  */
 final class AssetProcessor implements ProcessorInterface
 {
     /**
-     * @param ProcessorInterface<Asset> $persistProcessor
-     * @param ProcessorInterface<Asset> $removeProcessor
+     * @param ProcessorInterface<Asset, Asset> $persistProcessor
+     * @param ProcessorInterface<Asset, Asset> $removeProcessor
      */
     public function __construct(
         #[Autowire('@api_platform.doctrine.orm.state.persist_processor')] private readonly ProcessorInterface $persistProcessor,

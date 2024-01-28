@@ -8,13 +8,16 @@ import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
 import { getAsset, updateAsset } from '~/lib/api/asset';
+import { AssetTypeEnum } from '~/lib/api/types';
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { Link } from '~/lib/components/Link';
 import { AssetTypeBadge } from '~/lib/components/asset/AssetTypeBadge';
 import { CheckboxInput } from '~/lib/components/form/custom/CheckboxInput';
+import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
+import { formatEnums } from '~/lib/utils/tools';
 import { adminAssetResolver } from '~/lib/validators/admin/asset';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { FormAlertDialog } from '~components/dialog/FormAlertDialog';
@@ -118,9 +121,10 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
 export type Action = typeof action;
 
-export default function User() {
+export default function EditAsset() {
   const { asset } = useLoaderData<Loader>();
   const { t } = useTranslation();
+  const assetTypes = formatEnums(Object.values(AssetTypeEnum), 'asset.type');
   const methods = useRemixForm<AdminAssetFormData>({
     mode: 'onSubmit',
     resolver: adminAssetResolver,
@@ -129,6 +133,7 @@ export default function User() {
     },
     defaultValues: {
       name: asset.name,
+      type: asset.type,
       price: asset.price,
       description: asset.description,
       maxQuantity: asset.maxQuantity,
@@ -164,6 +169,7 @@ export default function User() {
               id="asset-form"
             >
               <FieldInput type="text" name="name" label={t('asset.name')} required />
+              <FieldSelect name="type" label={t('asset.type')} options={assetTypes} required />
               <FieldInput
                 type="number"
                 name="price"

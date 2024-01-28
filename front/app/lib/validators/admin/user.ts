@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-// import { UserLocaleEnum } from '~/lib/api/types';
+import { UserLocaleEnum } from '~/lib/api/types';
 import { zu } from '~utils/zod';
 
 export const adminUserValidationSchema = z.object({
@@ -21,10 +21,10 @@ export const adminUserValidationSchema = z.object({
       .safe({ message: 'number.not_safe' }),
   ),
   description: z.string({ coerce: true }).max(1000, { message: 'user.description.max' }).optional(),
-  // locale: z.nativeEnum(UserLocaleEnum, {
-  //   required_error: 'user.locale.required',
-  //   invalid_type_error: 'user.locale.invalid',
-  // }),
+  locale: z.nativeEnum(UserLocaleEnum, {
+    required_error: 'user.locale.required',
+    invalid_type_error: 'user.locale.invalid',
+  }),
 });
 
 export const adminUserResolver = zodResolver(adminUserValidationSchema);

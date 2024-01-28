@@ -90,6 +90,10 @@ user.no_description: Aucune description disponible.
 user.role.heister: Braqueur
 user.role.employee: Employé
 user.role.contractor: Contractant
+user.locale: Langue préférée
+user.locale.help: Cette langue sera utilisée lors de l'envoi d'e-mails.
+user.locale.en: Anglais
+user.locale.fr: Français
 
 # Asset
 asset.name: Nom

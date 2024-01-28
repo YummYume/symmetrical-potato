@@ -114,7 +114,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
 export type Action = typeof action;
 
-export default function User() {
+export default function EditLocation() {
   const { location } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const methods = useRemixForm<AdminLocationFormData>({

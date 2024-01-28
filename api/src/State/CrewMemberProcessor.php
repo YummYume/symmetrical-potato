@@ -13,13 +13,13 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
- * @implements ProcessorInterface<CrewMember>
+ * @implements ProcessorInterface<CrewMember, CrewMember>
  */
 final class CrewMemberProcessor implements ProcessorInterface
 {
     /**
-     * @param ProcessorInterface<CrewMember> $persistProcessor
-     * @param ProcessorInterface<CrewMember> $removeProcessor
+     * @param ProcessorInterface<CrewMember, CrewMember> $persistProcessor
+     * @param ProcessorInterface<CrewMember, CrewMember> $removeProcessor
      */
     public function __construct(
         #[Autowire('@api_platform.doctrine.orm.state.persist_processor')] private readonly ProcessorInterface $persistProcessor,

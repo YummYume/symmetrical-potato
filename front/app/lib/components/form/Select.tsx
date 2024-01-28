@@ -1,19 +1,19 @@
-import { Grid, Select, Text } from '@radix-ui/themes';
+import { Grid, Select as RadixSelect, Text } from '@radix-ui/themes';
 
-export type FieldSelectProps = {
+export type SelectProps = {
   name: string;
   label: string;
   error?: string;
   hideLabel?: boolean;
   containerClassName?: string;
   errorClassName?: string;
-  triggerProps?: React.ComponentProps<typeof Select.Trigger> &
+  triggerProps?: React.ComponentProps<typeof RadixSelect.Trigger> &
     React.RefAttributes<HTMLButtonElement>;
   children?: JSX.Element;
-} & React.ComponentProps<typeof Select.Root> &
+} & React.ComponentProps<typeof RadixSelect.Root> &
   React.RefAttributes<HTMLDivElement>;
 
-export const FieldSelect = ({
+export const Select = ({
   name,
   label,
   error,
@@ -23,7 +23,7 @@ export const FieldSelect = ({
   triggerProps = {},
   children,
   ...rest
-}: FieldSelectProps) => {
+}: SelectProps) => {
   const ariaLabelledBy = `${name}-label`;
   const ariaDescribedBy = `${name}-error`;
 
@@ -32,14 +32,14 @@ export const FieldSelect = ({
       <Text as="span" id={ariaLabelledBy} className={hideLabel ? 'sr-only' : ''}>
         {label}
       </Text>
-      <Select.Root name={name} {...rest}>
-        <Select.Trigger
+      <RadixSelect.Root name={name} {...rest}>
+        <RadixSelect.Trigger
           aria-labelledby={ariaLabelledBy}
           aria-describedby={error ? ariaDescribedBy : undefined}
           {...triggerProps}
         />
         {children}
-      </Select.Root>
+      </RadixSelect.Root>
       {error && (
         <Text as="p" id={ariaDescribedBy} className={errorClassName}>
           {error}
