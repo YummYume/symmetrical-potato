@@ -19,6 +19,8 @@ import {
   UserStatusEnum,
 } from '~api/types';
 
+import type { MutationRefreshTokenArgs, MutationRevokeTokenArgs } from '~api/types';
+
 /**
  * Query the currently logged in user.
  */
@@ -37,16 +39,14 @@ export const getCurrentUser = async (client: GraphQLClient) => {
   `);
 };
 
-type RegisterInput = Required<Omit<CreateUserInput, 'clientMutationId'>>;
-
 /**
  * Create a registration demand.
  */
 export const createRegistrationDemand = async (
   client: GraphQLClient,
-  registerInput: RegisterInput,
+  registerInput: Required<Omit<CreateUserInput, 'clientMutationId'>>,
 ) => {
-  return client.request<Mutation, MutationCreateUserArgs>(
+  return client.request<Pick<Mutation, 'createUser'>, MutationCreateUserArgs>(
     gql`
       mutation CreateUser($input: createUserInput!) {
         createUser(input: $input) {
@@ -62,25 +62,75 @@ export const createRegistrationDemand = async (
   );
 };
 
-type LoginInput = Omit<RequestTokenInput, 'clientMutationId'>;
-
 /**
  * Request an auth token.
  */
-export const requestAuthToken = async (client: GraphQLClient, loginInput: LoginInput) => {
-  return client.request<Mutation, MutationRequestTokenArgs>(
+export const requestAuthToken = async (
+  client: GraphQLClient,
+  loginInput: Omit<RequestTokenInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'requestToken'>, MutationRequestTokenArgs>(
     gql`
       mutation RequestToken($input: requestTokenInput!) {
         requestToken(input: $input) {
           token {
             token
             tokenTtl
+            refreshToken
+            refreshTokenTtl
           }
         }
       }
     `,
     {
       input: loginInput,
+    },
+  );
+};
+
+/**
+ * Refresh an auth token.
+ */
+export const refreshAuthToken = async (client: GraphQLClient, refreshToken: string) => {
+  return client.request<Pick<Mutation, 'refreshToken'>, MutationRefreshTokenArgs>(
+    gql`
+      mutation RefreshToken($input: refreshTokenInput!) {
+        refreshToken(input: $input) {
+          token {
+            token
+            tokenTtl
+            refreshToken
+            refreshTokenTtl
+          }
+        }
+      }
+    `,
+    {
+      input: {
+        refreshToken,
+      },
+    },
+  );
+};
+
+/**
+ * Revoke a refresh token.
+ */
+export const revokeRefreshToken = async (client: GraphQLClient, refreshToken: string) => {
+  return client.request<Pick<Mutation, 'revokeToken'>, MutationRevokeTokenArgs>(
+    gql`
+      mutation RevokeToken($input: revokeTokenInput!) {
+        revokeToken(input: $input) {
+          token {
+            id
+          }
+        }
+      }
+    `,
+    {
+      input: {
+        refreshToken,
+      },
     },
   );
 };

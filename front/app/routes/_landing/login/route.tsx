@@ -6,7 +6,7 @@ import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hoo
 
 import { Link } from '~/lib/components/Link';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
-import { bearerCookie } from '~/lib/cookies.server';
+import { bearerCookie, refreshTokenCookie } from '~/lib/cookies.server';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { FLASH_MESSAGE_KEY } from '~/root';
@@ -62,19 +62,30 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   try {
     const response = await requestAuthToken(context.client, { username, password });
+    const token = response.requestToken.token;
 
-    if (response?.requestToken?.token) {
-      const token = response.requestToken.token;
-      let cookieOptions: CookieSerializeOptions = {};
+    if (token) {
+      let jwtCookieOptions: CookieSerializeOptions = {};
+      let refreshTokenCookieOptions: CookieSerializeOptions = {};
 
       if (token.tokenTtl) {
-        cookieOptions['maxAge'] = token.tokenTtl;
+        jwtCookieOptions['maxAge'] = token.tokenTtl;
       }
 
+      if (token.refreshTokenTtl) {
+        refreshTokenCookieOptions['maxAge'] = token.refreshTokenTtl;
+      }
+
+      const headers = new Headers();
+
+      headers.append('Set-Cookie', await bearerCookie.serialize(token.token, jwtCookieOptions));
+      headers.append(
+        'Set-Cookie',
+        await refreshTokenCookie.serialize(token.refreshToken, refreshTokenCookieOptions),
+      );
+
       return redirect('/dashboard', {
-        headers: {
-          'Set-Cookie': await bearerCookie.serialize(token.token, cookieOptions),
-        },
+        headers,
       });
     }
 
