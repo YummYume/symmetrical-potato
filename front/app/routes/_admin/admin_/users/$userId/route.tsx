@@ -8,13 +8,15 @@ import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
+import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { UserMainRoleBadge } from '~/lib/components/user/UserMainRoleBadge';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
+import { formatEnums } from '~/lib/utils/tools';
 import { adminUserResolver } from '~/lib/validators/admin/user';
 import { FLASH_MESSAGE_KEY } from '~/root';
-import { UserStatusEnum } from '~api/types';
+import { UserLocaleEnum, UserStatusEnum } from '~api/types';
 import { getUser, updateUser, updateUserProfile } from '~api/user';
 import { FormAlertDialog } from '~components/dialog/FormAlertDialog';
 import { SubmitButton } from '~components/form/SubmitButton';
@@ -126,9 +128,10 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
 export type Action = typeof action;
 
-export default function User() {
+export default function EditUser() {
   const { user, currentUser } = useLoaderData<Loader>();
   const { t } = useTranslation();
+  const userLocales = formatEnums(Object.values(UserLocaleEnum), 'user.locale');
   const methods = useRemixForm<AdminUserFormData>({
     disabled: user.status !== UserStatusEnum.Verified,
     mode: 'onSubmit',
@@ -139,6 +142,7 @@ export default function User() {
     defaultValues: {
       email: user.email,
       balance: user.balance,
+      locale: user.locale,
       description: user.profile.description ?? '',
     },
   });
@@ -173,6 +177,13 @@ export default function User() {
             >
               <FieldInput type="email" name="email" label={t('email')} required />
               <FieldInput type="number" name="balance" label={t('user.balance')} required />
+              <FieldSelect
+                name="locale"
+                label={t('user.locale')}
+                options={userLocales}
+                help={t('user.locale.help')}
+                required
+              />
               <Flex direction="column" gap="2">
                 <Text>{t('user.reason')}</Text>
                 <Blockquote>{user.reason}</Blockquote>

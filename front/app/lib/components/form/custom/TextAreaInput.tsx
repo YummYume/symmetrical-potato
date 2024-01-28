@@ -1,56 +1,73 @@
-import { Grid, Text, TextArea } from '@radix-ui/themes';
+import { Grid, TextArea } from '@radix-ui/themes';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useRemixFormContext } from 'remix-hook-form';
 
-import type { Path } from 'react-hook-form';
+import { Error } from '~/lib/components/form/fields/Error';
+import { Help } from '~/lib/components/form/fields/Help';
+import { Label } from '~/lib/components/form/fields/Label';
 
-type FormData = Record<string, unknown>;
+import type { DefaultFieldProps } from '~/lib/types/form';
 
-export type TextAreaInputProps<T extends FormData> = {
-  name: Path<T>;
-  label: string;
-  hideLabel?: boolean;
-  containerClassName?: string;
-  errorClassName?: string;
-} & React.ComponentProps<typeof TextArea>;
+export type TextAreaInputProps<T extends Record<string, unknown>> = DefaultFieldProps<T> &
+  React.ComponentProps<typeof TextArea>;
 
-export function TextAreaInput<T extends FormData>({
+export function TextAreaInput<T extends Record<string, unknown>>({
   name,
   label,
+  id,
   hideLabel = false,
+  disabled = undefined,
+  required = undefined,
+  help = undefined,
   containerClassName = '',
-  errorClassName = 'text-accent-6',
+  labelRender: LabelField = Label,
+  helpRender: HelpField = Help,
+  errorRender: ErrorField = Error,
   ...rest
 }: TextAreaInputProps<T>) {
   const { t } = useTranslation();
   const { register, control } = useRemixFormContext<T>();
 
-  const ariaDescribedBy = `${name}-error`;
-
   return (
     <Grid className={containerClassName} gap="1">
       <Controller
         name={name}
+        disabled={disabled}
         control={control}
-        render={({ field, fieldState: { error } }) => (
-          <>
-            <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
-              {label}
-            </Text>
-            <TextArea
-              {...register(field.name)}
-              {...rest}
-              id={field.name}
-              aria-describedby={error ? ariaDescribedBy : undefined}
-            />
-            {error?.message && (
-              <Text as="p" id={ariaDescribedBy} className={errorClassName}>
-                {t(error?.message, { ns: 'validators' })}
-              </Text>
-            )}
-          </>
-        )}
+        render={({ field, fieldState: { error } }) => {
+          const fieldId = id ?? field.name;
+          const helpId = help ? `${fieldId}-help` : undefined;
+          const errorId = error?.message ? `${fieldId}-error` : undefined;
+          const defaultValue =
+            typeof field.value === 'string' || typeof field.value === 'number'
+              ? field.value
+              : undefined;
+
+          return (
+            <>
+              <LabelField htmlFor={fieldId} className={hideLabel ? 'sr-only' : undefined}>
+                {label}
+              </LabelField>
+              <TextArea
+                {...register(field.name)}
+                {...rest}
+                id={fieldId}
+                aria-describedby={helpId}
+                aria-errormessage={errorId}
+                aria-invalid={!!errorId}
+                defaultValue={defaultValue}
+                disabled={field.disabled}
+                required={required}
+                color={errorId ? 'crimson' : rest.color}
+              />
+              {help && <HelpField id={helpId}>{help}</HelpField>}
+              {error?.message && (
+                <ErrorField id={errorId}>{t(error.message, { ns: 'validators' })}</ErrorField>
+              )}
+            </>
+          );
+        }}
       />
     </Grid>
   );

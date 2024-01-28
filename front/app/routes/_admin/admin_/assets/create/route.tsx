@@ -8,10 +8,12 @@ import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hoo
 import { createAsset } from '~/lib/api/asset';
 import { AssetTypeEnum } from '~/lib/api/types';
 import { CheckboxInput } from '~/lib/components/form/custom/CheckboxInput';
+import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getUriId } from '~/lib/utils/path';
+import { formatEnums } from '~/lib/utils/tools';
 import { adminAssetResolver } from '~/lib/validators/admin/asset';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { SubmitButton } from '~components/form/SubmitButton';
@@ -49,11 +51,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   let errorMessage: string | null = null;
 
   try {
-    const newAsset = await createAsset(context.client, {
-      // TODO remove this
-      type: AssetTypeEnum.Asset,
-      ...data,
-    });
+    const newAsset = await createAsset(context.client, data);
 
     session.flash(FLASH_MESSAGE_KEY, {
       content: t('asset.created', { ns: 'flash' }),
@@ -88,8 +86,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
 export type Action = typeof action;
 
-export default function User() {
+export default function CreateAsset() {
   const { t } = useTranslation();
+  const assetTypes = formatEnums(Object.values(AssetTypeEnum), 'asset.type');
   const methods = useRemixForm<AdminAssetFormData>({
     mode: 'onSubmit',
     resolver: adminAssetResolver,
@@ -115,6 +114,7 @@ export default function User() {
               id="asset-form"
             >
               <FieldInput type="text" name="name" label={t('asset.name')} required />
+              <FieldSelect name="type" label={t('asset.type')} options={assetTypes} required />
               <FieldInput
                 type="number"
                 name="price"

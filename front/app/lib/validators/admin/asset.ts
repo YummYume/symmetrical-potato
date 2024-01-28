@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-// import { AssetTypeEnum } from '~/lib/api/types';
+import { AssetTypeEnum } from '~/lib/api/types';
 import { zu } from '~utils/zod';
 
 export const adminAssetValidationSchema = z.object({
@@ -41,10 +41,10 @@ export const adminAssetValidationSchema = z.object({
       .safe({ message: 'number.not_safe' }),
   ),
   teamAsset: zu.boolean(z.boolean({ invalid_type_error: 'boolean.not_a_boolean' })),
-  // type: z.nativeEnum(AssetTypeEnum, {
-  //   required_error: 'asset.type.required',
-  //   invalid_type_error: 'asset.type.invalid',
-  // }),
+  type: z.nativeEnum(AssetTypeEnum, {
+    required_error: 'asset.type.required',
+    invalid_type_error: 'asset.type.invalid',
+  }),
 });
 
 export const adminAssetResolver = zodResolver(adminAssetValidationSchema);

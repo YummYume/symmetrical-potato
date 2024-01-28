@@ -1,7 +1,7 @@
-import { Select } from '@radix-ui/themes';
+import { Select as RadixSelect } from '@radix-ui/themes';
 import { useTranslation } from 'react-i18next';
 
-import { FieldSelect } from '~components/form/FieldSelect';
+import { Select } from '~components/form/Select';
 import { ALLOWED_LOCALES, getLocaleLabel } from '~utils/locale';
 
 import FlagFr from './icon/FlagFr';
@@ -16,7 +16,7 @@ export const Locale = ({ defaultValue, disabled }: { defaultValue: string; disab
   const { t } = useTranslation();
 
   return (
-    <FieldSelect
+    <Select
       name="locale"
       required
       label={t('change_locale')}
@@ -24,18 +24,18 @@ export const Locale = ({ defaultValue, disabled }: { defaultValue: string; disab
       defaultValue={defaultValue}
       disabled={disabled}
     >
-      <Select.Content>
+      <RadixSelect.Content>
         {ALLOWED_LOCALES.map((allowedLocale) => {
           const Icon = FLAGS[allowedLocale];
 
           return (
-            <Select.Item key={allowedLocale} value={allowedLocale}>
+            <RadixSelect.Item key={allowedLocale} value={allowedLocale}>
               <span className="sr-only">{getLocaleLabel(allowedLocale)}</span>
               <Icon aria-hidden="true" />
-            </Select.Item>
+            </RadixSelect.Item>
           );
         })}
-      </Select.Content>
-    </FieldSelect>
+      </RadixSelect.Content>
+    </Select>
   );
 };
