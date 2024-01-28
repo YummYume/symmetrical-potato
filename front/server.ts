@@ -101,6 +101,8 @@ const getLoadContext = (async (req, res) => {
         user = null;
       }
     } else {
+      client.setHeader('Authorization', '');
+
       user = null;
     }
   }
