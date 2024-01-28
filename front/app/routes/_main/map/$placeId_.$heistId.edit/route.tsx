@@ -22,10 +22,11 @@ import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~/lib/utils/api';
 import dayjs from '~/lib/utils/dayjs';
+import { ROLES } from '~/lib/utils/roles';
 import { formatEnums } from '~/lib/utils/tools';
 import { updateHeistResolver } from '~/lib/validators/updateHeist';
 import { FLASH_MESSAGE_KEY } from '~/root';
-import { ROLES, denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
+import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import type { UpdateHeistFormData } from '~/lib/validators/updateHeist';

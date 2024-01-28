@@ -13,7 +13,6 @@ use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class JwtMutationResolver implements MutationResolverInterface
 {
@@ -26,7 +25,6 @@ final class JwtMutationResolver implements MutationResolverInterface
         private readonly ExceptionHelper $exceptionHelper,
         private readonly RefreshTokenManagerInterface $refreshTokenManager,
         private readonly RefreshTokenGeneratorInterface $refreshTokenGenerator,
-        private readonly TokenStorageInterface $tokenStorageInterface,
         private readonly Security $security
     ) {
     }
@@ -87,16 +85,15 @@ final class JwtMutationResolver implements MutationResolverInterface
     public function refreshToken(array $context): ?Token
     {
         $refreshTokenInput = $context['args']['input']['refreshToken'] ?? null;
-        $decodedJwtToken = $this->JWTManager->decode($this->tokenStorageInterface->getToken());
         $cannotRefreshTokenException = $this->exceptionHelper->createTranslatableHttpException(401, 'user.cannot_refresh_token');
 
-        if (empty($refreshTokenInput) || !isset($decodedJwtToken['username'])) {
+        if (empty($refreshTokenInput)) {
             throw $cannotRefreshTokenException;
         }
 
         $refreshToken = $this->refreshTokenManager->get($refreshTokenInput);
 
-        if (null === $refreshToken || !$refreshToken->isValid() || $decodedJwtToken['username'] !== $refreshToken->getUsername()) {
+        if (null === $refreshToken || !$refreshToken->isValid()) {
             throw $cannotRefreshTokenException;
         }
 

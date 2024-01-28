@@ -10,6 +10,7 @@ import { Locale } from '~/lib/components/Locale';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { Header } from '~/lib/components/layout/Header';
 import { UserDropdown } from '~/lib/components/layout/UserDropdown';
+import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link, NavLink, NavLinkActiveIndicator } from '~components/Link';
 
@@ -54,7 +55,7 @@ const Menu = ({
 
       {user && (
         <UserDropdown username={user.username}>
-          {user.roles.includes('ROLE_ADMIN') && (
+          {user.roles.includes(ROLES.ADMIN) && (
             <>
               <DropdownMenu.Separator />
               <DropdownMenu.Item>
