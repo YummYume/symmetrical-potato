@@ -1,7 +1,6 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
 import {
-  HeistPhaseEnum,
   type Mutation,
   type MutationDeleteLocationArgs,
   type MutationUpdateLocationArgs,
@@ -9,6 +8,7 @@ import {
   type QueryLocationArgs,
   type UpdateLocationInput,
 } from '~api/types';
+import { HeistPhaseEnum } from '~api/types';
 
 import type { GooglePlace } from '~api/types/maps';
 

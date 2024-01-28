@@ -20,21 +20,30 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
     throw redirect(`/map/${params.placeId}`);
   }
 
-  const isMadeBy = await heistIsMadeBy(context.client, {
-    id: params.heistId,
-    userId: currentUser.id,
-  });
-
-  if (!isMadeBy && !isAdmin) {
-    throw redirect(`/map/${params.placeId}`);
-  }
-
-  const t = await i18next.getFixedT(request, ['flash', 'validators']);
+  const t = await i18next.getFixedT(request, ['flash']);
   const session = await getSession(request.headers.get('Cookie'));
 
   let errorMessage: string | null = null;
 
   try {
+    const isMadeBy = await heistIsMadeBy(context.client, {
+      id: params.heistId,
+      userId: currentUser.id,
+    });
+
+    if (!isMadeBy && !isAdmin) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.delete_not_allowed', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
+
+      return redirect(`/map/${params.placeId}`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
+    }
+
     await deleteHeist(context.client, params.heistId);
 
     session.flash(FLASH_MESSAGE_KEY, {
@@ -48,8 +57,8 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
       },
     });
   } catch (error) {
-    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 404])) {
-      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 404]);
+    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 404, 403])) {
+      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 404, 403]);
     } else {
       throw error;
     }

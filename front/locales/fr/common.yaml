@@ -140,7 +140,7 @@ heist.visibility: Visibilité
 heist.add: Ajouter un braquage
 heist.add_objective: Ajouter un objectif
 heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
-heist.leave.confirm: Êtes-vous sûr de vouloir quitter ce braquage ?
+heist.leave.confirm: Êtes-vous sûr de vouloir quitter ce braquage ? Vous allez perdre tous vos équipements.
 heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
 heist.phase: Phase
 heist.phase.cancelled: Annulé

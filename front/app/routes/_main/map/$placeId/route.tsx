@@ -206,7 +206,7 @@ export default function PlaceId() {
                     {!userCrewHeistsId.includes(heist.node?.id) ? (
                       <>
                         <FormConfirmDialog
-                          idForm="heist-join"
+                          idForm={`heist-join-${getUriId(heist.node?.id)}`}
                           title={t('join')}
                           description={t('heist.join.confirm')}
                           action={`/map/${placeId}/${getUriId(heist.node?.id)}/join`}
@@ -220,7 +220,7 @@ export default function PlaceId() {
                     ) : (
                       <>
                         <FormConfirmDialog
-                          idForm="heist-leave"
+                          idForm={`heist-leave-${getUriId(heist.node?.id)}`}
                           title={t('leave')}
                           description={t('heist.leave.confirm')}
                           action={`/map/${placeId}/${getUriId(heist.node?.id)}/leave`}
@@ -246,7 +246,7 @@ export default function PlaceId() {
                         </Link>
                       )}
                       <FormConfirmDialog
-                        idForm="heist-delete"
+                        idForm={`heist-delete-${getUriId(heist.node?.id)}`}
                         title={t('delete')}
                         description={t('heist.delete.confirm')}
                         action={`/map/${placeId}/${getUriId(heist.node?.id)}/delete`}

@@ -3,7 +3,7 @@ import { gql, type GraphQLClient } from 'graphql-request';
 import type { CreateCrewMemberInput, Mutation, Query } from '~api/types';
 
 /**
- * Query all crew members.
+ * Get all crew members of a user for a heist.
  */
 export const getCrewMemberByUserAndHeist = async (
   client: GraphQLClient,

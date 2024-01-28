@@ -139,7 +139,7 @@ heist.visibility: Visibility
 heist.add: Add a heist
 heist.add_objective: Add an objective
 heist.delete.confirm: Are you sure you want to delete this heist?
-heist.leave.confirm: Are you sure you want to leave this heist?
+heist.leave.confirm: Are you sure you want to leave this heist? You will lose all your assets.
 heist.join.confirm: Are you sure you want to join this heist?
 heist.phase: Phase
 heist.phase.cancelled: Cancelled

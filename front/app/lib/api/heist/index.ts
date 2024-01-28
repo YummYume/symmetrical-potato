@@ -63,6 +63,26 @@ export const getHeistsByCrewMember = async (client: GraphQLClient, userId: strin
 };
 
 /**
+ * Get the phase of a heist
+ */
+export const getPhaseHeist = async (client: GraphQLClient, id: string) => {
+  const { heist } = await client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
+    gql`
+      query ($id: ID!) {
+        heist(id: $id) {
+          phase
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
+
+  return heist.phase;
+};
+
+/**
  * Get a heist by id
  */
 export const getHeist = async (client: GraphQLClient, id: string) => {

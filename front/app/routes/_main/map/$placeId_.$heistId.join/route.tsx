@@ -2,6 +2,8 @@ import { redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 
 import { createCrewMember, getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
+import { getPhaseHeist } from '~/lib/api/heist';
+import { HeistPhaseEnum } from '~/lib/api/types';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
@@ -18,30 +20,45 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
     throw redirect(`/map/${params.placeId}`);
   }
 
-  const crewMember = await getCrewMemberByUserAndHeist(context.client, {
-    heist: params.heistId,
-    user: user.id,
-  });
-
-  const t = await i18next.getFixedT(request, ['flash', 'validators']);
+  const t = await i18next.getFixedT(request, ['flash']);
   const session = await getSession(request.headers.get('Cookie'));
-
-  if (crewMember) {
-    session.flash(FLASH_MESSAGE_KEY, {
-      content: t('heist.already_in_crew', { ns: 'flash' }),
-      type: 'error',
-    } as FlashMessage);
-
-    return redirect(`/map/${params.placeId}`, {
-      headers: {
-        'Set-Cookie': await commitSession(session),
-      },
-    });
-  }
 
   let errorMessage: string | null = null;
 
   try {
+    const phase = await getPhaseHeist(context.client, params.heistId);
+
+    if (phase !== HeistPhaseEnum.Planning) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.join_not_allowed', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
+
+      return redirect(`/map/${params.placeId}`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
+    }
+
+    const crewMember = await getCrewMemberByUserAndHeist(context.client, {
+      heist: params.heistId,
+      user: user.id,
+    });
+
+    if (crewMember) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.already_in_crew', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
+
+      return redirect(`/map/${params.placeId}`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
+    }
+
     await createCrewMember(context.client, { heist: params.heistId, user: user.id });
 
     session.flash(FLASH_MESSAGE_KEY, {
