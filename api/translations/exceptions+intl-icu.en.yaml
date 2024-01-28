@@ -5,6 +5,8 @@ common.unauthorized: You are not authorized to perform this action.
 # User
 user.not_authenticated: You are not authenticated.
 user.invalid_credentials: The provided credentials are invalid.
+user.cannot_refresh_token: Cannot refresh session. It may have expired.
+user.cannot_revoke_token: Cannot revoke session. It may have expired.
 
 # Heist
 heist.establishment.not_allowed: This establishment does not belong to you.

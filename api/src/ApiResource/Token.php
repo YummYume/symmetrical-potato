@@ -43,6 +43,35 @@ use Symfony\Component\Serializer\Annotation\Ignore;
             read: false,
             write: false,
         ),
+        new Mutation(
+            name: 'refresh',
+            description: 'Refresh a JWT token.',
+            resolver: JwtMutationResolver::class,
+            args: [
+                'refreshToken' => [
+                    'type' => 'String!',
+                    'description' => 'The refresh token to use to refresh the JWT token. It must be the same as the one provided when the JWT token was requested.',
+                ],
+            ],
+            validate: false,
+            read: false,
+            write: false,
+        ),
+        new Mutation(
+            name: 'revoke',
+            description: 'Revoke a refresh token.',
+            resolver: JwtMutationResolver::class,
+            args: [
+                'refreshToken' => [
+                    'type' => 'String!',
+                    'description' => 'The refresh token to revoke.',
+                ],
+            ],
+            security: 'user != null',
+            validate: false,
+            read: false,
+            write: false
+        ),
     ]
 )]
 class Token
@@ -55,6 +84,12 @@ class Token
 
     #[ApiProperty]
     private ?int $tokenTtl = null;
+
+    #[ApiProperty]
+    private ?string $refreshToken = null;
+
+    #[ApiProperty]
+    private ?int $refreshTokenTtl = null;
 
     public function getId(): ?string
     {
@@ -88,6 +123,30 @@ class Token
     public function setTokenTtl(?int $tokenTtl): static
     {
         $this->tokenTtl = $tokenTtl;
+
+        return $this;
+    }
+
+    public function getRefreshToken(): ?string
+    {
+        return $this->refreshToken;
+    }
+
+    public function setRefreshToken(?string $refreshToken): static
+    {
+        $this->refreshToken = $refreshToken;
+
+        return $this;
+    }
+
+    public function getRefreshTokenTtl(): ?int
+    {
+        return $this->refreshTokenTtl;
+    }
+
+    public function setRefreshTokenTtl(?int $refreshTokenTtl): static
+    {
+        $this->refreshTokenTtl = $refreshTokenTtl;
 
         return $this;
     }

@@ -572,10 +572,14 @@ export type Mutation = {
   deleteUser: Maybe<DeleteUserPayload>;
   /** Kills a User. */
   killUser: Maybe<KillUserPayload>;
+  /** Refreshs a Token. */
+  refreshToken: Maybe<RefreshTokenPayload>;
   /** Requests a Token. */
   requestToken: Maybe<RequestTokenPayload>;
   /** Revives a User. */
   reviveUser: Maybe<ReviveUserPayload>;
+  /** Revokes a Token. */
+  revokeToken: Maybe<RevokeTokenPayload>;
   /** Updates a Asset. */
   updateAsset: Maybe<UpdateAssetPayload>;
   /** Updates a ContractorRequest. */
@@ -692,12 +696,20 @@ export type MutationKillUserArgs = {
   input: KillUserInput;
 };
 
+export type MutationRefreshTokenArgs = {
+  input: RefreshTokenInput;
+};
+
 export type MutationRequestTokenArgs = {
   input: RequestTokenInput;
 };
 
 export type MutationReviveUserArgs = {
   input: ReviveUserInput;
+};
+
+export type MutationRevokeTokenArgs = {
+  input: RevokeTokenInput;
 };
 
 export type MutationUpdateAssetArgs = {
@@ -1045,6 +1057,8 @@ export type Token = Node & {
   __typename?: 'Token';
   _id: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  refreshToken: Maybe<Scalars['String']['output']>;
+  refreshTokenTtl: Maybe<Scalars['Int']['output']>;
   token: Maybe<Scalars['String']['output']>;
   tokenTtl: Maybe<Scalars['Int']['output']>;
 };
@@ -1831,6 +1845,20 @@ export type KillUserPayloadData = Node & {
   username: Scalars['String']['output'];
 };
 
+/** Refreshs a Token. */
+export type RefreshTokenInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The refresh token provided with the JWT token. */
+  refreshToken: Scalars['String']['input'];
+};
+
+/** Refreshs a Token. */
+export type RefreshTokenPayload = {
+  __typename?: 'refreshTokenPayload';
+  clientMutationId: Maybe<Scalars['String']['output']>;
+  token: Maybe<Token>;
+};
+
 /** Requests a Token. */
 export type RequestTokenInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
@@ -1905,6 +1933,20 @@ export type ReviveUserPayloadData = Node & {
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<ReviveUserNestedPayload>;
   username: Scalars['String']['output'];
+};
+
+/** Revokes a Token. */
+export type RevokeTokenInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The refresh token to revoke. */
+  refreshToken: Scalars['String']['input'];
+};
+
+/** Revokes a Token. */
+export type RevokeTokenPayload = {
+  __typename?: 'revokeTokenPayload';
+  clientMutationId: Maybe<Scalars['String']['output']>;
+  token: Maybe<Token>;
 };
 
 /** Updates a Asset. */

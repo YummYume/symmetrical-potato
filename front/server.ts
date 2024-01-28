@@ -2,7 +2,7 @@ import { createRequestHandler, type RequestHandler } from '@remix-run/express';
 import { broadcastDevReady, installGlobals, type ServerBuild } from '@remix-run/node';
 import compression from 'compression';
 import express from 'express';
-import { GraphQLClient } from 'graphql-request';
+import { ClientError, GraphQLClient } from 'graphql-request';
 import morgan from 'morgan';
 import sourceMapSupport from 'source-map-support';
 
@@ -10,11 +10,17 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as url from 'node:url';
 
-import { AUTHORIZATION_COOKIE_PREFIX, bearerCookie, darkModeCookie } from '~/lib/cookies.server';
-import { getCurrentUser } from '~api/user';
+import {
+  AUTHORIZATION_COOKIE_PREFIX,
+  bearerCookie,
+  darkModeCookie,
+  refreshTokenCookie,
+} from '~/lib/cookies.server';
+import { getCurrentUser, refreshAuthToken } from '~api/user';
 import { getLocale } from '~utils/locale';
 
 import type { GetLoadContextFunction } from '@remix-run/express';
+import type { CookieSerializeOptions } from '@remix-run/node';
 import type { MeUser } from '~api/types';
 
 sourceMapSupport.install();
@@ -30,6 +36,7 @@ const initialBuild = await reimportServer();
 const getLoadContext = (async (req, res) => {
   const authorizationToken = await bearerCookie.parse(req.headers.cookie ?? '');
   const locale = await getLocale(req.headers.cookie ?? '', req.headers['accept-language'] ?? '');
+  const darkMode = await darkModeCookie.parse(req.headers.cookie ?? '');
   const client = new GraphQLClient(`${process.env.API_HOST}${process.env.API_GRAPHQL_ENDPOINT}`, {
     credentials: 'include',
     headers: {
@@ -39,7 +46,6 @@ const getLoadContext = (async (req, res) => {
       'Accept-Language': locale,
     },
   });
-  const darkMode = await darkModeCookie.parse(req.headers.cookie ?? '');
   let user: MeUser | null = null;
 
   try {
@@ -49,8 +55,54 @@ const getLoadContext = (async (req, res) => {
       user = userResponse.getMeUser;
     }
   } catch (error) {
-    // TODO use refresh token?
-    user = null;
+    const refreshToken = await refreshTokenCookie.parse(req.headers.cookie ?? '');
+    const isExpiredError = error instanceof ClientError && error.response.code === 401;
+
+    if (refreshToken && isExpiredError) {
+      try {
+        const refreshedTokenResponse = await refreshAuthToken(client, refreshToken);
+        const newToken = refreshedTokenResponse.refreshToken.token;
+
+        if (newToken) {
+          let jwtCookieOptions: CookieSerializeOptions = {};
+          let refreshTokenCookieOptions: CookieSerializeOptions = {};
+
+          if (newToken.tokenTtl) {
+            jwtCookieOptions['maxAge'] = newToken.tokenTtl;
+          }
+
+          if (newToken.refreshTokenTtl) {
+            refreshTokenCookieOptions['maxAge'] = newToken.refreshTokenTtl;
+          }
+
+          client.setHeader('Authorization', `${AUTHORIZATION_COOKIE_PREFIX} ${newToken.token}`);
+
+          res.appendHeader(
+            'Set-Cookie',
+            await bearerCookie.serialize(newToken.token, jwtCookieOptions),
+          );
+          res.appendHeader(
+            'Set-Cookie',
+            await refreshTokenCookie.serialize(newToken.refreshToken, refreshTokenCookieOptions),
+          );
+
+          const userResponse = await getCurrentUser(client);
+
+          if (userResponse.getMeUser) {
+            user = userResponse.getMeUser;
+          }
+        }
+      } catch (refreshTokenError) {
+        client.setHeader('Authorization', '');
+
+        res.appendHeader('Set-Cookie', await bearerCookie.serialize('', { maxAge: 0 }));
+        res.appendHeader('Set-Cookie', await refreshTokenCookie.serialize('', { maxAge: 0 }));
+
+        user = null;
+      }
+    } else {
+      user = null;
+    }
   }
 
   return { client, user, locale, useDarkMode: darkMode === 'true' };

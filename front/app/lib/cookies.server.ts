@@ -2,6 +2,7 @@ import { createCookie } from '@remix-run/node';
 
 export const AUTHORIZATION_COOKIE_NAME = 'BEARER' as const;
 export const AUTHORIZATION_COOKIE_PREFIX = 'Bearer' as const;
+export const REFRESH_TOKEN_COOKIE_NAME = 'REFRESH_TOKEN' as const;
 export const LOCALE_COOKIE_NAME = 'LOCALE' as const;
 export const DARK_MODE_COOKIE_NAME = 'DARK_MODE' as const;
 
@@ -36,6 +37,26 @@ export const parseBearerCookie = async (request: Request) => {
   const cookieHeader = request.headers.get('Cookie');
 
   return (await bearerCookie.parse(cookieHeader)) || '';
+};
+
+/**
+ * Refresh token cookie for storing the refresh token.
+ */
+export const refreshTokenCookie = createCookie(REFRESH_TOKEN_COOKIE_NAME, {
+  httpOnly: true,
+  path: process.env.SITE_HOST ?? '/',
+  sameSite: 'lax',
+  secure: process.env.NODE_ENV === 'production',
+  maxAge: 604_800, // one week
+});
+
+/**
+ * Parse the refresh token cookie from the request.
+ */
+export const parseRefreshTokenCookie = async (request: Request) => {
+  const cookieHeader = request.headers.get('Cookie');
+
+  return (await refreshTokenCookie.parse(cookieHeader)) || '';
 };
 
 /**
