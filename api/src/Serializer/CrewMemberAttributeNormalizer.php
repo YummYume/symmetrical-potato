@@ -45,7 +45,7 @@ final class CrewMemberAttributeNormalizer implements NormalizerInterface, Normal
     /**
      * @return array<class-string|'*'|'object'|string, bool|null>
      */
-    public function getSupportedTypes(): array
+    public function getSupportedTypes(?string $format): array
     {
         return [];
     }

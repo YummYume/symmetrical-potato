@@ -3,7 +3,7 @@
   "features": {
     "ghcr.io/audacioustux/devcontainers/bun:1": {},
     "ghcr.io/devcontainers/features/php:1": {
-      "version": "8.2"
+      "version": "8.3"
     },
     "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
       "plugins": "zsh-autosuggestions zsh-syntax-highlighting",

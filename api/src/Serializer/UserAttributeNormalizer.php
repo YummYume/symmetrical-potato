@@ -45,7 +45,7 @@ final class UserAttributeNormalizer implements NormalizerInterface, NormalizerAw
     /**
      * @return array<class-string|'*'|'object'|string, bool|null>
      */
-    public function getSupportedTypes(): array
+    public function getSupportedTypes(?string $format): array
     {
         return [];
     }
