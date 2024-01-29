@@ -7,8 +7,9 @@ import { HeistPhaseEnum } from '~/lib/api/types';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
+import { ROLES } from '~/lib/utils/roles';
 import { FLASH_MESSAGE_KEY } from '~/root';
-import { ROLES, denyAccessUnlessGranted } from '~utils/security.server';
+import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { FlashMessage } from '~/root';

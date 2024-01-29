@@ -1,23 +1,15 @@
 import { Form } from '@remix-run/react';
-import { type ComponentProps } from 'react';
 
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 
-import type { Button } from '@radix-ui/themes';
+import type { FormAlertDialogProps } from '~/lib/components/dialog/FormAlertDialog';
 
 export type FormConfirmDialogProps = {
-  idForm: string;
-  title: string;
-  description: string;
   action: string;
-  actionColor?: ComponentProps<typeof Button>['color'];
-  cancelText?: string;
-  cancelColor?: ComponentProps<typeof Button>['color'];
-  children?: JSX.Element;
-};
+} & FormAlertDialogProps;
 
 export function FormConfirmDialog({
-  idForm,
+  formId,
   title,
   description,
   action,
@@ -25,11 +17,12 @@ export function FormConfirmDialog({
   cancelText,
   cancelColor,
   children,
+  ...rest
 }: FormConfirmDialogProps) {
   return (
     <>
       <Form
-        id={`${idForm}-form`}
+        id={`${formId}-form`}
         action={action}
         method="post"
         className="hidden"
@@ -41,7 +34,8 @@ export function FormConfirmDialog({
         actionColor={actionColor}
         cancelColor={cancelColor}
         cancelText={cancelText}
-        formId={`${idForm}-form`}
+        formId={`${formId}-form`}
+        {...rest}
       >
         {children}
       </FormAlertDialog>

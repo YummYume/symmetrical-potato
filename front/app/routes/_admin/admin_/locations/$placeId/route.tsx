@@ -2,7 +2,7 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Blockquote, Button, Flex, Heading, IconButton, ScrollArea, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
@@ -10,13 +10,13 @@ import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hoo
 import { getLocation, updateLocation } from '~/lib/api/location';
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { Rating } from '~/lib/components/Rating';
+import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { adminLocationResolver } from '~/lib/validators/admin/location';
 import { FLASH_MESSAGE_KEY } from '~/root';
-import { FormAlertDialog } from '~components/dialog/FormAlertDialog';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~utils/api';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
@@ -201,24 +201,18 @@ export default function EditLocation() {
       </div>
       <Flex justify="between" align="center" gap="4" className="mt-auto" role="group">
         <Flex align="center" gap="4">
-          <Form
-            id="location-delete-form"
+          <FormConfirmDialog
+            formId="location-delete"
             action="delete"
-            method="post"
-            className="hidden"
-            unstable_viewTransition
-          />
-          <FormAlertDialog
             title={t('delete')}
             description={t('location.delete.confirm', {
               ns: 'admin',
             })}
-            formId="location-delete-form"
           >
             <Button type="button" color="red">
               {t('delete')}
             </Button>
-          </FormAlertDialog>
+          </FormConfirmDialog>
         </Flex>
         <SubmitButton
           form="location-form"

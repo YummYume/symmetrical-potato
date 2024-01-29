@@ -28,7 +28,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   const isAdmin = hasRoles(context.user, ROLES.ADMIN);
   const isHeister = hasRoles(context.user, ROLES.HEISTER);
 
-  // Wil be used to check if the current user is already a crew member of the heist
+  // Will be used to check if the current user is already a crew member of the heist
   let userCrewHeistsId: string[] = [];
 
   if (!params.placeId) {
@@ -204,32 +204,28 @@ export default function PlaceId() {
                 {isHeister && (
                   <div>
                     {!userCrewHeistsId.includes(heist.node?.id) ? (
-                      <>
-                        <FormConfirmDialog
-                          idForm={`heist-join-${getUriId(heist.node?.id)}`}
-                          title={t('join')}
-                          description={t('heist.join.confirm')}
-                          action={`/map/${placeId}/${getUriId(heist.node?.id)}/join`}
-                          actionColor="green"
-                        >
-                          <Button type="button" color="green">
-                            {t('join')}
-                          </Button>
-                        </FormConfirmDialog>
-                      </>
+                      <FormConfirmDialog
+                        formId={`heist-join-${getUriId(heist.node?.id)}`}
+                        title={t('join')}
+                        description={t('heist.join.confirm')}
+                        action={`/map/${placeId}/${getUriId(heist.node?.id)}/join`}
+                        actionColor="green"
+                      >
+                        <Button type="button" color="green">
+                          {t('join')}
+                        </Button>
+                      </FormConfirmDialog>
                     ) : (
-                      <>
-                        <FormConfirmDialog
-                          idForm={`heist-leave-${getUriId(heist.node?.id)}`}
-                          title={t('leave')}
-                          description={t('heist.leave.confirm')}
-                          action={`/map/${placeId}/${getUriId(heist.node?.id)}/leave`}
-                        >
-                          <Button type="button" color="red">
-                            {t('leave')}
-                          </Button>
-                        </FormConfirmDialog>
-                      </>
+                      <FormConfirmDialog
+                        formId={`heist-leave-${getUriId(heist.node?.id)}`}
+                        title={t('leave')}
+                        description={t('heist.leave.confirm')}
+                        action={`/map/${placeId}/${getUriId(heist.node?.id)}/leave`}
+                      >
+                        <Button type="button" color="red">
+                          {t('leave')}
+                        </Button>
+                      </FormConfirmDialog>
                     )}
                   </div>
                 )}
@@ -246,7 +242,7 @@ export default function PlaceId() {
                         </Link>
                       )}
                       <FormConfirmDialog
-                        idForm={`heist-delete-${getUriId(heist.node?.id)}`}
+                        formId={`heist-delete-${getUriId(heist.node?.id)}`}
                         title={t('delete')}
                         description={t('heist.delete.confirm')}
                         action={`/map/${placeId}/${getUriId(heist.node?.id)}/delete`}
