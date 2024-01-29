@@ -50,7 +50,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
             args: [
                 'refreshToken' => [
                     'type' => 'String!',
-                    'description' => 'The refresh token to use to refresh the JWT token. It must be the same as the one provided when the JWT token was requested.',
+                    'description' => 'The refresh token to use to refresh the JWT token.',
                 ],
             ],
             validate: false,

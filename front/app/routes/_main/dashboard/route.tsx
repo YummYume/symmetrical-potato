@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { getHeistsForToday } from '~/lib/api/heist';
+import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link } from '~components/Link';
 
@@ -26,10 +27,8 @@ export type Loader = typeof loader;
 
 export default function Dashboard() {
   const { t } = useTranslation();
-
   const { heists, locale, user } = useLoaderData<Loader>();
-
-  const isHeister = useMemo(() => user?.roles.includes('ROLE_HEISTER'), [user?.roles]);
+  const isHeister = useMemo(() => user?.roles.includes(ROLES.HEISTER), [user?.roles]);
 
   return (
     <Section className="space-y-16">

@@ -1,21 +1,9 @@
 import { redirect } from '@remix-run/node';
 
+import { ROLES } from './roles';
+
+import type { Role } from './roles';
 import type { MeUser } from '~api/types';
-
-type RolesKey = 'ADMIN' | 'USER' | 'CONTRACTOR' | 'EMPLOYEE';
-
-type Roles = {
-  [key in RolesKey]: `ROLE_${key}`;
-};
-
-export type Role = Roles[keyof Roles];
-
-export const ROLES: Roles = {
-  ADMIN: 'ROLE_ADMIN',
-  USER: 'ROLE_USER',
-  CONTRACTOR: 'ROLE_CONTRACTOR',
-  EMPLOYEE: 'ROLE_EMPLOYEE',
-};
 
 /**
  * Throw a redirect if the user is not logged in. Will return the user if logged in.
@@ -42,7 +30,7 @@ export const denyAdminAccessUnlessGranted = (
   user: MeUser | null,
   redirectTo = '/dashboard',
   init: number | ResponseInit | undefined = undefined,
-) => denyAccessUnlessGranted(user, 'ROLE_ADMIN', redirectTo, init);
+) => denyAccessUnlessGranted(user, ROLES.ADMIN, redirectTo, init);
 
 /**
  * Check if the user has the given roles.

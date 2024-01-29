@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { getEnv } from '~/lib/utils/env';
 import { getUriId } from '~/lib/utils/path';
+import { ROLES } from '~/lib/utils/roles';
 import { getGoogleLocation, getLocationInfo } from '~api/location';
 import {
   HeistVisibilityEnum,
@@ -18,7 +19,7 @@ import {
 } from '~api/types';
 import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
-import { ROLES, denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
+import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
   denyAccessUnlessGranted(context.user);

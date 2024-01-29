@@ -16,6 +16,7 @@ import {
   darkModeCookie,
   refreshTokenCookie,
 } from '~/lib/cookies.server';
+import { hasErrorStatusCode } from '~/lib/utils/api';
 import { getCurrentUser, refreshAuthToken } from '~api/user';
 import { getLocale } from '~utils/locale';
 
@@ -56,9 +57,11 @@ const getLoadContext = (async (req, res) => {
     }
   } catch (error) {
     const refreshToken = await refreshTokenCookie.parse(req.headers.cookie ?? '');
-    const isExpiredError = error instanceof ClientError && error.response.code === 401;
+    const isUnauthorized =
+      error instanceof ClientError &&
+      (error.response.status === 401 || hasErrorStatusCode(error, 401));
 
-    if (refreshToken && isExpiredError) {
+    if (refreshToken && isUnauthorized) {
       try {
         const refreshedTokenResponse = await refreshAuthToken(client, refreshToken);
         const newToken = refreshedTokenResponse.refreshToken.token;

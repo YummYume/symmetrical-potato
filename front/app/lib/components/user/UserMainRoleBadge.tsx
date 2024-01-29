@@ -1,6 +1,8 @@
 import { Badge } from '@radix-ui/themes';
 import { useTranslation } from 'react-i18next';
 
+import { ROLES } from '~/lib/utils/roles';
+
 import type { ComponentProps } from 'react';
 
 export type UserMainRoleBadgeProps = {
@@ -10,8 +12,7 @@ export type UserMainRoleBadgeProps = {
 export const UserMainRoleBadge = ({ mainRole, ...rest }: UserMainRoleBadgeProps) => {
   const { t } = useTranslation();
 
-  // TODO use enum
-  if (mainRole === 'ROLE_HEISTER') {
+  if (mainRole === ROLES.HEISTER) {
     return (
       <Badge color="teal" size="1" className="h-fit" {...rest}>
         {t('user.role.heister')}
@@ -19,7 +20,7 @@ export const UserMainRoleBadge = ({ mainRole, ...rest }: UserMainRoleBadgeProps)
     );
   }
 
-  if (mainRole === 'ROLE_EMPLOYEE') {
+  if (mainRole === ROLES.EMPLOYEE) {
     return (
       <Badge color="iris" size="1" className="h-fit" {...rest}>
         {t('user.role.employee')}
@@ -27,7 +28,7 @@ export const UserMainRoleBadge = ({ mainRole, ...rest }: UserMainRoleBadgeProps)
     );
   }
 
-  if (mainRole === 'ROLE_CONTRACTOR') {
+  if (mainRole === ROLES.CONTRACTOR) {
     return (
       <Badge color="crimson" size="1" className="h-fit" {...rest}>
         {t('user.role.contractor')}
