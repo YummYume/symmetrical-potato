@@ -155,6 +155,10 @@ heist.crew_member_count: >-
   }
   out of 4
 
+# Employee
+employee: Employee
+employees: Employees
+
 # User
 user.balance: Balance
 user.reason: Registration reason
@@ -182,11 +186,17 @@ asset.description: Description
 asset.price: Price
 asset.type: Type
 asset.type.asset: Asset
+asset.type.assets: Assets
 asset.type.equipment: Equipment
+asset.type.equipments: Equipments
 asset.type.weapon: Weapon
+asset.type.weapons: Weapons
 asset.max_quantity: Max quantity
 asset.team_asset: Team asset
 asset.heist: Associated heist
+asset.type.assets.catch_phrase: Take everything you need, you don't know what you will find on your way.
+asset.type.equipments.catch_phrase: You will need some equipment to help you. Don't forget them.
+asset.type.weapons.catch_phrase: Choose your weapon wisely. You don't want to be caught off guard or worse, unarmed.
 
 # Contractor Request
 contractor_request.reason: Reason for the request

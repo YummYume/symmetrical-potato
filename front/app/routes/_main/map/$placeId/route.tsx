@@ -104,7 +104,9 @@ export default function PlaceId() {
 
   const heists =
     locationInfo?.heists?.edges?.filter<HeistEdgeWithNode>(
-      (heist): heist is HeistEdgeWithNode => !!heist?.node,
+      (heist): heist is HeistEdgeWithNode =>
+        !!heist?.node &&
+        (isAdmin || isContractor || (isHeister && new Date(heist.node.startAt) > new Date())),
     ) ?? [];
 
   const reviews =
@@ -216,16 +218,25 @@ export default function PlaceId() {
                         </Button>
                       </FormConfirmDialog>
                     ) : (
-                      <FormConfirmDialog
-                        formId={`heist-leave-${getUriId(heist.node?.id)}`}
-                        title={t('leave')}
-                        description={t('heist.leave.confirm')}
-                        action={`/map/${placeId}/${getUriId(heist.node?.id)}/leave`}
-                      >
-                        <Button type="button" color="red">
-                          {t('leave')}
-                        </Button>
-                      </FormConfirmDialog>
+                      <>
+                        <Link
+                          to={`/map/${placeId}/${getUriId(heist.node?.id)}/asset`}
+                          className="link link--blue"
+                          unstyled
+                        >
+                          {t('prepare_heist')}
+                        </Link>
+                        <FormConfirmDialog
+                          formId={`heist-leave-${getUriId(heist.node?.id)}`}
+                          title={t('leave')}
+                          description={t('heist.leave.confirm')}
+                          action={`/map/${placeId}/${getUriId(heist.node?.id)}/leave`}
+                        >
+                          <Button type="button" color="red">
+                            {t('leave')}
+                          </Button>
+                        </FormConfirmDialog>
+                      </>
                     )}
                   </div>
                 )}

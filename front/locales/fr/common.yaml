@@ -156,6 +156,10 @@ heist.crew_member_count: >-
   }
   sur 4
 
+# Employee
+employee: Employé
+employees: Employés
+
 # User
 user.balance: Solde
 user.reason: Raison de l'inscription
@@ -183,11 +187,17 @@ asset.description: Description
 asset.price: Prix
 asset.type: Type
 asset.type.asset: Asset
+asset.type.assets: Assets
 asset.type.equipment: Équipement
+asset.type.equipments: Équipements
 asset.type.weapon: Arme
+asset.type.weapons: Armes
 asset.max_quantity: Quantité maximale
 asset.team_asset: Asset d'équipe
 asset.heist: Braquage associé
+asset.type.assets.catch_phrase: Prenez tout ce dont vous avez besoin, vous ne savez pas ce que vous trouverez sur votre chemin.
+asset.type.equipments.catch_phrase: Vous aurez besoin de certains équipements. Ne les oublie pas.
+asset.type.weapons.catch_phrase: Choisissez judicieusement votre arme. Vous ne voulez pas être pris au dépourvu ou, pire, désarmé.
 
 # Contractor Request
 contractor_request.reason: Raison de la demande

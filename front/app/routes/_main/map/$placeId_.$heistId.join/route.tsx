@@ -2,7 +2,7 @@ import { redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 
 import { createCrewMember, getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
-import { getPhaseHeist } from '~/lib/api/heist';
+import { getHeistPartial } from '~/lib/api/heist';
 import { HeistPhaseEnum } from '~/lib/api/types';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
@@ -27,9 +27,28 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
   let errorMessage: string | null = null;
 
   try {
-    const phase = await getPhaseHeist(context.client, params.heistId);
+    const { heist } = await getHeistPartial(
+      context.client,
+      params.heistId,
+      `
+      phase
+      startAt
+    `,
+    );
 
-    if (phase !== HeistPhaseEnum.Planning) {
+    if (new Date(heist.startAt) < new Date()) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.join_not_allowed', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
+
+      return redirect(`/map/${params.placeId}`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
+    }
+    if (heist.phase !== HeistPhaseEnum.Planning) {
       session.flash(FLASH_MESSAGE_KEY, {
         content: t('heist.join_not_allowed', { ns: 'flash' }),
         type: 'error',
@@ -73,8 +92,8 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
       },
     });
   } catch (error) {
-    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 404, 403])) {
-      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 404, 403]);
+    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 404, 403, 400])) {
+      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 404, 403, 400]);
     } else {
       throw error;
     }

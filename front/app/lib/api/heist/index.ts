@@ -82,6 +82,22 @@ export const getPhaseHeist = async (client: GraphQLClient, id: string) => {
   return heist.phase;
 };
 
+export const getHeistPartial = async (client: GraphQLClient, id: string, fields: string = '') => {
+  return client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
+    gql`
+      query ($id: ID!) {
+        heist(id: $id) {
+          id
+          ${fields}
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
+};
+
 /**
  * Get a heist by id
  */

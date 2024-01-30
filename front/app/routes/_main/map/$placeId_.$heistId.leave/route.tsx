@@ -73,8 +73,8 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
       },
     });
   } catch (error) {
-    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 404, 403])) {
-      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 404, 403]);
+    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 404, 403, 400])) {
+      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 404, 403, 400]);
     } else {
       throw error;
     }
