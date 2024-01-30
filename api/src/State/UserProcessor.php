@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\GraphQl\Mutation;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\User;
+use App\Service\Mailer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -22,7 +23,8 @@ final class UserProcessor implements ProcessorInterface
     public function __construct(
         #[Autowire('@api_platform.doctrine.orm.state.persist_processor')] private readonly ProcessorInterface $persistProcessor,
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')] private readonly ProcessorInterface $removeProcessor,
-        private readonly UserPasswordHasherInterface $passwordHasher
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly Mailer $mailer
     ) {
     }
 
@@ -38,6 +40,8 @@ final class UserProcessor implements ProcessorInterface
 
         if ('validate' === $operation->getName()) {
             $user->addRole(User::ROLE_HEISTER);
+
+            $this->mailer->sendAccountValidatedEmail($user);
 
             return $this->persistProcessor->process($user, $operation, $uriVariables, $context);
         }

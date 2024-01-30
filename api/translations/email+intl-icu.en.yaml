@@ -1,0 +1,9 @@
+# Account
+account.validated.subject: Your account has been validated
+account.validated.text: |
+    Hello {name},
+
+    Your account has been validated. You can now log in at {url}.
+
+    Thanks,
+    The {site} Team

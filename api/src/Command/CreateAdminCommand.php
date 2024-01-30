@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\UserLocaleEnum;
 use App\Enum\UserStatusEnum;
 use App\Repository\UserRepository;
+use App\Service\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -28,7 +29,8 @@ final class CreateAdminCommand extends Command
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly UserRepository $userRepository,
-        private readonly ValidatorInterface $validator
+        private readonly ValidatorInterface $validator,
+        private readonly Mailer $mailer
     ) {
         parent::__construct();
     }
@@ -177,7 +179,7 @@ final class CreateAdminCommand extends Command
             $sendEmail = $io->confirm('Do you want to send an email to the user?', true);
 
             if ($sendEmail) {
-                // TODO: Send email
+                $this->mailer->sendAccountValidatedEmail($user);
 
                 $io->success('User has been notified by email.');
             }

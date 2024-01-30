@@ -57,3 +57,5 @@
       CORS_ALLOW_ORIGIN={{ vault_api_cors_allow_origin }}
       SENTRY_DSN={{ vault_api_sentry_dsn }}
       JWT_PASSPHRASE={{ vault_api_jwt_passphrase }}
+      SITE_NAME={{ vault_api_site_name }}
+      SITE_BASE_URL={{ vault_api_site_base_url }}
