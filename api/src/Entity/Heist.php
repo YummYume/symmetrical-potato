@@ -33,7 +33,6 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HeistRepository::class)]
-#[ApiFilter(DateFilter::class, properties: ['startAt'])]
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
     operations: [],
@@ -83,6 +82,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[SlotAvailable(groups: [self::CREATE, self::UPDATE])]
+#[ApiFilter(DateFilter::class, properties: ['startAt'])]
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
 #[ApiFilter(SearchFilter::class, properties: ['location.placeId' => 'exact'])]

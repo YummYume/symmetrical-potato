@@ -16,6 +16,22 @@ export const getCrewMemberByUserAndHeist = async (
           edges {
             node {
               id
+              heist {
+                id
+              }
+              heistAssets {
+                edges {
+                  node {
+                    id
+                    totalSpent
+                    quantity
+                    asset {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
             }
           }
         }

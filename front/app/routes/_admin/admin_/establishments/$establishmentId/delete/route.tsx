@@ -1,7 +1,7 @@
 import { type ActionFunctionArgs, redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 
-import { deleteEstablishment } from '~/lib/api/establishments';
+import { deleteEstablishment } from '~/lib/api/establishment';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';

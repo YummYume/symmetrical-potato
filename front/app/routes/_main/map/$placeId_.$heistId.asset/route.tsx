@@ -4,6 +4,7 @@ import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 
 import { getAssets } from '~/lib/api/asset';
+import { getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
 import { AssetTypeEnum } from '~/lib/api/types';
 import { i18next } from '~/lib/i18n/index.server';
 import { hasPathError } from '~/lib/utils/api';
@@ -24,9 +25,14 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const t = await i18next.getFixedT(request, 'response');
 
   try {
+    const crewMember = await getCrewMemberByUserAndHeist(context.client, {
+      heist: params.heistId,
+      user: user.id,
+    });
     const { assets } = await getAssets(context.client);
 
     return {
+      crewMember,
       assets: assets.edges.reduce<Record<AssetTypeEnum, AssetItem[]>>(
         (acc, curr) => {
           acc[curr.node.type].push(curr.node);
@@ -73,7 +79,7 @@ const AssetCard = ({ asset }: { asset: AssetItem }) => (
 
 export default function Asset() {
   const { t } = useTranslation();
-  const { assets } = useLoaderData<Loader>();
+  const { assets, crewMember } = useLoaderData<Loader>();
 
   const weapons = assets[AssetTypeEnum.Weapon] as AssetItem[];
   const equipments = assets[AssetTypeEnum.Equipment] as AssetItem[];

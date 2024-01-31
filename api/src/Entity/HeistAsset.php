@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\DeleteMutation;
 use ApiPlatform\Metadata\GraphQl\Mutation;
@@ -9,6 +10,7 @@ use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
+use App\Filter\UuidFilter;
 use App\Repository\HeistAssetRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
@@ -20,17 +22,60 @@ use Symfony\Component\Uid\Uuid;
     security: 'is_granted("ROLE_USER")',
     operations: [],
     graphQlOperations: [
-        new Query(),
-        new QueryCollection(),
-        new Mutation(name: 'create'),
-        new Mutation(name: 'update'),
-        new DeleteMutation(name: 'delete'),
+        new Query(
+            normalizationContext: [
+                'groups' => [self::READ, self::TIMESTAMPABLE, self::BLAMEABLE],
+            ],
+            security: 'is_granted("READ", object)'
+        ),
+        new QueryCollection(
+            normalizationContext: [
+                'groups' => [self::READ, self::TIMESTAMPABLE, self::BLAMEABLE],
+            ]
+        ),
+        new Mutation(
+            name: 'create',
+            normalizationContext: [
+                'groups' => [self::READ, self::TIMESTAMPABLE, self::BLAMEABLE],
+            ],
+            denormalizationContext: [
+                'groups' => [self::CREATE],
+            ],
+            validationContext: [
+                'groups' => [self::CREATE],
+            ],
+            securityPostDenormalize: 'is_granted("CREATE", object)'
+        ),
+        new Mutation(
+            name: 'update',
+            normalizationContext: [
+                'groups' => [self::READ, self::TIMESTAMPABLE, self::BLAMEABLE],
+            ],
+            denormalizationContext: [
+                'groups' => [self::UPDATE],
+            ],
+            validationContext: [
+                'groups' => [self::UPDATE],
+            ],
+            security: 'is_granted("UPDATE", object)'
+        ),
+        new DeleteMutation(
+            name: 'delete',
+            security: 'is_granted("DELETE", object)'
+        ),
     ]
 )]
+#[ApiFilter(UuidFilter::class, properties: ['crewMember.id'])]
 class HeistAsset
 {
     use BlameableTrait;
     use TimestampableTrait;
+
+    public const READ = 'heist_asset:read';
+    public const READ_PUBLIC = 'heist_asset:read:public';
+    public const CREATE = 'heist_asset:create';
+    public const UPDATE = 'heist_asset:update';
+    public const DELETE = 'heist_asset:delete';
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]

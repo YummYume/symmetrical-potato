@@ -32,6 +32,31 @@ export const getAssets = async (client: GraphQLClient) => {
 };
 
 /**
+ * Query all assets filtered by heist. (exclude all assets forbidden for the heist)
+ */
+export const getAssetsFilteredByHeist = async (client: GraphQLClient, heistId: string) => {
+  return client.request<Pick<Query, 'assets'>, { heistId: string }>(
+    gql`
+      query ($heistId: String) {
+        assets(forbiddenHeists__id: $heistId) {
+          edges {
+            node {
+              id
+              name
+              price
+              type
+              description
+              teamAsset
+            }
+          }
+        }
+      }
+    `,
+    { heistId: `/heists/${heistId}` },
+  );
+};
+
+/**
  * Query an asset by id.
  */
 export const getAsset = async (client: GraphQLClient, id: string) => {

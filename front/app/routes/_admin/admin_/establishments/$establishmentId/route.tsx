@@ -7,7 +7,7 @@ import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
-import { getEstablishment, updateEstablishment } from '~/lib/api/establishments';
+import { getEstablishment, updateEstablishment } from '~/lib/api/establishment';
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { Link } from '~/lib/components/Link';
 import { Rating } from '~/lib/components/Rating';
