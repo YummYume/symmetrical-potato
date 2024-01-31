@@ -10,6 +10,8 @@ use App\Entity\ContractorRequest;
 use App\Entity\User;
 use App\Enum\ContractorRequestStatusEnum;
 use App\Helper\ExceptionHelper;
+use App\Repository\UserRepository;
+use App\Service\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -28,13 +30,19 @@ final class ContractorRequestProcessor implements ProcessorInterface
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')] private readonly ProcessorInterface $removeProcessor,
         private readonly EntityManagerInterface $entityManager,
         private readonly Security $security,
-        private readonly ExceptionHelper $exceptionHelper
+        private readonly ExceptionHelper $exceptionHelper,
+        private readonly UserRepository $userRepository,
+        private readonly Mailer $mailer
     ) {
     }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ?ContractorRequest
     {
         if ($operation instanceof DeleteMutation) {
+            if ($data instanceof ContractorRequest && $data->getUser() && ContractorRequestStatusEnum::Pending === $data->getStatus()) {
+                $this->mailer->sendContractorRequestRefusedEmail($data);
+            }
+
             return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
         }
 
@@ -50,7 +58,13 @@ final class ContractorRequestProcessor implements ProcessorInterface
 
             $data->setUser($this->security->getUser());
 
-            return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+            $processedData = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+
+            foreach ($this->userRepository->findAdmins() as $admin) {
+                $this->mailer->sendContractorRequestCreatedAdminEmail($processedData, $admin);
+            }
+
+            return $processedData;
         }
 
         if ('update' !== $operation->getName()) {
@@ -76,10 +90,11 @@ final class ContractorRequestProcessor implements ProcessorInterface
                 $this->entityManager->remove($user->getEmployee());
             }
 
+            $this->mailer->sendContractorRequestAcceptedEmail($data);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
-
-            // TODO email
+        } elseif (!$accepted && $user) {
+            $this->mailer->sendContractorRequestRefusedEmail($data);
         }
 
         return $this->persistProcessor->process($data, $operation, $uriVariables, $context);

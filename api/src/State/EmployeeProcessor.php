@@ -10,6 +10,7 @@ use App\Entity\Employee;
 use App\Entity\User;
 use App\Enum\EmployeeStatusEnum;
 use App\Helper\ExceptionHelper;
+use App\Service\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -28,7 +29,8 @@ final class EmployeeProcessor implements ProcessorInterface
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')] private readonly ProcessorInterface $removeProcessor,
         private readonly EntityManagerInterface $entityManager,
         private readonly Security $security,
-        private readonly ExceptionHelper $exceptionHelper
+        private readonly ExceptionHelper $exceptionHelper,
+        private readonly Mailer $mailer
     ) {
     }
 
@@ -39,6 +41,10 @@ final class EmployeeProcessor implements ProcessorInterface
                 $user = $data->getUser();
 
                 if ($user) {
+                    if (EmployeeStatusEnum::Pending === $data->getStatus()) {
+                        $this->mailer->sendEmployeeRefusedEmail($data);
+                    }
+
                     $user
                         ->removeRole(User::ROLE_EMPLOYEE)
                         ->addRole(User::ROLE_HEISTER)
@@ -64,7 +70,11 @@ final class EmployeeProcessor implements ProcessorInterface
 
             $data->setUser($this->security->getUser());
 
-            return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+            $processedData = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+
+            $this->mailer->sendEmployeeCreatedContractorEmail($processedData);
+
+            return $processedData;
         }
 
         if ('validate' !== $operation->getName()) {
@@ -86,10 +96,11 @@ final class EmployeeProcessor implements ProcessorInterface
                 $this->entityManager->remove($crewMember);
             }
 
+            $this->mailer->sendEmployeeAcceptedEmail($data);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
-
-            // TODO email
+        } elseif (!$active && $user) {
+            $this->mailer->sendEmployeeRefusedEmail($data);
         }
 
         return $this->persistProcessor->process($data, $operation, $uriVariables, $context);

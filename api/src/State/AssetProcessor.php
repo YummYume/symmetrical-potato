@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Asset;
 use App\Repository\HeistAssetRepository;
+use App\Service\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -23,7 +24,8 @@ final class AssetProcessor implements ProcessorInterface
         #[Autowire('@api_platform.doctrine.orm.state.persist_processor')] private readonly ProcessorInterface $persistProcessor,
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')] private readonly ProcessorInterface $removeProcessor,
         private readonly EntityManagerInterface $entityManager,
-        private readonly HeistAssetRepository $heistAssetRepository
+        private readonly HeistAssetRepository $heistAssetRepository,
+        private readonly Mailer $mailer
     ) {
     }
 
@@ -48,8 +50,8 @@ final class AssetProcessor implements ProcessorInterface
                 $user = $heistAsset->getCrewMember()->getUser();
                 $user->setBalance($user->getBalance() + $amount);
 
+                $this->mailer->sendCrewMemberAssetRefundedEmail($heistAsset);
                 $this->entityManager->persist($user);
-                // TODO send email
             }
 
             $this->entityManager->remove($heistAsset);
@@ -58,13 +60,14 @@ final class AssetProcessor implements ProcessorInterface
         $this->entityManager->flush();
 
         // If the asset is global, then nobody has to return the money (magic)
-        if (null === $data->getHeist()) {
+        if (null === $data->getHeist() || $totalAmount <= 0.0) {
             return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
         }
 
         $contractor = $data->getHeist()->getEstablishment()->getContractor();
 
         $contractor->setBalance($contractor->getBalance() - $totalAmount);
+        $this->mailer->sendContractorAssetRefundedEmail($data, $totalAmount);
         $this->entityManager->persist($contractor);
         $this->entityManager->flush();
 

@@ -63,4 +63,19 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
             ->getResult()
         ;
     }
+
+    /**
+     * @return User[]
+     */
+    public function findAdmins(): array
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        return $qb
+            ->where('JSON_CONTAINS(u.roles, :role) = 1')
+            ->setParameter('role', '%ROLE_ADMIN%')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

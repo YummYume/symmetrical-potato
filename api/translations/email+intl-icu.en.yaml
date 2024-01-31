@@ -7,3 +7,86 @@ account.validated.text: |
 
     Thanks,
     The {site} Team
+
+# Asset
+asset.crew_member_refunded.subject: Refund for asset {asset}
+asset.crew_member_refunded.text: |
+    Hello {name},
+
+    The asset {asset} in heist {heist} is no longer available.
+    You have been refunded {amount, number, currency} for a total quantity of {quantity}.
+    Your new balance is {balance, number, currency}.
+
+    Thanks,
+    The {site} Team
+asset.contractor_refunded.subject: Asset {asset} is no longer available
+asset.contractor_refunded.text: |
+    Hello {name},
+
+    The asset {asset} is no longer available.
+    Because some of your establishments were using it in planning heists, a total of {amount, number, currency} has been taken from your account to refund the different crew members who purchased this asset.
+    Your new balance is {balance, number, currency}.
+
+    Thanks,
+    The {site} Team
+
+# Contractor Request
+contractor_request.created.subject: New contractor request
+contractor_request.created.text: |
+    Hello {name},
+
+    A new contractor request has been created by {request_name} with the following reason:
+
+    "{reason}"
+
+    You can view it at {url}.
+
+    Thanks,
+    The {site} Team
+contractor_request.accepted.subject: Contractor request accepted
+contractor_request.accepted.text: |
+    Hello {name},
+
+    Your contractor request has been accepted. You can now start creating establishments and heists.
+
+    Thanks,
+    The {site} Team
+contractor_request.refused.subject: Contractor request refused
+contractor_request.refused.text: |
+    Hello {name},
+
+    Your contractor request has been refused. You can always try again later.
+
+    Thanks,
+    The {site} Team
+
+# Employee
+employee.created.subject: New employee request
+employee.created.text: |
+    Hello {name},
+
+    A new employee request has been created by {employee} with the following motivation:
+
+    "{motivation}"
+
+    You can view it at {url}.
+
+    Thanks,
+    The {site} Team
+employee.accepted.subject: Employee request accepted
+employee.accepted.text: |
+    Hello {name},
+
+    Your employee request for {establishment} has been accepted. You will now start working under the code name {code_name}.
+    You will be notified when a heist is assigned to you.
+
+    Thanks,
+    The {site} Team
+employee.refused.subject: Employee request refused
+employee.refused.text: |
+    Hello {name},
+
+    Your employee request for {establishment} has been refused. You can always try again later.
+
+    Thanks,
+    The {site} Team
