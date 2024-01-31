@@ -3,7 +3,7 @@ import { redirect, useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 
-import { getAssets } from '~/lib/api/asset';
+import { getAssets, getAssetsForbiddenForHeist } from '~/lib/api/asset';
 import { getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
 import { AssetTypeEnum } from '~/lib/api/types';
 import { i18next } from '~/lib/i18n/index.server';
@@ -26,16 +26,38 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   try {
     const crewMember = await getCrewMemberByUserAndHeist(context.client, {
-      heist: params.heistId,
-      user: user.id,
+      heistId: params.heistId,
+      userId: user.id,
     });
     const { assets } = await getAssets(context.client);
+    const { assets: assetsForbidden } = await getAssetsForbiddenForHeist(
+      context.client,
+      params.heistId,
+    );
+
+    const crewMemberAssets = crewMember?.heistAssets.edges.reduce<
+      Record<AssetTypeEnum, AssetItem[]>
+    >(
+      (acc, curr) => {
+        acc[curr.node.asset.type].push(curr.node.asset);
+        return acc;
+      },
+      {
+        [AssetTypeEnum.Asset]: [],
+        [AssetTypeEnum.Weapon]: [],
+        [AssetTypeEnum.Equipment]: [],
+      },
+    );
 
     return {
+      crewMemberAssets,
       crewMember,
       assets: assets.edges.reduce<Record<AssetTypeEnum, AssetItem[]>>(
         (acc, curr) => {
-          acc[curr.node.type].push(curr.node);
+          if (!assetsForbidden.edges.some((edge) => edge.node.id === curr.node.id)) {
+            acc[curr.node.type].push(curr.node);
+          }
+
           return acc;
         },
         {
@@ -63,7 +85,7 @@ export type Loader = typeof loader;
 export async function action({ request, context, params }: ActionFunctionArgs) {}
 
 const AssetCard = ({ asset }: { asset: AssetItem }) => (
-  <Card style={{ maxWidth: 240 }}>
+  <Card className="mt-2">
     <Box>
       <Flex gap="3" justify="between">
         <Text as="div" size="2" weight="bold">

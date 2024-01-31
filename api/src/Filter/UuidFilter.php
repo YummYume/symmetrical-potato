@@ -32,20 +32,18 @@ final class UuidFilter extends AbstractFilter
                 continue;
             }
 
-            foreach (['', 'not.'] as $prefix) {
-                $propertyName = $this->normalizePropertyName($property);
-                $description[sprintf('%s%s', $prefix, $propertyName)] = [
-                    'property' => $propertyName,
+            $propertyName = $this->normalizePropertyName($property);
+            $description[$propertyName] = [
+                'property' => $propertyName,
+                'type' => Type::BUILTIN_TYPE_STRING,
+                'required' => false,
+                'openapi' => [
+                    'example' => 'If the property is "employee__user__id" the filter will be applied to the property "employee.user.id" of the entity.',
+                    'description' => 'Recursively filter by UUID',
+                    'name' => 'UUID filter',
                     'type' => Type::BUILTIN_TYPE_STRING,
-                    'required' => false,
-                    'openapi' => [
-                        'example' => 'If the property is "employee__user__id" the filter will be applied to the property "employee.user.id" of the entity. You can also use the notation "not.employee.user.id": this will filter all the entities where the property "employee.user.id" is not equal to the given value.',
-                        'description' => 'Recursively filter by UUID',
-                        'name' => 'UUID filter',
-                        'type' => Type::BUILTIN_TYPE_STRING,
-                    ],
-                ];
-            }
+                ],
+            ];
         }
 
         return $description;
@@ -63,13 +61,6 @@ final class UuidFilter extends AbstractFilter
         Operation $operation = null,
         array $context = []
     ): void {
-        // Check if the property is opposite (not equal)
-        $isPropertyOpposite = str_contains($property, 'not.');
-
-        if ($isPropertyOpposite) {
-            $property = str_replace('not.', '', $property);
-        }
-
         if (!$this->isPropertyEnabled($property, $resourceClass) || !$this->isPropertyMapped($property, $resourceClass)) {
             return;
         }
@@ -90,10 +81,8 @@ final class UuidFilter extends AbstractFilter
 
         $valueParameter = $queryNameGenerator->generateParameterName($field);
 
-        $operator = $isPropertyOpposite ? '!=' : '=';
-
         $queryBuilder
-            ->andWhere(sprintf('%s.%s $s :%s', $alias, $field, $operator, $valueParameter))
+            ->andWhere(sprintf('%s.%s = :%s', $alias, $field, $valueParameter))
             ->setParameter($valueParameter, $value);
     }
 }

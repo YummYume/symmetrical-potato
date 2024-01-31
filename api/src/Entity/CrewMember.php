@@ -121,6 +121,7 @@ class CrewMember
 
     /** @var ArrayCollection<int, HeistAsset> */
     #[ORM\OneToMany(mappedBy: 'crewMember', targetEntity: HeistAsset::class, orphanRemoval: true)]
+    #[Groups([self::READ])]
     private Collection $heistAssets;
 
     public function __construct()

@@ -15,6 +15,7 @@ use App\Repository\HeistAssetRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: HeistAssetRepository::class)]
@@ -84,17 +85,21 @@ class HeistAsset
     private ?Uuid $id = null;
 
     #[ORM\Column]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private ?int $quantity = 1;
 
     #[ORM\Column]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private float $totalSpent = 0.0;
 
     #[ORM\ManyToOne(inversedBy: 'heistAssets')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private ?Asset $asset = null;
 
     #[ORM\ManyToOne(inversedBy: 'heistAssets')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private ?CrewMember $crewMember = null;
 
     public function getId(): ?Uuid

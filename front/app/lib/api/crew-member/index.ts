@@ -7,12 +7,12 @@ import type { CreateCrewMemberInput, Mutation, Query } from '~api/types';
  */
 export const getCrewMemberByUserAndHeist = async (
   client: GraphQLClient,
-  input: { heist: string; user: string },
+  input: { heistId: string; userId: string },
 ) => {
   const { crewMembers } = await client.request<Pick<Query, 'crewMembers'>>(
     gql`
-      query ($heist: String, $user: String) {
-        crewMembers(heist__id: $heist, user__id: $user) {
+      query ($heistId: String, $userId: String) {
+        crewMembers(heist__id: $heistId, user__id: $userId) {
           edges {
             node {
               id
@@ -28,6 +28,7 @@ export const getCrewMemberByUserAndHeist = async (
                     asset {
                       id
                       name
+                      type
                     }
                   }
                 }
@@ -38,8 +39,8 @@ export const getCrewMemberByUserAndHeist = async (
       }
     `,
     {
-      heist: `/heists/${input.heist}`,
-      user: input.user,
+      heistId: `/heists/${input.heistId}`,
+      userId: input.userId,
     },
   );
 
