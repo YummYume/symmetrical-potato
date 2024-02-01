@@ -54,6 +54,7 @@
     "react-select": "^5.8.0",
     "remix-hook-form": "^4.0.1",
     "remix-i18next": "^5.5.0",
+    "remix-typedjson": "^0.4.1",
     "resolve-accept-language": "^2.1.15",
     "sonner": "^1.4.0",
     "source-map-support": "^0.5.21",
