@@ -1,6 +1,7 @@
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Card } from '@radix-ui/themes';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ThemeContext } from '~lib/context/Theme';
 
