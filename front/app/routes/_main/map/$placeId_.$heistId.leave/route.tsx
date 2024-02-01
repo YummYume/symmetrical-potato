@@ -43,8 +43,8 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
     }
 
     const crewMember = await getCrewMemberByUserAndHeist(context.client, {
-      heist: params.heistId,
-      user: user.id,
+      heistId: params.heistId,
+      userId: user.id,
     });
 
     if (!crewMember) {
