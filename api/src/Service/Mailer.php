@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Asset;
 use App\Entity\ContractorRequest;
+use App\Entity\CrewMember;
 use App\Entity\Employee;
 use App\Entity\Heist;
 use App\Entity\HeistAsset;
@@ -32,7 +33,7 @@ final class Mailer
         $url = sprintf('%s/login', $this->siteBaseUrl);
         $email = (new TemplatedEmail())
             ->to($user->getEmail())
-            ->priority(Email::PRIORITY_HIGH)
+            ->priority(Email::PRIORITY_HIGHEST)
             ->subject($this->translator->trans('account.validated.subject', domain: 'email', locale: $user->getLocale()->value))
             ->text($this->translator->trans('account.validated.text', [
                 'name' => $user->getUsername(),
@@ -44,6 +45,78 @@ final class Mailer
             ->context([
                 'user' => $user,
                 'url' => $url,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Sends an email to the given user to notify them that they have been killed.
+     */
+    public function sendAccountKilledEmail(User $user): void
+    {
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGHEST)
+            ->subject($this->translator->trans('account.killed.subject', domain: 'email', locale: $user->getLocale()->value))
+            ->text($this->translator->trans('account.killed.text', [
+                'name' => $user->getUsername(),
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/account/killed.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Sends an email to the given user to notify them that their account has been revived.
+     */
+    public function sendAccountRevivedEmail(User $user): void
+    {
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGHEST)
+            ->subject($this->translator->trans('account.revived.subject', domain: 'email', locale: $user->getLocale()->value))
+            ->text($this->translator->trans('account.revived.text', [
+                'name' => $user->getUsername(),
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/account/revived.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Sends an email to the given user to notify them that their account has been deleted.
+     */
+    public function sendAccountDeletedEmail(User $user): void
+    {
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGHEST)
+            ->subject($this->translator->trans('account.deleted.subject', domain: 'email', locale: $user->getLocale()->value))
+            ->text($this->translator->trans('account.deleted.text', [
+                'name' => $user->getUsername(),
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/account/deleted.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
                 'site' => $this->siteName,
             ])
         ;
@@ -301,7 +374,9 @@ final class Mailer
         $email = (new TemplatedEmail())
             ->to($user->getEmail())
             ->priority(Email::PRIORITY_HIGH)
-            ->subject($this->translator->trans('heist.cancelled.subject', [], 'email', $user->getLocale()->value))
+            ->subject($this->translator->trans('heist.cancelled.subject', [
+                'heist' => $heist->getName(),
+            ], 'email', $user->getLocale()->value))
             ->text($this->translator->trans('heist.cancelled.text', [
                 'name' => $user->getUsername(),
                 'heist' => $heist->getName(),
@@ -314,6 +389,133 @@ final class Mailer
                 'user' => $user,
                 'heist' => $heist,
                 'reason' => $reason,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Sends an email to the concerned crew member to notify them of a heist's success.
+     */
+    public function sendHeistSucceededCrewMemberEmail(CrewMember $crewMember): void
+    {
+        $user = $crewMember->getUser();
+        $heist = $crewMember->getHeist();
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGH)
+            ->subject($this->translator->trans('heist.succeeded_crew_member.subject', [
+                'heist' => $heist->getName(),
+            ], 'email', $user->getLocale()->value))
+            ->text($this->translator->trans('heist.succeeded_crew_member.text', [
+                'name' => $user->getUsername(),
+                'heist' => $heist->getName(),
+                'civilian_casualties' => $crewMember->getCivilianCasualties(),
+                'kills' => $crewMember->getKills(),
+                'objectives_completed' => $crewMember->getObjectivesCompleted(),
+                'payout' => $crewMember->getPayout(),
+                'status' => $crewMember->getStatus()->value,
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/heist/succeeded_crew_member.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
+                'heist' => $heist,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Sends an email to the concerned crew member to notify them of a heist's failure.
+     */
+    public function sendHeistFailedCrewMemberEmail(CrewMember $crewMember): void
+    {
+        $user = $crewMember->getUser();
+        $heist = $crewMember->getHeist();
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGH)
+            ->subject($this->translator->trans('heist.failed_crew_member.subject', [
+                'heist' => $heist->getName(),
+            ], 'email', $user->getLocale()->value))
+            ->text($this->translator->trans('heist.failed_crew_member.text', [
+                'name' => $user->getUsername(),
+                'heist' => $heist->getName(),
+                'civilian_casualties' => $crewMember->getCivilianCasualties(),
+                'kills' => $crewMember->getKills(),
+                'objectives_completed' => $crewMember->getObjectivesCompleted(),
+                'status' => $crewMember->getStatus()->value,
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/heist/failed_crew_member.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
+                'heist' => $heist,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Sends an email to the concerned user (contractor or employee) to notify them of a heist's success.
+     */
+    public function sendHeistSucceededEmail(Heist $heist, User $user, float $payout): void
+    {
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGH)
+            ->subject($this->translator->trans('heist.succeeded.subject', [
+                'heist' => $heist->getName(),
+            ], 'email', $user->getLocale()->value))
+            ->text($this->translator->trans('heist.succeeded.text', [
+                'name' => $user->getUsername(),
+                'heist' => $heist->getName(),
+                'payout' => $payout,
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/heist/succeeded.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
+                'heist' => $heist,
+                'payout' => $payout,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Sends an email to the concerned user (contractor or employee) to notify them of a heist's failure.
+     */
+    public function sendHeistFailedEmail(Heist $heist, User $user): void
+    {
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGH)
+            ->subject($this->translator->trans('heist.failed.subject', [
+                'heist' => $heist->getName(),
+            ], 'email', $user->getLocale()->value))
+            ->text($this->translator->trans('heist.failed.text', [
+                'name' => $user->getUsername(),
+                'heist' => $heist->getName(),
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/heist/failed.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
+                'heist' => $heist,
                 'site' => $this->siteName,
             ])
         ;

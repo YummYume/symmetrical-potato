@@ -31,6 +31,8 @@ final class UserProcessor implements ProcessorInterface
     public function process(mixed $user, Operation $operation, array $uriVariables = [], array $context = []): ?User
     {
         if ($operation instanceof DeleteMutation) {
+            $this->mailer->sendAccountDeletedEmail($user);
+
             return $this->removeProcessor->process($user, $operation, $uriVariables, $context);
         }
 
@@ -47,6 +49,12 @@ final class UserProcessor implements ProcessorInterface
         }
 
         if (!$user->getPlainPassword()) {
+            if ('kill' === $operation->getName()) {
+                $this->mailer->sendAccountKilledEmail($user);
+            } elseif ('revive' === $operation->getName()) {
+                $this->mailer->sendAccountRevivedEmail($user);
+            }
+
             return $this->persistProcessor->process($user, $operation, $uriVariables, $context);
         }
 

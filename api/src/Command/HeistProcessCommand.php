@@ -158,25 +158,28 @@ final class HeistProcessCommand extends Command
             ->setEndedAt(new \DateTimeImmutable())
         ;
 
-        // TODO emails
         if (HeistPhaseEnum::Succeeded === $phase) {
             // If the heist is successful
             $payout = $this->randomFloat($heist->getMinimumPayout(), $heist->getMaximumPayout());
 
             // Pay the contractor
+            $contractorPayout = $payout * $establishment->getContractorCut() / 100;
             $establishment->getContractor()->setBalance(
-                round($establishment->getContractor()->getBalance() + ($payout * $establishment->getCrewCut() / 100), 2)
+                round($establishment->getContractor()->getBalance() + $contractorPayout, 2)
             );
 
             $this->entityManager->persist($establishment->getContractor());
+            $this->mailer->sendHeistSucceededEmail($heist, $establishment->getContractor(), $contractorPayout);
 
             // Pay the employee
             if (null !== $heist->getEmployee()?->getUser()) {
+                $employeePayout = $payout * $establishment->getEmployeeCut() / 100;
                 $heist->getEmployee()->getUser()->setBalance(
-                    round($heist->getEmployee()->getUser()->getBalance() + ($payout * $establishment->getEmployeeCut() / 100), 2)
+                    round($heist->getEmployee()->getUser()->getBalance() + $employeePayout, 2)
                 );
 
                 $this->entityManager->persist($heist->getEmployee()->getUser());
+                $this->mailer->sendHeistSucceededEmail($heist, $heist->getEmployee()->getUser(), $employeePayout);
             }
 
             // Pay each crew member
@@ -213,9 +216,16 @@ final class HeistProcessCommand extends Command
                 $crewMember->getUser()->setBalance(round($crewMember->getUser()->getBalance() + $memberPayout, 2));
 
                 $this->entityManager->persist($crewMember);
+                $this->mailer->sendHeistSucceededCrewMemberEmail($crewMember);
             }
         } else {
             // If the heist failed
+            $this->mailer->sendHeistFailedEmail($heist, $establishment->getContractor());
+
+            if (null !== $heist->getEmployee()?->getUser()) {
+                $this->mailer->sendHeistFailedEmail($heist, $heist->getEmployee()->getUser());
+            }
+
             foreach ($heist->getCrewMembers() as $crewMember) {
                 // 5% chance of dying
                 $isDead = random_int(0, 100) <= 5;
@@ -252,6 +262,7 @@ final class HeistProcessCommand extends Command
 
                 $this->entityManager->persist($crewMember);
                 $this->entityManager->persist($crewMember->getUser());
+                $this->mailer->sendHeistFailedCrewMemberEmail($crewMember);
             }
         }
     }
