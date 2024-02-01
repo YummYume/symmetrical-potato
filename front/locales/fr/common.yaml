@@ -48,6 +48,9 @@ update: Mettre à jour
 edit: Modifier
 add: Ajouter
 submit: Envoyer
+more-info: Afficher plus de détails
+
+# History info
 history_info: Information sur l'historique
 history_info.created_by_at: Créé par {name} le {date} à {time}.
 history_info.created_by: Créé par {name}.
@@ -55,6 +58,8 @@ history_info.created_at: Créé le {date} à {time}.
 history_info.updated_by_at: Mis à jour par {name} le {date} à {time}.
 history_info.updated_by: Mis à jour par {name}.
 history_info.updated_at: Mis à jour le {date} à {time}.
+
+# Heist
 heist.start_at.date: Date de début
 heist.start_at.time: Heure de début
 heist.should_end_at.date: Date de fin estimée
@@ -72,6 +77,8 @@ heist.visibility: Visibilité
 heist.add: Ajouter un braquage
 heist.add_objective: Ajouter un objectif
 heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
+
+# User
 user.balance: Solde
 user.reason: Raison de l'inscription
 user.status: Statut
@@ -88,6 +95,8 @@ user.locale: Langue préférée
 user.locale.help: Cette langue sera utilisée lors de l'envoi d'e-mails.
 user.locale.en: Anglais
 user.locale.fr: Français
+
+# Asset
 asset.name: Nom
 asset.description: Description
 asset.price: Prix
@@ -98,12 +107,16 @@ asset.type.weapon: Arme
 asset.max_quantity: Quantité maximale
 asset.team_asset: Asset d'équipe
 asset.heist: Braquage associé
+
+# Contractor Request
 contractor_request.reason: Raison de la demande
 contractor_request.status: Statut
 contractor_request.status.pending: En attente
 contractor_request.status.accepted: Accepté
 contractor_request.status.rejected: Rejeté
 contractor_request.admin_comment: Commentaire pour la décision
+
+# Location
 location.place_id: Place ID
 location.name: Nom
 location.address: Adresse
@@ -112,6 +125,8 @@ location.longitude: Longitude
 location.average_rating: Note moyenne (sur 5)
 location.average_rating.none: Aucune note
 location.review_count: Nombre d'avis
+
+# Establishment
 establishment.name: Nom
 establishment.description: Description
 establishment.minimum_work_time_per_week: Temps de travail minimum par semaine
@@ -122,4 +137,3 @@ establishment.crew_cut: Part de l'équipe
 establishment.average_rating: Note moyenne (sur 5)
 establishment.average_rating.none: Aucune note
 establishment.review_count: Nombre d'avis
-more-info: Afficher plus de détails
