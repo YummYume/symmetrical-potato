@@ -92,13 +92,14 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
                     <Tooltip.Provider key={i}>
                       <Tooltip.Root>
                         <Tooltip.Trigger asChild>
-                          <div
+                          <button
+                            aria-label="Afficher plus de détails"
                             className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
                             style={{
                               gridRowEnd: stringToMinutes(end),
                               gridRowStart: stringToMinutes(start),
                             }}
-                          ></div>
+                          ></button>
                         </Tooltip.Trigger>
                         <Tooltip.Portal container={theme?.current}>
                           <Tooltip.Content sideOffset={5}>
