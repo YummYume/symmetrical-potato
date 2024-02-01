@@ -220,7 +220,7 @@ export default function PlaceId() {
                     ) : (
                       <>
                         <Link
-                          to={`/map/${placeId}/${getUriId(heist.node?.id)}/asset`}
+                          to={`/map/${placeId}/${getUriId(heist.node?.id)}/prepare`}
                           className="link link--blue"
                           unstyled
                         >
