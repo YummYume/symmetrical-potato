@@ -1,5 +1,6 @@
-import { Box, Button, Card, Flex, Grid, Tabs, Text } from '@radix-ui/themes';
-import { redirect } from '@remix-run/react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { Box, Button, Card, Flex, Grid, Heading, Section, Tabs, Text } from '@radix-ui/themes';
+import { Form, redirect } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +9,7 @@ import { useTypedLoaderData } from 'remix-typedjson';
 import { getAssets, getAssetsForbiddenForHeist } from '~/lib/api/asset';
 import { getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
 import { AssetTypeEnum } from '~/lib/api/types';
+import { SubmitButton } from '~/lib/components/dialog/FormAlertDialog';
 import { i18next } from '~/lib/i18n/index.server';
 import { hasPathError } from '~/lib/utils/api';
 import { ROLES } from '~/lib/utils/roles';
@@ -104,9 +106,19 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
 export type Loader = typeof loader;
 
-export async function action({ request, context, params }: ActionFunctionArgs) {}
+export async function action({ request, context, params }: ActionFunctionArgs) {
+  const values = await request.formData();
+  const assets = values.get('assets') as string | null;
 
-const AssetCard = ({ asset, quantity }: { asset: Asset; quantity: number }) => (
+  if (!assets) {
+    return { status: 400 };
+  }
+
+  console.log(JSON.parse(assets));
+  return {};
+}
+
+const CardAsset = ({ asset, quantity }: { asset: Asset; quantity: number }) => (
   <Card className={`${quantity > 0 ? '!border-green-6 !bg-green-3' : ''}`}>
     <Box>
       <Flex gap="3" justify="between">
@@ -121,111 +133,44 @@ const AssetCard = ({ asset, quantity }: { asset: Asset; quantity: number }) => (
   </Card>
 );
 
-// const TabRow = ({
-//   asset,
-//   crewMemberAsset,
-//   quantity,
-//   onAddAsset,
-//   onRemoveAsset,
-// }: {
-//   asset: Asset;
-//   crewMemberAsset: CrewMemberAsset;
-//   quantity: number;
-//   onAddAsset: (props: AssetProps) => void;
-//   onRemoveAsset: (props: { id: string }) => void;
-// }) => (
-//   <>
-//     <AssetCard asset={asset} quantity={quantity} />
-//     <Button
-//       onClick={() =>
-//         onAddAsset({
-//           id: asset.id,
-//           quantity: crewMemberAsset.quantity,
-//           crewMemberAssetId: crewMemberAsset.id,
-//         })
-//       }
-//     >
-//       +
-//     </Button>
-//     {crewMemberAsset.quantity > 0 && (
-//       <Button
-//         onClick={() =>
-//           onRemoveAsset({
-//             id: asset.id,
-//           })
-//         }
-//       >
-//         -
-//       </Button>
-//     )}
-//   </>
-// );
-
-// const TabsAsset = ({
-//   text,
-//   value,
-//   assets,
-//   cartAsset,
-//   crewMemberAssets,
-//   onAddAsset,
-//   onRemoveAsset,
-// }: {
-//   text: string;
-//   value: string;
-//   cartAsset: { [key: string]: AssetProps };
-//   assets: AssetCategory<Asset>;
-//   crewMemberAssets: AssetCategory<HeistAsset>;
-
-//   onAddAsset: (props: AssetProps) => void;
-//   onRemoveAsset: (props: AssetProps) => void;
-// }) => (
-//   <Tabs.Content value={value}>
-//     <Text size="2">{text}</Text>
-//     {Object.keys(assets).map((key) => (
-//       <>
-//         <Grid
-//           key={`${value}-${key}`}
-//           className="mt-2"
-//           columns="1fr auto auto auto"
-//           gap="3"
-//           align="center"
-//         >
-//           <AssetCard
-//             asset={assets[key]}
-//             quantity={
-//               (cartAsset[assets[key].id] && cartAsset[assets[key].id].quantity) ??
-//               (crewMemberAssets && crewMemberAssets[key]?.quantity)
-//             }
-//           />
-//           <Button
-//             onClick={() =>
-//               onAddAsset({
-//                 id: assets[key].id,
-//                 quantity: crewMemberAssets && crewMemberAssets[key]?.quantity,
-//                 crewMemberAssetId: crewMemberAssets[key]?.id,
-//               })
-//             }
-//           >
-//             +
-//           </Button>
-//           {crewMemberAssets && crewMemberAssets[key]?.quantity > 0 && (
-//             <Button
-//               onClick={() =>
-//                 onRemoveAsset({
-//                   id: assets[key].id,
-//                   quantity: crewMemberAssets && crewMemberAssets[key]?.quantity,
-//                   crewMemberAssetId: crewMemberAssets[key]?.id,
-//                 })
-//               }
-//             >
-//               -
-//             </Button>
-//           )}
-//         </Grid>
-//       </>
-//     ))}
-//   </Tabs.Content>
-// );
+const TabsAsset = ({
+  text,
+  value,
+  assets,
+  setQuantity,
+  onAddAsset,
+  onRemoveAsset,
+}: {
+  text: string;
+  value: string;
+  assets: AssetCategory<Asset>;
+  setQuantity: (assetId: string) => number;
+  onAddAsset: (assetId: string) => void;
+  onRemoveAsset: (assetId: string) => void;
+}) => (
+  <Tabs.Content value={value}>
+    <Text size="2">{text}</Text>
+    {Object.keys(assets).map((key) => (
+      <>
+        <Grid
+          key={`${value}-${key}`}
+          className="mt-2"
+          columns="1fr auto auto auto"
+          gap="3"
+          align="center"
+        >
+          <CardAsset
+            key={`${value}-${key}-card`}
+            asset={assets[key]}
+            quantity={setQuantity(assets[key].id)}
+          />
+          <Button onClick={() => onAddAsset(assets[key].id)}>+</Button>
+          <Button onClick={() => onRemoveAsset(assets[key].id)}>-</Button>
+        </Grid>
+      </>
+    ))}
+  </Tabs.Content>
+);
 
 export default function Prepare() {
   const { t } = useTranslation();
@@ -281,97 +226,69 @@ export default function Prepare() {
   const getQuantity = (id: string) => (cartAssets[id] ? cartAssets[id].quantity : 0);
 
   return (
-    <Tabs.Root defaultValue="employee">
-      <Tabs.List>
-        <Tabs.Trigger value="employee">{t('employee')}</Tabs.Trigger>
-        <Tabs.Trigger value="assets">{t('asset.type.assets')}</Tabs.Trigger>
-        <Tabs.Trigger value="weapons">{t('asset.type.weapons')}</Tabs.Trigger>
-        <Tabs.Trigger value="equipments">{t('asset.type.equipments')}</Tabs.Trigger>
-        <Tabs.Trigger value="checkout_payment">Checkout Payment</Tabs.Trigger>
-      </Tabs.List>
+    <>
+      <Form id={`assets-form`} method="post" className="hidden" unstable_viewTransition>
+        <input type="text" value={JSON.stringify(cartAssets)} onChange={() => {}} />
+      </Form>
+      <Tabs.Root defaultValue="employee">
+        <Tabs.List>
+          <Tabs.Trigger value="employee">{t('employee')}</Tabs.Trigger>
+          <Tabs.Trigger value="assets">{t('asset.type.assets')}</Tabs.Trigger>
+          <Tabs.Trigger value="weapons">{t('asset.type.weapons')}</Tabs.Trigger>
+          <Tabs.Trigger value="equipments">{t('asset.type.equipments')}</Tabs.Trigger>
+          <Tabs.Trigger value="checkout_payment">Checkout Payment</Tabs.Trigger>
+        </Tabs.List>
 
-      <Box px="4" pt="3" pb="2">
-        <Tabs.Content value="employee">
-          <Text size="2">Let's choose the one who will help you in your journey</Text>
-        </Tabs.Content>
+        <Box px="4" pt="3" pb="2">
+          <Tabs.Content value="employee">
+            <Text size="2">Let's choose the one who will help you in your journey</Text>
+          </Tabs.Content>
 
-        <Tabs.Content value="assets">
-          <Text size="2">{t('asset.type.assets.catch_phrase')}</Text>
-          {Object.keys(assets[AssetTypeEnum.Asset]).map((key) => (
-            <>
-              <Grid
-                key={`assets-${AssetTypeEnum.Asset}-${key}`}
-                className="mt-2"
-                columns="1fr auto auto auto"
-                gap="3"
-                align="center"
-              >
-                <AssetCard
-                  key={`assets-${AssetTypeEnum.Asset}-${key}-card`}
-                  asset={assets[AssetTypeEnum.Asset][key]}
-                  quantity={getQuantity(assets[AssetTypeEnum.Asset][key].id)}
-                />
-                <Button
-                  onClick={() =>
-                    addAsset({
-                      id: assets[AssetTypeEnum.Asset][key].id,
-                      quantity: getQuantity(assets[AssetTypeEnum.Asset][key].id),
-                      crewMemberAssetId:
-                        assetsCrewMember[assets[AssetTypeEnum.Asset][key].id] &&
-                        assetsCrewMember[assets[AssetTypeEnum.Asset][key].id].id,
-                    })
-                  }
-                >
-                  +
-                </Button>
-                <Button
-                  onClick={() =>
-                    removeAsset({
-                      id: assets[AssetTypeEnum.Asset][key].id,
-                    })
-                  }
-                >
-                  -
-                </Button>
-              </Grid>
-            </>
-          ))}
-        </Tabs.Content>
+          <TabsAsset
+            value="assets"
+            text={t('asset.type.assets.catch_phrase')}
+            assets={assets[AssetTypeEnum.Asset]}
+            setQuantity={(assetId) => getQuantity(assetId)}
+            onAddAsset={(assetId) =>
+              addAsset({
+                id: assetId,
+                quantity: getQuantity(assetId),
+                crewMemberAssetId: assetsCrewMember[assetId]?.id,
+              })
+            }
+            onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
+          />
 
-        {/* <TabsAsset
-          value="assets"
-          text={t('asset.type.assets.catch_phrase')}
-          cartAsset={cartAsset}
-          assets={assets[AssetTypeEnum.Asset]}
-          crewMemberAssets={crewMemberAssets ? crewMemberAssets[AssetTypeEnum.Asset] : {}}
-          onAddAsset={addAsset}
-          onRemoveAsset={removeAsset}
-        />
+          <TabsAsset
+            value="weapons"
+            text={t('asset.type.weapons.catch_phrase')}
+            assets={assets[AssetTypeEnum.Weapon]}
+            setQuantity={(assetId) => getQuantity(assetId)}
+            onAddAsset={(assetId) => addAsset({ id: assetId, quantity: getQuantity(assetId) })}
+            onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
+          />
 
-        <TabsAsset
-          value="weapons"
-          text={t('asset.type.weapons.catch_phrase')}
-          cartAsset={cartAsset}
-          assets={assets[AssetTypeEnum.Weapon]}
-          crewMemberAssets={crewMemberAssets ? crewMemberAssets[AssetTypeEnum.Weapon] : {}}
-          onAddAsset={addAsset}
-          onRemoveAsset={removeAsset}
-        />
+          <TabsAsset
+            value="equipments"
+            text={t('asset.type.equipments.catch_phrase')}
+            assets={assets[AssetTypeEnum.Equipment]}
+            setQuantity={(assetId) => getQuantity(assetId)}
+            onAddAsset={(assetId) => addAsset({ id: assetId, quantity: getQuantity(assetId) })}
+            onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
+          />
 
-        <TabsAsset
-          value="equipments"
-          text={t('asset.type.equipments.catch_phrase')}
-          cartAsset={cartAsset}
-          assets={assets[AssetTypeEnum.Equipment]}
-          crewMemberAssets={crewMemberAssets ? crewMemberAssets[AssetTypeEnum.Equipment] : {}}
-          onAddAsset={addAsset}
-          onRemoveAsset={removeAsset}
-        /> */}
-
-        <Tabs.Content value="checkout_payment">
-          <Text size="2">Checkout Payment</Text>
-        </Tabs.Content>
-      </Box>
-    </Tabs.Root>
+          <Tabs.Content value="checkout_payment">
+            <Dialog.Title asChild>
+              <Heading as="h2" size="8">
+                Checkout Payment
+              </Heading>
+            </Dialog.Title>
+            <Section className="space-y-3" size="1">
+              <SubmitButton actionColor="green" actionText="Purchase" formId="assets-form" />
+            </Section>
+          </Tabs.Content>
+        </Box>
+      </Tabs.Root>
+    </>
   );
 }
