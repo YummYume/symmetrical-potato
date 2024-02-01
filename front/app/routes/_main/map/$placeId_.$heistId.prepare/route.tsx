@@ -2,7 +2,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Box, Button, Card, Flex, Grid, Heading, Section, Tabs, Text } from '@radix-ui/themes';
 import { Form, redirect } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTypedLoaderData } from 'remix-typedjson';
 
@@ -17,7 +17,7 @@ import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { LoaderFunctionArgs } from '@remix-run/node';
-import type { Asset, HeistAsset } from '~/lib/api/types';
+import type { Asset, CrewMember, HeistAsset, HeistAssetCursorConnection } from '~/lib/api/types';
 
 type AssetCategory<T> = Record<string, T>;
 type AssetsOrganized = Record<string, AssetCategory<Asset>>;
@@ -36,10 +36,14 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   try {
     // Get the crew member for the current user and the current heist
-    const crewMember = await getCrewMemberByUserAndHeist(context.client, {
+    let crewMember = await getCrewMemberByUserAndHeist(context.client, {
       heistId: params.heistId,
       userId: user.id,
     });
+
+    if (!crewMember) {
+      throw redirect(`/map/${params.placeId}`);
+    }
 
     // Get all the assets
     const { assets } = await getAssets(context.client);
@@ -51,7 +55,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     );
 
     // Get the current assets for the crew member
-    const assetsCrewMember = crewMember ? crewMember.heistAssets.edges : [];
+    const assetsCrewMember = crewMember.heistAssets.edges;
 
     const assetsCrewMemberOrganized = assetsCrewMember.reduce<AssetsCrewMemberOrganized>(
       (acc, curr) => {
@@ -86,7 +90,14 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       {},
     );
 
+    // Remove the heistAssets from the crewMember object, they are already in the assetsPurchased
+    const {
+      heistAssets: _,
+      ...rest
+    }: { heistAssets: HeistAssetCursorConnection } & Omit<CrewMember, 'heistAssets'> = crewMember;
+
     return {
+      crewMember: rest,
       assetsPurchased,
       assetsCrewMember: assetsCrewMemberOrganized,
       assets: assetsOrganized,
@@ -108,7 +119,7 @@ export type Loader = typeof loader;
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
   const values = await request.formData();
-  const assets = values.get('assets') as string | null;
+  const assets = values.get('assetsPurchased') as string | null;
 
   if (!assets) {
     return { status: 400 };
@@ -150,39 +161,31 @@ const TabsAsset = ({
 }) => (
   <Tabs.Content value={value}>
     <Text size="2">{text}</Text>
-    {Object.keys(assets).map((key) => (
-      <>
+    <>
+      {Object.keys(assets).map((type, index) => (
         <Grid
-          key={`${value}-${key}`}
+          key={`${value}-${assets[type].id}-${index}`}
           className="mt-2"
           columns="1fr auto auto auto"
           gap="3"
           align="center"
         >
-          <CardAsset
-            key={`${value}-${key}-card`}
-            asset={assets[key]}
-            quantity={setQuantity(assets[key].id)}
-          />
-          <Button onClick={() => onAddAsset(assets[key].id)}>+</Button>
-          <Button onClick={() => onRemoveAsset(assets[key].id)}>-</Button>
+          <CardAsset asset={assets[type]} quantity={setQuantity(assets[type].id)} />
+          <Button onClick={() => onAddAsset(assets[type].id)}>+</Button>
+          <Button onClick={() => onRemoveAsset(assets[type].id)}>-</Button>
         </Grid>
-      </>
-    ))}
+      ))}
+    </>
   </Tabs.Content>
 );
 
 export default function Prepare() {
   const { t } = useTranslation();
-  const { assets, assetsPurchased, assetsCrewMember } = useTypedLoaderData<Loader>();
+  const { assets, assetsPurchased, assetsCrewMember, crewMember } = useTypedLoaderData<Loader>();
 
   const [cartAssets, setCartAssets] = useState<{
     [key: string]: AssetPurchased;
   }>(assetsPurchased);
-
-  useEffect(() => {
-    console.log(cartAssets);
-  }, [cartAssets]);
 
   const addAsset = ({ id, quantity, crewMemberAssetId }: AssetPurchased) => {
     setCartAssets((prev) => {
@@ -228,7 +231,11 @@ export default function Prepare() {
   return (
     <>
       <Form id={`assets-form`} method="post" className="hidden" unstable_viewTransition>
-        <input type="text" value={JSON.stringify(cartAssets)} onChange={() => {}} />
+        <input
+          type="hidden"
+          name="assetsPurchased"
+          value={JSON.stringify({ cartAssets, crewMember })}
+        />
       </Form>
       <Tabs.Root defaultValue="employee">
         <Tabs.List>
