@@ -48,6 +48,7 @@ update: Update
 edit: Edit
 add: Add
 submit: Submit
+more-info: Show more details
 
 # History info
 history_info: History info
