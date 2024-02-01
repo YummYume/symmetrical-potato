@@ -33,3 +33,6 @@ api_cors_allow_origin: "{{ vault_api_cors_allow_origin }}"
 api_sentry_dsn: "{{ vault_api_sentry_dsn }}"
 
 api_jwt_passphrase: "{{ vault_api_jwt_passphrase }}"
+
+api_site_name: "{{ vault_api_site_name }}"
+api_site_base_url: "{{ vault_api_site_base_url }}"

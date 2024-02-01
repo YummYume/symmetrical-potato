@@ -29,6 +29,11 @@ services:
         arguments:
             $apiKey: "%env(GOOGLE_MAPS_API_KEY)%"
 
+    App\Service\Mailer:
+        bind:
+            $siteName: "%env(SITE_NAME)%"
+            $siteBaseUrl: "%env(SITE_BASE_URL)%"
+
 when@prod:
     services:
         Sentry\Integration\IgnoreErrorsIntegration:

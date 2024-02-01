@@ -1,0 +1,193 @@
+# Account
+account.validated.subject: Votre compte a été validé
+account.validated.text: |
+    Bonjour {name},
+
+    Votre compte a été validé. Vous pouvez maintenant vous connecter à {url}.
+
+    Merci,
+    L'équipe {site}
+account.killed.subject: Vous avez été tué
+account.killed.text: |
+    Bonjour {name},
+
+    Vous avez été tué. Vous ne pouvez plus vous connecter à votre compte.
+    On se retrouve de l'autre côté.
+
+    Merci,
+    L'équipe {site}
+account.revived.subject: Vous avez été ressuscité
+account.revived.text: |
+    Bonjour {name},
+
+    Vous avez été ressuscité. Vous pouvez maintenant vous reconnecter à votre compte.
+    Vous avez de la chance.
+
+    Merci,
+    L'équipe {site}
+account.deleted.subject: Votre compte a été supprimé
+account.deleted.text: |
+    Bonjour {name},
+
+    Votre compte a été supprimé. Toutes vos données ont été effacées.
+
+    Adieu,
+    L'équipe {site}
+
+# Asset
+asset.crew_member_refunded.subject: Remboursement pour l'asset {asset}
+asset.crew_member_refunded.text: |
+    Bonjour {name},
+
+    L'asset {asset} dans le braquage {heist} n'est plus disponible.
+    Vous avez été remboursé de {amount, number, currency} pour une quantité totale de {quantity}.
+    Votre nouveau solde est de {balance, number, currency}.
+
+    Merci,
+    L'équipe {site}
+asset.contractor_refunded.subject: L'asset {asset} n'est plus disponible
+asset.contractor_refunded.text: |
+    Bonjour {name},
+
+    L'asset {asset} n'est plus disponible.
+    Parce que certains de vos établissements l'utilisaient dans la planification de braquages, un total de {amount, number, currency} a été prélevé sur votre compte pour rembourser les différents membres de l'équipage qui ont acheté cet asset.
+    Votre nouveau solde est de {balance, number, currency}.
+
+    Merci,
+    L'équipe {site}
+
+# Contractor Request
+contractor_request.created.subject: Nouvelle demande de contractant
+contractor_request.created.text: |
+    Bonjour {name},
+
+    Une nouvelle demande de contractant a été créée par {request_name} avec la raison suivante :
+
+    "{reason}".
+
+    Vous pouvez la consulter à {url}.
+
+    Merci,
+    L'équipe {site}
+contractor_request.accepted.subject: Demande de contractant acceptée
+contractor_request.accepted.text: |
+    Bonjour {name},
+
+    Votre demande de contractant a été acceptée. Vous pouvez maintenant commencer à créer des établissements et des braquages.
+
+    Merci,
+    L'équipe {site}
+contractor_request.refused.subject: Demande de contractant refusée
+contractor_request.refused.text: |
+    Bonjour {name},
+
+    Votre demande de contractant a été refusée. Vous pouvez toujours essayer à nouveau plus tard.
+
+    Merci,
+    L'équipe {site}
+
+# Employee
+employee.created.subject: Nouvelle demande d'employé
+employee.created.text: |
+    Bonjour {name},
+
+    Une nouvelle demande d'employé a été créée par {request_name} avec la raison suivante :
+
+    "{reason}".
+
+    Vous pouvez la consulter à {url}.
+
+    Merci,
+    L'équipe {site}
+employee.accepted.subject: Demande d'employé acceptée
+employee.accepted.text: |
+    Bonjour {name},
+
+    Votre demande d'employé a été acceptée. Vous pouvez maintenant commencer à créer des établissements et des braquages.
+
+    Merci,
+    L'équipe {site}
+employee.refused.subject: Demande d'employé refusée
+employee.refused.text: |
+    Bonjour {name},
+
+    Votre demande d'employé a été refusée. Vous pouvez toujours essayer à nouveau plus tard.
+
+    Merci,
+    L'équipe {site}
+
+# Heist
+heist.cancelled_reason.no_crew_member: Aucun braqueur n'est disponible pour ce braquage.
+heist.cancelled_reason.no_employee: Aucun employé n'est disponible pour ce braquage.
+heist.cancelled_reason.manual: Le braquage a été annulé manuellement.
+heist.cancelled.subject: Braquage {heist} annulé
+heist.cancelled.text: |
+    Bonjour {name},
+
+    Le braquage {heist} dont vous faisiez partie a été annulé pour la raison suivante :
+
+    "{reason}".
+
+    Vous devriez annuler toutes les préparations pour ce braquage et vous débarasser de toutes les preuves en votre possession.
+
+    Merci,
+    L'équipe {site}
+heist.succeeded_crew_member.subject: Braquage {heist} réussi
+heist.succeeded_crew_member.text: |
+    Bonjour {name},
+
+    Le braquage {heist} dont vous faisiez partie a été un succès ! Bon travail !
+    Voici les détails de ce braquage et vos gains :
+
+    Victimes civiles : {civilian_casualties},
+    Morts : {kills},
+    Objectifs complétés : {objectives_completed}.
+
+    Vous avez gagné un total de {payout, number, currency} pour ce braquage.
+
+    {status, select,
+        free {Vous avez réussi à vous échapper sans une égratignure.}
+        jailed {Vous avez été arrêté pendant le braquage.}
+        dead {Vous avez été tué pendant le braquage.}
+        other {}
+    }
+
+    Merci,
+    L'équipe {site}
+heist.failed_crew_member.subject: Braquage {heist} échoué
+heist.failed_crew_member.text: |
+    Bonjour {name},
+
+    Le braquage {heist} dont vous faisiez partie a échoué. Des précautions ont été prises pour vous protéger.
+    Voici les détails de ce braquage :
+
+    Victimes civiles : {civilian_casualties},
+    Morts : {kills},
+    Objectifs complétés : {objectives_completed}.
+
+    {status, select,
+        free {Vous avez réussi à vous échapper sans une égratignure.}
+        jailed {Vous avez été arrêté pendant le braquage.}
+        dead {Vous avez été tué pendant le braquage.}
+        other {}
+    }
+
+    Merci,
+    L'équipe {site}
+heist.succeeded.subject: Braquage {heist} réussi
+heist.succeeded.text: |
+    Bonjour {name},
+
+    Le braquage {heist} dont vous faisiez partie a été un succès ! Bon travail !
+    Vous avez gagné un total de {payout, number, currency} pour ce braquage.
+
+    Merci,
+    L'équipe {site}
+heist.failed.subject: Braquage {heist} échoué
+heist.failed.text: |
+    Bonjour {name},
+
+    Le braquage {heist} dont vous faisiez partie a échoué. Des précautions ont été prises pour vous protéger.
+
+    Merci,
+    L'équipe {site}

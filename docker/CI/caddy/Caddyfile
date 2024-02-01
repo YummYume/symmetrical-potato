@@ -9,7 +9,7 @@ http://127.0.0.1:9000 {
     encode zstd gzip
     file_server
 
-    php_fastcgi unix//run/php/php8.2-fpm.sock {
+    php_fastcgi unix//run/php/php8.3-fpm.sock {
         resolve_root_symlink
     }
 

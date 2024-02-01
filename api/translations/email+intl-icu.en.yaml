@@ -1,0 +1,196 @@
+# Account
+account.validated.subject: Your account has been validated
+account.validated.text: |
+    Hello {name},
+
+    Your account has been validated. You can now log in at {url}.
+
+    Thanks,
+    The {site} Team
+account.killed.subject: You have been killed
+account.killed.text: |
+    Hello {name},
+
+    You have been killed. You can no longer log in to your account.
+    See you on the other side.
+
+    Thanks,
+    The {site} Team
+account.revived.subject: You have been revived
+account.revived.text: |
+    Hello {name},
+
+    You have been revived. You can now log back in to your account.
+    You're a lucky one.
+
+    Thanks,
+    The {site} Team
+account.deleted.subject: Your account has been deleted
+account.deleted.text: |
+    Hello {name},
+
+    Your account has been deleted. All your data has been erased.
+
+    Farewell,
+    The {site} Team
+
+# Asset
+asset.crew_member_refunded.subject: Refund for asset {asset}
+asset.crew_member_refunded.text: |
+    Hello {name},
+
+    The asset {asset} in heist {heist} is no longer available.
+    You have been refunded {amount, number, currency} for a total quantity of {quantity}.
+    Your new balance is {balance, number, currency}.
+
+    Thanks,
+    The {site} Team
+asset.contractor_refunded.subject: Asset {asset} is no longer available
+asset.contractor_refunded.text: |
+    Hello {name},
+
+    The asset {asset} is no longer available.
+    Because some of your establishments were using it in planning heists, a total of {amount, number, currency} has been taken from your account to refund the different crew members who purchased this asset.
+    Your new balance is {balance, number, currency}.
+
+    Thanks,
+    The {site} Team
+
+# Contractor Request
+contractor_request.created.subject: New contractor request
+contractor_request.created.text: |
+    Hello {name},
+
+    A new contractor request has been created by {request_name} with the following reason:
+
+    "{reason}".
+
+    You can view it at {url}.
+
+    Thanks,
+    The {site} Team
+contractor_request.accepted.subject: Contractor request accepted
+contractor_request.accepted.text: |
+    Hello {name},
+
+    Your contractor request has been accepted. You can now start creating establishments and heists.
+
+    Thanks,
+    The {site} Team
+contractor_request.refused.subject: Contractor request refused
+contractor_request.refused.text: |
+    Hello {name},
+
+    Your contractor request has been refused. You can always try again later.
+
+    Thanks,
+    The {site} Team
+
+# Employee
+employee.created.subject: New employee request
+employee.created.text: |
+    Hello {name},
+
+    A new employee request has been created by {employee} with the following motivation:
+
+    "{motivation}".
+
+    You can view it at {url}.
+
+    Thanks,
+    The {site} Team
+employee.accepted.subject: Employee request accepted
+employee.accepted.text: |
+    Hello {name},
+
+    Your employee request for {establishment} has been accepted. You will now start working under the code name {code_name}.
+    You will be notified when a heist is assigned to you.
+
+    Thanks,
+    The {site} Team
+employee.refused.subject: Employee request refused
+employee.refused.text: |
+    Hello {name},
+
+    Your employee request for {establishment} has been refused. You can always try again later.
+
+    Thanks,
+    The {site} Team
+
+# Heist
+heist.cancelled_reason.no_crew_member: No crew member was available for this heist.
+heist.cancelled_reason.no_employee: No employee was assigned for this heist.
+heist.cancelled_reason.manual: The heist was cancelled manually.
+heist.cancelled.subject: Heist {heist} cancelled
+heist.cancelled.text: |
+    Hello {name},
+
+    The heist {heist} you were a part of has been cancelled for the following reason:
+
+    "{reason}".
+
+    You should abandon any preparation for this heist and dispose of any evidence you may have.
+
+    Thanks,
+    The {site} Team
+heist.succeeded_crew_member.subject: Heist {heist} succeeds
+heist.succeeded_crew_member.text: |
+    Hello {name},
+
+    The heist {heist} you were a part of was a success ! Good job !
+    Here are the details of this heist and your earnings:
+
+    Civilian casualties : {civilian_casualties},
+    Kills : {kills},
+    Objectives completed : {objectives_completed}.
+
+    You earned a total of {payout, number, currency} for this heist.
+
+    {status, select,
+        free {You escaped the heist without a scratch.}
+        jailed {You were arrested during the heist.}
+        dead {You were killed during the heist.}
+        other {}
+    }
+
+    Thanks,
+    The {site} Team
+heist.failed_crew_member.subject: Heist {heist} failed
+heist.failed_crew_member.text: |
+    Hello {name},
+
+    The heist {heist} you were a part of failed. Necessary precautions have been taken to ensure your safety.
+    Here are the details of this heist and your earnings:
+
+    Civilian casualties : {civilian_casualties},
+    Kills : {kills},
+    Objectives completed : {objectives_completed}.
+
+    You earned a total of {payout, number, currency} for this heist.
+
+    {status, select,
+        free {You escaped the heist without a scratch.}
+        jailed {You were arrested during the heist.}
+        dead {You were killed during the heist.}
+        other {}
+    }
+
+    Thanks,
+    The {site} Team
+heist.succeeded.subject: Heist {heist} succeeds
+heist.succeeded.text: |
+    Hello {name},
+
+    The heist {heist} was a success ! Good job !
+    You earned a total of {payout, number, currency} for this heist.
+
+    Thanks,
+    The {site} Team
+heist.failed.subject: Heist {heist} failed
+heist.failed.text: |
+    Hello {name},
+
+    The heist {heist} failed. Necessary precautions have been taken to ensure your safety.
+
+    Thanks,
+    The {site} Team
