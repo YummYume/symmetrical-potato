@@ -56,6 +56,7 @@ export type Day = {
 
 export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
   const theme = useContext(ThemeContext);
+  const { t } = useTranslation();
 
   return (
     <ul className="relative overflow-clip rounded-6 border-2 border-accent-8">
@@ -93,7 +94,7 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
                       <Tooltip.Root>
                         <Tooltip.Trigger asChild>
                           <button
-                            aria-label="Afficher plus de détails"
+                            aria-label={t('more-info')}
                             className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
                             style={{
                               gridRowEnd: stringToMinutes(end),
