@@ -89,3 +89,20 @@ employee.refused.text: |
 
     Merci,
     L'équipe {site}
+
+# Heist
+heist.cancelled_reason.no_crew_member: Aucun braqueur n'est disponible pour ce braquage.
+heist.cancelled_reason.no_employee: Aucun employé n'est disponible pour ce braquage.
+heist.cancelled_reason.manual: Le braquage a été annulé manuellement.
+heist.cancelled.subject: Braquage {heist} annulé
+heist.cancelled.text: |
+    Bonjour {name},
+
+    Le braquage {heist} dont vous faisiez partie a été annulé pour la raison suivante :
+
+    "{reason}"
+
+    Vous devriez annuler toutes les préparations pour ce braquage et vous débarasser de toutes les preuves en votre possession.
+
+    Merci,
+    L'équipe {site}

@@ -5,8 +5,10 @@ namespace App\Service;
 use App\Entity\Asset;
 use App\Entity\ContractorRequest;
 use App\Entity\Employee;
+use App\Entity\Heist;
 use App\Entity\HeistAsset;
 use App\Entity\User;
+use App\Enum\HeistCancellationReasonEnum;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -274,6 +276,44 @@ final class Mailer
             ->locale($user->getLocale()->value)
             ->context([
                 'employee' => $employee,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Sends an email to the concerned user to notify them of a heist's cancellation.
+     * TODO : cancelled heists should refund the crew members and stuff (not to do here).
+     * TODO : this email should also be sent when the heist is deleted manually.
+     */
+    public function sendHeistCancelledEmail(
+        Heist $heist,
+        User $user,
+        HeistCancellationReasonEnum $cancellationReason = HeistCancellationReasonEnum::Manual
+    ): void {
+        $reason = $this->translator->trans(match ($cancellationReason) {
+            HeistCancellationReasonEnum::NoCrewMember => 'heist.cancelled.reason.no_crew_member',
+            HeistCancellationReasonEnum::NoEmployee => 'heist.cancelled.reason.no_employee',
+            HeistCancellationReasonEnum::Manual => 'heist.cancelled.reason.manual',
+        }, domain: 'email', locale: $user->getLocale()->value);
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGH)
+            ->subject($this->translator->trans('heist.cancelled.subject', [], 'email', $user->getLocale()->value))
+            ->text($this->translator->trans('heist.cancelled.text', [
+                'name' => $user->getUsername(),
+                'heist' => $heist->getName(),
+                'reason' => $reason,
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/heist/cancelled.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
+                'heist' => $heist,
+                'reason' => $reason,
                 'site' => $this->siteName,
             ])
         ;

@@ -6,10 +6,12 @@ use App\Entity\CrewMember;
 use App\Entity\Heist;
 use App\Entity\User;
 use App\Enum\CrewMemberStatusEnum;
+use App\Enum\HeistCancellationReasonEnum;
 use App\Enum\HeistDifficultyEnum;
 use App\Enum\HeistPhaseEnum;
 use App\Enum\HeistPreferedTacticEnum;
 use App\Repository\HeistRepository;
+use App\Service\Mailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -26,7 +28,8 @@ final class HeistProcessCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly HeistRepository $heistRepository
+        private readonly HeistRepository $heistRepository,
+        private readonly Mailer $mailer
     ) {
         parent::__construct();
     }
@@ -53,8 +56,14 @@ final class HeistProcessCommand extends Command
                 foreach ($ongoingHeists as $ongoingHeist) {
                     try {
                         // Cancel heists with no crew members, otherwise set them to in progress
-                        if ($ongoingHeist->getCrewMembers()->isEmpty()) {
+                        if ($ongoingHeist->getCrewMembers()->isEmpty() || null === $ongoingHeist->getEmployee()) {
                             $ongoingHeist->setPhase(HeistPhaseEnum::Cancelled);
+
+                            $this->mailer->sendHeistCancelledEmail(
+                                $ongoingHeist,
+                                $ongoingHeist->getEstablishment()->getContractor(),
+                                $ongoingHeist->getCrewMembers()->isEmpty() ? HeistCancellationReasonEnum::NoCrewMember : HeistCancellationReasonEnum::NoEmployee
+                            );
                         } else {
                             $ongoingHeist->setPhase(HeistPhaseEnum::InProgress);
                         }

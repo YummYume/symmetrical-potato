@@ -90,3 +90,20 @@ employee.refused.text: |
 
     Thanks,
     The {site} Team
+
+# Heist
+heist.cancelled_reason.no_crew_member: No crew member was available for this heist.
+heist.cancelled_reason.no_employee: No employee was assigned for this heist.
+heist.cancelled_reason.manual: The heist was cancelled manually.
+heist.cancelled.subject: Heist {heist} has been cancelled
+heist.cancelled.text: |
+    Hello {name},
+
+    The heist {heist} you were a part of has been cancelled for the following reason:
+
+    "{reason}"
+
+    You should abandon any preparation for this heist and dispose of any evidence you may have.
+
+    Thanks,
+    The {site} Team
