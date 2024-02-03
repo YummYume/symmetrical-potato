@@ -4,12 +4,15 @@ import { useFieldArray, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useRemixFormContext } from 'remix-hook-form';
 
+import { Error } from '~/lib/components/form/fields/Error';
+import { Help } from '~/lib/components/form/fields/Help';
+import { Label } from '~/lib/components/form/fields/Label';
+
 import type { HTMLInputTypeAttribute } from 'react';
 import type { ArrayPath, FieldArray, Path } from 'react-hook-form';
+import type { DefaultFieldProps } from '~/lib/types/form';
 
-type FormData = Record<string, unknown>;
-
-type Config<T extends FormData> = {
+type Config<T extends Record<string, unknown>> = {
   defaultAppendValue:
     | FieldArray<T, ArrayPath<T> & (string | undefined)>
     | FieldArray<T, ArrayPath<T> & (string | undefined)>[];
@@ -26,24 +29,37 @@ type Config<T extends FormData> = {
   };
 };
 
-export type FieldInputArrayProps<T extends FormData> = {
-  name: Path<T>;
-  label: string;
+export type FieldInputArrayProps<T extends Record<string, unknown>> = {
+  /**
+   * The configuration for the array of inputs.
+   */
   config: Config<T>;
-  hideLabel?: boolean;
-  containerClassName?: string;
+  /**
+   * The namespace to use for translating the options' labels.
+   */
+  translationNamespace?: string;
+  /**
+   * The className to apply to the container of the input.
+   */
   inputContainerClassName?: string;
-  errorClassName?: string;
-} & React.ComponentProps<typeof TextField.Input>;
+} & DefaultFieldProps<T> &
+  React.ComponentProps<typeof TextField.Input>;
 
-export function FieldInputArray<T extends FormData>({
+export function FieldInputArray<T extends Record<string, unknown>>({
+  config,
+  translationNamespace = 'common',
+  inputContainerClassName = '',
   name,
   label,
-  config,
+  id,
   hideLabel = false,
+  disabled = undefined,
+  required = undefined,
+  help = undefined,
   containerClassName = '',
-  inputContainerClassName = '',
-  errorClassName = 'text-accent-6',
+  labelRender: LabelField = Label,
+  helpRender: HelpField = Help,
+  errorRender: ErrorField = Error,
   ...rest
 }: FieldInputArrayProps<T>) {
   const { t } = useTranslation();
@@ -67,47 +83,55 @@ export function FieldInputArray<T extends FormData>({
                 {config.fields.map((fieldInput, key) => (
                   <Controller
                     key={`${item.id}-${key}`}
-                    render={({ field, fieldState: { error } }) => (
-                      <>
-                        <Text
-                          as="label"
-                          htmlFor={field.name}
-                          className={hideLabel ? 'sr-only' : ''}
-                        >
-                          {`${fieldInput.label} ${index + 1}`}
-                        </Text>
-
-                        <TextField.Root className={inputContainerClassName}>
-                          <TextField.Input
-                            {...register(field.name)}
-                            {...rest}
-                            id={field.name}
-                            aria-describedby={error ? `${field.name}-error` : ''}
-                            type={fieldInput.type}
-                          />
-                        </TextField.Root>
-
-                        {error?.message && (
-                          <Text as="p" id={`${field.name}-error`} className={errorClassName}>
-                            {t(error.message, { ns: 'validators' })}
-                          </Text>
-                        )}
-                      </>
-                    )}
                     name={`${name}.${index}.${fieldInput.name}` as Path<T>}
                     control={control}
+                    render={({ field, fieldState: { error } }) => {
+                      const fieldId = id ?? field.name;
+                      const helpId = help ? `${fieldId}-help` : undefined;
+                      const errorId = error?.message ? `${fieldId}-error` : undefined;
+                      return (
+                        <>
+                          <LabelField
+                            htmlFor={fieldId}
+                            className={hideLabel ? 'sr-only' : undefined}
+                          >
+                            {`${fieldInput.label} ${index + 1}`}
+                          </LabelField>
+
+                          <TextField.Root className={inputContainerClassName}>
+                            <TextField.Input
+                              {...register(field.name)}
+                              {...rest}
+                              id={fieldId}
+                              aria-describedby={helpId}
+                              aria-errormessage={errorId}
+                              aria-invalid={!!errorId}
+                              color={errorId ? 'crimson' : rest.color}
+                              type={fieldInput.type}
+                            />
+                          </TextField.Root>
+
+                          {help && <HelpField id={helpId}>{help}</HelpField>}
+                          {error?.message && (
+                            <ErrorField id={errorId}>
+                              {t(error.message, { ns: 'validators' })}
+                            </ErrorField>
+                          )}
+                        </>
+                      );
+                    }}
                   />
                 ))}
 
                 <Button type="button" color="crimson" onClick={() => remove(index)}>
-                  {config.delete?.text ?? t('delete', { ns: 'common' })}
+                  {config.delete?.text ?? t('delete', { ns: translationNamespace })}
                 </Button>
               </Grid>
             </li>
           );
         })}
         <Button type="button" onClick={() => append(config.defaultAppendValue)}>
-          {config.add?.text ?? t('add', { ns: 'common' })}
+          {config.add?.text ?? t('add', { ns: translationNamespace })}
         </Button>
       </ul>
     </Grid>
