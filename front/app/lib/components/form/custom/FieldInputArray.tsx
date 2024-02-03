@@ -87,13 +87,12 @@ export function FieldInputArray<T extends Record<string, unknown>>({
                     control={control}
                     render={({ field, fieldState: { error } }) => {
                       const fieldId = id ?? field.name;
-                      const ariaLabelledBy = `${fieldId}-label`;
                       const helpId = help ? `${fieldId}-help` : undefined;
                       const errorId = error?.message ? `${fieldId}-error` : undefined;
                       return (
                         <>
                           <LabelField
-                            id={ariaLabelledBy}
+                            htmlFor={fieldId}
                             className={hideLabel ? 'sr-only' : undefined}
                           >
                             {`${fieldInput.label} ${index + 1}`}
@@ -104,7 +103,6 @@ export function FieldInputArray<T extends Record<string, unknown>>({
                               {...register(field.name)}
                               {...rest}
                               id={fieldId}
-                              aria-labelledby={ariaLabelledBy}
                               aria-describedby={helpId}
                               aria-errormessage={errorId}
                               aria-invalid={!!errorId}

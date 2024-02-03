@@ -1,4 +1,4 @@
-import { Grid, Text } from '@radix-ui/themes';
+import { Grid } from '@radix-ui/themes';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
@@ -58,9 +58,9 @@ export function FieldMultiSelect<T extends Record<string, unknown>>({
           }
           return (
             <>
-              <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : undefined}>
+              <LabelField htmlFor={fieldId} className={hideLabel ? 'sr-only' : undefined}>
                 {label}
-              </Text>
+              </LabelField>
               <Select
                 {...register(name)}
                 {...rest}
