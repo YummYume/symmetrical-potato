@@ -17,6 +17,7 @@ use App\Enum\UserStatusEnum;
 use App\Filter\RoleFilter;
 use App\Filter\UuidFilter;
 use App\Repository\UserRepository;
+use App\Resolver\UserMutationResolver;
 use App\Resolver\UserQueryResolver;
 use App\State\UserProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -53,6 +54,22 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: [
                 'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ]
+        ),
+        // Name has to be different from the "get" above to avoid conflicts (yes this is cursed)
+        new Query(
+            name: 'getReset',
+            shortName: 'TokenUser',
+            resolver: UserQueryResolver::class,
+            normalizationContext: [
+                'groups' => [],
+            ],
+            args: [
+                'resetToken' => [
+                    'type' => 'String!',
+                    'description' => 'The reset token to use to reset the password.',
+                ],
+            ],
+            security: 'user == null'
         ),
         new QueryCollection(
             normalizationContext: [
@@ -125,6 +142,49 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             security: 'is_granted("REVIVE", object)',
         ),
+        new Mutation(
+            name: 'requestResetPassword',
+            resolver: UserMutationResolver::class,
+            args: [
+                'email' => [
+                    'type' => 'String!',
+                    'description' => 'The email of the user who wants to reset their password.',
+                ],
+                'username' => [
+                    'type' => 'String!',
+                    'description' => 'The username of the user who wants to reset their password.',
+                ],
+            ],
+            validate: false,
+            read: false,
+            write: false,
+            security: 'user == null',
+        ),
+        new Mutation(
+            name: 'resetPassword',
+            resolver: UserMutationResolver::class,
+            normalizationContext: [
+                'groups' => [self::RESET_READ],
+            ],
+            denormalizationContext: [
+                'groups' => [self::RESET_WRITE],
+            ],
+            validationContext: [
+                'groups' => [self::RESET_WRITE],
+            ],
+            args: [
+                'plainPassword' => [
+                    'type' => 'String!',
+                    'description' => 'The new password of the user.',
+                ],
+                'resetToken' => [
+                    'type' => 'String!',
+                    'description' => 'The reset token to use to reset the password.',
+                ],
+            ],
+            read: false,
+            security: 'user == null',
+        ),
         new DeleteMutation(
             name: 'delete',
             security: 'is_granted("DELETE", object)'
@@ -160,6 +220,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const REVIVE = 'user:revive';
     public const UPDATE = 'user:update';
     public const UPDATE_ADMIN = 'user:update:admin';
+    // Purposely unused
+    public const RESET_READ = 'user:reset:read';
+    public const RESET_WRITE = 'user:reset:write';
+
+    public const RESET_TOKEN_TTL = '3600'; // 1 hour
 
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_HEISTER = 'ROLE_HEISTER';
@@ -220,36 +285,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ApiProperty(security: '')]
-    #[Groups([self::REGISTER, self::UPDATE])]
-    #[Assert\NotBlank(groups: [self::REGISTER], message: 'user.password.not_blank')]
+    #[Groups([self::REGISTER, self::UPDATE, self::RESET_WRITE])]
+    #[Assert\NotBlank(groups: [self::REGISTER, self::RESET_WRITE], message: 'user.password.not_blank')]
     #[Assert\Length(
-        groups: [self::REGISTER, self::UPDATE],
+        groups: [self::REGISTER, self::UPDATE, self::RESET_WRITE],
         min: 8,
         max: 100,
         minMessage: 'user.password.min_length',
         maxMessage: 'user.password.max_length'
     )]
     #[Assert\Regex(
-        groups: [self::REGISTER, self::UPDATE],
+        groups: [self::REGISTER, self::UPDATE, self::RESET_WRITE],
         pattern: '/[\d]/',
         message: 'user.password.at_least_one_digit'
     )]
     #[Assert\Regex(
-        groups: [self::REGISTER, self::UPDATE],
+        groups: [self::REGISTER, self::UPDATE, self::RESET_WRITE],
         pattern: '/[A-Z]/',
         message: 'user.password.at_least_one_uppercase_letter'
     )]
     #[Assert\Regex(
-        groups: [self::REGISTER, self::UPDATE],
+        groups: [self::REGISTER, self::UPDATE, self::RESET_WRITE],
         pattern: '/[a-z]/',
         message: 'user.password.at_least_one_lowercase_letter'
     )]
     #[Assert\Regex(
-        groups: [self::REGISTER, self::UPDATE],
+        groups: [self::REGISTER, self::UPDATE, self::RESET_WRITE],
         pattern: '/[!@#$%^&*()\-_=+;:,<.>]/',
         message: 'user.password.at_least_one_special_character'
     )]
-    #[Assert\NotCompromisedPassword(groups: [self::REGISTER], message: 'user.plain_password.not_compromised')]
+    #[Assert\NotCompromisedPassword(groups: [self::REGISTER, self::UPDATE, self::RESET_WRITE], message: 'user.plain_password.not_compromised')]
     private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255)]
@@ -301,6 +366,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ApiProperty(security: '')]
     #[Groups([self::READ, self::REGISTER, self::UPDATE])]
     private UserLocaleEnum $locale = UserLocaleEnum::En;
+
+    #[ORM\Column(nullable: true)]
+    #[Ignore]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Ignore]
+    private ?\DateTimeInterface $resetTokenRequestedAt = null;
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
@@ -622,6 +695,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLocale(UserLocaleEnum $locale): static
     {
         $this->locale = $locale;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): static
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    public function getResetTokenRequestedAt(): ?\DateTimeInterface
+    {
+        return $this->resetTokenRequestedAt;
+    }
+
+    public function setResetTokenRequestedAt(?\DateTimeInterface $resetTokenRequestedAt): static
+    {
+        $this->resetTokenRequestedAt = $resetTokenRequestedAt;
 
         return $this;
     }

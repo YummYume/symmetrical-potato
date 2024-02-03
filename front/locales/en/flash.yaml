@@ -4,6 +4,7 @@ user.verified: User verified successfully.
 user.deleted: User deleted successfully.
 user.killed: User killed successfully.
 user.revived: User revived successfully.
+user.password_reset_sent: Thank you, an email has been sent to the given email address with instructions to reset your password.
 
 # Asset
 asset.created: Asset created successfully.

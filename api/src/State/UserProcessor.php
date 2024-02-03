@@ -67,6 +67,15 @@ final class UserProcessor implements ProcessorInterface
             ->eraseCredentials()
         ;
 
+        if ('resetPassword' === $operation->getName()) {
+            $user
+                ->setResetToken(null)
+                ->setResetTokenRequestedAt(null)
+            ;
+
+            $this->mailer->sendPasswordChangedEmail($user);
+        }
+
         return $this->persistProcessor->process($user, $operation, $uriVariables, $context);
     }
 }

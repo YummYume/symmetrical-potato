@@ -2,8 +2,11 @@ invalid_credentials: Invalid credentials.
 forgotten-password: Forgotten password ?
 click_here: Click here
 reset: Reset password
+reset.send: Send reset link
 not_registered: Not registered yet ?
 
 # Meta
 meta.title: Login
 meta.description: Enter your username and password to log into Symmetrical Potato.
+meta.forgotten_password.title: Forgotten password
+meta.forgotten_password.description: Enter your username and your email address to reset your password.

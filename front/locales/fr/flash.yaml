@@ -4,6 +4,7 @@ user.verified: Utilisateur vérifié avec succès.
 user.deleted: Utilisateur supprimé avec succès.
 user.killed: Utilisateur tué avec succès.
 user.revived: Utilisateur réanimé avec succès.
+user.password_reset_sent: Merci, un e-mail a été envoyé à l'adresse e-mail fournie avec des instructions pour réinitialiser votre mot de passe.
 
 # Asset
 asset.created: Asset créé avec succès.

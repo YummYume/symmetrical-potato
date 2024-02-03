@@ -7,6 +7,7 @@ user.not_authenticated: Vous n'êtes pas authentifié.
 user.invalid_credentials: Les informations d'identification fournies sont invalides.
 user.cannot_refresh_token: Impossible de rafraîchir la session. Elle a peut-être expiré.
 user.cannot_revoke_token: Impossible de révoquer la session. Elle a peut-être expiré.
+user.reset.invalid_token: Le jeton fourni est invalide.
 
 # Heist
 heist.establishment.not_allowed: Cet établissement ne vous appartient pas.

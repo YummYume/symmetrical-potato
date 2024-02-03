@@ -574,8 +574,12 @@ export type Mutation = {
   killUser: Maybe<KillUserPayload>;
   /** Refreshs a Token. */
   refreshToken: Maybe<RefreshTokenPayload>;
+  /** RequestResetPasswords a User. */
+  requestResetPasswordUser: Maybe<RequestResetPasswordUserPayload>;
   /** Requests a Token. */
   requestToken: Maybe<RequestTokenPayload>;
+  /** ResetPasswords a User. */
+  resetPasswordUser: Maybe<ResetPasswordUserPayload>;
   /** Revives a User. */
   reviveUser: Maybe<ReviveUserPayload>;
   /** Revokes a Token. */
@@ -700,8 +704,16 @@ export type MutationRefreshTokenArgs = {
   input: RefreshTokenInput;
 };
 
+export type MutationRequestResetPasswordUserArgs = {
+  input: RequestResetPasswordUserInput;
+};
+
 export type MutationRequestTokenArgs = {
   input: RequestTokenInput;
+};
+
+export type MutationResetPasswordUserArgs = {
+  input: ResetPasswordUserInput;
 };
 
 export type MutationReviveUserArgs = {
@@ -819,6 +831,7 @@ export type Query = {
   establishment: Maybe<Establishment>;
   establishments: Maybe<EstablishmentCursorConnection>;
   getMeUser: Maybe<MeUser>;
+  getResetTokenUser: Maybe<TokenUser>;
   heist: Maybe<Heist>;
   heistAsset: Maybe<HeistAsset>;
   heistAssets: Maybe<HeistAssetCursorConnection>;
@@ -905,6 +918,10 @@ export type QueryEstablishmentsArgs = {
   contractor__id?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type QueryGetResetTokenUserArgs = {
+  resetToken: Scalars['String']['input'];
 };
 
 export type QueryHeistArgs = {
@@ -1085,6 +1102,11 @@ export type TokenPageInfo = {
   hasNextPage: Scalars['Boolean']['output'];
   hasPreviousPage: Scalars['Boolean']['output'];
   startCursor: Maybe<Scalars['String']['output']>;
+};
+
+export type TokenUser = Node & {
+  __typename?: 'TokenUser';
+  id: Scalars['ID']['output'];
 };
 
 export type User = Node & {
@@ -1848,7 +1870,7 @@ export type KillUserPayloadData = Node & {
 /** Refreshs a Token. */
 export type RefreshTokenInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The refresh token provided with the JWT token. */
+  /** The refresh token to use to refresh the JWT token. */
   refreshToken: Scalars['String']['input'];
 };
 
@@ -1857,6 +1879,86 @@ export type RefreshTokenPayload = {
   __typename?: 'refreshTokenPayload';
   clientMutationId: Maybe<Scalars['String']['output']>;
   token: Maybe<Token>;
+};
+
+/** RequestResetPasswords a User. */
+export type RequestResetPasswordUserInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The email of the user who wants to reset their password. */
+  email: Scalars['String']['input'];
+  /** The username of the user who wants to reset their password. */
+  username: Scalars['String']['input'];
+};
+
+/** RequestResetPasswords a User. */
+export type RequestResetPasswordUserNestedPayload = Node & {
+  __typename?: 'requestResetPasswordUserNestedPayload';
+  allowedRoles: Scalars['Iterable']['output'];
+  balance: Maybe<Scalars['Float']['output']>;
+  contractorRequest: Maybe<ContractorRequest>;
+  createdAt: Maybe<Scalars['String']['output']>;
+  createdBy: Maybe<RequestResetPasswordUserNestedPayload>;
+  crewMembers: Maybe<CrewMemberCursorConnection>;
+  email: Maybe<Scalars['String']['output']>;
+  employee: Maybe<Employee>;
+  establishments: Maybe<EstablishmentCursorConnection>;
+  forbiddenHeists: Maybe<HeistCursorConnection>;
+  /** You should probably not use this method directly unless necessary. */
+  globalRating: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
+  mutuallyExclusiveRoles: Scalars['Iterable']['output'];
+  plainPassword: Maybe<Scalars['String']['output']>;
+  profile: Profile;
+  reason: Maybe<Scalars['String']['output']>;
+  reviews: Maybe<ReviewCursorConnection>;
+  roles: Maybe<Scalars['Iterable']['output']>;
+  status: Maybe<UserStatusEnum>;
+  updatedAt: Maybe<Scalars['String']['output']>;
+  updatedBy: Maybe<RequestResetPasswordUserNestedPayload>;
+  /** A visual identifier that represents this user. */
+  userIdentifier: Scalars['String']['output'];
+  username: Scalars['String']['output'];
+};
+
+/** RequestResetPasswords a User. */
+export type RequestResetPasswordUserPayload = {
+  __typename?: 'requestResetPasswordUserPayload';
+  clientMutationId: Maybe<Scalars['String']['output']>;
+  user: Maybe<RequestResetPasswordUserPayloadData>;
+};
+
+/** RequestResetPasswords a User. */
+export type RequestResetPasswordUserPayloadData = Node & {
+  __typename?: 'requestResetPasswordUserPayloadData';
+  allowedRoles: Scalars['Iterable']['output'];
+  balance: Maybe<Scalars['Float']['output']>;
+  contractorRequest: Maybe<ContractorRequest>;
+  createdAt: Maybe<Scalars['String']['output']>;
+  createdBy: Maybe<RequestResetPasswordUserNestedPayload>;
+  crewMembers: Maybe<CrewMemberCursorConnection>;
+  email: Maybe<Scalars['String']['output']>;
+  employee: Maybe<Employee>;
+  establishments: Maybe<EstablishmentCursorConnection>;
+  forbiddenHeists: Maybe<HeistCursorConnection>;
+  /** You should probably not use this method directly unless necessary. */
+  globalRating: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  locale: Maybe<UserLocaleEnum>;
+  mainRole: Maybe<Scalars['String']['output']>;
+  mutuallyExclusiveRoles: Scalars['Iterable']['output'];
+  plainPassword: Maybe<Scalars['String']['output']>;
+  profile: Profile;
+  reason: Maybe<Scalars['String']['output']>;
+  reviews: Maybe<ReviewCursorConnection>;
+  roles: Maybe<Scalars['Iterable']['output']>;
+  status: Maybe<UserStatusEnum>;
+  updatedAt: Maybe<Scalars['String']['output']>;
+  updatedBy: Maybe<RequestResetPasswordUserNestedPayload>;
+  /** A visual identifier that represents this user. */
+  userIdentifier: Scalars['String']['output'];
+  username: Scalars['String']['output'];
 };
 
 /** Requests a Token. */
@@ -1873,6 +1975,28 @@ export type RequestTokenPayload = {
   __typename?: 'requestTokenPayload';
   clientMutationId: Maybe<Scalars['String']['output']>;
   token: Maybe<Token>;
+};
+
+/** ResetPasswords a User. */
+export type ResetPasswordUserInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The new password of the user. */
+  plainPassword: Scalars['String']['input'];
+  /** The reset token to use to reset the password. */
+  resetToken: Scalars['String']['input'];
+};
+
+/** ResetPasswords a User. */
+export type ResetPasswordUserPayload = {
+  __typename?: 'resetPasswordUserPayload';
+  clientMutationId: Maybe<Scalars['String']['output']>;
+  user: Maybe<ResetPasswordUserPayloadData>;
+};
+
+/** ResetPasswords a User. */
+export type ResetPasswordUserPayloadData = Node & {
+  __typename?: 'resetPasswordUserPayloadData';
+  id: Scalars['ID']['output'];
 };
 
 /** Revives a User. */
