@@ -1,6 +1,21 @@
 import { z } from 'zod';
 
 /**
+ * refer to https://zod.dev/?id=json-type
+ */
+const literalSchema = z.union([z.string(), z.number(), z.boolean(), z.null()]);
+
+type Literal = z.infer<typeof literalSchema>;
+type Json = Literal | { [key: string]: Json } | Json[];
+
+/**
+ * Check if a value is a JSON
+ */
+export const json: z.ZodType<Json> = z.lazy(() =>
+  z.union([literalSchema, z.array(json), z.record(json)]),
+);
+
+/**
  * Check if a value is a number or a string that can be parsed to a number
  */
 export const number = <ZodType extends z.ZodTypeAny>(zodNumber: ZodType) =>
@@ -29,4 +44,5 @@ export const zu = {
   date,
   boolean,
   string,
+  json,
 };

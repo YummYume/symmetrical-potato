@@ -1,23 +1,29 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Box, Button, Card, Flex, Grid, Heading, Section, Tabs, Text } from '@radix-ui/themes';
-import { Form, redirect } from '@remix-run/react';
+import { json, redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 import { useTypedLoaderData } from 'remix-typedjson';
 
 import { getAssets, getAssetsForbiddenForHeist } from '~/lib/api/asset';
 import { getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
+import { getHeistPartial } from '~/lib/api/heist';
 import { AssetTypeEnum } from '~/lib/api/types';
-import { SubmitButton } from '~/lib/components/dialog/FormAlertDialog';
+import { SubmitButton } from '~/lib/components/form/SubmitButton';
+import { FieldInput } from '~/lib/components/form/custom/FieldInput';
+import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
 import { hasPathError } from '~/lib/utils/api';
 import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
+import { prepareHeistResolver } from '~/lib/validators/prepareHeist';
 
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import type { Asset, CrewMember, HeistAsset, HeistAssetCursorConnection } from '~/lib/api/types';
+import type { PrepareHeistFormData } from '~/lib/validators/prepareHeist';
 
 type AssetCategory<T> = Record<string, T>;
 type AssetsOrganized = Record<string, AssetCategory<Asset>>;
@@ -35,6 +41,32 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const t = await i18next.getFixedT(request, 'response');
 
   try {
+    const {
+      heist: { employee, allowedEmployees },
+    } = await getHeistPartial(
+      context.client,
+      params.heistId,
+      `
+      allowedEmployees {
+        edges {
+          node {
+            id
+            user {
+              id
+              username
+            }
+          }
+        }
+      }
+      employee {
+        id
+        user {
+          username
+        }
+      }
+    `,
+    );
+
     // Get the crew member for the current user and the current heist
     let crewMember = await getCrewMemberByUserAndHeist(context.client, {
       heistId: params.heistId,
@@ -97,6 +129,8 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     }: { heistAssets: HeistAssetCursorConnection } & Omit<CrewMember, 'heistAssets'> = crewMember;
 
     return {
+      employee,
+      allowedEmployees,
       crewMember: rest,
       assetsPurchased,
       assetsCrewMember: assetsCrewMemberOrganized,
@@ -118,14 +152,18 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 export type Loader = typeof loader;
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
-  const values = await request.formData();
-  const assets = values.get('assetsPurchased') as string | null;
+  const { errors, data } = await getValidatedFormData<PrepareHeistFormData>(
+    request,
+    prepareHeistResolver,
+  );
 
-  if (!assets) {
-    return { status: 400 };
+  if (errors) {
+    return json({ errors }, { status: 400 });
+  }
+  if (typeof data.assetsPurchased === 'string') {
+    console.log(JSON.parse(data.assetsPurchased), data.employee);
   }
 
-  console.log(JSON.parse(assets));
   return {};
 }
 
@@ -181,7 +219,8 @@ const TabsAsset = ({
 
 export default function Prepare() {
   const { t } = useTranslation();
-  const { assets, assetsPurchased, assetsCrewMember, crewMember } = useTypedLoaderData<Loader>();
+  const { assets, assetsPurchased, assetsCrewMember, crewMember, employee, allowedEmployees } =
+    useTypedLoaderData<Loader>();
 
   const [cartAssets, setCartAssets] = useState<{
     [key: string]: AssetPurchased;
@@ -211,8 +250,15 @@ export default function Prepare() {
     setCartAssets((prev) => {
       if (prev[id]) {
         if (prev[id].quantity - 1 <= 0) {
-          const { [id]: _, ...rest } = prev;
-          return { ...rest };
+          if (prev[id].crewMemberAssetId) {
+            return {
+              ...prev,
+              [id]: { ...prev[id], quantity: 0 },
+            };
+          } else {
+            const { [id]: _, ...rest } = prev;
+            return { ...rest };
+          }
         } else {
           return {
             ...prev,
@@ -228,74 +274,106 @@ export default function Prepare() {
   // Get the quantity of an asset in the cart
   const getQuantity = (id: string) => (cartAssets[id] ? cartAssets[id].quantity : 0);
 
+  const allowedEmployeesFormatted = allowedEmployees.edges.map((edge) => ({
+    value: edge.node.id,
+    label: edge.node.user.username,
+  }));
+
+  const methods = useRemixForm<PrepareHeistFormData>({
+    mode: 'onSubmit',
+    resolver: prepareHeistResolver,
+    submitConfig: {
+      unstable_viewTransition: true,
+    },
+    submitHandlers: {
+      onInvalid: async (error) => {
+        console.log(error);
+      },
+    },
+  });
+
+  useEffect(() => {
+    methods.setValue('assetsPurchased', JSON.stringify({ cartAssets, crewMember }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartAssets]);
+
   return (
     <>
-      <Form id={`assets-form`} method="post" className="hidden" unstable_viewTransition>
-        <input
-          type="hidden"
-          name="assetsPurchased"
-          value={JSON.stringify({ cartAssets, crewMember })}
-        />
-      </Form>
-      <Tabs.Root defaultValue="employee">
-        <Tabs.List>
-          <Tabs.Trigger value="employee">{t('employee')}</Tabs.Trigger>
-          <Tabs.Trigger value="assets">{t('asset.type.assets')}</Tabs.Trigger>
-          <Tabs.Trigger value="weapons">{t('asset.type.weapons')}</Tabs.Trigger>
-          <Tabs.Trigger value="equipments">{t('asset.type.equipments')}</Tabs.Trigger>
-          <Tabs.Trigger value="checkout_payment">Checkout Payment</Tabs.Trigger>
-        </Tabs.List>
+      <RemixFormProvider {...methods}>
+        <form id={`assets-form`} method="post" onSubmit={methods.handleSubmit}>
+          <FieldInput type="hidden" name="assetsPurchased" label="assetsPurchased" hideLabel />
+          <Tabs.Root defaultValue="employee">
+            <Tabs.List>
+              <Tabs.Trigger value="employee">{t('employee')}</Tabs.Trigger>
+              <Tabs.Trigger value="assets">{t('asset.type.assets')}</Tabs.Trigger>
+              <Tabs.Trigger value="weapons">{t('asset.type.weapons')}</Tabs.Trigger>
+              <Tabs.Trigger value="equipments">{t('asset.type.equipments')}</Tabs.Trigger>
+              <Tabs.Trigger value="checkout_payment">Checkout Payment</Tabs.Trigger>
+            </Tabs.List>
 
-        <Box px="4" pt="3" pb="2">
-          <Tabs.Content value="employee">
-            <Text size="2">Let's choose the one who will help you in your journey</Text>
-          </Tabs.Content>
+            <Box px="4" pt="3" pb="2">
+              <Tabs.Content value="employee">
+                <Text size="2">
+                  {employee
+                    ? `${employee.user.username} will help you in your journey.`
+                    : `Let's choose the one who will help you in your journey`}
+                </Text>
+                {!employee && (
+                  <FieldSelect
+                    name="employee"
+                    label={t('employee')}
+                    options={allowedEmployeesFormatted}
+                  />
+                )}
+              </Tabs.Content>
 
-          <TabsAsset
-            value="assets"
-            text={t('asset.type.assets.catch_phrase')}
-            assets={assets[AssetTypeEnum.Asset]}
-            setQuantity={(assetId) => getQuantity(assetId)}
-            onAddAsset={(assetId) =>
-              addAsset({
-                id: assetId,
-                quantity: getQuantity(assetId),
-                crewMemberAssetId: assetsCrewMember[assetId]?.id,
-              })
-            }
-            onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
-          />
+              <TabsAsset
+                value="assets"
+                text={t('asset.type.assets.catch_phrase')}
+                assets={assets[AssetTypeEnum.Asset]}
+                setQuantity={(assetId) => getQuantity(assetId)}
+                onAddAsset={(assetId) =>
+                  addAsset({
+                    id: assetId,
+                    quantity: getQuantity(assetId),
+                    crewMemberAssetId: assetsCrewMember[assetId]?.id,
+                  })
+                }
+                onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
+              />
 
-          <TabsAsset
-            value="weapons"
-            text={t('asset.type.weapons.catch_phrase')}
-            assets={assets[AssetTypeEnum.Weapon]}
-            setQuantity={(assetId) => getQuantity(assetId)}
-            onAddAsset={(assetId) => addAsset({ id: assetId, quantity: getQuantity(assetId) })}
-            onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
-          />
+              <TabsAsset
+                value="weapons"
+                text={t('asset.type.weapons.catch_phrase')}
+                assets={assets[AssetTypeEnum.Weapon]}
+                setQuantity={(assetId) => getQuantity(assetId)}
+                onAddAsset={(assetId) => addAsset({ id: assetId, quantity: getQuantity(assetId) })}
+                onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
+              />
 
-          <TabsAsset
-            value="equipments"
-            text={t('asset.type.equipments.catch_phrase')}
-            assets={assets[AssetTypeEnum.Equipment]}
-            setQuantity={(assetId) => getQuantity(assetId)}
-            onAddAsset={(assetId) => addAsset({ id: assetId, quantity: getQuantity(assetId) })}
-            onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
-          />
+              <TabsAsset
+                value="equipments"
+                text={t('asset.type.equipments.catch_phrase')}
+                assets={assets[AssetTypeEnum.Equipment]}
+                setQuantity={(assetId) => getQuantity(assetId)}
+                onAddAsset={(assetId) => addAsset({ id: assetId, quantity: getQuantity(assetId) })}
+                onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
+              />
 
-          <Tabs.Content value="checkout_payment">
-            <Dialog.Title asChild>
-              <Heading as="h2" size="8">
-                Checkout Payment
-              </Heading>
-            </Dialog.Title>
-            <Section className="space-y-3" size="1">
-              <SubmitButton actionColor="green" actionText="Purchase" formId="assets-form" />
-            </Section>
-          </Tabs.Content>
-        </Box>
-      </Tabs.Root>
+              <Tabs.Content value="checkout_payment">
+                <Dialog.Title asChild>
+                  <Heading as="h2" size="8">
+                    Checkout Payment
+                  </Heading>
+                </Dialog.Title>
+                <Section className="space-y-3" size="1">
+                  <SubmitButton text="Purchase" />
+                </Section>
+              </Tabs.Content>
+            </Box>
+          </Tabs.Root>
+        </form>
+      </RemixFormProvider>
     </>
   );
 }
