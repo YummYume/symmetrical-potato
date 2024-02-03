@@ -26,6 +26,60 @@ final class Mailer
     }
 
     /**
+     * Sends an email to the given user to give them a link to reset their password.
+     */
+    public function sendResetPasswordEmail(User $user): void
+    {
+        $url = sprintf('%s/reset-password/%s', $this->siteBaseUrl, $user->getResetToken());
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGHEST)
+            ->subject($this->translator->trans('account.password_reset.subject', domain: 'email', locale: $user->getLocale()->value))
+            ->text($this->translator->trans('account.password_reset.text', [
+                'name' => $user->getUsername(),
+                'url' => $url,
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/account/password_reset.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
+                'url' => $url,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Sends an email to the given user to inform them that their password has been changed.
+     */
+    public function sendPasswordChangedEmail(User $user): void
+    {
+        $url = sprintf('%s/login', $this->siteBaseUrl);
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->priority(Email::PRIORITY_HIGHEST)
+            ->subject($this->translator->trans('account.password_changed.subject', domain: 'email', locale: $user->getLocale()->value))
+            ->text($this->translator->trans('account.password_changed.text', [
+                'name' => $user->getUsername(),
+                'url' => $url,
+                'site' => $this->siteName,
+            ], 'email', $user->getLocale()->value))
+            ->htmlTemplate('email/account/password_changed.html.twig')
+            ->locale($user->getLocale()->value)
+            ->context([
+                'user' => $user,
+                'url' => $url,
+                'site' => $this->siteName,
+            ])
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    /**
      * Sends an email to the given user to notify them of their account's validation.
      */
     public function sendAccountValidatedEmail(User $user): void

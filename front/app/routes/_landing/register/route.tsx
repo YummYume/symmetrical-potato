@@ -113,14 +113,21 @@ export default function Register() {
       <Container p="4" size="1">
         <RemixFormProvider {...methods}>
           <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
-            <FieldInput name="email" label={t('email')} required />
-            <FieldInput name="username" label={t('username')} required />
-            <FieldInput name="password" label={t('password')} type="password" required />
+            <FieldInput name="email" label={t('email')} required autoComplete="email" />
+            <FieldInput name="username" label={t('username')} required autoComplete="username" />
+            <FieldInput
+              name="password"
+              label={t('password')}
+              type="password"
+              required
+              autoComplete="new-password"
+            />
             <FieldInput
               name="passwordConfirm"
               label={t('password_confirm')}
               type="password"
               required
+              autoComplete="new-password"
             />
             <TextAreaInput name="reason" label={t('reason')} required />
             <SubmitButton

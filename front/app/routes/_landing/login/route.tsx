@@ -137,8 +137,14 @@ export default function Login() {
       <Container p="4" size="1">
         <RemixFormProvider {...methods}>
           <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
-            <FieldInput name="username" label={t('username')} required />
-            <FieldInput name="password" label={t('password')} type="password" required />
+            <FieldInput name="username" label={t('username')} required autoComplete="username" />
+            <FieldInput
+              name="password"
+              label={t('password')}
+              type="password"
+              required
+              autoComplete="current-password"
+            />
             <SubmitButton className="w-full" text={t('login')} submittingText={t('logging_in')} />
             <Text as="p">
               {t('forgotten-password', { ns: 'login' })}{' '}

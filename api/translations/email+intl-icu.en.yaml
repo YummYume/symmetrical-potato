@@ -1,4 +1,23 @@
 # Account
+account.password_reset.subject: Password reset
+account.password_reset.text: |
+    Hello {name},
+
+    A password reset has been requested for your account. You can reset your password at {url}.
+    If you did not request this, please ignore this email.
+
+    The link will expire in 1 hour.
+
+    Thanks,
+    The {site} Team
+account.password_changed.subject: Your password has been changed
+account.password_changed.text: |
+    Hello {name},
+
+    Your password has been changed. If you did not make this change, please contact us immediately.
+
+    Thanks,
+    The {site} Team
 account.validated.subject: Your account has been validated
 account.validated.text: |
     Hello {name},

@@ -19,7 +19,15 @@ import {
   UserStatusEnum,
 } from '~api/types';
 
-import type { MutationRefreshTokenArgs, MutationRevokeTokenArgs } from '~api/types';
+import type {
+  MutationRefreshTokenArgs,
+  MutationRequestResetPasswordUserArgs,
+  MutationResetPasswordUserArgs,
+  MutationRevokeTokenArgs,
+  QueryGetResetTokenUserArgs,
+  RequestResetPasswordUserInput,
+  ResetPasswordUserInput,
+} from '~api/types';
 
 /**
  * Query the currently logged in user.
@@ -131,6 +139,73 @@ export const revokeRefreshToken = async (client: GraphQLClient, refreshToken: st
       input: {
         refreshToken,
       },
+    },
+  );
+};
+
+/**
+ * Request an email to change the password.
+ */
+export const requestResetPasswordUser = async (
+  client: GraphQLClient,
+  input: Omit<RequestResetPasswordUserInput, 'clientMutationId'>,
+) => {
+  return client.request<
+    Pick<Mutation, 'requestResetPasswordUser'>,
+    MutationRequestResetPasswordUserArgs
+  >(
+    gql`
+      mutation RequestResetPasswordUser($input: requestResetPasswordUserInput!) {
+        requestResetPasswordUser(input: $input) {
+          user {
+            id
+          }
+        }
+      }
+    `,
+    {
+      input,
+    },
+  );
+};
+
+/**
+ * Send a new password to replace the old one.
+ */
+export const resetPasswordUser = async (
+  client: GraphQLClient,
+  input: Omit<ResetPasswordUserInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'resetPasswordUser'>, MutationResetPasswordUserArgs>(
+    gql`
+      mutation ResetPasswordUser($input: resetPasswordUserInput!) {
+        resetPasswordUser(input: $input) {
+          user {
+            id
+          }
+        }
+      }
+    `,
+    {
+      input,
+    },
+  );
+};
+
+/**
+ * Get a user's id from a reset token.
+ */
+export const getResetTokenUser = async (client: GraphQLClient, resetToken: string) => {
+  return client.request<Pick<Query, 'getResetTokenUser'>, QueryGetResetTokenUserArgs>(
+    gql`
+      query ($resetToken: String!) {
+        getResetTokenUser(resetToken: $resetToken) {
+          id
+        }
+      }
+    `,
+    {
+      resetToken,
     },
   );
 };

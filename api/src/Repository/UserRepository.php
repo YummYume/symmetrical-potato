@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Enum\HeistPhaseEnum;
+use App\Enum\UserStatusEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -76,6 +77,23 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
             ->setParameter('role', '%ROLE_ADMIN%')
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    public function findUserByNonExpiredResetToken(string $resetToken): ?User
+    {
+        $date = new \DateTimeImmutable(sprintf('@%s', time() - User::RESET_TOKEN_TTL));
+
+        return $this->createQueryBuilder('u')
+            ->where('u.resetToken = :resetToken')
+            ->andWhere('u.resetTokenRequestedAt > :date')
+            ->andWhere('u.status = :status')
+            ->setParameter('resetToken', $resetToken)
+            ->setParameter('date', $date)
+            ->setParameter('status', UserStatusEnum::Verified->value)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
         ;
     }
 }

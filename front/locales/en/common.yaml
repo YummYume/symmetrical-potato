@@ -7,11 +7,14 @@ description: Description
 username: Username
 password: Password
 password_confirm: Confirm password
+new_password: New password
+new_password_confirm: Confirm new password
 start_at: Start date
 reason: Reason
 logging_in: Logging in...
 registering: Registering...
 page_loading: Page is loading...
+sending: Sending...
 logout: Logout
 change_locale: Change language
 enable_dark_mode: Enable dark mode

@@ -1,4 +1,23 @@
 # Account
+account.password_reset.subject: Réinitialisation du mot de passe
+account.password_reset.text: |
+    Bonjour {name},
+
+    Une réinitialisation de mot de passe a été demandée pour votre compte. Vous pouvez réinitialiser votre mot de passe à {url}.
+    Si vous n'êtes pas à l'origine de cette demande, veuillez ignorer cet email.
+
+    Le lien expirera dans 1 heure.
+
+    Merci,
+    L'équipe {site}
+account.password_changed.subject: Votre mot de passe a été changé
+account.password_changed.text: |
+    Bonjour {name},
+
+    Votre mot de passe a été changé. Si vous n'êtes pas à l'origine de ce changement, veuillez nous contacter immédiatement.
+
+    Merci,
+    L'équipe {site}
 account.validated.subject: Votre compte a été validé
 account.validated.text: |
     Bonjour {name},
