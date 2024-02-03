@@ -73,8 +73,8 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
         $qb = $this->createQueryBuilder('u');
 
         return $qb
-            ->where('JSON_CONTAINS(u.roles, :role) = 1')
-            ->setParameter('role', '%ROLE_ADMIN%')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', sprintf('%%%s%%', User::ROLE_ADMIN))
             ->getQuery()
             ->getResult()
         ;

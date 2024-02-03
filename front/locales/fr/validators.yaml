@@ -59,6 +59,7 @@ asset.max_quantity.max: La quantité maximale doit être au plus de 100.
 # Contractor Request
 contractor_request.status.required: Veuillez sélectionner un statut.
 contractor_request.status.invalid_type: Le statut sélectionné doit être 'Accepté' ou 'Rejeté'.
+contractor_request.reason.min: La raison doit comporter au moins 10 caractères.
 contractor_request.admin_comment.max: Le commentaire de l'administrateur doit comporter au plus 1000 caractères.
 
 # Establishment

@@ -42,6 +42,12 @@ export const getCurrentUser = async (client: GraphQLClient) => {
         balance
         globalRating
         roles
+        contractorRequest {
+          id
+          reason
+          status
+          adminComment
+        }
       }
     }
   `);

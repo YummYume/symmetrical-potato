@@ -61,10 +61,10 @@ export function TextAreaInput<T extends Record<string, unknown>>({
                 required={required}
                 color={errorId ? 'crimson' : rest.color}
               />
-              {help && <HelpField id={helpId}>{help}</HelpField>}
               {error?.message && (
                 <ErrorField id={errorId}>{t(error.message, { ns: 'validators' })}</ErrorField>
               )}
+              {help && <HelpField id={helpId}>{help}</HelpField>}
             </>
           );
         }}

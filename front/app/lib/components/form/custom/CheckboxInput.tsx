@@ -72,10 +72,10 @@ export function CheckboxInput<T extends Record<string, unknown>>({
                   </LabelField>
                 </Flex>
               </Text>
-              {help && <HelpField id={helpId}>{help}</HelpField>}
               {error?.message && (
                 <ErrorField id={errorId}>{t(error.message, { ns: 'validators' })}</ErrorField>
               )}
+              {help && <HelpField id={helpId}>{help}</HelpField>}
             </>
           );
         }}

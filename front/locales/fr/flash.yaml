@@ -13,6 +13,7 @@ asset.updated: Asset mis à jour avec succès.
 asset.deleted: Asset supprimé avec succès.
 
 # Contractor Request
+contractor_request.created: Demande de contractant créée avec succès.
 contractor_request.updated: Demande de contractant mise à jour avec succès.
 contractor_request.deleted: Demande de contractant supprimée avec succès.
 

@@ -95,7 +95,7 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
                       <Tooltip.Root>
                         <Tooltip.Trigger asChild>
                           <button
-                            aria-label={t('more-info')}
+                            aria-label={t('more_info')}
                             className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
                             style={{
                               gridRowEnd: stringToMinutes(end),

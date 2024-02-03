@@ -13,7 +13,7 @@ export function Error({
 }: ErrorProps) {
   return (
     <Flex align="center" gap="1" className={containerClassName}>
-      <CrossCircledIcon width="18" height="18" />
+      <CrossCircledIcon width="18" height="18" className="shrink-0" />
       <Text size="2" {...rest} as="p" id={id}>
         {children}
       </Text>

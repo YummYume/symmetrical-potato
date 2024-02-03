@@ -111,12 +111,12 @@ export function FieldInputArray<T extends Record<string, unknown>>({
                             />
                           </TextField.Root>
 
-                          {help && <HelpField id={helpId}>{help}</HelpField>}
                           {error?.message && (
                             <ErrorField id={errorId}>
                               {t(error.message, { ns: 'validators' })}
                             </ErrorField>
                           )}
+                          {help && <HelpField id={helpId}>{help}</HelpField>}
                         </>
                       );
                     }}

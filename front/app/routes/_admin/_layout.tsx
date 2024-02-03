@@ -59,16 +59,30 @@ const Menu = ({
         </noscript>
       </Form>
 
-      {user && (
-        <UserDropdown username={user.username}>
-          <DropdownMenu.Separator />
-          <DropdownMenu.Item>
-            <Link className="w-full" to="/dashboard" unstyled>
-              {t('dashboard')}
-            </Link>
-          </DropdownMenu.Item>
-        </UserDropdown>
-      )}
+      <UserDropdown username={user.username}>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>
+          <Link className="w-full" to="/profile" unstyled>
+            {t('my_profile')}
+          </Link>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item>
+          <Link className="w-full" to="/account" unstyled>
+            {t('my_account')}
+          </Link>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item>
+          <Link className="w-full" to="/contractor-request" unstyled>
+            {t('my_contractor_request')}
+          </Link>
+        </DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>
+          <Link className="w-full" to="/admin" unstyled>
+            {t('admin')}
+          </Link>
+        </DropdownMenu.Item>
+      </UserDropdown>
     </Flex>
   );
 };
@@ -111,7 +125,7 @@ export default function AdminLayout() {
             <Drawer
               position="right"
               trigger={
-                <Button aria-label={t('open-menu')} variant="soft">
+                <Button aria-label={t('open_menu')} variant="soft">
                   <HamburgerMenuIcon width="24" height="24" />
                 </Button>
               }

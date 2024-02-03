@@ -14,13 +14,14 @@ reason: Reason
 logging_in: Logging in...
 registering: Registering...
 page_loading: Page is loading...
+send: Send
 sending: Sending...
 logout: Logout
 change_locale: Change language
 enable_dark_mode: Enable dark mode
-open-menu: Open navigation menu
+open_menu: Open navigation menu
 dashboard: Dashboard
-logged-in-as: Logged in as
+logged_in_as: Logged in as
 admin: Admin
 navigation: Main navigation
 map: Map
@@ -51,7 +52,15 @@ update: Update
 edit: Edit
 add: Add
 submit: Submit
-more-info: Show more details
+more_info: Show more details
+
+# Meta
+meta.my_contractor_request.title: My contractor request
+meta.my_contractor_request.description: Check the status of your contractor request.
+meta.my_account.title: My account
+meta.my_account.description: Edit your account settings.
+meta.my_profile.title: My profile
+meta.my_profile.description: Edit your profile.
 
 # History info
 history_info: History info
@@ -61,6 +70,32 @@ history_info.created_at: Created on {date} at {time}.
 history_info.updated_by_at: Updated by {name} on {date} at {time}.
 history_info.updated_by: Updated by {name}.
 history_info.updated_at: Updated on {date} at {time}.
+
+# My profile
+my_profile: My profile
+
+# My account
+my_account: My account
+
+# My contractor request
+my_contractor_request: My contractor request
+my_contractor_request.status.pending: Request pending
+my_contractor_request.status.accepted: Request accepted
+my_contractor_request.status.rejected: Request rejected
+my_contractor_request.warning_message: >-
+  There is no going back once you become a contractor.
+  You will not be able to participate in heists with this account, nor become an employee.
+my_contractor_request.status_description.pending: Your request is pending. You will receive an email when a decision is made.
+my_contractor_request.status_description.accepted: >-
+  Your request has been accepted. You can now create establishments and hire employees.
+  You can also create and organize heists.
+my_contractor_request.status_description.rejected: Your request has been rejected. You can create a new request if you want.
+my_contractor_request.no_request: No request at the moment.
+my_contractor_request.create: Create a demand
+my_contractor_request.delete.confirm: Are you sure you want to delete your request?
+my_contractor_request.no_request_description: |
+  You can request to become a contractor.
+  If accepted, you will be able to create establishments and hire employees, as well as create and organize heists.
 
 # Heist
 heist.start_at.date: Start date
@@ -113,6 +148,10 @@ asset.heist: Associated heist
 
 # Contractor Request
 contractor_request.reason: Reason for the request
+contractor_request.reason.placeholder: Why do you want to become a contractor?
+contractor_request.reason_help: >-
+  This will help us understand why you want to become a contractor.
+  It will also help us to make a decision. Include as much information as possible.
 contractor_request.status: Status
 contractor_request.status.pending: Pending
 contractor_request.status.accepted: Accepted
