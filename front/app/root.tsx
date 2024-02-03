@@ -1,4 +1,3 @@
-import * as RadixToast from '@radix-ui/react-toast';
 import { Heading, Text, Theme } from '@radix-ui/themes';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import { json, type LinksFunction } from '@remix-run/node';
@@ -16,16 +15,16 @@ import {
 } from '@remix-run/react';
 import { captureRemixErrorBoundaryError } from '@sentry/remix';
 import { clsx } from 'clsx';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChangeLanguage } from 'remix-i18next';
+import { Toaster, toast } from 'sonner';
 
 import tailwindStylesheet from '~/styles/tailwind.css';
 import themeStylesheet from '~/styles/theme.css';
 import viewTransitionsStylesheet from '~/styles/view-transitions.css';
 import { Link } from '~components/Link';
 import { ProgressBar } from '~components/ProgressBar';
-import { Toast } from '~components/Toast';
 import { ThemeContext } from '~lib/context/Theme';
 import { darkModeCookie, localeCookie } from '~lib/cookies.server';
 import { i18next } from '~lib/i18n/index.server';
@@ -35,9 +34,8 @@ import { preferencesValidationSchema } from '~lib/validators/locale';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 
 export type FlashMessage = {
-  type: 'success' | 'error' | 'info' | 'warning';
-  title?: string;
-  content: string;
+  type?: 'success' | 'error';
+  content: string | string[];
 };
 
 export const FLASH_MESSAGE_KEY = 'flash-message' as const;
@@ -138,14 +136,39 @@ export default function App() {
   const { flashMessage, locale, useDarkMode } = useLoaderData<Loader>();
   const navigation = useNavigation();
   const { t, i18n } = useTranslation();
-  const [toastOpen, setToastOpen] = useState(false);
   const themeRef = useRef<HTMLDivElement>(null);
 
   useChangeLanguage(locale);
 
   useEffect(() => {
-    if (flashMessage && flashMessage.content.trim() !== '') {
-      setToastOpen(true);
+    const toastOptions: Parameters<typeof toast>[1] = {
+      position: 'bottom-right',
+      duration: 10000,
+      dismissible: true,
+    };
+
+    if (flashMessage) {
+      let messages: string[] = [];
+
+      if (typeof flashMessage.content === 'string') {
+        messages = [flashMessage.content];
+      } else {
+        messages = flashMessage.content;
+      }
+
+      messages.forEach((message) => {
+        if (message.trim() === '') {
+          return;
+        }
+
+        if (flashMessage.type === 'success') {
+          toast.success(message, toastOptions);
+        } else if (flashMessage.type === 'error') {
+          toast.error(message, toastOptions);
+        } else {
+          toast(message, toastOptions);
+        }
+      });
     }
   }, [flashMessage]);
 
@@ -176,20 +199,8 @@ export default function App() {
             loadingMessage={t('page_loading')}
           />
           <ThemeContext.Provider value={themeRef}>
-            <RadixToast.Provider swipeDirection="right">
-              {flashMessage && (
-                <Toast
-                  content={flashMessage.content}
-                  title={flashMessage.title}
-                  open={toastOpen}
-                  onOpenChange={(open) => {
-                    setToastOpen(open);
-                  }}
-                />
-              )}
-              <RadixToast.Viewport className="fixed bottom-0 right-0 z-[2147483647] m-0 flex w-[390px] max-w-[100vw] list-none flex-col gap-[10px] p-[var(--viewport-padding)] outline-none [--viewport-padding:_25px]" />
-              <Outlet />
-            </RadixToast.Provider>
+            <Toaster richColors visibleToasts={3} theme={useDarkMode ? 'dark' : 'light'} />
+            <Outlet />
           </ThemeContext.Provider>
         </Theme>
         <ScrollRestoration />

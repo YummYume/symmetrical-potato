@@ -127,6 +127,7 @@ export default function Register() {
               label={t('password_confirm')}
               type="password"
               required
+              autoComplete="new-password"
             />
             <TextAreaInput name="reason" label={t('reason')} required />
             <SubmitButton

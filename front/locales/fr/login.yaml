@@ -14,3 +14,7 @@ meta.forgotten_password.title: Mot de passe oublié
 meta.forgotten_password.description: >-
   Entrez votre nom d'utilisateur et votre adresse e-mail pour réinitialiser votre
   mot de passe.
+meta.reset_password.title: Réinitialiser le mot de passe
+meta.reset_password.description: >-
+  Entrez votre nouveau mot de passe et confirmez-le pour réinitialiser votre mot
+  de passe.

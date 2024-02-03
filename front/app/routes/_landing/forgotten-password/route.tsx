@@ -59,7 +59,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   session.flash(FLASH_MESSAGE_KEY, {
-    content: t('user.password_reset_sent', { ns: 'flash' }),
+    content: t('user.password_reset.sent', { ns: 'flash' }),
     type: 'success',
   } as FlashMessage);
 

@@ -7,6 +7,8 @@ description: Description
 username: Username
 password: Password
 password_confirm: Confirm password
+new_password: New password
+new_password_confirm: Confirm new password
 start_at: Start date
 reason: Reason
 logging_in: Logging in...

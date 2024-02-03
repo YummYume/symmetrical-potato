@@ -198,7 +198,7 @@ export const resetPasswordUser = async (
 export const getResetTokenUser = async (client: GraphQLClient, resetToken: string) => {
   return client.request<Pick<Query, 'getResetTokenUser'>, QueryGetResetTokenUserArgs>(
     gql`
-      query {
+      query ($resetToken: String!) {
         getResetTokenUser(resetToken: $resetToken) {
           id
         }
