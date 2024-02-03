@@ -254,7 +254,7 @@ export default function Add() {
               name="allowedEmployees"
               label={t('heist.allowed_employees')}
               options={allowedEmployeesOptions}
-              isDisabled={!watchEstablishment}
+              disabled={!watchEstablishment}
             />
             <FieldMultiSelect
               name="forbiddenUsers"
