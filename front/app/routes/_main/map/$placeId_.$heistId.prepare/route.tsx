@@ -15,15 +15,18 @@ import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
-import { hasPathError } from '~/lib/utils/api';
+import { commitSession, getSession } from '~/lib/session.server';
+import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~/lib/utils/api';
 import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { prepareHeistResolver } from '~/lib/validators/prepareHeist';
+import { FLASH_MESSAGE_KEY } from '~/root';
 
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { LoaderFunctionArgs } from '@remix-run/node';
-import type { Asset, CrewMember, HeistAsset, HeistAssetCursorConnection } from '~/lib/api/types';
+import type { Asset, CrewMember, HeistAsset } from '~/lib/api/types';
 import type { PrepareHeistFormData } from '~/lib/validators/prepareHeist';
+import type { FlashMessage } from '~/root';
 
 type AssetCategory<T> = Record<string, T>;
 type AssetsOrganized = Record<string, AssetCategory<Asset>>;
@@ -129,16 +132,9 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       return acc;
     }, {});
 
-    // Remove the heistAssets from the crewMember object, they are already in the assetsPurchased
-    const {
-      heistAssets: _,
-      ...rest
-    }: { heistAssets: HeistAssetCursorConnection } & Omit<CrewMember, 'heistAssets'> = crewMember;
-
     return {
       employee,
       allowedEmployees,
-      crewMember: rest,
       assetsPurchased,
       heistAssets: heistAssetsOrganized,
       assets: assetsOrganized,
@@ -161,6 +157,11 @@ export type Loader = typeof loader;
 export async function action({ request, context, params }: ActionFunctionArgs) {
   denyAccessUnlessGranted(context.user, [ROLES.ADMIN, ROLES.HEISTER]);
 
+  if (!params.heistId) {
+    throw redirect(`/map/${params.placeId}`);
+  }
+
+  const t = await i18next.getFixedT(request, ['validators', 'flash']);
   const { errors, data } = await getValidatedFormData<PrepareHeistFormData>(
     request,
     prepareHeistResolver,
@@ -170,33 +171,82 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     return json({ errors }, { status: 400 });
   }
 
-  const { assetsPurchased } = data;
+  let errorMessage: string | null = null;
+  const session = await getSession(request.headers.get('Cookie'));
 
-  const assetsPurchasedParsed = JSON.parse(assetsPurchased as string) as {
-    cartAssets: { [key: string]: AssetPurchased };
-    crewMember: Omit<CrewMember, 'heistAssets'>;
-  };
-
-  const assetsPurchasedOrganized = Object.keys(assetsPurchasedParsed.cartAssets).reduce<{
-    add: { id: string; quantity: number }[];
-    edit: AssetPurchased[];
-  }>(
-    (acc, curr) => {
-      if (assetsPurchasedParsed.cartAssets[curr].crewMemberAssetId) {
-        acc.edit.push(assetsPurchasedParsed.cartAssets[curr]);
-      } else {
-        acc.add.push({
-          id: curr,
-          quantity: assetsPurchasedParsed.cartAssets[curr].quantity,
-        });
+  try {
+    const {
+      heist: { employee },
+    } = await getHeistPartial(
+      context.client,
+      params.heistId,
+      `
+      employee {
+        id
+        user {
+          username
+        }
       }
-      return acc;
-    },
-    {
-      add: [],
-      edit: [],
-    },
-  );
+    `,
+    );
+
+    if (!employee && !data.employee) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('asset.prepare.need_employee', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
+
+      return json(
+        { errors: {} },
+        { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
+      );
+    }
+
+    // TODO action (employee and assetsPurchased)
+    const assetsPurchasedParsed = JSON.parse(assetsPurchased as string) as {
+      cartAssets: { [key: string]: AssetPurchased };
+      crewMember: Omit<CrewMember, 'heistAssets'>;
+    };
+  } catch (error) {
+    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401])) {
+      errorMessage = getMessageForErrorStatusCodes(error, [422, 401]);
+    } else {
+      throw error;
+    }
+
+    if (errorMessage) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: errorMessage,
+        type: 'error',
+      } as FlashMessage);
+    }
+
+    return json(
+      { errors: {} },
+      { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
+    );
+  }
+
+  // const assetsPurchasedOrganized = Object.keys(assetsPurchasedParsed.cartAssets).reduce<{
+  //   add: { id: string; quantity: number }[];
+  //   edit: AssetPurchased[];
+  // }>(
+  //   (acc, curr) => {
+  //     if (assetsPurchasedParsed.cartAssets[curr].crewMemberAssetId) {
+  //       acc.edit.push(assetsPurchasedParsed.cartAssets[curr]);
+  //     } else {
+  //       acc.add.push({
+  //         id: curr,
+  //         quantity: assetsPurchasedParsed.cartAssets[curr].quantity,
+  //       });
+  //     }
+  //     return acc;
+  //   },
+  //   {
+  //     add: [],
+  //     edit: [],
+  //   },
+  // );
 
   return {};
 }
@@ -253,8 +303,7 @@ const TabsAsset = ({
 
 export default function Prepare() {
   const { t } = useTranslation();
-  const { assets, assetsPurchased, heistAssets, crewMember, employee, allowedEmployees } =
-    useTypedLoaderData<Loader>();
+  const { assets, assetsPurchased, employee, allowedEmployees } = useTypedLoaderData<Loader>();
 
   const [cartAssets, setCartAssets] = useState<{
     [key: string]: AssetPurchased;
@@ -270,6 +319,7 @@ export default function Prepare() {
         if (cartAsset.newQuantity) {
           if (cartAsset.heistAsset) {
             if (cartAsset.newQuantity + cartAsset.heistAsset.quantity + 1 <= asset.maxQuantity) {
+              setTotalPrice((prev) => prev + asset.price);
               return {
                 ...prev,
                 [cartAsset.id]: {
@@ -282,6 +332,7 @@ export default function Prepare() {
             return { ...prev };
           } else {
             if (cartAsset.newQuantity + 1 <= asset.maxQuantity) {
+              setTotalPrice((prev) => prev + asset.price);
               return {
                 ...prev,
                 [cartAsset.id]: {
@@ -295,6 +346,7 @@ export default function Prepare() {
           }
         }
 
+        setTotalPrice((prev) => prev + asset.price);
         return {
           ...prev,
           [cartAsset.id]: {
@@ -304,6 +356,7 @@ export default function Prepare() {
         };
       }
 
+      setTotalPrice((prev) => prev + asset.price);
       return {
         ...prev,
         [asset.id]: {
@@ -319,8 +372,9 @@ export default function Prepare() {
       const cartAsset = prev[asset.id];
 
       if (cartAsset) {
-        if (cartAsset?.newQuantity) {
+        if (cartAsset.newQuantity) {
           if (cartAsset.newQuantity - 1 > 0) {
+            setTotalPrice((prev) => prev - asset.price);
             return {
               ...prev,
               [cartAsset.id]: {
@@ -329,6 +383,8 @@ export default function Prepare() {
               },
             };
           }
+
+          setTotalPrice((prev) => prev - asset.price);
 
           const { [cartAsset.id]: _, ...rest } = prev;
 
@@ -340,99 +396,6 @@ export default function Prepare() {
       return { ...prev };
     });
   };
-
-  // const removeAsset = (asset: AssetPurchased) => {
-  //   setCartAssets((prev) => {
-  //     if (prev[id]) {
-  //       if (prev[id].quantity - 1 <= 0) {
-  //         if (prev[id].crewMemberAssetId) {
-  //           setTotalPrice((prev) => prev - prev[id].baseQuantity * price);
-  //           return {
-  //             ...prev,
-  //             [id]: { ...prev[id], quantity: 0 },
-  //           };
-  //         } else {
-  //           setTotalPrice((prev) => prev - prev[id].baseQuantity * price);
-  //           const { [id]: _, ...rest } = prev;
-  //           return { ...rest };
-  //         }
-  //       } else {
-  //         setTotalPrice((prev) => prev - price);
-  //         return {
-  //           ...prev,
-  //           [id]: {
-  //             ...prev[id],
-  //             quantity: prev[id].quantity - 1,
-  //           },
-  //         };
-  //       }
-  //     } else {
-  //       return { ...prev };
-  //     }
-  //   });
-  // };
-
-  // const addAsset = ({ id, quantity, crewMemberAssetId }: AssetPurchased, price: number) => {
-  //   setCartAssets((prev) => {
-  //     if (prev[id]) {
-  //       // If the quantity is already 5, we don't add more
-  //       if (prev[id].quantity + 1 > 5) {
-  //         return { ...prev };
-  //       } else {
-  //         // If the asset is already in the cart, we just add 1 to the quantity
-  //         return {
-  //           ...prev,
-  //           [id]: {
-  //             ...prev[id],
-  //             quantity: prev[id].quantity + 1,
-  //           },
-  //         };
-  //       }
-  //     } else {
-  //       // If the asset is not in the cart, we add it
-  //       return {
-  //         ...prev,
-  //         [id]: {
-  //           id,
-  //           quantity: quantity + 1,
-  //           crewMemberAssetId,
-  //         },
-  //       };
-  //     }
-  //   });
-  // };
-
-  // const removeAsset = ({ id }: { id: string }, price: number) => {
-  //   setCartAssets((prev) => {
-  //     if (prev[id]) {
-  //       // If the quantity is already 0, we don't remove more
-  //       if (prev[id].quantity - 1 <= 0) {
-  //         // If the asset is stored in the database, we set the quantity to 0
-  //         if (prev[id].crewMemberAssetId) {
-  //           return {
-  //             ...prev,
-  //             [id]: { ...prev[id], quantity: 0 },
-  //           };
-  //         } else {
-  //           // If the asset is not stored in the database, we remove it from the cart
-  //           const { [id]: _, ...rest } = prev;
-  //           return { ...rest };
-  //         }
-  //       } else {
-  //         // If the asset is already in the cart, we just remove 1 to the quantity
-  //         return {
-  //           ...prev,
-  //           [id]: {
-  //             ...prev[id],
-  //             quantity: prev[id].quantity - 1,
-  //           },
-  //         };
-  //       }
-  //     } else {
-  //       return { ...prev };
-  //     }
-  //   });
-  // };
 
   // Get the quantity of an asset in the cart
   const getQuantity = (id: string) => {
@@ -460,12 +423,14 @@ export default function Prepare() {
         console.log(error);
       },
     },
+    defaultValues: {
+      employee: allowedEmployeesFormatted[0].value,
+    },
   });
 
   useEffect(() => {
-    methods.setValue('assetsPurchased', JSON.stringify({ cartAssets, crewMember }));
+    methods.setValue('assetsPurchased', JSON.stringify(cartAssets));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    console.log(cartAssets);
   }, [cartAssets]);
 
   return (
@@ -479,12 +444,12 @@ export default function Prepare() {
               <Tabs.Trigger value="assets">{t('asset.type.assets')}</Tabs.Trigger>
               <Tabs.Trigger value="weapons">{t('asset.type.weapons')}</Tabs.Trigger>
               <Tabs.Trigger value="equipments">{t('asset.type.equipments')}</Tabs.Trigger>
-              <Tabs.Trigger value="checkout_payment">Checkout Payment</Tabs.Trigger>
+              <Tabs.Trigger value="checkout_payment">{t('checkout_payment.title')}</Tabs.Trigger>
             </Tabs.List>
 
             <Box px="4" pt="3" pb="2">
               <Tabs.Content value="employee">
-                <Text size="2">
+                <Text size="2" className="mb-2">
                   {employee
                     ? `${employee.user.username} will help you in your journey.`
                     : `Let's choose the one who will help you in your journey`}
@@ -520,10 +485,13 @@ export default function Prepare() {
               <Tabs.Content value="checkout_payment">
                 <Dialog.Title asChild>
                   <Heading as="h2" size="8">
-                    Checkout Payment
+                    {t('checkout_payment.title')}
                   </Heading>
                 </Dialog.Title>
                 <Section className="space-y-3" size="1">
+                  <Text size="2" className="mb-2">
+                    {t('checkout_payment.description', { totalPrice })}
+                  </Text>
                   <SubmitButton text="Purchase" />
                 </Section>
               </Tabs.Content>
