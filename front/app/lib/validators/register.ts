@@ -1,6 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
+import { UserLocaleEnum } from '../api/types';
+
 export const registerValidationSchema = z
   .object({
     email: z
@@ -29,6 +31,10 @@ export const registerValidationSchema = z
         message: 'register.password.at_least_one_special_character',
       }),
     passwordConfirm: z.string(),
+    locale: z.nativeEnum(UserLocaleEnum, {
+      required_error: 'register.locale.required',
+      invalid_type_error: 'register.locale.invalid',
+    }),
     reason: z
       .string({
         required_error: 'register.reason.required',

@@ -28,6 +28,10 @@ trait BlameableTrait
 
     public function getCreatedBy(): ?User
     {
+        if ($this === $this->createdBy) {
+            return null;
+        }
+
         return $this->createdBy;
     }
 
@@ -40,6 +44,12 @@ trait BlameableTrait
 
     public function getUpdatedBy(): ?User
     {
+        // Some weird bug with ApiPlatform/GraphQL... If createdBy/updatedBy is equal to $this, it will throw an error
+        // Seems related to https://github.com/api-platform/api-platform/issues/2489 (same error)
+        if ($this === $this->updatedBy) {
+            return null;
+        }
+
         return $this->updatedBy;
     }
 

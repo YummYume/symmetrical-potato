@@ -10,6 +10,7 @@ import { Locale } from '~/lib/components/Locale';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { Header } from '~/lib/components/layout/Header';
 import { UserDropdown } from '~/lib/components/layout/UserDropdown';
+import { getUriId } from '~/lib/utils/path';
 import { denyAdminAccessUnlessGranted } from '~/lib/utils/security.server';
 import { links as rootLinks } from '~/root';
 import { Link, NavLink, NavLinkActiveIndicator } from '~components/Link';
@@ -62,7 +63,7 @@ const Menu = ({
       <UserDropdown username={user.username}>
         <DropdownMenu.Separator />
         <DropdownMenu.Item>
-          <Link className="w-full" to="/profile" unstyled>
+          <Link className="w-full" to={`/profile/${getUriId(user.id)}`} unstyled>
             {t('my_profile')}
           </Link>
         </DropdownMenu.Item>
@@ -78,8 +79,8 @@ const Menu = ({
         </DropdownMenu.Item>
         <DropdownMenu.Separator />
         <DropdownMenu.Item>
-          <Link className="w-full" to="/admin" unstyled>
-            {t('admin')}
+          <Link className="w-full" to="/dashboard" unstyled>
+            {t('dashboard')}
           </Link>
         </DropdownMenu.Item>
       </UserDropdown>

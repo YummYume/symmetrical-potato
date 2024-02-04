@@ -32,6 +32,8 @@ register.password_confirm.must_match: The password confirmation must match the p
 register.reason.required: Please enter a reason.
 register.reason.min_length: The reason must be at least 10 characters long.
 register.reason.max_length: The reason must be less than 2000 characters long.
+register.locale.required: Please select a locale.
+register.locale.invalid: The selected locale is invalid.
 
 # Forgotten password
 forgotten_password.username.required: Please enter your username.
@@ -47,6 +49,14 @@ user.balance.required: Please enter a balance.
 user.locale.required: Please select a locale.
 user.locale.invalid: The selected locale is invalid.
 user.description.max: The description must be at most 1000 characters long.
+user.password.required: Please enter a password.
+user.password.min_length: The password must be at least 8 characters long.
+user.password.max_length: The password must be less than 100 characters long.
+user.password.at_least_one_digit: The password must contain at least one digit.
+user.password.at_least_one_uppercase_letter: The password must contain at least one uppercase letter.
+user.password.at_least_one_lowercase_letter: The password must contain at least one lowercase letter.
+user.password.at_least_one_special_character: The password must contain at least one special character.
+user.password_confirm.must_match: The password confirmation must match the password.
 
 # Asset
 asset.name.required: Please enter a name.

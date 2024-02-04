@@ -1,17 +1,21 @@
 import { Container, Heading, Section, Text } from '@radix-ui/themes';
 import { redirect } from '@remix-run/node';
 import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
+import { UserLocaleEnum } from '~/lib/api/types';
 import { createRegistrationDemand } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
+import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
 import { convertToLocaleEnum } from '~/lib/utils/locale';
+import { formatEnums } from '~/lib/utils/tools';
 import { registerResolver } from '~/lib/validators/register';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { SubmitButton } from '~components/form/SubmitButton';
@@ -29,6 +33,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   const t = await i18next.getFixedT(request, 'login');
 
   return json({
+    locale: convertToLocaleEnum(context.locale),
     meta: {
       title: t('meta.title', {
         ns: 'register',
@@ -48,15 +53,18 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   const t = await i18next.getFixedT(request, ['register', 'validators']);
-  const { errors, data } = await getValidatedFormData<RegisterFormData>(request, registerResolver);
+  const { errors, data, receivedValues } = await getValidatedFormData<RegisterFormData>(
+    request,
+    registerResolver,
+  );
 
   if (errors) {
-    return json({ errors }, { status: 400 });
+    return json({ errors, receivedValues }, { status: 400 });
   }
 
   const session = await getSession(request.headers.get('Cookie'));
+  const { email, username, password, reason, locale } = data;
 
-  const { email, username, password, reason } = data;
   let errorMessage: string | null = null;
 
   try {
@@ -65,7 +73,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       username,
       plainPassword: password,
       reason,
-      locale: convertToLocaleEnum(context.locale),
+      locale,
     });
 
     session.flash(FLASH_MESSAGE_KEY, {
@@ -102,8 +110,16 @@ export async function action({ request, context }: ActionFunctionArgs) {
 export type Action = typeof action;
 
 export default function Register() {
+  const { locale } = useLoaderData<Loader>();
   const { t } = useTranslation();
-  const methods = useRemixForm<RegisterFormData>({ mode: 'onSubmit', resolver: registerResolver });
+  const userLocales = formatEnums(Object.values(UserLocaleEnum), 'user.locale');
+  const methods = useRemixForm<RegisterFormData>({
+    mode: 'onSubmit',
+    resolver: registerResolver,
+    defaultValues: {
+      locale,
+    },
+  });
 
   return (
     <Section className="space-y-16">
@@ -113,8 +129,20 @@ export default function Register() {
       <Container p="4" size="1">
         <RemixFormProvider {...methods}>
           <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
-            <FieldInput name="email" label={t('email')} required autoComplete="email" />
-            <FieldInput name="username" label={t('username')} required autoComplete="username" />
+            <FieldInput
+              name="username"
+              label={t('username')}
+              required
+              autoComplete="username"
+              help={t('username.help')}
+            />
+            <FieldInput
+              name="email"
+              type="email"
+              label={t('email')}
+              required
+              autoComplete="email"
+            />
             <FieldInput
               name="password"
               label={t('password')}
@@ -129,7 +157,14 @@ export default function Register() {
               required
               autoComplete="new-password"
             />
-            <TextAreaInput name="reason" label={t('reason')} required />
+            <FieldSelect
+              name="locale"
+              label={t('user.locale')}
+              options={userLocales}
+              help={t('user.locale.help')}
+              required
+            />
+            <TextAreaInput name="reason" label={t('user.reason')} required rows={5} />
             <SubmitButton
               className="w-full"
               text={t('register')}

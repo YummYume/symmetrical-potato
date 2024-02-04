@@ -28,6 +28,8 @@ register.password_confirm.must_match: Le mot de passe et sa confirmation doivent
 register.reason.required: Veuillez saisir une raison.
 register.reason.min_length: La raison doit comporter au moins 10 caractères.
 register.reason.max_length: La raison doit comporter moins de 2000 caractères.
+register.locale.required: Veuillez sélectionner une langue.
+register.locale.invalid: La langue sélectionnée est invalide.
 
 # Forgotten password
 forgotten_password.username.required: Veuillez saisir votre nom d'utilisateur.
@@ -45,6 +47,14 @@ user.balance.required: Veuillez saisir un solde.
 user.locale.required: Veuillez sélectionner une langue.
 user.locale.invalid: La langue sélectionnée est invalide.
 user.description.max: La description doit comporter au plus 1000 caractères.
+user.password.required: Veuillez saisir un mot de passe.
+user.password.min_length: Le mot de passe doit comporter au moins 8 caractères.
+user.password.max_length: Le mot de passe doit comporter moins de 100 caractères.
+user.password.at_least_one_digit: Le mot de passe doit contenir au moins un chiffre.
+user.password.at_least_one_uppercase_letter: Le mot de passe doit contenir au moins une lettre majuscule.
+user.password.at_least_one_lowercase_letter: Le mot de passe doit contenir au moins une lettre minuscule.
+user.password.at_least_one_special_character: Le mot de passe doit contenir au moins un caractère spécial.
+user.password_confirm.must_match: Le mot de passe et sa confirmation doivent correspondre.
 
 # Asset
 asset.name.required: Veuillez saisir un nom.

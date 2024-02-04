@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, HoverCard, Text } from '@radix-ui/themes';
 import { useTranslation } from 'react-i18next';
 
+import { UserAvatar } from './UserAvatar';
 import { UserMainRoleBadge } from './UserMainRoleBadge';
 
 import type { ComponentProps } from 'react';
@@ -26,6 +27,7 @@ export const UserHoverCard = ({
       <HoverCard.Trigger>{children}</HoverCard.Trigger>
       <HoverCard.Content side="top" align="center" {...rest}>
         <Flex gap="4">
+          <UserAvatar username={username} mainRole={mainRole} size="2" />
           <Box>
             <Flex
               direction={{ initial: 'column', sm: 'row' }}

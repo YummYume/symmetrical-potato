@@ -24,7 +24,12 @@ location.deleted: Location deleted successfully.
 # Establishment
 establishment.updated: Establishment updated successfully.
 establishment.deleted: Establishment deleted successfully.
+
 # Heist
 heist.created_successfully: Heist created successfully.
 heist.updated_successfully: Heist updated successfully.
 heist.deleted_successfully: Heist deleted successfully.
+
+# Account
+account.updated: Account updated successfully.
+account.deleted: Account deleted successfully. You will receive an email confirming the deletion of your account.

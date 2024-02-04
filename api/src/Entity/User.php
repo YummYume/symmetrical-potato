@@ -400,7 +400,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Employee $employee = null;
 
     /** @var ArrayCollection<int, Establishment> */
-    #[ORM\OneToMany(mappedBy: 'contractor', targetEntity: Establishment::class)]
+    #[ORM\OneToMany(mappedBy: 'contractor', targetEntity: Establishment::class, orphanRemoval: true)]
     private Collection $establishments;
 
     /** @var ArrayCollection<int, Heist> */
