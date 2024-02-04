@@ -176,6 +176,7 @@ export default function EditContractorRequest() {
                   username={contractorRequest.user.username}
                   description={contractorRequest.user.profile.description}
                   mainRole={contractorRequest.user.mainRole}
+                  globalRating={contractorRequest.user.globalRating}
                 >
                   <Link
                     to={`/admin/users/${getUriId(contractorRequest.user.id)}`}

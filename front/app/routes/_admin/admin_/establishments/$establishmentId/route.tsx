@@ -217,6 +217,7 @@ export default function EditEstablishment() {
                   username={establishment.contractor.username}
                   description={establishment.contractor.profile.description}
                   mainRole={establishment.contractor.mainRole}
+                  globalRating={establishment.contractor.globalRating}
                 >
                   <Link
                     to={`/admin/users/${getUriId(establishment.contractor.id)}`}
