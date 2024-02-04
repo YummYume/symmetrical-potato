@@ -21,7 +21,7 @@ export const UserDropdown = ({
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <DropdownMenu.Item className="hover:bg-transparent hover:text-[inherit]">
-          {t('logged-in-as')} {username}
+          {t('logged_in_as')} {username}
         </DropdownMenu.Item>
 
         {children}

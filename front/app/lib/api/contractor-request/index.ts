@@ -1,7 +1,9 @@
 import { type GraphQLClient, gql } from 'graphql-request';
 
 import type {
+  CreateContractorRequestInput,
   Mutation,
+  MutationCreateContractorRequestArgs,
   MutationDeleteContractorRequestArgs,
   MutationUpdateContractorRequestArgs,
   Query,
@@ -72,6 +74,38 @@ export const getContractorRequest = async (client: GraphQLClient, id: string) =>
     `,
     {
       id: `/contractor_requests/${id}`,
+    },
+  );
+};
+
+/**
+ * Create a contractor request.
+ */
+export const createContractorRequest = async (
+  client: GraphQLClient,
+  input: Omit<CreateContractorRequestInput, 'clientMutationId'>,
+) => {
+  return client.request<
+    Pick<Mutation, 'createContractorRequest'>,
+    MutationCreateContractorRequestArgs
+  >(
+    gql`
+      mutation CreateContractorRequest($input: createContractorRequestInput!) {
+        createContractorRequest(input: $input) {
+          contractorRequest {
+            id
+            reason
+            status
+            adminComment
+            user {
+              username
+            }
+          }
+        }
+      }
+    `,
+    {
+      input,
     },
   );
 };

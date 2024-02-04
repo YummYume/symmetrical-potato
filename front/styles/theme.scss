@@ -1,5 +1,9 @@
 @import '@radix-ui/themes/styles.css';
 
+textarea {
+  resize: vertical !important;
+}
+
 #global-progress-bar {
   @apply fixed inset-0 bottom-auto z-30 h-0.5 w-full;
 

@@ -81,10 +81,10 @@ export function FieldInput<T extends Record<string, unknown>>({
                 />
                 {rightSlot}
               </TextField.Root>
-              {help && <HelpField id={helpId}>{help}</HelpField>}
               {error?.message && (
                 <ErrorField id={errorId}>{t(error.message, { ns: 'validators' })}</ErrorField>
               )}
+              {help && <HelpField id={helpId}>{help}</HelpField>}
             </>
           );
         }}

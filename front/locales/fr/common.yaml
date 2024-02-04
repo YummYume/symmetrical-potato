@@ -14,13 +14,14 @@ reason: Raison
 logging_in: Connexion...
 registering: Inscription...
 page_loading: Chargement de la page...
+send: Envoyer
 sending: Envoi...
 logout: Se déconnecter
 change_locale: Changer la langue
 enable_dark_mode: Activer le mode sombre
-open-menu: Ouvrir le menu de navigation
+open_menu: Ouvrir le menu de navigation
 dashboard: Tableau de bord
-logged-in-as: Connecté en tant que
+logged_in_as: Connecté en tant que
 admin: Admin
 navigation: Navigation principale
 map: Carte
@@ -51,7 +52,15 @@ update: Mettre à jour
 edit: Modifier
 add: Ajouter
 submit: Envoyer
-more-info: Afficher plus de détails
+more_info: Afficher plus de détails
+
+# Meta
+meta.my_contractor_request.title: Ma demande de contractant
+meta.my_contractor_request.description: Vérifiez le statut de votre demande de contractant.
+meta.my_account.title: Mon compte
+meta.my_account.description: Modifiez vos paramètres de compte.
+meta.my_profile.title: Mon profil
+meta.my_profile.description: Modifiez votre profil.
 
 # History info
 history_info: Information sur l'historique
@@ -61,6 +70,33 @@ history_info.created_at: Créé le {date} à {time}.
 history_info.updated_by_at: Mis à jour par {name} le {date} à {time}.
 history_info.updated_by: Mis à jour par {name}.
 history_info.updated_at: Mis à jour le {date} à {time}.
+
+# My profile
+my_profile: Mon profil
+
+# My account
+my_account: Mon compte
+
+# My contractor request
+my_contractor_request: Ma demande de contractant
+my_contractor_request.status.pending: Demande en attente
+my_contractor_request.status.accepted: Demande acceptée
+my_contractor_request.status.rejected: Demande rejetée
+my_contractor_request.warning_message: >-
+  Il n'y a pas de retour en arrière une fois que vous devenez un contractant.
+  Vous ne pourrez pas participer à des braquages avec ce compte, ni devenir un employé.
+my_contractor_request.status_description.pending: >-
+  Votre demande est en attente. Vous serez notifié dès qu'une décision sera prise.
+my_contractor_request.status_description.accepted: >-
+  Votre demande a été acceptée. Vous pouvez maintenant créer des établissements et embaucher des employés, ainsi que créer et organiser des braquages.
+my_contractor_request.status_description.rejected: >-
+  Votre demande a été rejetée. Vous pouvez créer une nouvelle demande si vous le souhaitez.
+my_contractor_request.no_request: Aucune demande de contractant
+my_contractor_request.create: Créer une demande
+my_contractor_request.delete.confirm: Êtes-vous sûr de vouloir supprimer votre demande ?
+my_contractor_request.no_request_description: |
+  Vous pouvez demander à devenir un contractant.
+  Si votre demande est acceptée, vous pourrez créer des établissements et embaucher des employés, ainsi que créer et organiser des braquages.
 
 # Heist
 heist.start_at.date: Date de début
@@ -113,6 +149,10 @@ asset.heist: Braquage associé
 
 # Contractor Request
 contractor_request.reason: Raison de la demande
+contractor_request.reason.placeholder: Pourquoi voulez-vous devenir un contractant ?
+contractor_request.reason_help: >-
+  Cela nous aidera à comprendre pourquoi vous voulez devenir un contractant.
+  Cela nous aidera également à prendre une décision. Incluez autant d'informations que possible.
 contractor_request.status: Statut
 contractor_request.status.pending: En attente
 contractor_request.status.accepted: Accepté

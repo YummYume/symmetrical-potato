@@ -147,7 +147,7 @@ export default function Login() {
             />
             <SubmitButton className="w-full" text={t('login')} submittingText={t('logging_in')} />
             <Text as="p">
-              {t('forgotten-password', { ns: 'login' })}{' '}
+              {t('forgotten_password', { ns: 'login' })}{' '}
               <Link to="/forgotten-password">{t('click_here', { ns: 'login' })}</Link>
             </Text>
             <Text as="p">

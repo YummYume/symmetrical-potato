@@ -137,7 +137,7 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
   ];
 };
 
-export default function ForgottenPassword() {
+export default function ResetPassword() {
   const { t } = useTranslation();
   const methods = useRemixForm<ResetPasswordFormData>({
     mode: 'onSubmit',

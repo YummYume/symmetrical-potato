@@ -1,5 +1,5 @@
 invalid_credentials: Les informations d'identification sont invalides.
-forgotten-password: Mot de passe oublié ?
+forgotten_password: Mot de passe oublié ?
 click_here: Cliquez ici
 reset: Réinitialiser le mot de passe
 reset.send: Envoyer le lien de réinitialisation

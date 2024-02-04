@@ -93,7 +93,7 @@ export default function ForgottenPassword() {
   return (
     <Section className="space-y-16">
       <Heading align="center" as="h1" size="9">
-        {t('forgotten-password', { ns: 'login' })}
+        {t('forgotten_password', { ns: 'login' })}
       </Heading>
       <Container p="4" size="1">
         <RemixFormProvider {...methods}>

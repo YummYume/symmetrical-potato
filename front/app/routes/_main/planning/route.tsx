@@ -9,8 +9,10 @@ import type { Day } from '~/lib/components/Schedule';
 export async function loader({ context }: LoaderFunctionArgs) {
   denyAccessUnlessGranted(context.user);
 
-  return null;
+  return {};
 }
+
+export type Loader = typeof loader;
 
 export default function Planning() {
   const days: Day[] = [

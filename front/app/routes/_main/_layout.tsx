@@ -14,7 +14,7 @@ import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link, NavLink, NavLinkActiveIndicator } from '~components/Link';
 
-import type { LoaderFunctionArgs, SerializeFrom } from '@remix-run/node';
+import type { LoaderFunctionArgs, MetaFunction, SerializeFrom } from '@remix-run/node';
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
@@ -27,6 +27,10 @@ export async function loader({ context }: LoaderFunctionArgs) {
 }
 
 export type Loader = typeof loader;
+
+export const meta: MetaFunction<Loader> = () => {
+  return [{ name: 'robots', content: 'noindex, nofollow' }];
+};
 
 const Menu = ({
   isChangingPreferences,
@@ -53,20 +57,34 @@ const Menu = ({
         </noscript>
       </Form>
 
-      {user && (
-        <UserDropdown username={user.username}>
-          {user.roles.includes(ROLES.ADMIN) && (
-            <>
-              <DropdownMenu.Separator />
-              <DropdownMenu.Item>
-                <Link className="w-full" to="/admin" unstyled>
-                  {t('admin')}
-                </Link>
-              </DropdownMenu.Item>
-            </>
-          )}
-        </UserDropdown>
-      )}
+      <UserDropdown username={user.username}>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>
+          <Link className="w-full" to="/profile" unstyled>
+            {t('my_profile')}
+          </Link>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item>
+          <Link className="w-full" to="/account" unstyled>
+            {t('my_account')}
+          </Link>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item>
+          <Link className="w-full" to="/contractor-request" unstyled>
+            {t('my_contractor_request')}
+          </Link>
+        </DropdownMenu.Item>
+        {user.roles.includes(ROLES.ADMIN) && (
+          <>
+            <DropdownMenu.Separator />
+            <DropdownMenu.Item>
+              <Link className="w-full" to="/admin" unstyled>
+                {t('admin')}
+              </Link>
+            </DropdownMenu.Item>
+          </>
+        )}
+      </UserDropdown>
     </Flex>
   );
 };
@@ -104,7 +122,7 @@ export default function Layout() {
             <Drawer
               position="right"
               trigger={
-                <Button aria-label={t('open-menu')} variant="soft">
+                <Button aria-label={t('open_menu')} variant="soft">
                   <HamburgerMenuIcon width="24" height="24" />
                 </Button>
               }
