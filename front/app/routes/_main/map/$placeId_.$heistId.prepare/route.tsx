@@ -32,8 +32,8 @@ type AssetsCrewMemberOrganized = Record<string, HeistAsset>;
 type AssetPurchased = {
   id: string;
   quantity: number;
+  newQuantity?: number;
   crewMemberAssetId?: string;
-  totalSpent: number;
 };
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -177,16 +177,11 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
   const assetsPurchasedOrganized = Object.keys(assetsPurchasedParsed.cartAssets).reduce<{
     add: { id: string; quantity: number }[];
-    delete: AssetPurchased[];
     edit: AssetPurchased[];
   }>(
     (acc, curr) => {
       if (assetsPurchasedParsed.cartAssets[curr].crewMemberAssetId) {
-        if (assetsPurchasedParsed.cartAssets[curr].quantity === 0) {
-          acc.delete.push(assetsPurchasedParsed.cartAssets[curr]);
-        } else {
-          acc.edit.push(assetsPurchasedParsed.cartAssets[curr]);
-        }
+        acc.edit.push(assetsPurchasedParsed.cartAssets[curr]);
       } else {
         acc.add.push({
           id: curr,
@@ -197,7 +192,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     },
     {
       add: [],
-      delete: [],
       edit: [],
     },
   );
@@ -264,43 +258,61 @@ export default function Prepare() {
     [key: string]: AssetPurchased;
   }>(assetsPurchased);
 
-  const addAsset = ({ id, quantity, crewMemberAssetId, totalSpent }: AssetPurchased) => {
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const addAsset = ({ id, quantity, crewMemberAssetId }: AssetPurchased, price: number) => {
     setCartAssets((prev) => {
       if (prev[id]) {
         if (prev[id].quantity + 1 > 5) {
           return { ...prev };
         } else {
+          setTotalPrice((prev) => prev + price);
           return {
             ...prev,
-            [id]: { ...prev[id], quantity: prev[id].quantity + 1 },
+            [id]: {
+              ...prev[id],
+              quantity: prev[id].quantity + 1,
+            },
           };
         }
       } else {
+        setTotalPrice((prev) => prev + (quantity + 1) * price);
         return {
           ...prev,
-          [id]: { id, quantity: (quantity ?? 0) + 1, crewMemberAssetId },
+          [id]: {
+            id,
+            newQuantity: quantity + 1,
+            quantity,
+            crewMemberAssetId,
+          },
         };
       }
     });
   };
 
-  const removeAsset = ({ id }: { id: string }) => {
+  const removeAsset = (id: string, price: number) => {
     setCartAssets((prev) => {
       if (prev[id]) {
         if (prev[id].quantity - 1 <= 0) {
           if (prev[id].crewMemberAssetId) {
+            setTotalPrice((prev) => prev - prev[id].baseQuantity * price);
             return {
               ...prev,
               [id]: { ...prev[id], quantity: 0 },
             };
           } else {
+            setTotalPrice((prev) => prev - prev[id].baseQuantity * price);
             const { [id]: _, ...rest } = prev;
             return { ...rest };
           }
         } else {
+          setTotalPrice((prev) => prev - price);
           return {
             ...prev,
-            [id]: { ...prev[id], quantity: prev[id].quantity - 1 },
+            [id]: {
+              ...prev[id],
+              quantity: prev[id].quantity - 1,
+            },
           };
         }
       } else {
@@ -308,6 +320,68 @@ export default function Prepare() {
       }
     });
   };
+
+  // const addAsset = ({ id, quantity, crewMemberAssetId }: AssetPurchased, price: number) => {
+  //   setCartAssets((prev) => {
+  //     if (prev[id]) {
+  //       // If the quantity is already 5, we don't add more
+  //       if (prev[id].quantity + 1 > 5) {
+  //         return { ...prev };
+  //       } else {
+  //         // If the asset is already in the cart, we just add 1 to the quantity
+  //         return {
+  //           ...prev,
+  //           [id]: {
+  //             ...prev[id],
+  //             quantity: prev[id].quantity + 1,
+  //           },
+  //         };
+  //       }
+  //     } else {
+  //       // If the asset is not in the cart, we add it
+  //       return {
+  //         ...prev,
+  //         [id]: {
+  //           id,
+  //           quantity: quantity + 1,
+  //           crewMemberAssetId,
+  //         },
+  //       };
+  //     }
+  //   });
+  // };
+
+  // const removeAsset = ({ id }: { id: string }, price: number) => {
+  //   setCartAssets((prev) => {
+  //     if (prev[id]) {
+  //       // If the quantity is already 0, we don't remove more
+  //       if (prev[id].quantity - 1 <= 0) {
+  //         // If the asset is stored in the database, we set the quantity to 0
+  //         if (prev[id].crewMemberAssetId) {
+  //           return {
+  //             ...prev,
+  //             [id]: { ...prev[id], quantity: 0 },
+  //           };
+  //         } else {
+  //           // If the asset is not stored in the database, we remove it from the cart
+  //           const { [id]: _, ...rest } = prev;
+  //           return { ...rest };
+  //         }
+  //       } else {
+  //         // If the asset is already in the cart, we just remove 1 to the quantity
+  //         return {
+  //           ...prev,
+  //           [id]: {
+  //             ...prev[id],
+  //             quantity: prev[id].quantity - 1,
+  //           },
+  //         };
+  //       }
+  //     } else {
+  //       return { ...prev };
+  //     }
+  //   });
+  // };
 
   // Get the quantity of an asset in the cart
   const getQuantity = (id: string) => (cartAssets[id] ? cartAssets[id].quantity : 0);
@@ -333,6 +407,7 @@ export default function Prepare() {
   useEffect(() => {
     methods.setValue('assetsPurchased', JSON.stringify({ cartAssets, crewMember }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log(cartAssets);
   }, [cartAssets]);
 
   return (
@@ -370,16 +445,17 @@ export default function Prepare() {
                 text={t('asset.type.assets.catch_phrase')}
                 assets={assets[AssetTypeEnum.Asset]}
                 setQuantity={(assetId) => getQuantity(assetId)}
-                onAddAsset={(asset) =>
-                  addAsset({
-                    id: asset.id,
-                    quantity: getQuantity(asset.id),
-                    crewMemberAssetId: assetsCrewMember[asset.id]?.id,
-                    // TODO calc
-                    totalSpent: assetsCrewMember[asset.id]?.totalSpent ?? 0,
-                  })
+                onAddAsset={({ id, price }) =>
+                  addAsset(
+                    {
+                      id,
+                      quantity: getQuantity(id),
+                      crewMemberAssetId: assetsCrewMember[id]?.id,
+                    },
+                    price,
+                  )
                 }
-                onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
+                onRemoveAsset={({ id, price }) => removeAsset({ id }, price)}
               />
 
               <TabsAsset
@@ -387,8 +463,17 @@ export default function Prepare() {
                 text={t('asset.type.weapons.catch_phrase')}
                 assets={assets[AssetTypeEnum.Weapon]}
                 setQuantity={(assetId) => getQuantity(assetId)}
-                onAddAsset={(assetId) => addAsset({ id: assetId, quantity: getQuantity(assetId) })}
-                onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
+                onAddAsset={({ id, price }) =>
+                  addAsset(
+                    {
+                      id,
+                      quantity: getQuantity(id),
+                      crewMemberAssetId: assetsCrewMember[id]?.id,
+                    },
+                    price,
+                  )
+                }
+                onRemoveAsset={({ id, price }) => removeAsset({ id }, price)}
               />
 
               <TabsAsset
@@ -396,8 +481,17 @@ export default function Prepare() {
                 text={t('asset.type.equipments.catch_phrase')}
                 assets={assets[AssetTypeEnum.Equipment]}
                 setQuantity={(assetId) => getQuantity(assetId)}
-                onAddAsset={(assetId) => addAsset({ id: assetId, quantity: getQuantity(assetId) })}
-                onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
+                onAddAsset={({ id, price }) =>
+                  addAsset(
+                    {
+                      id,
+                      quantity: getQuantity(id),
+                      crewMemberAssetId: assetsCrewMember[id]?.id,
+                    },
+                    price,
+                  )
+                }
+                onRemoveAsset={({ id, price }) => removeAsset({ id }, price)}
               />
 
               <Tabs.Content value="checkout_payment">
