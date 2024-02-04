@@ -27,13 +27,15 @@ import type { PrepareHeistFormData } from '~/lib/validators/prepareHeist';
 
 type AssetCategory<T> = Record<string, T>;
 type AssetsOrganized = Record<string, AssetCategory<Asset>>;
-type AssetsCrewMemberOrganized = Record<string, HeistAsset>;
+type HeistAssetsOrganized = Record<string, HeistAsset>;
 
 type AssetPurchased = {
   id: string;
-  quantity: number;
   newQuantity?: number;
-  crewMemberAssetId?: string;
+  heistAsset?: {
+    id: string;
+    quantity: number;
+  };
 };
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -92,15 +94,12 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     );
 
     // Get the current assets for the crew member
-    const assetsCrewMember = crewMember.heistAssets.edges;
+    const heistAssets = crewMember.heistAssets.edges;
 
-    const assetsCrewMemberOrganized = assetsCrewMember.reduce<AssetsCrewMemberOrganized>(
-      (acc, curr) => {
-        acc[curr.node.asset.id] = curr.node;
-        return acc;
-      },
-      {},
-    );
+    const heistAssetsOrganized = heistAssets.reduce<HeistAssetsOrganized>((acc, curr) => {
+      acc[curr.node.asset.id] = curr.node;
+      return acc;
+    }, {});
 
     // Organize the assets by type
     const assetsOrganized = assets.edges.reduce<AssetsOrganized>(
@@ -119,13 +118,16 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     );
 
     // Format the assets already purchased by the crew member
-    const assetsPurchased = assetsCrewMember.reduce<{ [key: string]: AssetPurchased }>(
-      (acc, curr) => {
-        acc[curr.node.asset.id] = curr.node;
-        return acc;
-      },
-      {},
-    );
+    const assetsPurchased = heistAssets.reduce<{ [key: string]: AssetPurchased }>((acc, curr) => {
+      acc[curr.node.asset.id] = {
+        id: curr.node.asset.id,
+        heistAsset: {
+          id: curr.node.id,
+          quantity: curr.node.quantity,
+        },
+      };
+      return acc;
+    }, {});
 
     // Remove the heistAssets from the crewMember object, they are already in the assetsPurchased
     const {
@@ -138,7 +140,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       allowedEmployees,
       crewMember: rest,
       assetsPurchased,
-      assetsCrewMember: assetsCrewMemberOrganized,
+      heistAssets: heistAssetsOrganized,
       assets: assetsOrganized,
       user,
     };
@@ -207,7 +209,7 @@ const CardAsset = ({ asset, quantity }: { asset: Asset; quantity: number }) => (
           {asset.name}
         </Text>
         <Text as="div" size="2" color="gray">
-          {quantity}/5
+          {quantity}/{asset.maxQuantity}
         </Text>
       </Flex>
     </Box>
@@ -251,7 +253,7 @@ const TabsAsset = ({
 
 export default function Prepare() {
   const { t } = useTranslation();
-  const { assets, assetsPurchased, assetsCrewMember, crewMember, employee, allowedEmployees } =
+  const { assets, assetsPurchased, heistAssets, crewMember, employee, allowedEmployees } =
     useTypedLoaderData<Loader>();
 
   const [cartAssets, setCartAssets] = useState<{
@@ -260,66 +262,115 @@ export default function Prepare() {
 
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  const addAsset = ({ id, quantity, crewMemberAssetId }: AssetPurchased, price: number) => {
+  const addAsset = (asset: Asset) => {
     setCartAssets((prev) => {
-      if (prev[id]) {
-        if (prev[id].quantity + 1 > 5) {
-          return { ...prev };
-        } else {
-          setTotalPrice((prev) => prev + price);
-          return {
-            ...prev,
-            [id]: {
-              ...prev[id],
-              quantity: prev[id].quantity + 1,
-            },
-          };
+      const cartAsset = prev[asset.id];
+
+      if (cartAsset) {
+        if (cartAsset.newQuantity) {
+          if (cartAsset.heistAsset) {
+            if (cartAsset.newQuantity + cartAsset.heistAsset.quantity + 1 <= asset.maxQuantity) {
+              return {
+                ...prev,
+                [cartAsset.id]: {
+                  ...cartAsset,
+                  newQuantity: cartAsset.newQuantity + 1,
+                },
+              };
+            }
+
+            return { ...prev };
+          } else {
+            if (cartAsset.newQuantity + 1 <= asset.maxQuantity) {
+              return {
+                ...prev,
+                [cartAsset.id]: {
+                  ...cartAsset,
+                  newQuantity: cartAsset.newQuantity + 1,
+                },
+              };
+            }
+
+            return { ...prev };
+          }
         }
-      } else {
-        setTotalPrice((prev) => prev + (quantity + 1) * price);
+
         return {
           ...prev,
-          [id]: {
-            id,
-            newQuantity: quantity + 1,
-            quantity,
-            crewMemberAssetId,
+          [cartAsset.id]: {
+            ...cartAsset,
+            newQuantity: 1,
           },
         };
       }
+
+      return {
+        ...prev,
+        [asset.id]: {
+          id: asset.id,
+          newQuantity: 1,
+        },
+      };
     });
   };
 
-  const removeAsset = (id: string, price: number) => {
+  const removeAsset = async (asset: Asset) => {
     setCartAssets((prev) => {
-      if (prev[id]) {
-        if (prev[id].quantity - 1 <= 0) {
-          if (prev[id].crewMemberAssetId) {
-            setTotalPrice((prev) => prev - prev[id].baseQuantity * price);
+      const cartAsset = prev[asset.id];
+
+      if (cartAsset) {
+        if (cartAsset?.newQuantity) {
+          if (cartAsset.newQuantity - 1 > 0) {
             return {
               ...prev,
-              [id]: { ...prev[id], quantity: 0 },
+              [cartAsset.id]: {
+                ...cartAsset,
+                newQuantity: cartAsset.newQuantity - 1,
+              },
             };
-          } else {
-            setTotalPrice((prev) => prev - prev[id].baseQuantity * price);
-            const { [id]: _, ...rest } = prev;
-            return { ...rest };
           }
-        } else {
-          setTotalPrice((prev) => prev - price);
-          return {
-            ...prev,
-            [id]: {
-              ...prev[id],
-              quantity: prev[id].quantity - 1,
-            },
-          };
+
+          const { [cartAsset.id]: _, ...rest } = prev;
+
+          return { ...rest };
         }
-      } else {
         return { ...prev };
       }
+
+      return { ...prev };
     });
   };
+
+  // const removeAsset = (asset: AssetPurchased) => {
+  //   setCartAssets((prev) => {
+  //     if (prev[id]) {
+  //       if (prev[id].quantity - 1 <= 0) {
+  //         if (prev[id].crewMemberAssetId) {
+  //           setTotalPrice((prev) => prev - prev[id].baseQuantity * price);
+  //           return {
+  //             ...prev,
+  //             [id]: { ...prev[id], quantity: 0 },
+  //           };
+  //         } else {
+  //           setTotalPrice((prev) => prev - prev[id].baseQuantity * price);
+  //           const { [id]: _, ...rest } = prev;
+  //           return { ...rest };
+  //         }
+  //       } else {
+  //         setTotalPrice((prev) => prev - price);
+  //         return {
+  //           ...prev,
+  //           [id]: {
+  //             ...prev[id],
+  //             quantity: prev[id].quantity - 1,
+  //           },
+  //         };
+  //       }
+  //     } else {
+  //       return { ...prev };
+  //     }
+  //   });
+  // };
 
   // const addAsset = ({ id, quantity, crewMemberAssetId }: AssetPurchased, price: number) => {
   //   setCartAssets((prev) => {
@@ -384,7 +435,14 @@ export default function Prepare() {
   // };
 
   // Get the quantity of an asset in the cart
-  const getQuantity = (id: string) => (cartAssets[id] ? cartAssets[id].quantity : 0);
+  const getQuantity = (id: string) => {
+    const cartAsset = cartAssets[id];
+    if (cartAsset && cartAsset?.newQuantity) {
+      return cartAsset.newQuantity;
+    }
+
+    return 0;
+  };
 
   const allowedEmployeesFormatted = allowedEmployees.edges.map((edge) => ({
     value: edge.node.id,
@@ -440,59 +498,24 @@ export default function Prepare() {
                 )}
               </Tabs.Content>
 
-              <TabsAsset
-                value="assets"
-                text={t('asset.type.assets.catch_phrase')}
-                assets={assets[AssetTypeEnum.Asset]}
-                setQuantity={(assetId) => getQuantity(assetId)}
-                onAddAsset={({ id, price }) =>
-                  addAsset(
-                    {
-                      id,
-                      quantity: getQuantity(id),
-                      crewMemberAssetId: assetsCrewMember[id]?.id,
-                    },
-                    price,
-                  )
-                }
-                onRemoveAsset={({ id, price }) => removeAsset({ id }, price)}
-              />
-
-              <TabsAsset
-                value="weapons"
-                text={t('asset.type.weapons.catch_phrase')}
-                assets={assets[AssetTypeEnum.Weapon]}
-                setQuantity={(assetId) => getQuantity(assetId)}
-                onAddAsset={({ id, price }) =>
-                  addAsset(
-                    {
-                      id,
-                      quantity: getQuantity(id),
-                      crewMemberAssetId: assetsCrewMember[id]?.id,
-                    },
-                    price,
-                  )
-                }
-                onRemoveAsset={({ id, price }) => removeAsset({ id }, price)}
-              />
-
-              <TabsAsset
-                value="equipments"
-                text={t('asset.type.equipments.catch_phrase')}
-                assets={assets[AssetTypeEnum.Equipment]}
-                setQuantity={(assetId) => getQuantity(assetId)}
-                onAddAsset={({ id, price }) =>
-                  addAsset(
-                    {
-                      id,
-                      quantity: getQuantity(id),
-                      crewMemberAssetId: assetsCrewMember[id]?.id,
-                    },
-                    price,
-                  )
-                }
-                onRemoveAsset={({ id, price }) => removeAsset({ id }, price)}
-              />
+              {Object.entries({
+                assets: AssetTypeEnum.Asset,
+                weapons: AssetTypeEnum.Weapon,
+                equipments: AssetTypeEnum.Equipment,
+              }).map(([key, value]) => (
+                <TabsAsset
+                  key={key}
+                  value={key}
+                  text={t(`asset.type.${key}.catch_phrase`)}
+                  assets={assets[value]}
+                  setQuantity={(assetId) =>
+                    getQuantity(assetId) +
+                    (cartAssets[assetId] ? cartAssets[assetId].heistAsset?.quantity ?? 0 : 0)
+                  }
+                  onAddAsset={(asset) => addAsset(asset)}
+                  onRemoveAsset={(asset) => removeAsset(asset)}
+                />
+              ))}
 
               <Tabs.Content value="checkout_payment">
                 <Dialog.Title asChild>

@@ -21,6 +21,7 @@ export const getAssets = async (client: GraphQLClient) => {
             id
             name
             price
+            maxQuantity
             type
             description
             teamAsset
