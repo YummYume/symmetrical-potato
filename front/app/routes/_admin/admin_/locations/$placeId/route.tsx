@@ -9,6 +9,7 @@ import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hoo
 
 import { getLocation, updateLocation } from '~/lib/api/location';
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
+import { Rating } from '~/lib/components/Rating';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { i18next } from '~/lib/i18n/index.server';
@@ -183,9 +184,12 @@ export default function EditLocation() {
               />
               <Flex direction="column" gap="2">
                 <Text>{t('location.average_rating')}</Text>
-                <Blockquote>
-                  {location.averageRating ?? t('location.average_rating.none')}
-                </Blockquote>
+                {location.averageRating && (
+                  <Rating style={{ maxWidth: 150 }} value={location.averageRating} readOnly />
+                )}
+                {!location.averageRating && (
+                  <Blockquote>{t('location.average_rating.none')}</Blockquote>
+                )}
               </Flex>
               <Flex direction="column" gap="2">
                 <Text>{t('location.review_count')}</Text>

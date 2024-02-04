@@ -14,6 +14,7 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import { captureRemixErrorBoundaryError } from '@sentry/remix';
+import reactRatingStyles from '@smastrom/react-rating/style.css';
 import { clsx } from 'clsx';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -103,6 +104,7 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: tailwindStylesheet },
   { rel: 'stylesheet', href: themeStylesheet },
   { rel: 'stylesheet', href: viewTransitionsStylesheet },
+  { rel: 'stylesheet', href: reactRatingStyles },
 ];
 
 export let handle = {

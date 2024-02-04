@@ -41,7 +41,13 @@ export const getCurrentUser = async (client: GraphQLClient) => {
         email
         balance
         globalRating
+        locale
         roles
+        mainRole
+        profile {
+          id
+          description
+        }
         contractorRequest {
           id
           reason

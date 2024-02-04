@@ -14,7 +14,7 @@ export const UserMainRoleBadge = ({ mainRole, ...rest }: UserMainRoleBadgeProps)
 
   if (mainRole === ROLES.HEISTER) {
     return (
-      <Badge color="teal" size="1" className="h-fit" {...rest}>
+      <Badge color="teal" size="1" className="h-fit w-fit" {...rest}>
         {t('user.role.heister')}
       </Badge>
     );
@@ -22,7 +22,7 @@ export const UserMainRoleBadge = ({ mainRole, ...rest }: UserMainRoleBadgeProps)
 
   if (mainRole === ROLES.EMPLOYEE) {
     return (
-      <Badge color="iris" size="1" className="h-fit" {...rest}>
+      <Badge color="iris" size="1" className="h-fit w-fit" {...rest}>
         {t('user.role.employee')}
       </Badge>
     );
@@ -30,7 +30,7 @@ export const UserMainRoleBadge = ({ mainRole, ...rest }: UserMainRoleBadgeProps)
 
   if (mainRole === ROLES.CONTRACTOR) {
     return (
-      <Badge color="crimson" size="1" className="h-fit" {...rest}>
+      <Badge color="crimson" size="1" className="h-fit w-fit" {...rest}>
         {t('user.role.contractor')}
       </Badge>
     );

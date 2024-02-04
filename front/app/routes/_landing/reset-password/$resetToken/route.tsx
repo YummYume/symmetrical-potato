@@ -30,8 +30,6 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   try {
     await getResetTokenUser(context.client, params.resetToken);
   } catch (error) {
-    console.log('error', error);
-
     throw new Response(null, {
       status: 404,
     });

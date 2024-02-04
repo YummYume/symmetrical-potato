@@ -5,6 +5,7 @@ email: Adresse e-mail
 name: Nom
 description: Description
 username: Nom d'utilisateur
+username.help: Vous ne pourrez pas changer votre nom d'utilisateur plus tard.
 password: Mot de passe
 password_confirm: Confirmer le mot de passe
 new_password: Nouveau mot de passe
@@ -59,8 +60,7 @@ meta.my_contractor_request.title: Ma demande de contractant
 meta.my_contractor_request.description: Vérifiez le statut de votre demande de contractant.
 meta.my_account.title: Mon compte
 meta.my_account.description: Modifiez vos paramètres de compte.
-meta.my_profile.title: Mon profil
-meta.my_profile.description: Modifiez votre profil.
+meta.profile.description: Consultez le profil de {name}.
 
 # History info
 history_info: Information sur l'historique
@@ -76,6 +76,9 @@ my_profile: Mon profil
 
 # My account
 my_account: Mon compte
+my_account.delete.confirm: |
+  Êtes-vous sûr de vouloir supprimer votre compte ?
+  Vous ne pourrez pas revenir en arrière.
 
 # My contractor request
 my_contractor_request: Ma demande de contractant
@@ -124,6 +127,7 @@ user.status: Statut
 user.status.verified: Vérifié
 user.status.unverified: Non vérifié
 user.status.dead: Mort
+user.account: Compte
 user.profile: Profil
 user.description: Description
 user.no_description: Aucune description disponible.
@@ -134,6 +138,8 @@ user.locale: Langue préférée
 user.locale.help: Cette langue sera utilisée lors de l'envoi d'e-mails.
 user.locale.en: Anglais
 user.locale.fr: Français
+user.global_rating: Note globale
+user.global_rating.none: Aucune note
 
 # Asset
 asset.name: Nom
@@ -165,7 +171,7 @@ location.name: Nom
 location.address: Adresse
 location.latitude: Latitude
 location.longitude: Longitude
-location.average_rating: Note moyenne (sur 5)
+location.average_rating: Note moyenne
 location.average_rating.none: Aucune note
 location.review_count: Nombre d'avis
 
@@ -177,6 +183,11 @@ establishment.minimum_wage: Salaire minimum
 establishment.contractor_cut: Part du contractant
 establishment.employee_cut: Part de l'employé
 establishment.crew_cut: Part de l'équipe
-establishment.average_rating: Note moyenne (sur 5)
+establishment.average_rating: Note moyenne
 establishment.average_rating.none: Aucune note
 establishment.review_count: Nombre d'avis
+
+# Rating
+rating.star: Noter {rating, number}
+rating.label: Sélection de la note
+rating.label.read_only: Noté {rating, number} sur {total}

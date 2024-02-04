@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
+import { Rating } from '~/lib/components/Rating';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { UserMainRoleBadge } from '~/lib/components/user/UserMainRoleBadge';
@@ -195,6 +196,13 @@ export default function EditUser() {
                     <li key={role}>{t(`user.roles.${role.toLowerCase()}`, { ns: 'admin' })}</li>
                   ))}
                 </ul>
+              </Flex>
+              <Flex direction="column" gap="2">
+                <Text>{t('user.global_rating')}</Text>
+                {user.globalRating && (
+                  <Rating style={{ maxWidth: 150 }} value={user.globalRating} readOnly />
+                )}
+                {!user.globalRating && <Blockquote>{t('user.global_rating.none')}</Blockquote>}
               </Flex>
               <section className="space-y-4">
                 <Heading as="h3">{t('user.profile')}</Heading>

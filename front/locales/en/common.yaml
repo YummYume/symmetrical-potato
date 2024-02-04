@@ -5,6 +5,7 @@ email: Email address
 name: Name
 description: Description
 username: Username
+username.help: You will not be able to change your username later.
 password: Password
 password_confirm: Confirm password
 new_password: New password
@@ -59,8 +60,7 @@ meta.my_contractor_request.title: My contractor request
 meta.my_contractor_request.description: Check the status of your contractor request.
 meta.my_account.title: My account
 meta.my_account.description: Edit your account settings.
-meta.my_profile.title: My profile
-meta.my_profile.description: Edit your profile.
+meta.profile.description: View the profile of {name}.
 
 # History info
 history_info: History info
@@ -76,6 +76,9 @@ my_profile: My profile
 
 # My account
 my_account: My account
+my_account.delete.confirm: |
+  Are you sure you want to delete your account? All data will be lost.
+  This action is irreversible.
 
 # My contractor request
 my_contractor_request: My contractor request
@@ -123,6 +126,7 @@ user.status: Status
 user.status.verified: Verified
 user.status.unverified: Unverified
 user.status.dead: Dead
+user.account: Account
 user.profile: Profile
 user.description: Description
 user.no_description: No description available.
@@ -133,6 +137,8 @@ user.locale: Preferred language
 user.locale.help: This language will be used when sending emails.
 user.locale.en: English
 user.locale.fr: French
+user.global_rating: Global rating
+user.global_rating.none: No rating
 
 # Asset
 asset.name: Name
@@ -164,7 +170,7 @@ location.name: Name
 location.address: Address
 location.latitude: Latitude
 location.longitude: Longitude
-location.average_rating: Average rating (out of 5)
+location.average_rating: Average rating
 location.average_rating.none: No rating
 location.review_count: Review count
 
@@ -176,6 +182,11 @@ establishment.minimum_wage: Minimum wage
 establishment.contractor_cut: Contractor cut
 establishment.employee_cut: Employee cut
 establishment.crew_cut: Crew cut
-establishment.average_rating: Average rating (out of 5)
+establishment.average_rating: Average rating
 establishment.average_rating.none: No rating
 establishment.review_count: Review count
+
+# Rating
+rating.star: Rate {rating}
+rating.label: Rating selection
+rating.label.read_only: Rated {rating} out of {total}
