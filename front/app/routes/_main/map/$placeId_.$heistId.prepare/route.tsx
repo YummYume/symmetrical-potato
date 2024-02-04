@@ -29,7 +29,12 @@ type AssetCategory<T> = Record<string, T>;
 type AssetsOrganized = Record<string, AssetCategory<Asset>>;
 type AssetsCrewMemberOrganized = Record<string, HeistAsset>;
 
-type AssetPurchased = { id: string; quantity: number; crewMemberAssetId?: string };
+type AssetPurchased = {
+  id: string;
+  quantity: number;
+  crewMemberAssetId?: string;
+  totalSpent: number;
+};
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user, [ROLES.ADMIN, ROLES.HEISTER]);
@@ -152,6 +157,8 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 export type Loader = typeof loader;
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
+  denyAccessUnlessGranted(context.user, [ROLES.ADMIN, ROLES.HEISTER]);
+
   const { errors, data } = await getValidatedFormData<PrepareHeistFormData>(
     request,
     prepareHeistResolver,
@@ -160,9 +167,40 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   if (errors) {
     return json({ errors }, { status: 400 });
   }
-  if (typeof data.assetsPurchased === 'string') {
-    console.log(JSON.parse(data.assetsPurchased), data.employee);
-  }
+
+  const { assetsPurchased } = data;
+
+  const assetsPurchasedParsed = JSON.parse(assetsPurchased as string) as {
+    cartAssets: { [key: string]: AssetPurchased };
+    crewMember: Omit<CrewMember, 'heistAssets'>;
+  };
+
+  const assetsPurchasedOrganized = Object.keys(assetsPurchasedParsed.cartAssets).reduce<{
+    add: { id: string; quantity: number }[];
+    delete: AssetPurchased[];
+    edit: AssetPurchased[];
+  }>(
+    (acc, curr) => {
+      if (assetsPurchasedParsed.cartAssets[curr].crewMemberAssetId) {
+        if (assetsPurchasedParsed.cartAssets[curr].quantity === 0) {
+          acc.delete.push(assetsPurchasedParsed.cartAssets[curr]);
+        } else {
+          acc.edit.push(assetsPurchasedParsed.cartAssets[curr]);
+        }
+      } else {
+        acc.add.push({
+          id: curr,
+          quantity: assetsPurchasedParsed.cartAssets[curr].quantity,
+        });
+      }
+      return acc;
+    },
+    {
+      add: [],
+      delete: [],
+      edit: [],
+    },
+  );
 
   return {};
 }
@@ -194,8 +232,8 @@ const TabsAsset = ({
   value: string;
   assets: AssetCategory<Asset>;
   setQuantity: (assetId: string) => number;
-  onAddAsset: (assetId: string) => void;
-  onRemoveAsset: (assetId: string) => void;
+  onAddAsset: (asset: Asset) => void;
+  onRemoveAsset: (asset: Asset) => void;
 }) => (
   <Tabs.Content value={value}>
     <Text size="2">{text}</Text>
@@ -209,8 +247,8 @@ const TabsAsset = ({
           align="center"
         >
           <CardAsset asset={assets[type]} quantity={setQuantity(assets[type].id)} />
-          <Button onClick={() => onAddAsset(assets[type].id)}>+</Button>
-          <Button onClick={() => onRemoveAsset(assets[type].id)}>-</Button>
+          <Button onClick={() => onAddAsset(assets[type])}>+</Button>
+          <Button onClick={() => onRemoveAsset(assets[type])}>-</Button>
         </Grid>
       ))}
     </>
@@ -226,7 +264,7 @@ export default function Prepare() {
     [key: string]: AssetPurchased;
   }>(assetsPurchased);
 
-  const addAsset = ({ id, quantity, crewMemberAssetId }: AssetPurchased) => {
+  const addAsset = ({ id, quantity, crewMemberAssetId, totalSpent }: AssetPurchased) => {
     setCartAssets((prev) => {
       if (prev[id]) {
         if (prev[id].quantity + 1 > 5) {
@@ -332,11 +370,13 @@ export default function Prepare() {
                 text={t('asset.type.assets.catch_phrase')}
                 assets={assets[AssetTypeEnum.Asset]}
                 setQuantity={(assetId) => getQuantity(assetId)}
-                onAddAsset={(assetId) =>
+                onAddAsset={(asset) =>
                   addAsset({
-                    id: assetId,
-                    quantity: getQuantity(assetId),
-                    crewMemberAssetId: assetsCrewMember[assetId]?.id,
+                    id: asset.id,
+                    quantity: getQuantity(asset.id),
+                    crewMemberAssetId: assetsCrewMember[asset.id]?.id,
+                    // TODO calc
+                    totalSpent: assetsCrewMember[asset.id]?.totalSpent ?? 0,
                   })
                 }
                 onRemoveAsset={(assetId) => removeAsset({ id: assetId })}
