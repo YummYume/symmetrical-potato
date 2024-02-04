@@ -30,8 +30,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
   const t = await i18next.getFixedT(request, 'common');
 
-  console.log('user', user);
-
   return json({
     user,
     meta: {
