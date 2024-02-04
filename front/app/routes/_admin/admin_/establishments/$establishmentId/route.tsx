@@ -10,6 +10,7 @@ import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hoo
 import { getEstablishment, updateEstablishment } from '~/lib/api/establishments';
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { Link } from '~/lib/components/Link';
+import { Rating } from '~/lib/components/Rating';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
@@ -227,9 +228,12 @@ export default function EditEstablishment() {
               </Flex>
               <Flex direction="column" gap="2">
                 <Text>{t('establishment.average_rating')}</Text>
-                <Blockquote>
-                  {establishment.averageRating ?? t('establishment.average_rating.none')}
-                </Blockquote>
+                {establishment.averageRating && (
+                  <Rating style={{ maxWidth: 150 }} value={establishment.averageRating} readOnly />
+                )}
+                {!establishment.averageRating && (
+                  <Blockquote>{t('establishment.average_rating.none')}</Blockquote>
+                )}
               </Flex>
               <Flex direction="column" gap="2">
                 <Text>{t('establishment.review_count')}</Text>

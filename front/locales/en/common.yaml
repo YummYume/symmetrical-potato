@@ -137,6 +137,8 @@ user.locale: Preferred language
 user.locale.help: This language will be used when sending emails.
 user.locale.en: English
 user.locale.fr: French
+user.global_rating: Global rating
+user.global_rating.none: No rating
 
 # Asset
 asset.name: Name
@@ -168,7 +170,7 @@ location.name: Name
 location.address: Address
 location.latitude: Latitude
 location.longitude: Longitude
-location.average_rating: Average rating (out of 5)
+location.average_rating: Average rating
 location.average_rating.none: No rating
 location.review_count: Review count
 
@@ -180,6 +182,11 @@ establishment.minimum_wage: Minimum wage
 establishment.contractor_cut: Contractor cut
 establishment.employee_cut: Employee cut
 establishment.crew_cut: Crew cut
-establishment.average_rating: Average rating (out of 5)
+establishment.average_rating: Average rating
 establishment.average_rating.none: No rating
 establishment.review_count: Review count
+
+# Rating
+rating.star: Rate {rating}
+rating.label: Rating selection
+rating.label.read_only: Rated {rating} out of {total}

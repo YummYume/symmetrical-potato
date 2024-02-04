@@ -138,6 +138,8 @@ user.locale: Langue préférée
 user.locale.help: Cette langue sera utilisée lors de l'envoi d'e-mails.
 user.locale.en: Anglais
 user.locale.fr: Français
+user.global_rating: Note globale
+user.global_rating.none: Aucune note
 
 # Asset
 asset.name: Nom
@@ -169,7 +171,7 @@ location.name: Nom
 location.address: Adresse
 location.latitude: Latitude
 location.longitude: Longitude
-location.average_rating: Note moyenne (sur 5)
+location.average_rating: Note moyenne
 location.average_rating.none: Aucune note
 location.review_count: Nombre d'avis
 
@@ -181,6 +183,11 @@ establishment.minimum_wage: Salaire minimum
 establishment.contractor_cut: Part du contractant
 establishment.employee_cut: Part de l'employé
 establishment.crew_cut: Part de l'équipe
-establishment.average_rating: Note moyenne (sur 5)
+establishment.average_rating: Note moyenne
 establishment.average_rating.none: Aucune note
 establishment.review_count: Nombre d'avis
+
+# Rating
+rating.star: Noter {rating, number}
+rating.label: Sélection de la note
+rating.label.read_only: Noté {rating, number} sur {total}

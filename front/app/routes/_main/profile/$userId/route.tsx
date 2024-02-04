@@ -5,6 +5,7 @@ import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 
 import { getPublicUser } from '~/lib/api/user';
+import { Rating } from '~/lib/components/Rating';
 import { UserAvatar } from '~/lib/components/user/UserAvatar';
 import { UserMainRoleBadge } from '~/lib/components/user/UserMainRoleBadge';
 import { i18next } from '~/lib/i18n/index.server';
@@ -73,23 +74,28 @@ export default function Profile() {
           <Heading align="center" as="h1" size="9">
             {user.username}
           </Heading>
-          <div className="md:flex md:justify-between md:space-x-5">
-            <div className="flex items-start space-x-5">
-              <div className="flex-shrink-0">
-                <div className="relative">
-                  <UserAvatar username={user.username} mainRole={user.mainRole} size="6" />
-                </div>
-              </div>
-              <div className="pt-1.5">
-                <Text as="p" size="5">
-                  {user.profile.description ?? t('user.no_description')}
-                </Text>
-              </div>
-            </div>
-            <div className="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-3 sm:space-y-0 sm:space-x-reverse md:mt-0 md:flex-row md:space-x-3">
-              <UserMainRoleBadge mainRole={user.mainRole} />
-            </div>
-          </div>
+
+          <Flex
+            direction={{ initial: 'column', md: 'row' }}
+            gap={{ initial: '2', md: '4' }}
+            className="p-2 md:p-0"
+          >
+            <Flex direction="row" gap={{ initial: '1', md: '2' }}>
+              <Flex direction="column" gap="2" align="center">
+                <UserAvatar username={user.username} mainRole={user.mainRole} size="6" />
+                <UserMainRoleBadge mainRole={user.mainRole} />
+              </Flex>
+              <Text as="p" size="5">
+                {user.profile.description ?? t('user.no_description')}
+              </Text>
+            </Flex>
+            {user.globalRating && (
+              <Flex direction="column" gap="2" align="end">
+                <Text as="span">{t('user.global_rating')}</Text>
+                <Rating style={{ width: 150 }} value={user.globalRating} readOnly />
+              </Flex>
+            )}
+          </Flex>
         </Flex>
       </Container>
     </main>
