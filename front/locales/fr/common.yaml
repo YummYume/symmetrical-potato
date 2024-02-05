@@ -56,6 +56,7 @@ submit: Envoyer
 more_info: Afficher plus de détails
 join: Rejoindre
 leave: Quitter
+purchase: Acheter
 
 # Meta
 meta.dashboard.title: Tableau de bord
@@ -142,6 +143,8 @@ heist.add_objective: Ajouter un objectif
 heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
 heist.leave.confirm: Êtes-vous sûr de vouloir quitter ce braquage ? Vous allez perdre tous vos équipements.
 heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
+heist.employee.chosen: l'employé nommé {name} vous aidera.
+heist.employee.not_chosen: Choisissez celui qui vous aidera
 heist.phase: Phase
 heist.phase.cancelled: Annulé
 heist.phase.failed: Échoué
@@ -185,6 +188,7 @@ user.global_rating.none: Aucune note
 asset.name: Nom
 asset.description: Description
 asset.price: Prix
+asset.quantity: Quantité
 asset.type: Type
 asset.type.asset: Asset
 asset.type.assets: Assets
@@ -198,6 +202,12 @@ asset.heist: Braquage associé
 asset.type.assets.catch_phrase: Prenez tout ce dont vous avez besoin, vous ne savez pas ce que vous trouverez sur votre chemin.
 asset.type.equipments.catch_phrase: Vous aurez besoin de certains équipements. Ne les oublie pas.
 asset.type.weapons.catch_phrase: Choisissez judicieusement votre arme. Vous ne voulez pas être pris au dépourvu ou, pire, désarmé.
+checkout_payment.title: Paiement
+checkout_payment.description: Total {price}$
+checkout_payment.no_assets: Aucun asset à payer.
+checkout_payment.confirmation: Êtes-vous sûr de vouloir payer ?
+checkout_payment.confirmation_description: Après le paiement, il n'y a pas de possibilité de remboursement.
+checkout_payment.clear_cart: Vider le panier
 
 # Contractor Request
 contractor_request.reason: Raison de la demande

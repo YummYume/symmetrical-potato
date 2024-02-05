@@ -56,6 +56,7 @@ submit: Submit
 more_info: Show more details
 join: Join
 leave: Leave
+purchase: Purchase
 
 # Meta
 meta.dashboard.title: Dashboard
@@ -141,6 +142,8 @@ heist.add_objective: Add an objective
 heist.delete.confirm: Are you sure you want to delete this heist?
 heist.leave.confirm: Are you sure you want to leave this heist? You will lose all your assets.
 heist.join.confirm: Are you sure you want to join this heist?
+heist.employee.chosen: the employee named {name} will help you.
+heist.employee.not_chosen: Choose the one who will help you.
 heist.phase: Phase
 heist.phase.cancelled: Cancelled
 heist.phase.failed: Failed
@@ -184,6 +187,7 @@ user.global_rating.none: No rating
 asset.name: Name
 asset.description: Description
 asset.price: Price
+asset.quantity: Quantity
 asset.type: Type
 asset.type.asset: Asset
 asset.type.assets: Assets
@@ -197,6 +201,12 @@ asset.heist: Associated heist
 asset.type.assets.catch_phrase: Take everything you need, you don't know what you will find on your way.
 asset.type.equipments.catch_phrase: You will need some equipment to help you. Don't forget them.
 asset.type.weapons.catch_phrase: Choose your weapon wisely. You don't want to be caught off guard or worse, unarmed.
+checkout_payment.title: Payment
+checkout_payment.description: Total {price}$
+checkout_payment.no_assets: No assets to checkout.
+checkout_payment.confirmation: Are you sure you want to checkout?
+checkout_payment.confirmation_description: After the payment, there is no possibility to refund it.
+checkout_payment.clear_cart: Clear cart
 
 # Contractor Request
 contractor_request.reason: Reason for the request

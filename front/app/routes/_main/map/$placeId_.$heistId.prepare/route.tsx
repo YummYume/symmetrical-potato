@@ -1,5 +1,17 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Box, Button, Card, Flex, Grid, Heading, Section, Tabs, Text } from '@radix-ui/themes';
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Grid,
+  Heading,
+  ScrollArea,
+  Section,
+  Table,
+  Tabs,
+  Text,
+} from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 import { useEffect, useState } from 'react';
@@ -15,7 +27,7 @@ import {
 import { chooseEmployeeHeist, getHeistPartial } from '~/lib/api/heist';
 import { bulkCreateHeistAsset } from '~/lib/api/heist-asset';
 import { AssetTypeEnum } from '~/lib/api/types';
-import { SubmitButton } from '~/lib/components/form/SubmitButton';
+import { FormAlertDialog, SubmitButton } from '~/lib/components/dialog/FormAlertDialog';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
@@ -28,13 +40,13 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { LoaderFunctionArgs } from '@remix-run/node';
-import type { Asset, HeistAsset } from '~/lib/api/types';
+import type { Asset } from '~/lib/api/types';
 import type { PrepareHeistFormData } from '~/lib/validators/prepare-heist';
 import type { FlashMessage } from '~/root';
 
 type AssetCategory<T> = Record<string, T>;
 type AssetsOrganized = Record<string, AssetCategory<Asset>>;
-type HeistAssetsOrganized = Record<string, HeistAsset>;
+type AssetsOrganizedByName = Record<string, Asset>;
 
 type AssetPurchased = {
   id: string;
@@ -116,6 +128,14 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       },
     );
 
+    const assetsOrganizedById = assets.edges.reduce<AssetsOrganizedByName>((acc, curr) => {
+      if (!assetsForbidden.edges.some((edge) => edge.node.id === curr.node.id)) {
+        acc[curr.node.id] = curr.node;
+      }
+
+      return acc;
+    }, {});
+
     // Format the assets already purchased by the crew member
     const assetsPurchased = heistAssets.reduce<{ [key: string]: AssetPurchased }>((acc, curr) => {
       acc[curr.node.asset.id] = {
@@ -132,6 +152,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       employee,
       allowedEmployees,
       assetsPurchased,
+      assetsOrganizedById,
       assets: assetsOrganized,
       user,
     };
@@ -292,16 +313,16 @@ const TabsAsset = ({
   text,
   value,
   assets,
-  showQuantity,
-  onQuantity,
+  setGlobalQuantity,
+  setQuantity,
   onAddAsset,
   onRemoveAsset,
 }: {
   text: string;
   value: string;
   assets: AssetCategory<Asset>;
-  onQuantity: (assetId: string) => number;
-  showQuantity: (assetId: string) => number;
+  setQuantity: (assetId: string) => number;
+  setGlobalQuantity: (assetId: string) => number;
   onAddAsset: (asset: Asset) => void;
   onRemoveAsset: (asset: Asset) => void;
 }) => (
@@ -316,11 +337,13 @@ const TabsAsset = ({
           gap="3"
           align="center"
         >
-          <CardAsset asset={assets[type]} quantity={showQuantity(assets[type].id)} />
-          <Button type="button" onClick={() => onAddAsset(assets[type])}>
-            +
-          </Button>
-          {onQuantity(assets[type].id) > 0 && (
+          <CardAsset asset={assets[type]} quantity={setGlobalQuantity(assets[type].id)} />
+          {setGlobalQuantity(assets[type].id) < assets[type].maxQuantity && (
+            <Button type="button" onClick={() => onAddAsset(assets[type])}>
+              +
+            </Button>
+          )}
+          {setQuantity(assets[type].id) > 0 && (
             <Button type="button" onClick={() => onRemoveAsset(assets[type])}>
               -
             </Button>
@@ -331,9 +354,43 @@ const TabsAsset = ({
   </Tabs.Content>
 );
 
+type AsssetPurchasedFormatted = { quantity: number; name: string; price: number };
+const PaymentDisplay = ({
+  assets,
+  rows,
+}: {
+  assets: AsssetPurchasedFormatted[];
+  rows: {
+    name: string;
+    price: string;
+    quantity: string;
+  };
+}) => (
+  <Table.Root>
+    <Table.Header>
+      <Table.Row>
+        <Table.ColumnHeaderCell>{rows.name}</Table.ColumnHeaderCell>
+        <Table.ColumnHeaderCell>{rows.price}</Table.ColumnHeaderCell>
+        <Table.ColumnHeaderCell>{rows.quantity}</Table.ColumnHeaderCell>
+      </Table.Row>
+    </Table.Header>
+
+    <Table.Body>
+      {assets.map((asset, index) => (
+        <Table.Row key={index}>
+          <Table.Cell>{asset.name}</Table.Cell>
+          <Table.Cell>{asset.price}</Table.Cell>
+          <Table.Cell>{asset.quantity}</Table.Cell>
+        </Table.Row>
+      ))}
+    </Table.Body>
+  </Table.Root>
+);
+
 export default function Prepare() {
   const { t } = useTranslation();
-  const { assets, assetsPurchased, employee, allowedEmployees } = useTypedLoaderData<Loader>();
+  const { assets, assetsPurchased, employee, allowedEmployees, assetsOrganizedById } =
+    useTypedLoaderData<Loader>();
 
   const [cartAssets, setCartAssets] = useState<{
     [key: string]: AssetPurchased;
@@ -345,55 +402,64 @@ export default function Prepare() {
     setCartAssets((prev) => {
       const cartAsset = prev[asset.id];
 
-      if (cartAsset) {
-        if (cartAsset.newQuantity) {
-          if (cartAsset.heistAsset) {
-            if (cartAsset.newQuantity + cartAsset.heistAsset.quantity + 1 <= asset.maxQuantity) {
-              setTotalPrice((prev) => prev + asset.price);
-              return {
-                ...prev,
-                [cartAsset.id]: {
-                  ...cartAsset,
-                  newQuantity: cartAsset.newQuantity + 1,
-                },
-              };
-            }
-
-            return { ...prev };
-          } else {
-            if (cartAsset.newQuantity + 1 <= asset.maxQuantity) {
-              setTotalPrice((prev) => prev + asset.price);
-              return {
-                ...prev,
-                [cartAsset.id]: {
-                  ...cartAsset,
-                  newQuantity: cartAsset.newQuantity + 1,
-                },
-              };
-            }
-
-            return { ...prev };
-          }
-        }
-
+      // If the asset is not in the cart, we add it
+      if (!cartAsset) {
         setTotalPrice((prev) => prev + asset.price);
         return {
           ...prev,
-          [cartAsset.id]: {
-            ...cartAsset,
+          [asset.id]: {
+            id: asset.id,
             newQuantity: 1,
           },
         };
       }
 
-      setTotalPrice((prev) => prev + asset.price);
-      return {
-        ...prev,
-        [asset.id]: {
-          id: asset.id,
-          newQuantity: 1,
-        },
-      };
+      // If the asset is already in the cart and already purchased
+      if (cartAsset.heistAsset && cartAsset.newQuantity) {
+        // If the new quantity + the quantity already purchased is less than the max quantity
+        if (cartAsset.newQuantity + cartAsset.heistAsset.quantity + 1 <= asset.maxQuantity) {
+          setTotalPrice((prev) => prev + asset.price);
+          return {
+            ...prev,
+            [cartAsset.id]: {
+              ...cartAsset,
+              newQuantity: cartAsset.newQuantity + 1,
+            },
+          };
+        }
+      }
+
+      // If the asset is already purchased
+      if (cartAsset.heistAsset) {
+        // If the quantity already purchased + 1 is less than the max quantity
+        if (cartAsset.heistAsset.quantity + 1 <= asset.maxQuantity) {
+          setTotalPrice((prev) => prev + asset.price);
+          return {
+            ...prev,
+            [cartAsset.id]: {
+              ...cartAsset,
+              newQuantity: 1,
+            },
+          };
+        }
+      }
+
+      // If the asset is already in the cart
+      if (cartAsset.newQuantity) {
+        // If the new quantity + 1 is less than the max quantity, we add 1 to the new quantity
+        if (cartAsset.newQuantity + 1 <= asset.maxQuantity) {
+          setTotalPrice((prev) => prev + asset.price);
+          return {
+            ...prev,
+            [cartAsset.id]: {
+              ...cartAsset,
+              newQuantity: cartAsset.newQuantity + 1,
+            },
+          };
+        }
+      }
+
+      return { ...prev };
     });
   };
 
@@ -425,6 +491,11 @@ export default function Prepare() {
 
       return { ...prev };
     });
+  };
+
+  const clearCart = () => {
+    setCartAssets({ ...assetsPurchased });
+    setTotalPrice(0);
   };
 
   // Get the quantity of an asset in the cart
@@ -465,10 +536,26 @@ export default function Prepare() {
 
   let employeeChosen =
     employee && allowedEmployees.edges.find((edge) => edge.node.id === employee.id);
+
+  const asssetsPurchasedFormatted = Object.values(cartAssets).reduce<AsssetPurchasedFormatted[]>(
+    (acc, curr) => {
+      if (curr.newQuantity) {
+        const asset = assetsOrganizedById[curr.id];
+        acc.push({
+          name: asset.name,
+          price: asset.price,
+          quantity: curr.newQuantity,
+        });
+      }
+
+      return acc;
+    },
+    [],
+  );
   return (
     <>
       <RemixFormProvider {...methods}>
-        <form id={`assets-form`} method="post" onSubmit={methods.handleSubmit}>
+        <form id="prepare-heist-form" method="post" onSubmit={methods.handleSubmit}>
           <FieldInput type="hidden" name="assetsPurchased" label="assetsPurchased" hideLabel />
           <Tabs.Root defaultValue="employee">
             <Tabs.List>
@@ -483,8 +570,8 @@ export default function Prepare() {
               <Tabs.Content value="employee">
                 <Text size="2" className="mb-2">
                   {employeeChosen
-                    ? `${employeeChosen.node.user.username} will help you in your journey.`
-                    : `Let's choose the one who will help you in your journey`}
+                    ? t('heist.employee.chosen', { name: employeeChosen.node.user.username })
+                    : t('heist.employee.not_chosen')}
                 </Text>
                 {!employee && (
                   <FieldSelect
@@ -505,11 +592,11 @@ export default function Prepare() {
                   value={key}
                   text={t(`asset.type.${key}.catch_phrase`)}
                   assets={assets[value]}
-                  showQuantity={(assetId) =>
+                  setGlobalQuantity={(assetId) =>
                     getQuantity(assetId) +
                     (cartAssets[assetId] ? cartAssets[assetId].heistAsset?.quantity ?? 0 : 0)
                   }
-                  onQuantity={(assetId) => getQuantity(assetId)}
+                  setQuantity={(assetId) => getQuantity(assetId)}
                   onAddAsset={(asset) => addAsset(asset)}
                   onRemoveAsset={(asset) => removeAsset(asset)}
                 />
@@ -522,10 +609,41 @@ export default function Prepare() {
                   </Heading>
                 </Dialog.Title>
                 <Section className="space-y-3" size="1">
-                  <Text size="2" className="mb-2">
-                    {t('checkout_payment.description', { totalPrice })}
-                  </Text>
-                  <SubmitButton text="Purchase" />
+                  {asssetsPurchasedFormatted.length > 0 ? (
+                    <>
+                      <Button type="button" onClick={() => clearCart()}>
+                        {t('checkout_payment.clear_cart')}
+                      </Button>
+                      <PaymentDisplay
+                        assets={asssetsPurchasedFormatted}
+                        rows={{
+                          name: t('asset.name'),
+                          price: t('asset.price'),
+                          quantity: t('asset.quantity'),
+                        }}
+                      />
+                      <Flex gap="4" align="center" justify="end">
+                        <Text size="3">
+                          {t('checkout_payment.description', { price: totalPrice })}
+                        </Text>
+                        <FormAlertDialog
+                          title={t('checkout_payment.confirmation')}
+                          description={t('checkout_payment.confirmation_description')}
+                          actionColor="green"
+                          cancelText={t('cancel')}
+                          formId="prepare-heist-form"
+                        >
+                          <Button type="button" color="green">
+                            {t('purchase')}
+                          </Button>
+                        </FormAlertDialog>
+                      </Flex>
+                    </>
+                  ) : (
+                    <Text size="2" className="mb-2">
+                      {t('checkout_payment.no_assets')}
+                    </Text>
+                  )}
                 </Section>
               </Tabs.Content>
             </Box>
