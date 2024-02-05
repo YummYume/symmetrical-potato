@@ -231,7 +231,7 @@ class Heist
 
     #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Employee::class)]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    #[Groups([self::READ])]
+    #[Groups([self::READ, self::UPDATE])]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]

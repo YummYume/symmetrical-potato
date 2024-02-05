@@ -1473,7 +1473,6 @@ export type CreateHeistAssetInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   crewMember: Scalars['String']['input'];
   quantity: Scalars['Int']['input'];
-  totalSpent: Scalars['Float']['input'];
 };
 
 /** Creates a HeistAsset. */
@@ -2321,7 +2320,6 @@ export type UpdateHeistAssetInput = {
   crewMember?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   quantity?: InputMaybe<Scalars['Int']['input']>;
-  totalSpent?: InputMaybe<Scalars['Float']['input']>;
 };
 
 /** Updates a HeistAsset. */
@@ -2338,6 +2336,7 @@ export type UpdateHeistInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   difficulty?: InputMaybe<HeistDifficultyEnum>;
+  employee?: InputMaybe<Scalars['String']['input']>;
   forbiddenAssets?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   forbiddenUsers?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   id: Scalars['ID']['input'];

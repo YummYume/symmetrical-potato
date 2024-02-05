@@ -89,7 +89,7 @@ class HeistAsset
     private ?int $quantity = 1;
 
     #[ORM\Column]
-    #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ])]
     private float $totalSpent = 0.0;
 
     #[ORM\ManyToOne(inversedBy: 'heistAssets')]

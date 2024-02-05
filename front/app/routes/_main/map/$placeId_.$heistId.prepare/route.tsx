@@ -8,8 +8,12 @@ import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hoo
 import { useTypedLoaderData } from 'remix-typedjson';
 
 import { getAssets, getAssetsForbiddenForHeist } from '~/lib/api/asset';
-import { getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
-import { getHeistPartial } from '~/lib/api/heist';
+import {
+  getCrewMemberByUserAndHeist,
+  getCrewMemberByUserAndHeistPartial,
+} from '~/lib/api/crew-member';
+import { getHeistPartial, updateHeist } from '~/lib/api/heist';
+import { bulkCreateHeistAsset } from '~/lib/api/heist-asset';
 import { AssetTypeEnum } from '~/lib/api/types';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
@@ -24,7 +28,7 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { LoaderFunctionArgs } from '@remix-run/node';
-import type { Asset, CrewMember, HeistAsset } from '~/lib/api/types';
+import type { Asset, HeistAsset } from '~/lib/api/types';
 import type { PrepareHeistFormData } from '~/lib/validators/prepareHeist';
 import type { FlashMessage } from '~/root';
 
@@ -155,7 +159,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 export type Loader = typeof loader;
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
-  denyAccessUnlessGranted(context.user, [ROLES.ADMIN, ROLES.HEISTER]);
+  const user = denyAccessUnlessGranted(context.user, [ROLES.ADMIN, ROLES.HEISTER]);
 
   if (!params.heistId) {
     throw redirect(`/map/${params.placeId}`);
@@ -175,6 +179,22 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'));
 
   try {
+    let crewMember = await getCrewMemberByUserAndHeistPartial(context.client, {
+      heistId: params.heistId,
+      userId: user.id,
+    });
+
+    if (!crewMember) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('crewmember.not_found', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
+
+      return redirect(`/map/${params.placeId}`, {
+        headers: { 'Set-Cookie': await commitSession(session) },
+      });
+    }
+
     const {
       heist: { employee },
     } = await getHeistPartial(
@@ -198,15 +218,42 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
       return json(
         { errors: {} },
-        { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
+        { status: 400, headers: { 'Set-Cookie': await commitSession(session) } },
       );
     }
 
-    // TODO action (employee and assetsPurchased)
-    const assetsPurchasedParsed = JSON.parse(assetsPurchased as string) as {
-      cartAssets: { [key: string]: AssetPurchased };
-      crewMember: Omit<CrewMember, 'heistAssets'>;
-    };
+    const assetsPurchasedParsed = JSON.parse(data.assetsPurchased as string) as AssetPurchased[];
+
+    if (!employee) {
+      await updateHeist(context.client, {
+        id: params.heistId,
+        employee: data.employee,
+      });
+      await bulkCreateHeistAsset(context.client, {
+        assets: assetsPurchasedParsed.reduce<{ id: string; quantity: number }[]>((acc, curr) => {
+          if (!curr.heistAsset && curr.newQuantity) {
+            acc.push({
+              id: curr.id,
+              quantity: curr.newQuantity,
+            });
+          }
+
+          return acc;
+        }, []),
+        crewMemberId: crewMember.id,
+      });
+
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.prepare_successfully', { ns: 'flash' }),
+        type: 'success',
+      } as FlashMessage);
+
+      return redirect(`/map/${params.placeId}`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
+    }
   } catch (error) {
     if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401])) {
       errorMessage = getMessageForErrorStatusCodes(error, [422, 401]);
@@ -226,29 +273,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
     );
   }
-
-  // const assetsPurchasedOrganized = Object.keys(assetsPurchasedParsed.cartAssets).reduce<{
-  //   add: { id: string; quantity: number }[];
-  //   edit: AssetPurchased[];
-  // }>(
-  //   (acc, curr) => {
-  //     if (assetsPurchasedParsed.cartAssets[curr].crewMemberAssetId) {
-  //       acc.edit.push(assetsPurchasedParsed.cartAssets[curr]);
-  //     } else {
-  //       acc.add.push({
-  //         id: curr,
-  //         quantity: assetsPurchasedParsed.cartAssets[curr].quantity,
-  //       });
-  //     }
-  //     return acc;
-  //   },
-  //   {
-  //     add: [],
-  //     edit: [],
-  //   },
-  // );
-
-  return {};
 }
 
 const CardAsset = ({ asset, quantity }: { asset: Asset; quantity: number }) => (
@@ -293,8 +317,12 @@ const TabsAsset = ({
           align="center"
         >
           <CardAsset asset={assets[type]} quantity={setQuantity(assets[type].id)} />
-          <Button onClick={() => onAddAsset(assets[type])}>+</Button>
-          <Button onClick={() => onRemoveAsset(assets[type])}>-</Button>
+          <Button type="button" onClick={() => onAddAsset(assets[type])}>
+            +
+          </Button>
+          <Button type="button" onClick={() => onRemoveAsset(assets[type])}>
+            -
+          </Button>
         </Grid>
       ))}
     </>
@@ -429,7 +457,7 @@ export default function Prepare() {
   });
 
   useEffect(() => {
-    methods.setValue('assetsPurchased', JSON.stringify(cartAssets));
+    methods.setValue('assetsPurchased', JSON.stringify(Object.values(cartAssets)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartAssets]);
 

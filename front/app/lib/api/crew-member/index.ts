@@ -47,6 +47,31 @@ export const getCrewMemberByUserAndHeist = async (
   return crewMembers.edges.length === 1 ? crewMembers.edges[0].node : null;
 };
 
+export const getCrewMemberByUserAndHeistPartial = async (
+  client: GraphQLClient,
+  input: { heistId: string; userId: string },
+) => {
+  const { crewMembers } = await client.request<Pick<Query, 'crewMembers'>>(
+    gql`
+      query ($heistId: String, $userId: String) {
+        crewMembers(heist__id: $heistId, user__id: $userId) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    `,
+    {
+      heistId: `/heists/${input.heistId}`,
+      userId: input.userId,
+    },
+  );
+
+  return crewMembers.edges.length === 1 ? crewMembers.edges[0].node : null;
+};
+
 /**
  * Create a crew member.
  */
