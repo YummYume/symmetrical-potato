@@ -108,7 +108,7 @@ class Establishment
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE, User::READ])]
     #[Assert\NotBlank(message: 'establishment.name.not_blank', groups: [self::CREATE, self::UPDATE])]
     #[Assert\Length(
         min: 1,
@@ -120,12 +120,12 @@ class Establishment
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE, User::READ])]
     #[Assert\Length(max: 5000, maxMessage: 'establishment.description.max_length', groups: [self::CREATE, self::UPDATE])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE, User::READ])]
     #[Assert\NotBlank(message: 'establishment.minimum_wage.not_blank', groups: [self::CREATE, self::UPDATE])]
     #[Assert\Positive(
         message: 'establishment.minimum_wage.positive',
@@ -139,7 +139,7 @@ class Establishment
     private ?float $minimumWage = null;
 
     #[ORM\Column]
-    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE, User::READ])]
     #[Assert\NotBlank(message: 'establishment.minimum_work_time_per_week.not_blank', groups: [self::CREATE, self::UPDATE])]
     #[Assert\GreaterThanOrEqual(
         value: 1,
@@ -154,7 +154,7 @@ class Establishment
     private ?int $minimumWorkTimePerWeek = null;
 
     #[ORM\Column]
-    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE, User::READ])]
     #[Assert\NotBlank(message: 'establishment.contractor_cut.not_blank', groups: [self::CREATE, self::UPDATE])]
     #[Assert\GreaterThanOrEqual(
         value: 1,
@@ -169,7 +169,7 @@ class Establishment
     private float $contractorCut = 15.0;
 
     #[ORM\Column]
-    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE, User::READ])]
     #[Assert\NotBlank(message: 'establishment.employee_cut.not_blank', groups: [self::CREATE, self::UPDATE])]
     #[Assert\GreaterThanOrEqual(
         value: 1,
@@ -184,7 +184,7 @@ class Establishment
     private float $employeeCut = 05.0;
 
     #[ORM\Column]
-    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE, User::READ])]
     #[Assert\NotBlank(message: 'establishment.crew_cut.not_blank', groups: [self::CREATE, self::UPDATE])]
     #[Assert\GreaterThanOrEqual(
         value: 20,
@@ -199,11 +199,11 @@ class Establishment
     private float $crewCut = 80.0;
 
     #[ORM\Column]
-    #[Groups([self::READ_PUBLIC])]
+    #[Groups([self::READ_PUBLIC, User::READ])]
     private int $reviewCount = 0;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[Groups([self::READ_PUBLIC])]
+    #[Groups([self::READ_PUBLIC, User::READ])]
     private ?float $averageRating = null;
 
     #[ORM\ManyToOne(inversedBy: 'establishments')]

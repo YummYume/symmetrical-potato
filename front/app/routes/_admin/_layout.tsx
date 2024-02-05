@@ -11,6 +11,7 @@ import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { Header } from '~/lib/components/layout/Header';
 import { UserDropdown } from '~/lib/components/layout/UserDropdown';
 import { getUriId } from '~/lib/utils/path';
+import { ROLES } from '~/lib/utils/roles';
 import { denyAdminAccessUnlessGranted } from '~/lib/utils/security.server';
 import { links as rootLinks } from '~/root';
 import { Link, NavLink, NavLinkActiveIndicator } from '~components/Link';
@@ -77,6 +78,14 @@ const Menu = ({
             {t('my_contractor_request')}
           </Link>
         </DropdownMenu.Item>
+        {user.roles.includes(ROLES.EMPLOYEE) ||
+          (user.roles.includes(ROLES.USER) && (
+            <DropdownMenu.Item>
+              <Link className="w-full" to="/job" unstyled>
+                {t('my_job')}
+              </Link>
+            </DropdownMenu.Item>
+          ))}
         <DropdownMenu.Separator />
         <DropdownMenu.Item>
           <Link className="w-full" to="/dashboard" unstyled>

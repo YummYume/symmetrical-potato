@@ -61,6 +61,8 @@ meta.my_contractor_request.description: Vérifiez le statut de votre demande de 
 meta.my_account.title: Mon compte
 meta.my_account.description: Modifiez vos paramètres de compte.
 meta.profile.description: Consultez le profil de {name}.
+meta.my_job.title: Mon emploi
+meta.my_job.description: Consultez votre emploi actuel.
 
 # History info
 history_info: Information sur l'historique
@@ -79,6 +81,17 @@ my_account: Mon compte
 my_account.delete.confirm: |
   Êtes-vous sûr de vouloir supprimer votre compte ?
   Vous ne pourrez pas revenir en arrière.
+
+# My job
+my_job: Mon emploi
+my_job.no_job: Aucun emploi pour le moment
+my_job.no_job.description: |
+  Vous pouvez postuler pour un emploi dans un établissement.
+  Si vous êtes accepté, vous pourrez y travailler et gagner de l'argent.
+my_job.warning_message: Vous ne pourrez pas participer à des braquages par vous-même une fois que vous serez employé.
+my_job.find_establishment: Trouver un établissement
+my_job.delete.confirm: Êtes-vous sûr de vouloir quitter votre emploi ?
+my_job.delete.confirm_stop_application: Êtes-vous sûr de vouloir supprimer cette candidature ?
 
 # My contractor request
 my_contractor_request: Ma demande de contractant
@@ -186,6 +199,9 @@ establishment.crew_cut: Part de l'équipe
 establishment.average_rating: Note moyenne
 establishment.average_rating.none: Aucune note
 establishment.review_count: Nombre d'avis
+
+# Employee
+employee.motivation: Motivation
 
 # Rating
 rating.star: Noter {rating, number}
