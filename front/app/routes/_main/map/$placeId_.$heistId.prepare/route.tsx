@@ -6,7 +6,6 @@ import {
   Flex,
   Grid,
   Heading,
-  ScrollArea,
   Section,
   Table,
   Tabs,
@@ -27,7 +26,7 @@ import {
 import { chooseEmployeeHeist, getHeistPartial } from '~/lib/api/heist';
 import { bulkCreateHeistAsset } from '~/lib/api/heist-asset';
 import { AssetTypeEnum } from '~/lib/api/types';
-import { FormAlertDialog, SubmitButton } from '~/lib/components/dialog/FormAlertDialog';
+import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';

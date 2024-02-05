@@ -142,7 +142,7 @@ heist.add_objective: Add an objective
 heist.delete.confirm: Are you sure you want to delete this heist?
 heist.leave.confirm: Are you sure you want to leave this heist? You will lose all your assets.
 heist.join.confirm: Are you sure you want to join this heist?
-heist.employee.chosen: the employee named {name} will help you.
+heist.employee.chosen: The employee named {name} will help you.
 heist.employee.not_chosen: Choose the one who will help you.
 heist.phase: Phase
 heist.phase.cancelled: Cancelled

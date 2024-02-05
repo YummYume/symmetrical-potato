@@ -143,7 +143,7 @@ heist.add_objective: Ajouter un objectif
 heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
 heist.leave.confirm: Êtes-vous sûr de vouloir quitter ce braquage ? Vous allez perdre tous vos équipements.
 heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
-heist.employee.chosen: l'employé nommé {name} vous aidera.
+heist.employee.chosen: L'employé nommé {name} vous aidera.
 heist.employee.not_chosen: Choisissez celui qui vous aidera
 heist.phase: Phase
 heist.phase.cancelled: Annulé
