@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Succeeded !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'heist.succeeded.subject'|trans %}
+{% set text = 'heist.succeeded.text'|trans %}

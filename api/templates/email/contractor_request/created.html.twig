@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Created !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'contractor_request.created.subject'|trans %}
+{% set text = 'contractor_request.created.text'|trans %}

@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Accepted !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'employee.accepted.subject'|trans %}
+{% set text = 'employee.accepted.text'|trans %}

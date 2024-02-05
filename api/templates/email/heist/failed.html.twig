@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Failed !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'heist.failed.subject'|trans %}
+{% set text = 'heist.failed.text'|trans %}

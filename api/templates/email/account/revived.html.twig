@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Revived !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'account.revived.subject'|trans %}
+{% set text = 'account.revived.text'|trans %}

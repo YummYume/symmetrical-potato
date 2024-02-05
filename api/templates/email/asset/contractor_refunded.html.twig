@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Refunded !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'asset.contractor_refunded.subject'|trans %}
+{% set text = 'asset.contractor_refunded.text'|trans %}
