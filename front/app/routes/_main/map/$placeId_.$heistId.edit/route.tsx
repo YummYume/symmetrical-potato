@@ -24,12 +24,12 @@ import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from
 import dayjs from '~/lib/utils/dayjs';
 import { ROLES } from '~/lib/utils/roles';
 import { formatEnums } from '~/lib/utils/tools';
-import { updateHeistResolver } from '~/lib/validators/updateHeist';
+import { updateHeistResolver } from '~/lib/validators/update-heist';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import type { UpdateHeistFormData } from '~/lib/validators/updateHeist';
+import type { UpdateHeistFormData } from '~/lib/validators/update-heist';
 import type { FlashMessage } from '~/root';
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {

@@ -27,8 +27,6 @@ export const getCrewMemberByUserAndHeist = async (
                     quantity
                     asset {
                       id
-                      name
-                      type
                     }
                   }
                 }

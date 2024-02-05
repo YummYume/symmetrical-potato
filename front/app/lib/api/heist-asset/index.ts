@@ -2,33 +2,8 @@ import { gql, type GraphQLClient } from 'graphql-request';
 
 import type { Mutation } from '~api/types';
 
-export const createHeistAsset = async (
-  client: GraphQLClient,
-  input: {
-    assetsPurchased: { id: string; quantity: number }[];
-    crewMemberId: string;
-    heistId: string;
-  },
-) => {
-  return client.request<Pick<Mutation, 'createHeistAsset'>, MutationCreateHeistAssetArgs>(
-    gql`
-      mutation CreateHeistAsset($input: createHeistAssetInput!) {
-        createHeistAsset(input: $input) {
-          heistAsset {
-            id
-            name
-          }
-        }
-      }
-    `,
-    {
-      input,
-    },
-  );
-};
-
 type QueryReduce = {
-  params: string;
+  params: string[];
   query: string;
   inputs: Record<string, { crewMember: string; asset: string; quantity: number }>;
 };
@@ -42,19 +17,17 @@ export const bulkCreateHeistAsset = async (
     }[];
   },
 ) => {
-  const { query, inputs } = input.assets.reduce<QueryReduce>(
-    (acc, curr) => {
-      acc.params += `$input${curr.id}: createHeistAssetInput!`;
-      acc.query += `
-      create${curr.id}: createHeistAsset(input: $input${curr.id}) {
+  const { query, inputs, params } = input.assets.reduce<QueryReduce>(
+    (acc, curr, index) => {
+      acc.params.push(`$input${index}: createHeistAssetInput!`);
+      acc.query += `create${index}: createHeistAsset(input: $input${index}) {
         heistAsset {
           id
-          name
         }
       }
     `;
 
-      acc.inputs[`input${curr.id}`] = {
+      acc.inputs[`input${index}`] = {
         crewMember: input.crewMemberId,
         asset: curr.id,
         quantity: curr.quantity,
@@ -63,14 +36,15 @@ export const bulkCreateHeistAsset = async (
       return acc;
     },
     {
-      params: '',
+      params: [],
       query: '',
       inputs: {},
     },
   );
+
   return client.request<Pick<Mutation, 'createHeistAsset'>>(
     gql`
-      mutation CreateHeistAsset($input: [createHeistAssetInput]!) {
+      mutation CreateHeistAsset(${params.join(', ')}) {
         ${query}
       }
     `,

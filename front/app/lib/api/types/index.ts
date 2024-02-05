@@ -539,6 +539,8 @@ export type MeUser = Node & {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** ChooseEmployees a Heist. */
+  chooseEmployeeHeist: Maybe<ChooseEmployeeHeistPayload>;
   /** Creates a Asset. */
   createAsset: Maybe<CreateAssetPayload>;
   /** Creates a ContractorRequest. */
@@ -621,6 +623,10 @@ export type Mutation = {
   validateEmployee: Maybe<ValidateEmployeePayload>;
   /** Validates a User. */
   validateUser: Maybe<ValidateUserPayload>;
+};
+
+export type MutationChooseEmployeeHeistArgs = {
+  input: ChooseEmployeeHeistInput;
 };
 
 export type MutationCreateAssetArgs = {
@@ -1184,6 +1190,20 @@ export enum UserStatusEnum {
   Unverified = 'Unverified',
   Verified = 'Verified',
 }
+
+/** ChooseEmployees a Heist. */
+export type ChooseEmployeeHeistInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  employee?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+};
+
+/** ChooseEmployees a Heist. */
+export type ChooseEmployeeHeistPayload = {
+  __typename?: 'chooseEmployeeHeistPayload';
+  clientMutationId: Maybe<Scalars['String']['output']>;
+  heist: Maybe<Heist>;
+};
 
 /** Creates a Asset. */
 export type CreateAssetInput = {

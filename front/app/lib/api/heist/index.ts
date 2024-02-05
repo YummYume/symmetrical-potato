@@ -12,6 +12,7 @@ import type {
   MutationUpdateHeistArgs,
   UpdateHeistInput,
   QueryHeistArgs,
+  MutationChooseEmployeeHeistArgs,
 } from '~api/types';
 
 /**
@@ -267,6 +268,33 @@ export const updateHeist = async (
     `,
     {
       input: { ...input, id: `/heists/${input.id}` },
+    },
+  );
+};
+
+/**
+ * Choose an employee for a heist by a heister
+ */
+export const chooseEmployeeHeist = async (
+  client: GraphQLClient,
+  input: {
+    id: string;
+    employeeId: string;
+  },
+) => {
+  return client.request<Pick<Mutation, 'chooseEmployeeHeist'>, MutationChooseEmployeeHeistArgs>(
+    gql`
+      mutation ChooseEmployeeHeist($input: chooseEmployeeHeistInput!) {
+        chooseEmployeeHeist(input: $input) {
+          heist {
+            id
+            name
+          }
+        }
+      }
+    `,
+    {
+      input: { id: `/heists/${input.id}`, employee: input.employeeId },
     },
   );
 };

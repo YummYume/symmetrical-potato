@@ -12,7 +12,7 @@ import {
   getCrewMemberByUserAndHeist,
   getCrewMemberByUserAndHeistPartial,
 } from '~/lib/api/crew-member';
-import { getHeistPartial, updateHeist } from '~/lib/api/heist';
+import { chooseEmployeeHeist, getHeistPartial } from '~/lib/api/heist';
 import { bulkCreateHeistAsset } from '~/lib/api/heist-asset';
 import { AssetTypeEnum } from '~/lib/api/types';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
@@ -23,13 +23,13 @@ import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~/lib/utils/api';
 import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
-import { prepareHeistResolver } from '~/lib/validators/prepareHeist';
+import { prepareHeistResolver } from '~/lib/validators/prepare-heist';
 import { FLASH_MESSAGE_KEY } from '~/root';
 
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import type { Asset, HeistAsset } from '~/lib/api/types';
-import type { PrepareHeistFormData } from '~/lib/validators/prepareHeist';
+import type { PrepareHeistFormData } from '~/lib/validators/prepare-heist';
 import type { FlashMessage } from '~/root';
 
 type AssetCategory<T> = Record<string, T>;
@@ -74,9 +74,6 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       }
       employee {
         id
-        user {
-          username
-        }
       }
     `,
     );
@@ -102,11 +99,6 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
     // Get the current assets for the crew member
     const heistAssets = crewMember.heistAssets.edges;
-
-    const heistAssetsOrganized = heistAssets.reduce<HeistAssetsOrganized>((acc, curr) => {
-      acc[curr.node.asset.id] = curr.node;
-      return acc;
-    }, {});
 
     // Organize the assets by type
     const assetsOrganized = assets.edges.reduce<AssetsOrganized>(
@@ -140,7 +132,6 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       employee,
       allowedEmployees,
       assetsPurchased,
-      heistAssets: heistAssetsOrganized,
       assets: assetsOrganized,
       user,
     };
@@ -203,9 +194,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       `
       employee {
         id
-        user {
-          username
-        }
       }
     `,
     );
@@ -224,22 +212,30 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
     const assetsPurchasedParsed = JSON.parse(data.assetsPurchased as string) as AssetPurchased[];
 
-    if (!employee) {
-      await updateHeist(context.client, {
+    if (!employee && data.employee) {
+      await chooseEmployeeHeist(context.client, {
         id: params.heistId,
-        employee: data.employee,
+        employeeId: data.employee,
       });
-      await bulkCreateHeistAsset(context.client, {
-        assets: assetsPurchasedParsed.reduce<{ id: string; quantity: number }[]>((acc, curr) => {
-          if (!curr.heistAsset && curr.newQuantity) {
-            acc.push({
-              id: curr.id,
-              quantity: curr.newQuantity,
-            });
-          }
+    }
 
-          return acc;
-        }, []),
+    const newAssetsPurchased = assetsPurchasedParsed.reduce<{ id: string; quantity: number }[]>(
+      (acc, curr) => {
+        if (!curr.heistAsset && curr.newQuantity) {
+          acc.push({
+            id: curr.id,
+            quantity: curr.newQuantity,
+          });
+        }
+
+        return acc;
+      },
+      [],
+    );
+
+    if (newAssetsPurchased.length > 0) {
+      await bulkCreateHeistAsset(context.client, {
+        assets: newAssetsPurchased,
         crewMemberId: crewMember.id,
       });
 
@@ -255,8 +251,8 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       });
     }
   } catch (error) {
-    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401])) {
-      errorMessage = getMessageForErrorStatusCodes(error, [422, 401]);
+    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 400, 404, 403])) {
+      errorMessage = getMessageForErrorStatusCodes(error, [422, 400, 404, 403]);
     } else {
       throw error;
     }
@@ -276,7 +272,9 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 }
 
 const CardAsset = ({ asset, quantity }: { asset: Asset; quantity: number }) => (
-  <Card className={`${quantity > 0 ? '!border-green-6 !bg-green-3' : ''}`}>
+  <Card
+    className={`${quantity > 0 ? (quantity === asset.maxQuantity ? '!border-green-6 !bg-green-3' : '!border-blue-6 !bg-blue-3') : ''}`}
+  >
     <Box>
       <Flex gap="3" justify="between">
         <Text as="div" size="2" weight="bold">
@@ -294,14 +292,16 @@ const TabsAsset = ({
   text,
   value,
   assets,
-  setQuantity,
+  showQuantity,
+  onQuantity,
   onAddAsset,
   onRemoveAsset,
 }: {
   text: string;
   value: string;
   assets: AssetCategory<Asset>;
-  setQuantity: (assetId: string) => number;
+  onQuantity: (assetId: string) => number;
+  showQuantity: (assetId: string) => number;
   onAddAsset: (asset: Asset) => void;
   onRemoveAsset: (asset: Asset) => void;
 }) => (
@@ -316,13 +316,15 @@ const TabsAsset = ({
           gap="3"
           align="center"
         >
-          <CardAsset asset={assets[type]} quantity={setQuantity(assets[type].id)} />
+          <CardAsset asset={assets[type]} quantity={showQuantity(assets[type].id)} />
           <Button type="button" onClick={() => onAddAsset(assets[type])}>
             +
           </Button>
-          <Button type="button" onClick={() => onRemoveAsset(assets[type])}>
-            -
-          </Button>
+          {onQuantity(assets[type].id) > 0 && (
+            <Button type="button" onClick={() => onRemoveAsset(assets[type])}>
+              -
+            </Button>
+          )}
         </Grid>
       ))}
     </>
@@ -461,6 +463,8 @@ export default function Prepare() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartAssets]);
 
+  let employeeChosen =
+    employee && allowedEmployees.edges.find((edge) => edge.node.id === employee.id);
   return (
     <>
       <RemixFormProvider {...methods}>
@@ -478,8 +482,8 @@ export default function Prepare() {
             <Box px="4" pt="3" pb="2">
               <Tabs.Content value="employee">
                 <Text size="2" className="mb-2">
-                  {employee
-                    ? `${employee.user.username} will help you in your journey.`
+                  {employeeChosen
+                    ? `${employeeChosen.node.user.username} will help you in your journey.`
                     : `Let's choose the one who will help you in your journey`}
                 </Text>
                 {!employee && (
@@ -501,10 +505,11 @@ export default function Prepare() {
                   value={key}
                   text={t(`asset.type.${key}.catch_phrase`)}
                   assets={assets[value]}
-                  setQuantity={(assetId) =>
+                  showQuantity={(assetId) =>
                     getQuantity(assetId) +
                     (cartAssets[assetId] ? cartAssets[assetId].heistAsset?.quantity ?? 0 : 0)
                   }
+                  onQuantity={(assetId) => getQuantity(assetId)}
                   onAddAsset={(asset) => addAsset(asset)}
                   onRemoveAsset={(asset) => removeAsset(asset)}
                 />

@@ -25,12 +25,12 @@ import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/
 import dayjs from '~/lib/utils/dayjs';
 import { ROLES } from '~/lib/utils/roles';
 import { formatEnums } from '~/lib/utils/tools';
-import { createHeistResolver } from '~/lib/validators/createHeist';
+import { createHeistResolver } from '~/lib/validators/create-heist';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import type { CreateHeistFormData } from '~/lib/validators/createHeist';
+import type { CreateHeistFormData } from '~/lib/validators/create-heist';
 import type { FlashMessage } from '~/root';
 
 export async function loader({ context, params }: LoaderFunctionArgs) {

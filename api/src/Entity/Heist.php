@@ -75,6 +75,19 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             security: 'is_granted("UPDATE", object)'
         ),
+        new Mutation(
+            name: 'chooseEmployee',
+            normalizationContext: [
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
+            ],
+            denormalizationContext: [
+                'groups' => [self::CHOOSE_EMPLOYEE],
+            ],
+            validationContext: [
+                'groups' => [self::CHOOSE_EMPLOYEE],
+            ],
+            security: 'is_granted("CHOOSE_EMPLOYEE", object)'
+        ),
         new DeleteMutation(
             name: 'delete',
             security: 'is_granted("DELETE", object)'
@@ -95,6 +108,7 @@ class Heist
     public const READ_PUBLIC = 'heist:read:public';
     public const CREATE = 'heist:create';
     public const UPDATE = 'heist:update';
+    public const CHOOSE_EMPLOYEE = 'heist:choose:employee';
 
     public const MAX_ALLOWED_CREW_MEMBERS = 4;
     public const MAX_OBJECTIVES_PER_HEIST = 20;
@@ -231,7 +245,7 @@ class Heist
 
     #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Employee::class)]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    #[Groups([self::READ, self::UPDATE])]
+    #[Groups([self::READ, self::UPDATE, self::CHOOSE_EMPLOYEE])]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]

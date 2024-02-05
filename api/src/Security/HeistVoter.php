@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\CrewMember;
 use App\Entity\Heist;
 use App\Entity\User;
 use App\Enum\HeistPhaseEnum;
@@ -16,6 +17,7 @@ final class HeistVoter extends Voter
     public const CREATE = 'CREATE';
     public const UPDATE = 'UPDATE';
     public const DELETE = 'DELETE';
+    public const CHOOSE_EMPLOYEE = 'CHOOSE_EMPLOYEE';
 
     public function __construct(private readonly Security $security)
     {
@@ -23,7 +25,7 @@ final class HeistVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!\in_array($attribute, [self::READ, self::CREATE, self::UPDATE, self::DELETE], true)) {
+        if (!\in_array($attribute, [self::READ, self::CREATE, self::UPDATE, self::DELETE, self::CHOOSE_EMPLOYEE], true)) {
             return false;
         }
 
@@ -49,7 +51,9 @@ final class HeistVoter extends Voter
             self::READ => $this->canRead($heist, $user),
             self::CREATE => $this->canCreate($heist, $user),
             self::UPDATE => $this->canUpdate($heist, $user),
+            self::CHOOSE_EMPLOYEE => $this->canChooseEmployee($heist, $user),
             self::DELETE => $this->canDelete($heist, $user),
+
             default => throw new \LogicException('This code should not be reached!')
         };
     }
@@ -82,6 +86,17 @@ final class HeistVoter extends Voter
             && $heist->getEstablishment()->getContractor() === $user
             && HeistPhaseEnum::Planning === $heist->getPhase()
         ;
+    }
+
+    private function canChooseEmployee(Heist $heist, User $user): bool
+    {
+        if ($this->security->isGranted(User::ROLE_ADMIN)) {
+            return true;
+        }
+
+        return $this->security->isGranted(User::ROLE_HEISTER)
+        && (bool) $user->getCrewMembers()->filter(fn (CrewMember $crewMember) => $heist === $crewMember->getHeist() && null === $crewMember->getHeist()->getEmployee())
+        && HeistPhaseEnum::Planning === $heist->getPhase();
     }
 
     private function canDelete(Heist $heist, User $user): bool
