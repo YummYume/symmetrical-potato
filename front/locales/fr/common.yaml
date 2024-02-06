@@ -57,6 +57,7 @@ more_info: Afficher plus de détails
 join: Rejoindre
 leave: Quitter
 purchase: Acheter
+optional: Optionnel
 
 # Meta
 meta.dashboard.title: Tableau de bord
@@ -142,6 +143,9 @@ heist.add: Ajouter un braquage
 heist.add_objective: Ajouter un objectif
 heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
 heist.leave.confirm: Êtes-vous sûr de vouloir quitter ce braquage ? Vous allez perdre tous vos équipements.
+heist.add.confirm: Êtes-vous sûr de vouloir ajouter ce braquage ?
+heist.edit.confirm: Êtes-vous sûr de vouloir rendre public ce braquage ?
+heist.edit.confirm_description: Rendre ce braquage public vous coutera $15.000, si vous supprimer ce braquage, 50% de la somme vous sera remboursé uniquement.
 heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
 heist.employee.chosen: L'employé nommé {name} vous aidera.
 heist.employee.not_chosen: Choisissez celui qui vous aidera

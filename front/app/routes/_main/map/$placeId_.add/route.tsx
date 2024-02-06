@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Grid, Heading, Section } from '@radix-ui/themes';
+import { Button, Grid, Heading, Section } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -14,7 +14,7 @@ import { createHeist } from '~/lib/api/heist';
 import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
 import { getUsers } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
-import { SubmitButton } from '~/lib/components/form/SubmitButton';
+import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
 import { FieldMultiSelect } from '~/lib/components/form/custom/FieldMultiSelect';
@@ -215,7 +215,12 @@ export default function Add() {
       </Dialog.Title>
       <Section className="space-y-3" size="1">
         <RemixFormProvider {...methods}>
-          <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
+          <form
+            id="heist-add-form"
+            method="post"
+            className="space-y-4"
+            onSubmit={methods.handleSubmit}
+          >
             <FieldInput name="name" label={t('name')} type="text" />
             <FieldInput name="description" label={t('description')} type="text" />
             <Grid columns="2" gap="2">
@@ -279,10 +284,12 @@ export default function Add() {
             <FieldInputArray
               name="objectives"
               label={t('heist.objective')}
+              limit={20}
               config={{
                 defaultAppendValue: {
                   name: '',
                   description: '',
+                  optional: false,
                 },
                 add: {
                   text: t('heist.add_objective'),
@@ -298,10 +305,25 @@ export default function Add() {
                     label: t('description'),
                     type: 'text',
                   },
+                  {
+                    name: 'optional',
+                    label: t('optional'),
+                    type: 'checkbox',
+                  },
                 ],
               }}
             />
-            <SubmitButton text={t('create')} />
+            <FormAlertDialog
+              title={t('add')}
+              description={t('heist.add.confirm')}
+              actionColor="green"
+              cancelText={t('cancel')}
+              formId="heist-add-form"
+            >
+              <Button type="button" color="green">
+                {t('create')}
+              </Button>
+            </FormAlertDialog>
           </form>
         </RemixFormProvider>
         <Link to={`/map/${placeId}`}>{t('back')}</Link>

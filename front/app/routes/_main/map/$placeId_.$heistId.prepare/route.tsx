@@ -1,29 +1,19 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import {
-  Box,
-  Button,
-  Card,
-  Flex,
-  Grid,
-  Heading,
-  Section,
-  Table,
-  Tabs,
-  Text,
-} from '@radix-ui/themes';
+import { Box, Button, Flex, Heading, Section, Tabs, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 import { useTypedLoaderData } from 'remix-typedjson';
+import { z } from 'zod';
 
 import { getAssets, getAssetsForbiddenForHeist } from '~/lib/api/asset';
 import {
   getCrewMemberByUserAndHeist,
   getCrewMemberByUserAndHeistPartial,
 } from '~/lib/api/crew-member';
-import { chooseEmployeeHeist, getHeistPartial } from '~/lib/api/heist';
+import { getHeistPartial } from '~/lib/api/heist';
 import { bulkCreateHeistAssets, bulkUpdateHeistAssets } from '~/lib/api/heist-asset';
 import { AssetTypeEnum } from '~/lib/api/types';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
@@ -34,26 +24,47 @@ import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~/lib/utils/api';
 import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
-import { prepareHeistResolver } from '~/lib/validators/prepare-heist';
+import {
+  assetsPurchasedResolver,
+  type AssetsPurchasedFormData,
+  chooseEmployeeResolver,
+} from '~/lib/validators/prepare-heist';
 import { FLASH_MESSAGE_KEY } from '~/root';
+
+import { PaymentDisplay } from './PaymentDisplay';
+import { TabsAsset } from './TabsAsset';
 
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import type { Asset } from '~/lib/api/types';
-import type { PrepareHeistFormData } from '~/lib/validators/prepare-heist';
+import type { ChooseEmployeeFormData } from '~/lib/validators/prepare-heist';
 import type { FlashMessage } from '~/root';
 
 type AssetCategory<T> = Record<string, T>;
 type AssetsOrganized = Record<string, AssetCategory<Asset>>;
 type AssetsOrganizedByName = Record<string, Asset>;
 
-type AssetPurchased = {
-  id: string;
-  newQuantity?: number;
-  heistAsset?: {
-    id: string;
-    quantity: number;
-  };
+const assetPurchasedSchema = z.object({
+  id: z.string(),
+  newQuantity: z.number().int().positive().optional(),
+  heistAsset: z
+    .object({
+      id: z.string(),
+      quantity: z.number().int().positive(),
+    })
+    .optional(),
+});
+
+type AssetPurchased = z.infer<typeof assetPurchasedSchema>;
+
+const assetsPurchasedSchema = z.array(assetPurchasedSchema);
+
+type NewHeistAssetPayload = { id: string; quantity: number };
+type UpdateHeistAssetPayload = { id: string; quantity: number };
+
+type Payloads = {
+  newHeistAssets: NewHeistAssetPayload[];
+  updateHeistAssets: UpdateHeistAssetPayload[];
 };
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -127,6 +138,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       },
     );
 
+    // Organize the assets by id
     const assetsOrganizedById = assets.edges.reduce<AssetsOrganizedByName>((acc, curr) => {
       if (!assetsForbidden.edges.some((edge) => edge.node.id === curr.node.id)) {
         acc[curr.node.id] = curr.node;
@@ -148,6 +160,8 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     }, {});
 
     return {
+      heistId: params.heistId,
+      placeId: params.placeId,
       employee,
       allowedEmployees,
       assetsPurchased,
@@ -177,9 +191,9 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   }
 
   const t = await i18next.getFixedT(request, ['validators', 'flash']);
-  const { errors, data } = await getValidatedFormData<PrepareHeistFormData>(
+  const { errors, data } = await getValidatedFormData<AssetsPurchasedFormData>(
     request,
-    prepareHeistResolver,
+    assetsPurchasedResolver,
   );
 
   if (errors) {
@@ -197,7 +211,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
     if (!crewMember) {
       session.flash(FLASH_MESSAGE_KEY, {
-        content: t('crew_member.not_found', { ns: 'flash' }),
+        content: t('heist.prepare.not_in_crew', { ns: 'flash' }),
         type: 'error',
       } as FlashMessage);
 
@@ -206,15 +220,20 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       });
     }
 
+    // Parse the assets purchased
     const assetsPurchasedParsed = JSON.parse(data.assetsPurchased as string) as AssetPurchased[];
 
-    type NewHeistAssetPayload = { id: string; quantity: number };
-    type UpdateHeistAssetPayload = { id: string; quantity: number };
+    if (!assetsPurchasedSchema.safeParse(assetsPurchasedParsed).success) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.prepare.assets.invalid', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
 
-    type Payloads = {
-      newHeistAssets: NewHeistAssetPayload[];
-      updateHeistAssets: UpdateHeistAssetPayload[];
-    };
+      return json(
+        { errors: {} },
+        { status: 400, headers: { 'Set-Cookie': await commitSession(session) } },
+      );
+    }
 
     const { newHeistAssets, updateHeistAssets } = assetsPurchasedParsed.reduce<Payloads>(
       (acc, curr) => {
@@ -250,18 +269,18 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       });
     }
 
-    // TODO Add a flash message
+    if (newHeistAssets.length > 0 || updateHeistAssets.length > 0) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.prepare.assets.purchased_successfully', { ns: 'flash' }),
+        type: 'success',
+      } as FlashMessage);
 
-    session.flash(FLASH_MESSAGE_KEY, {
-      content: t('heist.prepare_successfully', { ns: 'flash' }),
-      type: 'success',
-    } as FlashMessage);
-
-    return redirect(`/map/${params.placeId}`, {
-      headers: {
-        'Set-Cookie': await commitSession(session),
-      },
-    });
+      return redirect(`/map/${params.placeId}`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
+    }
   } catch (error) {
     if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 400, 404, 403])) {
       errorMessage = getMessageForErrorStatusCodes(error, [422, 400, 404, 403]);
@@ -283,114 +302,31 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   }
 }
 
-const CardAsset = ({ asset, quantity }: { asset: Asset; quantity: number }) => (
-  <Card
-    className={`${quantity > 0 ? (quantity === asset.maxQuantity ? '!border-green-6 !bg-green-3' : '!border-blue-6 !bg-blue-3') : ''}`}
-  >
-    <Box>
-      <Flex gap="3" justify="between">
-        <Text as="div" size="2" weight="bold">
-          {asset.name}
-        </Text>
-        <Text as="div" size="2" color="gray">
-          {quantity}/{asset.maxQuantity}
-        </Text>
-      </Flex>
-    </Box>
-  </Card>
-);
-
-const TabsAsset = ({
-  text,
-  value,
-  assets,
-  setGlobalQuantity,
-  setQuantity,
-  onAddAsset,
-  onRemoveAsset,
-}: {
-  text: string;
-  value: string;
-  assets: AssetCategory<Asset>;
-  setQuantity: (assetId: string) => number;
-  setGlobalQuantity: (assetId: string) => number;
-  onAddAsset: (asset: Asset) => void;
-  onRemoveAsset: (asset: Asset) => void;
-}) => (
-  <Tabs.Content value={value}>
-    <Text size="2">{text}</Text>
-    <>
-      {Object.keys(assets).map((type, index) => (
-        <Grid
-          key={`${value}-${assets[type].id}-${index}`}
-          className="mt-2"
-          columns="1fr auto auto auto"
-          gap="3"
-          align="center"
-        >
-          <CardAsset asset={assets[type]} quantity={setGlobalQuantity(assets[type].id)} />
-          {setGlobalQuantity(assets[type].id) < assets[type].maxQuantity && (
-            <Button type="button" onClick={() => onAddAsset(assets[type])}>
-              +
-            </Button>
-          )}
-          {setQuantity(assets[type].id) > 0 && (
-            <Button type="button" onClick={() => onRemoveAsset(assets[type])}>
-              -
-            </Button>
-          )}
-        </Grid>
-      ))}
-    </>
-  </Tabs.Content>
-);
-
-type AsssetPurchasedFormatted = { quantity: number; name: string; price: number };
-const PaymentDisplay = ({
-  assets,
-  rows,
-}: {
-  assets: AsssetPurchasedFormatted[];
-  rows: {
-    name: string;
-    price: string;
-    quantity: string;
-  };
-}) => (
-  <Table.Root>
-    <Table.Header>
-      <Table.Row>
-        <Table.ColumnHeaderCell>{rows.name}</Table.ColumnHeaderCell>
-        <Table.ColumnHeaderCell>{rows.price}</Table.ColumnHeaderCell>
-        <Table.ColumnHeaderCell>{rows.quantity}</Table.ColumnHeaderCell>
-      </Table.Row>
-    </Table.Header>
-
-    <Table.Body>
-      {assets.map((asset, index) => (
-        <Table.Row key={index}>
-          <Table.Cell>{asset.name}</Table.Cell>
-          <Table.Cell>{asset.price}</Table.Cell>
-          <Table.Cell>{asset.quantity}</Table.Cell>
-        </Table.Row>
-      ))}
-    </Table.Body>
-  </Table.Root>
-);
-
 export default function Prepare() {
   const { t } = useTranslation();
-  const { assets, assetsPurchased, employee, allowedEmployees, assetsOrganizedById } =
-    useTypedLoaderData<Loader>();
+  const {
+    assets,
+    assetsPurchased,
+    employee,
+    allowedEmployees,
+    assetsOrganizedById,
+    placeId,
+    heistId,
+  } = useTypedLoaderData<Loader>();
 
-  const [cartAssets, setCartAssets] = useState<{
+  const [cart, setCart] = useState<{
     [key: string]: AssetPurchased;
   }>(assetsPurchased);
 
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
+  const allowedEmployeesFormatted = allowedEmployees.edges.map((edge) => ({
+    value: edge.node.id,
+    label: edge.node.user.username,
+  }));
+
   const addAsset = (asset: Asset) => {
-    setCartAssets((prev) => {
+    setCart((prev) => {
       const cartAsset = prev[asset.id];
 
       // If the asset is not in the cart, we add it
@@ -455,43 +391,40 @@ export default function Prepare() {
   };
 
   const removeAsset = async (asset: Asset) => {
-    setCartAssets((prev) => {
+    setCart((prev) => {
       const cartAsset = prev[asset.id];
 
-      if (cartAsset) {
-        if (cartAsset.newQuantity) {
-          if (cartAsset.newQuantity - 1 > 0) {
-            setTotalPrice((prev) => prev - asset.price);
-            return {
-              ...prev,
-              [cartAsset.id]: {
-                ...cartAsset,
-                newQuantity: cartAsset.newQuantity - 1,
-              },
-            };
-          }
-
-          setTotalPrice((prev) => prev - asset.price);
-
-          const { [cartAsset.id]: _, ...rest } = prev;
-
-          return { ...rest };
-        }
+      if (!cartAsset || !cartAsset.newQuantity) {
         return { ...prev };
       }
 
-      return { ...prev };
+      if (cartAsset.newQuantity - 1 > 0) {
+        setTotalPrice((prev) => prev - asset.price);
+        return {
+          ...prev,
+          [cartAsset.id]: {
+            ...cartAsset,
+            newQuantity: cartAsset.newQuantity - 1,
+          },
+        };
+      }
+
+      setTotalPrice((prev) => prev - asset.price);
+
+      const { [cartAsset.id]: _, ...rest } = prev;
+
+      return { ...rest };
     });
   };
 
   const clearCart = () => {
-    setCartAssets({ ...assetsPurchased });
+    setCart({ ...assetsPurchased });
     setTotalPrice(0);
   };
 
   // Get the quantity of an asset in the cart
   const getQuantity = (id: string) => {
-    const cartAsset = cartAssets[id];
+    const cartAsset = cart[id];
     if (cartAsset && cartAsset?.newQuantity) {
       return cartAsset.newQuantity;
     }
@@ -499,54 +432,55 @@ export default function Prepare() {
     return 0;
   };
 
-  const allowedEmployeesFormatted = allowedEmployees.edges.map((edge) => ({
-    value: edge.node.id,
-    label: edge.node.user.username,
-  }));
-
-  const methods = useRemixForm<PrepareHeistFormData>({
+  const methodsEmployee = useRemixForm<ChooseEmployeeFormData>({
     mode: 'onSubmit',
-    resolver: prepareHeistResolver,
+    resolver: chooseEmployeeResolver,
     submitConfig: {
       unstable_viewTransition: true,
-    },
-    submitHandlers: {
-      onInvalid: async (error) => {
-        console.log(error);
-      },
     },
     defaultValues: {
       employee: allowedEmployeesFormatted[0].value,
     },
   });
 
+  const methodsAssetPurchased = useRemixForm<AssetsPurchasedFormData>({
+    mode: 'onSubmit',
+    resolver: assetsPurchasedResolver,
+    submitConfig: {
+      unstable_viewTransition: true,
+    },
+  });
+
   useEffect(() => {
-    methods.setValue('assetsPurchased', JSON.stringify(Object.values(cartAssets)));
+    methodsAssetPurchased.setValue('assetsPurchased', JSON.stringify(Object.values(cart)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartAssets]);
+  }, [cart]);
 
   let employeeChosen =
     employee && allowedEmployees.edges.find((edge) => edge.node.id === employee.id);
 
-  const asssetsPurchasedFormatted = Object.values(cartAssets).reduce<AsssetPurchasedFormatted[]>(
-    (acc, curr) => {
-      if (curr.newQuantity) {
-        const asset = assetsOrganizedById[curr.id];
-        acc.push({
-          name: asset.name,
-          price: asset.price,
-          quantity: curr.newQuantity,
-        });
-      }
+  const asssetsPurchasedFormatted = Object.values(cart).reduce<
+    { quantity: number; name: string; price: number }[]
+  >((acc, curr) => {
+    if (curr.newQuantity) {
+      const asset = assetsOrganizedById[curr.id];
+      acc.push({
+        name: asset.name,
+        price: asset.price,
+        quantity: curr.newQuantity,
+      });
+    }
 
-      return acc;
-    },
-    [],
-  );
+    return acc;
+  }, []);
   return (
     <>
-      <RemixFormProvider {...methods}>
-        <form id="heist-prepare-assets-form" method="post" onSubmit={methods.handleSubmit}>
+      <RemixFormProvider {...methodsAssetPurchased}>
+        <form
+          id="heist-prepare-assets-form"
+          method="post"
+          onSubmit={methodsAssetPurchased.handleSubmit}
+        >
           <FieldInput type="hidden" name="assetsPurchased" label="assetsPurchased" hideLabel />
         </form>
       </RemixFormProvider>
@@ -568,17 +502,21 @@ export default function Prepare() {
                 : t('heist.employee.not_chosen')}
             </Text>
             {!employee && (
-              <RemixFormProvider {...methods}>
+              <RemixFormProvider {...methodsEmployee}>
                 <form
                   id="heist-prepare-employee-form"
                   method="post"
-                  onSubmit={methods.handleSubmit}
+                  action={`/map/${placeId}/${heistId}/choose_employee`}
+                  onSubmit={methodsEmployee.handleSubmit}
                 >
                   <FieldSelect
                     name="employee"
                     label={t('employee')}
                     options={allowedEmployeesFormatted}
                   />
+                  <Button type="button" color="green">
+                    {t('purchase')}
+                  </Button>
                 </form>
               </RemixFormProvider>
             )}
@@ -595,8 +533,7 @@ export default function Prepare() {
               text={t(`asset.type.${key}.catch_phrase`)}
               assets={assets[value]}
               setGlobalQuantity={(assetId) =>
-                getQuantity(assetId) +
-                (cartAssets[assetId] ? cartAssets[assetId].heistAsset?.quantity ?? 0 : 0)
+                getQuantity(assetId) + (cart[assetId] ? cart[assetId].heistAsset?.quantity ?? 0 : 0)
               }
               setQuantity={(assetId) => getQuantity(assetId)}
               onAddAsset={(asset) => addAsset(asset)}

@@ -1,4 +1,4 @@
-import { Grid, Text, Button } from '@radix-ui/themes';
+import { Grid, Text, Button, Checkbox } from '@radix-ui/themes';
 import { TextField } from '@radix-ui/themes';
 import { useFieldArray, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -42,10 +42,14 @@ export type FieldInputArrayProps<T extends Record<string, unknown>> = {
    * The className to apply to the container of the input.
    */
   inputContainerClassName?: string;
-} & DefaultFieldProps<T> &
-  React.ComponentProps<typeof TextField.Input>;
+  /**
+   * The limit of inputs to display.
+   */
+  limit?: number;
+} & DefaultFieldProps<T>;
 
 export function FieldInputArray<T extends Record<string, unknown>>({
+  limit = 5,
   config,
   translationNamespace = 'common',
   inputContainerClassName = '',
@@ -98,18 +102,28 @@ export function FieldInputArray<T extends Record<string, unknown>>({
                             {`${fieldInput.label} ${index + 1}`}
                           </LabelField>
 
-                          <TextField.Root className={inputContainerClassName}>
-                            <TextField.Input
+                          {fieldInput.type === 'checkbox' ? (
+                            <Checkbox
                               {...register(field.name)}
                               {...rest}
                               id={fieldId}
                               aria-describedby={helpId}
                               aria-errormessage={errorId}
                               aria-invalid={!!errorId}
-                              color={errorId ? 'crimson' : rest.color}
-                              type={fieldInput.type}
                             />
-                          </TextField.Root>
+                          ) : (
+                            <TextField.Root className={inputContainerClassName}>
+                              <TextField.Input
+                                {...register(field.name)}
+                                {...rest}
+                                id={fieldId}
+                                aria-describedby={helpId}
+                                aria-errormessage={errorId}
+                                aria-invalid={!!errorId}
+                                type={fieldInput.type}
+                              />
+                            </TextField.Root>
+                          )}
 
                           {error?.message && (
                             <ErrorField id={errorId}>
@@ -130,9 +144,15 @@ export function FieldInputArray<T extends Record<string, unknown>>({
             </li>
           );
         })}
-        <Button type="button" onClick={() => append(config.defaultAppendValue)}>
-          {config.add?.text ?? t('add', { ns: translationNamespace })}
-        </Button>
+        {fields.length < limit && (
+          <Button
+            type="button"
+            onClick={() => append(config.defaultAppendValue)}
+            disabled={disabled}
+          >
+            {config.add?.text ?? t('add', { ns: translationNamespace })}
+          </Button>
+        )}
       </ul>
     </Grid>
   );

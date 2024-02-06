@@ -3,13 +3,17 @@ import { redirect, type ActionFunctionArgs } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 import { getValidatedFormData } from 'remix-hook-form';
 
+import { getCrewMemberByUserAndHeistPartial } from '~/lib/api/crew-member';
 import { chooseEmployeeHeist, getHeistPartial } from '~/lib/api/heist';
+import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
 import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
+import { chooseEmployeeResolver } from '~/lib/validators/prepare-heist';
 import { FLASH_MESSAGE_KEY } from '~/root';
 
+import type { ChooseEmployeeFormData } from '~/lib/validators/prepare-heist';
 import type { FlashMessage } from '~/root';
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
@@ -20,9 +24,9 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   }
 
   const t = await i18next.getFixedT(request, ['validators', 'flash']);
-  const { errors, data } = await getValidatedFormData<PrepareHeistFormData>(
+  const { errors, data } = await getValidatedFormData<ChooseEmployeeFormData>(
     request,
-    prepareHeistResolver,
+    chooseEmployeeResolver,
   );
 
   if (errors) {
@@ -33,6 +37,23 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'));
 
   try {
+    let crewMember = await getCrewMemberByUserAndHeistPartial(context.client, {
+      heistId: params.heistId,
+      userId: user.id,
+    });
+
+    if (!crewMember) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.prepare.not_in_crew', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
+
+      return json(
+        { errors: {} },
+        { status: 400, headers: { 'Set-Cookie': await commitSession(session) } },
+      );
+    }
+
     const {
       heist: { employee },
     } = await getHeistPartial(
@@ -73,6 +94,16 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       id: params.heistId,
       employeeId: data.employee,
     });
+
+    session.flash(FLASH_MESSAGE_KEY, {
+      content: t('heist.prepare.employee.chosen_successfully', { ns: 'flash' }),
+      type: 'success',
+    } as FlashMessage);
+
+    return json(
+      { errors: {} },
+      { status: 200, headers: { 'Set-Cookie': await commitSession(session) } },
+    );
   } catch (error) {
     if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 400, 404, 403])) {
       errorMessage = getMessageForErrorStatusCodes(error, [422, 400, 404, 403]);

@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Grid, Heading, Section } from '@radix-ui/themes';
+import { Button, Grid, Heading, Section } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -13,6 +13,7 @@ import { getHeist, heistIsMadeBy, heistIsPublic, updateHeist } from '~/lib/api/h
 import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
 import { getUsers } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
+import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
@@ -247,7 +248,12 @@ export default function Edit() {
       </Dialog.Title>
       <Section className="space-y-3" size="1">
         <RemixFormProvider {...methods}>
-          <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
+          <form
+            id="heist-edit-form"
+            method="post"
+            className="space-y-4"
+            onSubmit={methods.handleSubmit}
+          >
             <FieldInput name="name" label={t('name')} type="text" />
             <FieldInput name="description" label={t('description')} type="text" />
             <Grid columns="2" gap="2">
@@ -310,10 +316,12 @@ export default function Edit() {
             <FieldInputArray
               name="objectives"
               label={t('heist.objective')}
+              limit={20}
               config={{
                 defaultAppendValue: {
                   name: '',
                   description: '',
+                  optional: false,
                 },
                 add: {
                   text: t('heist.add_objective'),
@@ -329,9 +337,27 @@ export default function Edit() {
                     label: t('description'),
                     type: 'text',
                   },
+                  {
+                    name: 'optional',
+                    label: t('optional'),
+                    type: 'checkbox',
+                  },
                 ],
               }}
             />
+            {methods.getValues('visibility') === HeistVisibilityEnum.Public && (
+              <FormAlertDialog
+                title={t('heist.edit.confirm')}
+                description={t('heist.edit.confirm_description')}
+                actionColor="green"
+                cancelText={t('cancel')}
+                formId="heist-edit-form"
+              >
+                <Button type="button" color="green">
+                  {t('create')}
+                </Button>
+              </FormAlertDialog>
+            )}
             <SubmitButton text={t('update')} />
           </form>
         </RemixFormProvider>
