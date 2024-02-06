@@ -10,6 +10,7 @@ use ApiPlatform\Validator\ValidatorInterface;
 use App\Entity\Heist;
 use App\Entity\Location;
 use App\Entity\User;
+use App\Enum\HeistVisibilityEnum;
 use App\Google\GoogleMaps;
 use App\Helper\ExceptionHelper;
 use App\Repository\LocationRepository;
@@ -75,6 +76,42 @@ final class HeistProcessor implements ProcessorInterface
             }
 
             $heist->setLocation($location);
+        }
+
+        if ('update' === $operation->getName()) {
+            $user = $this->security->getUser();
+
+            if (!$user instanceof User) {
+                throw $this->exceptionHelper->createTranslatableHttpException(403, 'common.not_authenticated');
+            }
+
+            if (HeistVisibilityEnum::Public === $heist->getVisibility()) {
+                if ($user->getBalance() - Heist::CREATE_HEIST_PRICE < 0) {
+                    throw $this->exceptionHelper->createTranslatableHttpException(400, 'heist.not_enough_money');
+                }
+
+                $user->setBalance($user->getBalance() - Heist::CREATE_HEIST_PRICE);
+
+                $this->validator->validate($user, ['groups' => User::UPDATE]);
+
+                $this->entityManager->persist($user);
+            }
+        }
+
+        if ('delete' === $operation->getName()) {
+            $user = $this->security->getUser();
+
+            if (!$user instanceof User) {
+                throw $this->exceptionHelper->createTranslatableHttpException(403, 'common.not_authenticated');
+            }
+
+            if (HeistVisibilityEnum::Public === $heist->getVisibility()) {
+                $user->setBalance($user->getBalance() + Heist::CREATE_HEIST_PRICE * Heist::PERCENTAGE_REFUND);
+
+                $this->validator->validate($user, ['groups' => User::UPDATE]);
+
+                $this->entityManager->persist($user);
+            }
         }
 
         return $this->persistProcessor->process($heist, $operation, $uriVariables, $context);

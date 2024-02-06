@@ -64,6 +64,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Mutation(
             name: 'update',
+            processor: HeistProcessor::class,
             normalizationContext: [
                 'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
@@ -90,6 +91,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new DeleteMutation(
             name: 'delete',
+            processor: HeistProcessor::class,
             security: 'is_granted("DELETE", object)'
         ),
     ]
@@ -115,6 +117,8 @@ class Heist
     public const MAX_CIVILIAN_CASUALTIES_PER_HEIST = 50;
     public const MAX_COP_KILLS_PER_HEIST = 1000;
     public const CIVILIAN_CLEANUP_COST = 1000;
+    public const CREATE_HEIST_PRICE = 15000;
+    public const PERCENTAGE_REFUND = 0.5;
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]

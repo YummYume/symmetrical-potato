@@ -345,7 +345,7 @@ export default function Edit() {
                 ],
               }}
             />
-            {methods.getValues('visibility') === HeistVisibilityEnum.Public && (
+            {methods.getValues('visibility') === HeistVisibilityEnum.Public ? (
               <FormAlertDialog
                 title={t('heist.edit.confirm')}
                 description={t('heist.edit.confirm_description')}
@@ -354,11 +354,12 @@ export default function Edit() {
                 formId="heist-edit-form"
               >
                 <Button type="button" color="green">
-                  {t('create')}
+                  {t('update')}
                 </Button>
               </FormAlertDialog>
+            ) : (
+              <SubmitButton text={t('update')} color="green" />
             )}
-            <SubmitButton text={t('update')} />
           </form>
         </RemixFormProvider>
         <Link to={`/map/${placeId}`}>{t('back')}</Link>

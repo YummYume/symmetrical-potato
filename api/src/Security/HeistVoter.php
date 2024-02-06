@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\CrewMember;
+use App\Entity\Establishment;
 use App\Entity\Heist;
 use App\Entity\User;
 use App\Enum\HeistPhaseEnum;
@@ -82,10 +83,36 @@ final class HeistVoter extends Voter
             return true;
         }
 
-        return $this->security->isGranted(User::ROLE_CONTRACTOR)
+        if ($this->security->isGranted(User::ROLE_CONTRACTOR)
             && $heist->getEstablishment()->getContractor() === $user
             && HeistPhaseEnum::Planning === $heist->getPhase()
-        ;
+        ) {
+            /**
+             * @var Establishment|null $establishment
+             */
+            $establishment = $user->getEstablishments()->findFirst(fn (int $key, Establishment $establishment) => $heist->getEstablishment() === $establishment);
+            if (null === $establishment) {
+                return false;
+            }
+
+            /**
+             * @var Heist|null $heistFound
+             */
+            $heistFound = $establishment->getHeists()->findFirst(fn (int $key, Heist $h) => $heist === $h);
+
+            if (null === $heistFound) {
+                return false;
+            }
+
+            // Check if the heist in database is public
+            if (HeistVisibilityEnum::Public === $heistFound->getVisibility()) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     private function canChooseEmployee(Heist $heist, User $user): bool
@@ -95,12 +122,18 @@ final class HeistVoter extends Voter
         }
 
         return $this->security->isGranted(User::ROLE_HEISTER)
-        && (bool) $user->getCrewMembers()->filter(fn (CrewMember $crewMember) => $heist === $crewMember->getHeist() && null === $crewMember->getHeist()->getEmployee())
+        && (bool) $user->getCrewMembers()->findFirst(fn (int $key, CrewMember $crewMember) => $heist === $crewMember->getHeist() && null === $crewMember->getHeist()->getEmployee())
         && HeistPhaseEnum::Planning === $heist->getPhase();
     }
 
     private function canDelete(Heist $heist, User $user): bool
     {
-        return $this->canUpdate($heist, $user);
+        if ($this->security->isGranted(User::ROLE_ADMIN)) {
+            return true;
+        }
+
+        return $this->security->isGranted(User::ROLE_CONTRACTOR)
+        && $heist->getEstablishment()->getContractor() === $user
+        && HeistPhaseEnum::Planning === $heist->getPhase();
     }
 }
