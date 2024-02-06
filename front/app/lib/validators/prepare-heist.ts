@@ -3,8 +3,11 @@ import { z } from 'zod';
 
 import { zu } from '~/lib/utils/zod';
 
-export const prepareHeistValidationSchema = z.object({
+export const assetsPurchasedValidationSchema = z.object({
   assetsPurchased: zu.json,
+});
+
+export const chooseEmployeeValidationSchema = z.object({
   employee: z
     .string()
     .includes('employees', {
@@ -13,5 +16,8 @@ export const prepareHeistValidationSchema = z.object({
     .optional(),
 });
 
-export const prepareHeistResolver = zodResolver(prepareHeistValidationSchema);
-export type PrepareHeistFormData = z.infer<typeof prepareHeistValidationSchema>;
+export const assetsPurchasedResolver = zodResolver(assetsPurchasedValidationSchema);
+export type AssetsPurchasedFormData = z.infer<typeof assetsPurchasedValidationSchema>;
+
+export const chooseEmployeeResolver = zodResolver(chooseEmployeeValidationSchema);
+export type ChooseEmployeeFormData = z.infer<typeof chooseEmployeeValidationSchema>;

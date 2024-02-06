@@ -24,7 +24,7 @@ import {
   getCrewMemberByUserAndHeistPartial,
 } from '~/lib/api/crew-member';
 import { chooseEmployeeHeist, getHeistPartial } from '~/lib/api/heist';
-import { bulkCreateHeistAsset } from '~/lib/api/heist-asset';
+import { bulkCreateHeistAssets, bulkUpdateHeistAssets } from '~/lib/api/heist-asset';
 import { AssetTypeEnum } from '~/lib/api/types';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
@@ -197,7 +197,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
     if (!crewMember) {
       session.flash(FLASH_MESSAGE_KEY, {
-        content: t('crewmember.not_found', { ns: 'flash' }),
+        content: t('crew_member.not_found', { ns: 'flash' }),
         type: 'error',
       } as FlashMessage);
 
@@ -206,70 +206,62 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       });
     }
 
-    const {
-      heist: { employee },
-    } = await getHeistPartial(
-      context.client,
-      params.heistId,
-      `
-      employee {
-        id
-      }
-    `,
-    );
-
-    if (!employee && !data.employee) {
-      session.flash(FLASH_MESSAGE_KEY, {
-        content: t('asset.prepare.need_employee', { ns: 'flash' }),
-        type: 'error',
-      } as FlashMessage);
-
-      return json(
-        { errors: {} },
-        { status: 400, headers: { 'Set-Cookie': await commitSession(session) } },
-      );
-    }
-
     const assetsPurchasedParsed = JSON.parse(data.assetsPurchased as string) as AssetPurchased[];
 
-    if (!employee && data.employee) {
-      await chooseEmployeeHeist(context.client, {
-        id: params.heistId,
-        employeeId: data.employee,
-      });
-    }
+    type NewHeistAssetPayload = { id: string; quantity: number };
+    type UpdateHeistAssetPayload = { id: string; quantity: number };
 
-    const newAssetsPurchased = assetsPurchasedParsed.reduce<{ id: string; quantity: number }[]>(
+    type Payloads = {
+      newHeistAssets: NewHeistAssetPayload[];
+      updateHeistAssets: UpdateHeistAssetPayload[];
+    };
+
+    const { newHeistAssets, updateHeistAssets } = assetsPurchasedParsed.reduce<Payloads>(
       (acc, curr) => {
         if (!curr.heistAsset && curr.newQuantity) {
-          acc.push({
+          acc.newHeistAssets.push({
             id: curr.id,
             quantity: curr.newQuantity,
           });
         }
 
+        if (curr.heistAsset && curr.newQuantity) {
+          acc.updateHeistAssets.push({
+            id: curr.heistAsset.id,
+            quantity: curr.heistAsset.quantity + curr.newQuantity,
+          });
+        }
+
         return acc;
       },
-      [],
+      { newHeistAssets: [], updateHeistAssets: [] },
     );
 
-    if (newAssetsPurchased.length > 0) {
-      await bulkCreateHeistAsset(context.client, {
-        assets: newAssetsPurchased,
+    if (newHeistAssets.length > 0) {
+      await bulkCreateHeistAssets(context.client, {
+        assets: newHeistAssets,
         crewMemberId: crewMember.id,
       });
+    }
 
-      session.flash(FLASH_MESSAGE_KEY, {
-        content: t('heist.prepare_successfully', { ns: 'flash' }),
-        type: 'success',
-      } as FlashMessage);
-
-      return redirect(`/map/${params.placeId}`, {
-        headers: {
-          'Set-Cookie': await commitSession(session),
-        },
+    if (updateHeistAssets.length > 0) {
+      await bulkUpdateHeistAssets(context.client, {
+        heistAssets: updateHeistAssets,
       });
     }
+
+    // TODO Add a flash message
+
+    session.flash(FLASH_MESSAGE_KEY, {
+      content: t('heist.prepare_successfully', { ns: 'flash' }),
+      type: 'success',
+    } as FlashMessage);
+
+    return redirect(`/map/${params.placeId}`, {
+      headers: {
+        'Set-Cookie': await commitSession(session),
+      },
+    });
   } catch (error) {
     if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 400, 404, 403])) {
       errorMessage = getMessageForErrorStatusCodes(error, [422, 400, 404, 403]);
@@ -554,101 +546,108 @@ export default function Prepare() {
   return (
     <>
       <RemixFormProvider {...methods}>
-        <form id="prepare-heist-form" method="post" onSubmit={methods.handleSubmit}>
+        <form id="heist-prepare-assets-form" method="post" onSubmit={methods.handleSubmit}>
           <FieldInput type="hidden" name="assetsPurchased" label="assetsPurchased" hideLabel />
-          <Tabs.Root defaultValue="employee">
-            <Tabs.List>
-              <Tabs.Trigger value="employee">{t('employee')}</Tabs.Trigger>
-              <Tabs.Trigger value="assets">{t('asset.type.assets')}</Tabs.Trigger>
-              <Tabs.Trigger value="weapons">{t('asset.type.weapons')}</Tabs.Trigger>
-              <Tabs.Trigger value="equipments">{t('asset.type.equipments')}</Tabs.Trigger>
-              <Tabs.Trigger value="checkout_payment">{t('checkout_payment.title')}</Tabs.Trigger>
-            </Tabs.List>
+        </form>
+      </RemixFormProvider>
 
-            <Box px="4" pt="3" pb="2">
-              <Tabs.Content value="employee">
-                <Text size="2" className="mb-2">
-                  {employeeChosen
-                    ? t('heist.employee.chosen', { name: employeeChosen.node.user.username })
-                    : t('heist.employee.not_chosen')}
-                </Text>
-                {!employee && (
+      <Tabs.Root defaultValue="employee">
+        <Tabs.List>
+          <Tabs.Trigger value="employee">{t('employee')}</Tabs.Trigger>
+          <Tabs.Trigger value="assets">{t('asset.type.assets')}</Tabs.Trigger>
+          <Tabs.Trigger value="weapons">{t('asset.type.weapons')}</Tabs.Trigger>
+          <Tabs.Trigger value="equipments">{t('asset.type.equipments')}</Tabs.Trigger>
+          <Tabs.Trigger value="checkout_payment">{t('checkout_payment.title')}</Tabs.Trigger>
+        </Tabs.List>
+
+        <Box px="4" pt="3" pb="2">
+          <Tabs.Content value="employee">
+            <Text size="2" className="mb-2">
+              {employeeChosen
+                ? t('heist.employee.chosen', { name: employeeChosen.node.user.username })
+                : t('heist.employee.not_chosen')}
+            </Text>
+            {!employee && (
+              <RemixFormProvider {...methods}>
+                <form
+                  id="heist-prepare-employee-form"
+                  method="post"
+                  onSubmit={methods.handleSubmit}
+                >
                   <FieldSelect
                     name="employee"
                     label={t('employee')}
                     options={allowedEmployeesFormatted}
                   />
-                )}
-              </Tabs.Content>
+                </form>
+              </RemixFormProvider>
+            )}
+          </Tabs.Content>
 
-              {Object.entries({
-                assets: AssetTypeEnum.Asset,
-                weapons: AssetTypeEnum.Weapon,
-                equipments: AssetTypeEnum.Equipment,
-              }).map(([key, value]) => (
-                <TabsAsset
-                  key={key}
-                  value={key}
-                  text={t(`asset.type.${key}.catch_phrase`)}
-                  assets={assets[value]}
-                  setGlobalQuantity={(assetId) =>
-                    getQuantity(assetId) +
-                    (cartAssets[assetId] ? cartAssets[assetId].heistAsset?.quantity ?? 0 : 0)
-                  }
-                  setQuantity={(assetId) => getQuantity(assetId)}
-                  onAddAsset={(asset) => addAsset(asset)}
-                  onRemoveAsset={(asset) => removeAsset(asset)}
-                />
-              ))}
+          {Object.entries({
+            assets: AssetTypeEnum.Asset,
+            weapons: AssetTypeEnum.Weapon,
+            equipments: AssetTypeEnum.Equipment,
+          }).map(([key, value]) => (
+            <TabsAsset
+              key={key}
+              value={key}
+              text={t(`asset.type.${key}.catch_phrase`)}
+              assets={assets[value]}
+              setGlobalQuantity={(assetId) =>
+                getQuantity(assetId) +
+                (cartAssets[assetId] ? cartAssets[assetId].heistAsset?.quantity ?? 0 : 0)
+              }
+              setQuantity={(assetId) => getQuantity(assetId)}
+              onAddAsset={(asset) => addAsset(asset)}
+              onRemoveAsset={(asset) => removeAsset(asset)}
+            />
+          ))}
 
-              <Tabs.Content value="checkout_payment">
-                <Dialog.Title asChild>
-                  <Heading as="h2" size="8">
-                    {t('checkout_payment.title')}
-                  </Heading>
-                </Dialog.Title>
-                <Section className="space-y-3" size="1">
-                  {asssetsPurchasedFormatted.length > 0 ? (
-                    <>
-                      <Button type="button" onClick={() => clearCart()}>
-                        {t('checkout_payment.clear_cart')}
+          <Tabs.Content value="checkout_payment">
+            <Dialog.Title asChild>
+              <Heading as="h2" size="8">
+                {t('checkout_payment.title')}
+              </Heading>
+            </Dialog.Title>
+            <Section className="space-y-3" size="1">
+              {asssetsPurchasedFormatted.length > 0 ? (
+                <>
+                  <Button type="button" onClick={() => clearCart()}>
+                    {t('checkout_payment.clear_cart')}
+                  </Button>
+                  <PaymentDisplay
+                    assets={asssetsPurchasedFormatted}
+                    rows={{
+                      name: t('asset.name'),
+                      price: t('asset.price'),
+                      quantity: t('asset.quantity'),
+                    }}
+                  />
+                  <Flex gap="4" align="center" justify="end">
+                    <Text size="3">{t('checkout_payment.description', { price: totalPrice })}</Text>
+                    <FormAlertDialog
+                      title={t('checkout_payment.confirmation')}
+                      description={t('checkout_payment.confirmation_description')}
+                      actionColor="green"
+                      cancelText={t('cancel')}
+                      formId="prepare-heist-form"
+                    >
+                      <Button type="button" color="green">
+                        {t('purchase')}
                       </Button>
-                      <PaymentDisplay
-                        assets={asssetsPurchasedFormatted}
-                        rows={{
-                          name: t('asset.name'),
-                          price: t('asset.price'),
-                          quantity: t('asset.quantity'),
-                        }}
-                      />
-                      <Flex gap="4" align="center" justify="end">
-                        <Text size="3">
-                          {t('checkout_payment.description', { price: totalPrice })}
-                        </Text>
-                        <FormAlertDialog
-                          title={t('checkout_payment.confirmation')}
-                          description={t('checkout_payment.confirmation_description')}
-                          actionColor="green"
-                          cancelText={t('cancel')}
-                          formId="prepare-heist-form"
-                        >
-                          <Button type="button" color="green">
-                            {t('purchase')}
-                          </Button>
-                        </FormAlertDialog>
-                      </Flex>
-                    </>
-                  ) : (
-                    <Text size="2" className="mb-2">
-                      {t('checkout_payment.no_assets')}
-                    </Text>
-                  )}
-                </Section>
-              </Tabs.Content>
-            </Box>
-          </Tabs.Root>
-        </form>
-      </RemixFormProvider>
+                    </FormAlertDialog>
+                  </Flex>
+                </>
+              ) : (
+                <Text size="2" className="mb-2">
+                  {t('checkout_payment.no_assets')}
+                </Text>
+              )}
+            </Section>
+          </Tabs.Content>
+        </Box>
+      </Tabs.Root>
     </>
   );
 }
