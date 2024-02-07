@@ -56,6 +56,8 @@ submit: Submit
 more_info: Show more details
 
 # Meta
+meta.dashboard.title: Dashboard
+meta.dashboard.description: Your personal dashboard. Trully yours.
 meta.my_contractor_request.title: My contractor request
 meta.my_contractor_request.description: Check the status of your contractor request.
 meta.my_account.title: My account
@@ -63,6 +65,10 @@ meta.my_account.description: Edit your account settings.
 meta.profile.description: View the profile of {name}.
 meta.my_job.title: My job
 meta.my_job.description: Check your current job status.
+
+# Dashboard
+dashboard.heists.today: Heists today
+dashboard.heists.no_heists_today: No heists found for today.
 
 # History info
 history_info: History info
@@ -131,6 +137,13 @@ heist.visibility: Visibility
 heist.add: Add a heist
 heist.add_objective: Add an objective
 heist.delete.confirm: Are you sure you want to delete this heist?
+heist.phase: Phase
+heist.phase.cancelled: Cancelled
+heist.phase.failed: Failed
+heist.phase.in_progress: In progress
+heist.phase.succeeded: Succeeded
+heist.phase.planning: Planning
+heist.crew_member_count: '{count} out of 4'
 
 # User
 user.balance: Balance

@@ -6,6 +6,10 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import timezone from 'dayjs/plugin/timezone.js';
 import utc from 'dayjs/plugin/utc.js';
 
+// Locales
+import 'dayjs/locale/en';
+import 'dayjs/locale/fr';
+
 // Plugins
 dayjs.extend(utc);
 dayjs.extend(timezone);
