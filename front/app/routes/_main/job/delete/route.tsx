@@ -1,7 +1,8 @@
 import { type ActionFunctionArgs, redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 
-import { deleteContractorRequest } from '~/lib/api/contractor-request';
+import { deleteEmployee } from '~/lib/api/employee';
+import { EmployeeStatusEnum } from '~/lib/api/types';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
@@ -16,8 +17,8 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
   const t = await i18next.getFixedT(request, ['flash', 'validators']);
   const session = await getSession(request.headers.get('Cookie'));
 
-  if (!user.contractorRequest) {
-    return redirect('/contractor-request', {
+  if (!user.employee) {
+    return redirect('/job', {
       headers: {
         'Set-Cookie': await commitSession(session),
       },
@@ -27,14 +28,17 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
   let errorMessage: string | null = null;
 
   try {
-    await deleteContractorRequest(context.client, getUriId(user.contractorRequest.id));
+    await deleteEmployee(context.client, getUriId(user.employee.id));
 
     session.flash(FLASH_MESSAGE_KEY, {
-      content: t('contractor_request.deleted', { ns: 'flash' }),
+      content:
+        user.employee.status === EmployeeStatusEnum.Active
+          ? t('job.deleted', { ns: 'flash' })
+          : t('job.deleted_demand', { ns: 'flash' }),
       type: 'success',
     } as FlashMessage);
 
-    return redirect('/contractor-request', {
+    return redirect('/job', {
       headers: {
         'Set-Cookie': await commitSession(session),
       },
@@ -54,7 +58,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
     } as FlashMessage);
   }
 
-  return redirect('/contractor-request', {
+  return redirect('/job', {
     headers: {
       'Set-Cookie': await commitSession(session),
     },

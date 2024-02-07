@@ -171,7 +171,7 @@ class Employee
 
     #[ORM\ManyToOne(inversedBy: 'employees', targetEntity: Establishment::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ, self::READ_PUBLIC, self::CREATE])]
+    #[Groups([self::READ, self::READ_PUBLIC, self::CREATE, User::READ])]
     #[Assert\NotNull(
         message: 'employee.establishment.not_null',
         groups: [self::CREATE]

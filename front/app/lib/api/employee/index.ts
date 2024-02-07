@@ -1,6 +1,12 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
-import type { Query, QueryEmployeeArgs, QueryEmployeesArgs } from '~api/types';
+import type {
+  Mutation,
+  MutationDeleteEmployeeArgs,
+  Query,
+  QueryEmployeeArgs,
+  QueryEmployeesArgs,
+} from '~api/types';
 
 /**
  * Query the list of employees.
@@ -67,5 +73,27 @@ export const getEmployeesEstablishments = async (client: GraphQLClient, ids: str
       }
     `,
     { establishment__id: ids },
+  );
+};
+
+/**
+ * Delete an employee.
+ */
+export const deleteEmployee = async (client: GraphQLClient, id: string) => {
+  return client.request<Pick<Mutation, 'deleteEmployee'>, MutationDeleteEmployeeArgs>(
+    gql`
+      mutation DeleteEmployee($input: deleteEmployeeInput!) {
+        deleteEmployee(input: $input) {
+          employee {
+            id
+          }
+        }
+      }
+    `,
+    {
+      input: {
+        id: `/employees/${id}`,
+      },
+    },
   );
 };
