@@ -1,4 +1,6 @@
+{% extends 'email/layout.html.twig' %}
+
 {% trans_default_domain 'email' %}
 
 {% set title = 'account.deleted.subject'|trans %}
-{% set text = 'account.deleted.text'|trans %}
+{% set text = 'account.deleted.text'|trans({name: user.username, site}) %}

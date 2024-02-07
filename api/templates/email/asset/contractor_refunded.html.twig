@@ -3,4 +3,4 @@
 {% trans_default_domain 'email' %}
 
 {% set title = 'asset.contractor_refunded.subject'|trans %}
-{% set text = 'asset.contractor_refunded.text'|trans %}
+{% set text = 'asset.contractor_refunded.text'|trans({asset, name: user.username, site}) %}

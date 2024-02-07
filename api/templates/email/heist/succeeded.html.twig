@@ -2,5 +2,5 @@
 
 {% trans_default_domain 'email' %}
 
-{% set title = 'heist.succeeded.subject'|trans %}
-{% set text = 'heist.succeeded.text'|trans %}
+{% set title = 'heist.succeeded.subject'|trans({heist}) %}
+{% set text = 'heist.succeeded.text'|trans({currency, heist, name: user.username, number, payout, site}) %}
