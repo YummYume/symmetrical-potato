@@ -203,6 +203,11 @@ class Heist
     /** @var array<int, array<string, string|bool>> */
     #[ORM\Column(type: Types::JSON)]
     #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\Count(
+        groups: [self::CREATE, self::UPDATE],
+        max: 20,
+        maxMessage: 'heist.objectives.size.invalid',
+    )]
     private array $objectives = [];
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]

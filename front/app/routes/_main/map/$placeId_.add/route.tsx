@@ -73,6 +73,18 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   let errorMessage: string | null = null;
   const session = await getSession(request.headers.get('Cookie'));
 
+  if (data.objectives && data.objectives.length > 20) {
+    session.flash(FLASH_MESSAGE_KEY, {
+      content: t('heist.objectives.too_much', { ns: 'flash' }),
+      type: 'error',
+    } as FlashMessage);
+
+    return json(
+      { errors: {} },
+      { status: 400, headers: { 'Set-Cookie': await commitSession(session) } },
+    );
+  }
+
   try {
     const { startAtTime, startAtDate, shouldEndAtDate, shouldEndAtTime, ...heistData } = data;
     await createHeist(context.client, {

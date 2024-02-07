@@ -1,4 +1,4 @@
-import { Grid, Text, Button, Checkbox } from '@radix-ui/themes';
+import { Grid, Button, Checkbox, Separator } from '@radix-ui/themes';
 import { TextField } from '@radix-ui/themes';
 import { useFieldArray, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +46,8 @@ export type FieldInputArrayProps<T extends Record<string, unknown>> = {
    * The limit of inputs to display.
    */
   limit?: number;
-} & DefaultFieldProps<T>;
+} & DefaultFieldProps<T> &
+  React.RefAttributes<HTMLInputElement>;
 
 export function FieldInputArray<T extends Record<string, unknown>>({
   limit = 5,
@@ -76,14 +77,15 @@ export function FieldInputArray<T extends Record<string, unknown>>({
   // Beware of confusion between field and fieldInput here, field is from Control
   return (
     <Grid className={containerClassName} gap="1">
-      <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
+      <LabelField htmlFor={name} className={hideLabel ? 'sr-only' : undefined}>
         {label}
-      </Text>
+      </LabelField>
       <ul>
         {fields.map((item, index) => {
           return (
-            <li key={item.id} className="mb-2">
-              <Grid>
+            <li key={item.id}>
+              <Grid gap="1" className="p-4">
+                <Separator mb="2" size="4" />
                 {config.fields.map((fieldInput, key) => (
                   <Controller
                     key={`${item.id}-${key}`}
@@ -107,6 +109,9 @@ export function FieldInputArray<T extends Record<string, unknown>>({
                               {...register(field.name)}
                               {...rest}
                               id={fieldId}
+                              ref={field.ref}
+                              onCheckedChange={field.onChange}
+                              defaultChecked={!!field.value}
                               aria-describedby={helpId}
                               aria-errormessage={errorId}
                               aria-invalid={!!errorId}

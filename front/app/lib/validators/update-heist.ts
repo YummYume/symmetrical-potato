@@ -118,6 +118,7 @@ export const updateHeistValidationSchema = z
           .string()
           .min(10, { message: 'heist.objectives.description.min_length' })
           .max(255, { message: 'heist.objectives.description.max_length' }),
+        optional: z.boolean().optional(),
       })
       .array()
       .optional(),

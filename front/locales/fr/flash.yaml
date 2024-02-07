@@ -42,6 +42,7 @@ heist.prepare.employee.missing: Vous devez choisir un employé pour vous aider.
 heist.prepare.employee.aleary_set: Vous avez déjà un employé pour vous aider.
 heist.prepare.not_in_crew: Vous n'êtes pas dans l'équipe de ce heist.
 heist.prepare.assets.invalid: Votre demande contient des assets invalides.
+heist.objectives.too_much: Vous ne pouvez pas avoir plus de 20 objectifs.
 
 # Account
 account.updated: Compte mis à jour avec succès.

@@ -51,6 +51,7 @@ heist.maximum_payout.invalid: Veuillez saisir un montant maximum valide.
 heist.end_date.invalid: Veuillez saisir une date de fin valide.
 heist.end_date.greater_than.start_date: La date de fin doit être supérieur à la date de début.
 heist.objectives.invalid: Veuillez saisir une liste d'objectifs au format JSON.
+heist.objectives.size.invalid: Vous ne pouvez pas avoir plus de {limit} objectifs.
 heist.minimum_required_rating.invalid: Veuillez saisir un nombre.
 heist.prefered_tactic.not_blank: Veuillez saisir une tactique recommendée.
 heist.prefered_tactic.invalid: La tactique recommendée est invalide.
