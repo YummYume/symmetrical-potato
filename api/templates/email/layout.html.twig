@@ -1,28 +1,86 @@
 <!DOCTYPE html>
-<html class="h-full" lang="en">
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{{ site }}</title>
-        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            *, :after, :before {
+                box-sizing: border-box;
+            }
+
+            html {
+                font-family: Inter var, ui-sans-serif, system-ui, sans-serif;
+                height: 100%;
+            }
+
+            h1, p {
+                margin: 0;
+            }
+
+            body {
+                background-color: rgb(243 244 246);
+                height: 100%;
+            }
+
+            main {
+                display: grid;
+                min-height: 100%;
+                place-items: center;
+            }
+
+            .card {
+                background-color: rgb(255 255 255);
+                border-radius: 0.5rem;
+                box-shadow: 0 0 0 0 #fff, 0 0 0 1px rgb(15 23 42 / 0.1), 0 0 #0000;
+                margin-inline: auto;
+                padding-block: 1.5rem;
+                width: clamp(24rem, auto, 80rem);
+            }
+
+            header {
+                border-bottom: 1px rgb(229 231 235);
+                padding: 1.25rem 1rem;
+            }
+
+            h1 {
+                color: rgb(15 23 42);
+                font-size: 1.875rem;
+                font-weight: 800;
+                letter-spacing: -0.025em;
+                line-height: 2.25rem;
+                text-align: center;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            @media (min-width: 640px) {
+                .card, .header, .content {
+                    padding-inline: 1.5rem;
+                }
+            }
+
+            @media (min-width: 1024px) {
+                .card {
+                    padding-inline: 2rem;
+                }
+            }
+        </style>
     </head>
-    <body class="bg-gray-100 h-full">
-        <main class="grid min-h-full place-items-center">
-            <div class="
-                bg-white max-w-7xl min-w-96 mx-auto overflow-clip ring-1
-                ring-slate-900/10 rounded-lg py-6 sm:px-6 lg:px-8
-            ">
+    <body>
+        <main>
+            <div class="card">
                 {% block title %}
                     {% if title is defined %}
-                        <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
-                            <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 text-center">
-                                {{ title }} !
-                            </h1>
-                        </div>
+                        <header>
+                            <h1>{{ title }} !</h1>
+                        </header>
                     {% endif %}
                 {% endblock %}
 
-                <div class="px-4 py-4 sm:px-6">
+                <div class="content">
                     {% block content %}
                         {% if text is defined %}
                             <p>{{ text }}</p>
