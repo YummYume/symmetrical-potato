@@ -55,6 +55,8 @@ add: Ajouter
 submit: Envoyer
 more_info: Afficher plus de détails
 join: Rejoindre
+prepare_heist: Préparer le braquage
+validate: Valider
 leave: Quitter
 purchase: Acheter
 optional: Optionnel
@@ -148,7 +150,8 @@ heist.edit.confirm: Êtes-vous sûr de vouloir rendre public ce braquage ?
 heist.edit.confirm_description: Rendre ce braquage public vous coutera $15.000, si vous supprimer ce braquage, 50% de la somme vous sera remboursé uniquement.
 heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
 heist.employee.chosen: L'employé nommé {name} vous aidera.
-heist.employee.not_chosen: Choisissez celui qui vous aidera
+heist.employee.not_chosen: Choisissez celui qui vous aidera.
+heist.prepare.employee.not_chosen_warning: Si personne au sein de l'équipe ne choisit un employé pour aider, le braquage sera annulé.
 heist.phase: Phase
 heist.phase.cancelled: Annulé
 heist.phase.failed: Échoué

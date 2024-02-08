@@ -24,7 +24,9 @@ export function TabsAsset({
 }: TabsAssetProps) {
   return (
     <Tabs.Content value={value}>
-      <Text size="2">{text}</Text>
+      <Text size="3" className="italic">
+        {text}
+      </Text>
       <>
         {Object.keys(assets).map((type, index) => (
           <Grid

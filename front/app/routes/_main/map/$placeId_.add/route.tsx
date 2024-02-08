@@ -188,7 +188,7 @@ export default function Add() {
       difficulty: HeistDifficultyEnum.Normal,
       minimumPayout: 100000,
       maximumPayout: 1000000,
-      minimumRequiredRating: 0,
+      minimumRequiredRating: 1,
       allowedEmployees: [],
       forbiddenUsers: [],
       forbiddenAssets: [],

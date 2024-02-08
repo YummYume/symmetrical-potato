@@ -55,6 +55,8 @@ add: Add
 submit: Submit
 more_info: Show more details
 join: Join
+prepare_heist: Prepare heist
+validate: Validate
 leave: Leave
 purchase: Purchase
 optional: Optional
@@ -148,6 +150,7 @@ heist.edit.confirm_description: Making this heist public will cost you $15,000. 
 heist.join.confirm: Are you sure you want to join this heist?
 heist.employee.chosen: The employee named {name} will help you.
 heist.employee.not_chosen: Choose the one who will help you.
+heist.prepare.employee.not_chosen_warning: If no one in the crew chooses an employee to help, the heist will be cancelled.
 heist.phase: Phase
 heist.phase.cancelled: Cancelled
 heist.phase.failed: Failed

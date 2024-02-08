@@ -36,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
     operations: [],
+    processor: HeistProcessor::class,
     graphQlOperations: [
         new Query(
             normalizationContext: [
@@ -50,7 +51,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Mutation(
             name: 'create',
-            processor: HeistProcessor::class,
             normalizationContext: [
                 'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
@@ -64,7 +64,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Mutation(
             name: 'update',
-            processor: HeistProcessor::class,
             normalizationContext: [
                 'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
@@ -91,7 +90,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new DeleteMutation(
             name: 'delete',
-            processor: HeistProcessor::class,
             security: 'is_granted("DELETE", object)'
         ),
     ]

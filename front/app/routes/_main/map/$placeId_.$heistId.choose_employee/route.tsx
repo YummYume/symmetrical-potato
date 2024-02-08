@@ -29,12 +29,16 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     chooseEmployeeResolver,
   );
 
-  if (errors) {
-    return json({ errors }, { status: 400 });
-  }
-
   let errorMessage: string | null = null;
   const session = await getSession(request.headers.get('Cookie'));
+
+  if (errors) {
+    return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+      headers: {
+        'Set-Cookie': await commitSession(session),
+      },
+    });
+  }
 
   try {
     let crewMember = await getCrewMemberByUserAndHeistPartial(context.client, {
@@ -48,10 +52,11 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
         type: 'error',
       } as FlashMessage);
 
-      return json(
-        { errors: {} },
-        { status: 400, headers: { 'Set-Cookie': await commitSession(session) } },
-      );
+      return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
     }
 
     const {
@@ -72,10 +77,11 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
         type: 'error',
       } as FlashMessage);
 
-      return json(
-        { errors: {} },
-        { status: 400, headers: { 'Set-Cookie': await commitSession(session) } },
-      );
+      return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
     }
 
     if (!data.employee) {
@@ -84,10 +90,11 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
         type: 'error',
       } as FlashMessage);
 
-      return json(
-        { errors: {} },
-        { status: 400, headers: { 'Set-Cookie': await commitSession(session) } },
-      );
+      return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
     }
 
     await chooseEmployeeHeist(context.client, {
@@ -100,10 +107,11 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       type: 'success',
     } as FlashMessage);
 
-    return json(
-      { errors: {} },
-      { status: 200, headers: { 'Set-Cookie': await commitSession(session) } },
-    );
+    return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+      headers: {
+        'Set-Cookie': await commitSession(session),
+      },
+    });
   } catch (error) {
     if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 400, 404, 403])) {
       errorMessage = getMessageForErrorStatusCodes(error, [422, 400, 404, 403]);

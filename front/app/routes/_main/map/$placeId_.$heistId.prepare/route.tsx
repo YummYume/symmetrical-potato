@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Box, Button, Flex, Heading, Section, Tabs, Text } from '@radix-ui/themes';
+import { Box, Button, Flex, Grid, Heading, Section, Tabs, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 import { useEffect, useState } from 'react';
@@ -16,7 +16,9 @@ import {
 import { getHeistPartial } from '~/lib/api/heist';
 import { bulkCreateHeistAssets, bulkUpdateHeistAssets } from '~/lib/api/heist-asset';
 import { AssetTypeEnum } from '~/lib/api/types';
+import { Callout } from '~/lib/components/Callout';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
+import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { i18next } from '~/lib/i18n/index.server';
@@ -75,6 +77,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   }
 
   const t = await i18next.getFixedT(request, 'response');
+  const session = await getSession(request.headers.get('Cookie'));
 
   try {
     const {
@@ -99,6 +102,17 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       }
     `,
     );
+
+    if (allowedEmployees.totalCount <= 0) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.prepare.no_employee_available', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
+
+      throw redirect(`/map/${params.placeId}`, {
+        headers: { 'Set-Cookie': await commitSession(session) },
+      });
+    }
 
     // Get the crew member for the current user and the current heist
     let crewMember = await getCrewMemberByUserAndHeist(context.client, {
@@ -436,10 +450,11 @@ export default function Prepare() {
     mode: 'onSubmit',
     resolver: chooseEmployeeResolver,
     submitConfig: {
+      action: `/map/${placeId}/${heistId}/choose_employee`,
       unstable_viewTransition: true,
     },
     defaultValues: {
-      employee: allowedEmployeesFormatted[0].value,
+      employee: allowedEmployeesFormatted && allowedEmployeesFormatted[0].value,
     },
   });
 
@@ -496,7 +511,7 @@ export default function Prepare() {
 
         <Box px="4" pt="3" pb="2">
           <Tabs.Content value="employee">
-            <Text size="2" className="mb-2">
+            <Text size="3" className="italic">
               {employeeChosen
                 ? t('heist.employee.chosen', { name: employeeChosen.node.user.username })
                 : t('heist.employee.not_chosen')}
@@ -505,20 +520,31 @@ export default function Prepare() {
               <RemixFormProvider {...methodsEmployee}>
                 <form
                   id="heist-prepare-employee-form"
+                  className="mt-2"
                   method="post"
-                  action={`/map/${placeId}/${heistId}/choose_employee`}
                   onSubmit={methodsEmployee.handleSubmit}
                 >
-                  <FieldSelect
-                    name="employee"
-                    label={t('employee')}
-                    options={allowedEmployeesFormatted}
-                  />
-                  <Button type="button" color="green">
-                    {t('purchase')}
-                  </Button>
+                  <Grid columns="1fr auto" gap="3" align="center">
+                    <FieldSelect
+                      name="employee"
+                      label={t('employee')}
+                      options={allowedEmployeesFormatted}
+                      hideLabel
+                    />
+                    <SubmitButton text={t('validate')} color="green" />
+                  </Grid>
                 </form>
               </RemixFormProvider>
+            )}
+            {!employee && (
+              <Callout
+                content={t('heist.prepare.employee.not_chosen_warning')}
+                icon="ExclamationTriangleIcon"
+                color="orange"
+                role="alert"
+                size="1"
+                className="mt-3"
+              />
             )}
           </Tabs.Content>
 
@@ -568,7 +594,7 @@ export default function Prepare() {
                       description={t('checkout_payment.confirmation_description')}
                       actionColor="green"
                       cancelText={t('cancel')}
-                      formId="prepare-heist-form"
+                      formId="heist-prepare-assets-form"
                     >
                       <Button type="button" color="green">
                         {t('purchase')}

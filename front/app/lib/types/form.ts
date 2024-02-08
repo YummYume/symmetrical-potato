@@ -71,6 +71,10 @@ export type DefaultFieldProps<T extends Record<string, unknown>> = {
    */
   hideLabel?: boolean;
   /**
+   * Whether or not to hide the error (visually).
+   */
+  hideError?: boolean;
+  /**
    * Whether or not the field is disabled.
    */
   disabled?: boolean;
