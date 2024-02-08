@@ -189,7 +189,9 @@ export default function Add() {
       minimumPayout: 100000,
       maximumPayout: 1000000,
       minimumRequiredRating: 1,
-      allowedEmployees: [],
+      allowedEmployees: employeesFormatted.filter(
+        (employee) => employee.establishmentId === establishments.edges[0].node.id,
+      ),
       forbiddenUsers: [],
       forbiddenAssets: [],
       objectives: [],

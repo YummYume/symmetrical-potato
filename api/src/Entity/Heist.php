@@ -234,7 +234,7 @@ class Heist
     #[Groups([self::READ])]
     private Collection $crewMembers;
 
-    #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Location::class, cascade: ['remove'])]
+    #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Location::class)]
     #[Groups([self::READ])]
     private ?Location $location = null;
 

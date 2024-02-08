@@ -12,6 +12,7 @@ use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Filter\UuidFilter;
 use App\Repository\HeistAssetRepository;
+use App\State\HeistAssetProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -22,6 +23,7 @@ use Symfony\Component\Uid\Uuid;
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
     operations: [],
+    processor: HeistAssetProcessor::class,
     graphQlOperations: [
         new Query(
             normalizationContext: [

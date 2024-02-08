@@ -1,5 +1,5 @@
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { Button, DropdownMenu, Flex, Separator } from '@radix-ui/themes';
+import { Button, DropdownMenu, Flex, Separator, Text } from '@radix-ui/themes';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 import { useEffect, useState, type FormEvent, type ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -50,6 +50,10 @@ const Menu = ({
 
   return (
     <Flex align="center" gap="4" justify="end">
+      <Text as="span" size="2">
+        ${user.balance.toLocaleString()}
+      </Text>
+
       <Form method="post" className="flex items-center justify-end gap-4" onChange={onChange}>
         <Locale defaultValue={locale} disabled={isChangingPreferences} />
         <Lightswitch defaultChecked={useDarkMode} disabled={isChangingPreferences} />

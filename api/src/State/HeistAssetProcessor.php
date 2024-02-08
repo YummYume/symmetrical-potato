@@ -52,7 +52,7 @@ final class HeistAssetProcessor implements ProcessorInterface
                 throw $this->exceptionHelper->createTranslatableHttpException(403, 'common.not_authenticated');
             }
 
-            if ($user === $heistAsset->getCrewMember()->getUser()) {
+            if ($user !== $heistAsset->getCrewMember()->getUser()) {
                 throw $this->exceptionHelper->createTranslatableHttpException(400, 'heist_asset.heist_required');
             }
 
@@ -64,13 +64,13 @@ final class HeistAssetProcessor implements ProcessorInterface
 
             $user->setBalance($user->getBalance() - $price);
 
-            if ($heistAsset->getAsset()->isTeamAsset()) {
+            if (!$heistAsset->getAsset()->isGlobalAsset()) {
                 $contractor = $heistAsset->getCrewMember()->getHeist()->getEstablishment()->getContractor();
                 $contractor->setBalance($contractor->getBalance() + $price);
+                $this->entityManager->persist($contractor);
             }
 
             $this->entityManager->persist($user);
-            $this->entityManager->persist($contractor);
 
             $heistAsset->setTotalSpent($price);
         }

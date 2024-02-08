@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 import { useTypedLoaderData } from 'remix-typedjson';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { getAssets, getAssetsForbiddenForHeist } from '~/lib/api/asset';
@@ -17,6 +18,7 @@ import { getHeistPartial } from '~/lib/api/heist';
 import { bulkCreateHeistAssets, bulkUpdateHeistAssets } from '~/lib/api/heist-asset';
 import { AssetTypeEnum } from '~/lib/api/types';
 import { Callout } from '~/lib/components/Callout';
+import { Link } from '~/lib/components/Link';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
@@ -464,6 +466,19 @@ export default function Prepare() {
     submitConfig: {
       unstable_viewTransition: true,
     },
+    submitHandlers: {
+      onInvalid: async (errors) => {
+        //@ts-ignore
+        const { assetsPurchased } = errors;
+        if (assetsPurchased?.message) {
+          toast.error(assetsPurchased.message, {
+            position: 'bottom-right',
+            duration: 10000,
+            dismissible: true,
+          });
+        }
+      },
+    },
   });
 
   useEffect(() => {
@@ -493,12 +508,21 @@ export default function Prepare() {
       <RemixFormProvider {...methodsAssetPurchased}>
         <form
           id="heist-prepare-assets-form"
+          className="hidden"
           method="post"
           onSubmit={methodsAssetPurchased.handleSubmit}
         >
-          <FieldInput type="hidden" name="assetsPurchased" label="assetsPurchased" hideLabel />
+          <FieldInput
+            type="hidden"
+            name="assetsPurchased"
+            label="assetsPurchased"
+            hideLabel
+            hideError
+          />
         </form>
       </RemixFormProvider>
+
+      <Link to={`/map/${placeId}`}>{t('back')}</Link>
 
       <Tabs.Root defaultValue="employee">
         <Tabs.List>
