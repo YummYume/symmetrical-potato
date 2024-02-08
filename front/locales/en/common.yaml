@@ -143,7 +143,13 @@ heist.phase.failed: Failed
 heist.phase.in_progress: In progress
 heist.phase.succeeded: Succeeded
 heist.phase.planning: Planning
-heist.crew_member_count: '{count} out of 4'
+heist.crew_member_count: >-
+  {count, plural,
+    =0 {0 heister}
+    one {# heister}
+    other {# heisters}
+  }
+  out of 4
 
 # User
 user.balance: Balance

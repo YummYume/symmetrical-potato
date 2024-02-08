@@ -15,7 +15,7 @@ export const HeistPhaseBadge = ({ phase, ...rest }: HeistPhaseBadgeProps) => {
   if (phase === HeistPhaseEnum.Cancelled) {
     return (
       <Badge color="gray" size="1" className="h-fit w-fit" {...rest}>
-        {t('heist.phase.cancelled')}
+        <span className="sr-only">{t('heist.phase')} :</span> {t('heist.phase.cancelled')}
       </Badge>
     );
   }
@@ -23,7 +23,7 @@ export const HeistPhaseBadge = ({ phase, ...rest }: HeistPhaseBadgeProps) => {
   if (phase === HeistPhaseEnum.Failed) {
     return (
       <Badge color="red" size="1" className="h-fit w-fit" {...rest}>
-        {t('heist.phase.failed')}
+        <span className="sr-only">{t('heist.phase')} :</span> {t('heist.phase.failed')}
       </Badge>
     );
   }
@@ -31,7 +31,7 @@ export const HeistPhaseBadge = ({ phase, ...rest }: HeistPhaseBadgeProps) => {
   if (phase === HeistPhaseEnum.InProgress) {
     return (
       <Badge color="gold" size="1" className="h-fit w-fit" {...rest}>
-        {t('heist.phase.in_progress')}
+        <span className="sr-only">{t('heist.phase')} :</span> {t('heist.phase.in_progress')}
       </Badge>
     );
   }
@@ -39,14 +39,14 @@ export const HeistPhaseBadge = ({ phase, ...rest }: HeistPhaseBadgeProps) => {
   if (phase === HeistPhaseEnum.Succeeded) {
     return (
       <Badge color="green" size="1" className="h-fit w-fit" {...rest}>
-        {t('heist.phase.succeeded')}
+        <span className="sr-only">{t('heist.phase')} :</span> {t('heist.phase.succeeded')}
       </Badge>
     );
   }
 
   return (
     <Badge color="sky" size="1" className="h-fit w-fit" {...rest}>
-      {t('heist.phase.planning')}
+      <span className="sr-only">{t('heist.phase')} :</span> {t('heist.phase.planning')}
     </Badge>
   );
 };

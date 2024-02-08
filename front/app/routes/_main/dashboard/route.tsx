@@ -63,45 +63,47 @@ export default function Dashboard() {
           )}
           {heists.length > 0 && (
             <ul className="space-y-3">
-              {heists.map(({ node: { crewMembers, id, name, startAt, phase, location } }) => {
-                const heistStartAt = dayjs(startAt).locale(locale);
+              {heists
+                .sort((a, b) => -dayjs(a.node.startAt).diff(dayjs(b.node.startAt)))
+                .map(({ node: { crewMembers, id, name, startAt, phase, location } }) => {
+                  const heistStartAt = dayjs(startAt).locale(locale);
 
-                return (
-                  <Card asChild key={id}>
-                    <li>
-                      {/* TODO heist page */}
-                      <Link to={`/map/${location.placeId}`}>
-                        <Flex justify="between" gap="1">
-                          <Flex direction="column" justify="between" gap="1" align="start">
-                            <Text as="p" size="2" weight="bold">
-                              {name}
-                            </Text>
-                            <Text as="p" color="gray" size="2">
-                              {heistStartAt.isSameOrAfter(dayjs().locale(locale), 'hours')
-                                ? heistStartAt.fromNow()
-                                : heistStartAt.toNow()}
-                            </Text>
+                  return (
+                    <Card asChild key={id}>
+                      <li>
+                        {/* TODO heist page */}
+                        <Link to={`/map/${location.placeId}`}>
+                          <Flex justify="between" gap="1">
+                            <Flex direction="column" justify="between" gap="1" align="start">
+                              <Text as="p" size="2" weight="bold">
+                                {name}
+                              </Text>
+                              <Text as="p" color="gray" size="2">
+                                {heistStartAt.isSameOrAfter(dayjs().locale(locale), 'hours')
+                                  ? heistStartAt.fromNow()
+                                  : heistStartAt.toNow()}
+                              </Text>
+                            </Flex>
+                            <Flex direction="column" justify="between" gap="1" align="end">
+                              <Text
+                                as="p"
+                                size="2"
+                                weight="bold"
+                                aria-label={t('heist.crew_member_count', {
+                                  count: crewMembers.totalCount,
+                                })}
+                              >
+                                {crewMembers.totalCount}
+                                <span> / 4</span>
+                              </Text>
+                              <HeistPhaseBadge phase={phase} />
+                            </Flex>
                           </Flex>
-                          <Flex direction="column" justify="between" gap="1" align="end">
-                            <Text
-                              as="p"
-                              size="2"
-                              weight="bold"
-                              aria-label={t('heist.crew_member_count', {
-                                count: crewMembers.totalCount,
-                              })}
-                            >
-                              {crewMembers.totalCount}
-                              <span> / 4</span>
-                            </Text>
-                            <HeistPhaseBadge phase={phase} />
-                          </Flex>
-                        </Flex>
-                      </Link>
-                    </li>
-                  </Card>
-                );
-              })}
+                        </Link>
+                      </li>
+                    </Card>
+                  );
+                })}
             </ul>
           )}
         </Section>
