@@ -382,6 +382,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::Normal,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
+            'employee' => UserFixtures::EMPLOYEE_BILE,
             'location' => LocationFixtures::LOCATION_CHASE_BANK,
             'objectives' => self::HEIST_NO_REST_FOR_THE_WICKED_OBJECTIVES,
         ],
@@ -427,6 +428,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::Overkill,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_OLD_WAREHOUSE_RED_HOOK,
+            'employee' => UserFixtures::EMPLOYEE_BOB,
             'location' => LocationFixtures::LOCATION_BROOKLYN_BRIDGE,
             'objectives' => self::HEIST_ROAD_RAGE_OBJECTIVES,
         ],
@@ -752,7 +754,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             /** @var Location $location */
             $location = $this->getReference(LocationFixtures::REFERENCE_IDENTIFIER.$heist['location'], Location::class);
             $endedAt = $heist['endedAt'] ?? null;
-
             $visibility = HeistVisibilityEnum::Draft;
 
             if (null !== $employee) {
@@ -761,7 +762,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
                 $visibility = HeistVisibilityEnum::Public;
             }
 
-            $startAt = $heist['startAt'] ?? (new \DateTime())->format('Y-m-d G:i:s');
+            $startAt = $heist['startAt'] ?? (new \DateTime())->modify('+15 minutes')->format('Y-m-d G:i:s');
             $shouldEndAt = $heist['shouldEndAt'] ?? (new \DateTime())->modify('+2 hours')->format('Y-m-d G:i:s');
 
             $newHeist = (new Heist())

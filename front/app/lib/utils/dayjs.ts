@@ -7,8 +7,8 @@ import timezone from 'dayjs/plugin/timezone.js';
 import utc from 'dayjs/plugin/utc.js';
 
 // Locales
-import 'dayjs/locale/en';
-import 'dayjs/locale/fr';
+import 'dayjs/locale/en.js';
+import 'dayjs/locale/fr.js';
 
 // Plugins
 dayjs.extend(utc);
