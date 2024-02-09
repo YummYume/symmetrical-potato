@@ -216,7 +216,7 @@ export default function Add() {
       employeesFormatted.filter((employee) => employee.establishmentId === currentEstablishment),
     );
 
-    methods.setValue('allowedEmployees', []);
+    methods.setValue('allowedEmployees', allowedEmployeesOptions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchEstablishment]);
 

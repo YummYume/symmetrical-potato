@@ -612,7 +612,9 @@ export default function Prepare() {
                     }}
                   />
                   <Flex gap="4" align="center" justify="end">
-                    <Text size="3">{t('checkout_payment.description', { price: totalPrice })}</Text>
+                    <Text size="3">
+                      {t('checkout_payment.description', { price: totalPrice.toLocaleString() })}
+                    </Text>
                     <FormAlertDialog
                       title={t('checkout_payment.confirmation')}
                       description={t('checkout_payment.confirmation_description')}

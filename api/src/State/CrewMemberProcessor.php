@@ -51,7 +51,7 @@ final class CrewMemberProcessor implements ProcessorInterface
             }
 
             if (new \DateTimeImmutable() > $heist->getStartAt()) {
-                throw $this->exceptionHelper->createTranslatableHttpException(400, 'heist.already_started');
+                throw $this->exceptionHelper->createTranslatableHttpException(400, 'heist.cannot_join');
             }
 
             $crewMember->setUser($user);

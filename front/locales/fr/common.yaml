@@ -144,10 +144,14 @@ heist.visibility: Visibilité
 heist.add: Ajouter un braquage
 heist.add_objective: Ajouter un objectif
 heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
-heist.leave.confirm: Êtes-vous sûr de vouloir quitter ce braquage ? Vous allez perdre tous vos équipements.
+heist.leave.confirm: >-
+  Êtes-vous sûr de vouloir quitter ce braquage ? Vous allez perdre tous vos
+  équipements.
 heist.add.confirm: Êtes-vous sûr de vouloir ajouter ce braquage ?
 heist.edit.confirm: Êtes-vous sûr de vouloir rendre public ce braquage ?
-heist.edit.confirm_description: Rendre ce braquage public vous coutera $15.000, si vous supprimer ce braquage, 50% de la somme vous sera remboursé uniquement.
+heist.edit.confirm_description: >-
+  Rendre ce braquage public vous coutera $15.000, si vous supprimer ce braquage,
+  50% de la somme vous sera remboursé uniquement.
 heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
 heist.employee.chosen: L'employé nommé {name} vous aidera.
 heist.employee.not_chosen: Choisissez celui qui vous aidera.
@@ -169,8 +173,6 @@ heist.crew_member_count: >-
 # Employee
 employee: Employé
 employees: Employés
-
-# User
 user.balance: Solde
 user.reason: Raison de l'inscription
 user.status: Statut
@@ -206,17 +208,19 @@ asset.type.weapons: Armes
 asset.max_quantity: Quantité maximale
 asset.team_asset: Asset d'équipe
 asset.heist: Braquage associé
-asset.type.assets.catch_phrase: Prenez tout ce dont vous avez besoin, vous ne savez pas ce que vous trouverez sur votre chemin.
+asset.type.assets.catch_phrase: >-
+  Prenez tout ce dont vous avez besoin, vous ne savez pas ce que vous trouverez
+  sur votre chemin.
 asset.type.equipments.catch_phrase: Vous aurez besoin de certains équipements. Ne les oublie pas.
-asset.type.weapons.catch_phrase: Choisissez judicieusement votre arme. Vous ne voulez pas être pris au dépourvu ou, pire, désarmé.
+asset.type.weapons.catch_phrase: >-
+  Choisissez judicieusement votre arme. Vous ne voulez pas être pris au dépourvu
+  ou, pire, désarmé.
 checkout_payment.title: Paiement
-checkout_payment.description: Total {price}$
+checkout_payment.description: Total ${price}
 checkout_payment.no_assets: Aucun asset à payer.
 checkout_payment.confirmation: Êtes-vous sûr de vouloir payer ?
 checkout_payment.confirmation_description: Après le paiement, il n'y a pas de possibilité de remboursement.
 checkout_payment.clear_cart: Vider le panier
-
-# Contractor Request
 contractor_request.reason: Raison de la demande
 contractor_request.reason.placeholder: Pourquoi voulez-vous devenir un contractant ?
 contractor_request.reason_help: >-
@@ -227,8 +231,6 @@ contractor_request.status.pending: En attente
 contractor_request.status.accepted: Accepté
 contractor_request.status.rejected: Rejeté
 contractor_request.admin_comment: Commentaire pour la décision
-
-# Location
 location.place_id: Place ID
 location.name: Nom
 location.address: Adresse
@@ -237,8 +239,6 @@ location.longitude: Longitude
 location.average_rating: Note moyenne
 location.average_rating.none: Aucune note
 location.review_count: Nombre d'avis
-
-# Establishment
 establishment.name: Nom
 establishment.description: Description
 establishment.minimum_work_time_per_week: Temps de travail minimum par semaine

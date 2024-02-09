@@ -73,6 +73,8 @@ final class HeistAssetProcessor implements ProcessorInterface
             $this->entityManager->persist($user);
 
             $heistAsset->setTotalSpent($price);
+
+            $this->validator->validate($heistAsset, ['groups' => HeistAsset::CREATE]);
         }
 
         if ('update' === $operation->getName()) {
@@ -103,6 +105,8 @@ final class HeistAssetProcessor implements ProcessorInterface
             $this->entityManager->persist($contractor);
 
             $heistAsset->setTotalSpent($price);
+
+            $this->validator->validate($heistAsset, ['groups' => HeistAsset::UPDATE]);
         }
 
         return $this->persistProcessor->process($heistAsset, $operation, $uriVariables, $context);

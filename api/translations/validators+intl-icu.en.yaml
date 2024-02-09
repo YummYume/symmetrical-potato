@@ -64,6 +64,11 @@ heist.establishment.not_blank: Please enter an establishment.
 heist.slot.not_available: This slot is not available for this location.
 heist.place_id.not_blank: Please enter a place ID.
 
+# HeistAsset
+heist_asset.asset_crew_member.unique: This asset is already assigned to this crew member.
+heist_asset.quantity.greater_than_or_equal_to: The quantity cannot be lower than 1.
+heist_asset.total_spent.greater_than_or_equal_to: The total spent cannot be lower than 0.
+
 # Location
 location.name.not_blank: Please enter a name.
 location.name.max_length: The name cannot exceed {limit} characters.

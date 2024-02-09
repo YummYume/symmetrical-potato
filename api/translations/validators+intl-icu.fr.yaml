@@ -65,6 +65,11 @@ heist.establishment.not_blank: Veuillez saisir un établissement.
 heist.slot.not_available: Ce créneau n'est pas disponible pour cette localisation.
 heist.place_id.not_blank: Veuillez saisir un identifiant de lieu.
 
+# HeistAsset
+heist_asset.asset_crew_member.unique: Vous avez déjà associé cet asset à ce membre d'équipe.
+heist_asset.quantity.greater_than_or_equal_to: La quantité ne peut pas être inférieure à 1.
+heist_asset.total_spent.greater_than_or_equal_to: Le montant total dépensé ne peut pas être inférieur à 0.
+
 # Location
 location.name.not_blank: Veuillez saisir un nom.
 location.name.max_length: Le nom ne peut pas comporter plus de {limit} caractères.

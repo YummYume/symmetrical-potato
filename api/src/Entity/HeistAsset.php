@@ -16,8 +16,10 @@ use App\State\HeistAssetProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HeistAssetRepository::class)]
 #[ApiResource(
@@ -68,6 +70,11 @@ use Symfony\Component\Uid\Uuid;
         ),
     ]
 )]
+#[UniqueEntity(
+    fields: ['asset', 'crewMember'],
+    message: 'heist_asset.asset_crew_member.unique',
+    groups: [self::CREATE]
+)]
 #[ApiFilter(UuidFilter::class, properties: ['crewMember.id'])]
 class HeistAsset
 {
@@ -88,20 +95,30 @@ class HeistAsset
 
     #[ORM\Column]
     #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\GreaterThanOrEqual(
+        groups: [self::CREATE, self::UPDATE],
+        value: 1,
+        message: 'heist_asset.quantity.greater_than_or_equal_to'
+    )]
     private ?int $quantity = 1;
 
     #[ORM\Column]
     #[Groups([self::READ])]
+    #[Assert\GreaterThanOrEqual(
+        groups: [self::CREATE, self::UPDATE],
+        value: 0,
+        message: 'heist_asset.total_spent.greater_than_or_equal_to'
+    )]
     private float $totalSpent = 0.0;
 
     #[ORM\ManyToOne(inversedBy: 'heistAssets')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE])]
     private ?Asset $asset = null;
 
     #[ORM\ManyToOne(inversedBy: 'heistAssets')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Groups([self::READ, self::CREATE])]
     private ?CrewMember $crewMember = null;
 
     public function getId(): ?Uuid
