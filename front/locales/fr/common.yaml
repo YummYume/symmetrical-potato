@@ -56,6 +56,8 @@ submit: Envoyer
 more_info: Afficher plus de détails
 
 # Meta
+meta.dashboard.title: Tableau de bord
+meta.dashboard.description: Votre tableau de bord personnel. Vraiment le vôtre.
 meta.my_contractor_request.title: Ma demande de contractant
 meta.my_contractor_request.description: Vérifiez le statut de votre demande de contractant.
 meta.my_account.title: Mon compte
@@ -63,6 +65,10 @@ meta.my_account.description: Modifiez vos paramètres de compte.
 meta.profile.description: Consultez le profil de {name}.
 meta.my_job.title: Mon emploi
 meta.my_job.description: Consultez votre emploi actuel.
+
+# Dashboard
+dashboard.heists.today: Braquages aujourd'hui
+dashboard.heists.no_heists_today: Aucun braquage trouvé pour aujourd'hui.
 
 # History info
 history_info: Information sur l'historique
@@ -132,6 +138,19 @@ heist.visibility: Visibilité
 heist.add: Ajouter un braquage
 heist.add_objective: Ajouter un objectif
 heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
+heist.phase: Phase
+heist.phase.cancelled: Annulé
+heist.phase.failed: Échoué
+heist.phase.in_progress: En cours
+heist.phase.succeeded: Réussi
+heist.phase.planning: Planification
+heist.crew_member_count: >-
+  {count, plural,
+    =0 {0 braqueur}
+    one {# braqueur}
+    other {# braqueurs}
+  }
+  sur 4
 
 # User
 user.balance: Solde

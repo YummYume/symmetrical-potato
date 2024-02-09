@@ -752,7 +752,6 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             /** @var Location $location */
             $location = $this->getReference(LocationFixtures::REFERENCE_IDENTIFIER.$heist['location'], Location::class);
             $endedAt = $heist['endedAt'] ?? null;
-
             $visibility = HeistVisibilityEnum::Draft;
 
             if (null !== $employee) {

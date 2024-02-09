@@ -249,8 +249,12 @@ export const getHeistsForToday = async (client: GraphQLClient) => {
               id
               name
               startAt
+              phase
               crewMembers {
                 totalCount
+              }
+              location {
+                placeId
               }
             }
           }
@@ -260,8 +264,8 @@ export const getHeistsForToday = async (client: GraphQLClient) => {
     {
       startAt: [
         {
-          before: dayjs().toISOString(),
-          after: dayjs().add(1, 'day').startOf('day').toISOString(),
+          after: dayjs().startOf('day').toISOString(),
+          before: dayjs().endOf('day').toISOString(),
         },
       ],
     },
