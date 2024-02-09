@@ -10,7 +10,6 @@ use ApiPlatform\Validator\ValidatorInterface;
 use App\Entity\HeistAsset;
 use App\Entity\User;
 use App\Helper\ExceptionHelper;
-use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -28,7 +27,6 @@ final class HeistAssetProcessor implements ProcessorInterface
         #[Autowire('@api_platform.doctrine.orm.state.persist_processor')] private readonly ProcessorInterface $persistProcessor,
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')] private readonly ProcessorInterface $removeProcessor,
         private readonly EntityManagerInterface $entityManager,
-        private readonly LocationRepository $locationRepository,
         private readonly ValidatorInterface $validator,
         private readonly Security $security,
         private readonly ExceptionHelper $exceptionHelper,
@@ -66,8 +64,10 @@ final class HeistAssetProcessor implements ProcessorInterface
 
             if (!$heistAsset->getAsset()->isGlobalAsset()) {
                 $contractor = $heistAsset->getCrewMember()->getHeist()->getEstablishment()->getContractor();
-                $contractor->setBalance($contractor->getBalance() + $price);
-                $this->entityManager->persist($contractor);
+                if (null !== $contractor) {
+                    $contractor->setBalance($contractor->getBalance() + $price);
+                    $this->entityManager->persist($contractor);
+                }
             }
 
             $this->entityManager->persist($user);
@@ -96,13 +96,15 @@ final class HeistAssetProcessor implements ProcessorInterface
 
             $user->setBalance($user->getBalance() - $price);
 
-            if ($heistAsset->getAsset()->isTeamAsset()) {
+            if (!$heistAsset->getAsset()->isGlobalAsset()) {
                 $contractor = $heistAsset->getCrewMember()->getHeist()->getEstablishment()->getContractor();
-                $contractor->setBalance($contractor->getBalance() + $price);
+                if (null !== $contractor) {
+                    $contractor->setBalance($contractor->getBalance() + $price);
+                    $this->entityManager->persist($contractor);
+                }
             }
 
             $this->entityManager->persist($user);
-            $this->entityManager->persist($contractor);
 
             $heistAsset->setTotalSpent($price);
 

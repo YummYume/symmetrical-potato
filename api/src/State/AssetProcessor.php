@@ -7,7 +7,6 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Asset;
 use App\Service\Refund;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
@@ -22,7 +21,6 @@ final class AssetProcessor implements ProcessorInterface
     public function __construct(
         #[Autowire('@api_platform.doctrine.orm.state.persist_processor')] private readonly ProcessorInterface $persistProcessor,
         #[Autowire('@api_platform.doctrine.orm.state.remove_processor')] private readonly ProcessorInterface $removeProcessor,
-        private readonly EntityManagerInterface $entityManager,
         private readonly Refund $refund,
     ) {
     }
