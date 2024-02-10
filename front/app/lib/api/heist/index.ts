@@ -360,6 +360,47 @@ export const getHeistsForToday = async (client: GraphQLClient) => {
 };
 
 /**
+ * Will return upcoming heists
+ *
+ * @todo disable pagination for this query
+ */
+export const getUpcomingHeists = async (client: GraphQLClient) => {
+  return client.request<Pick<Query, 'heists'>, QueryHeistsArgs>(
+    gql`
+      query ($startAt: [HeistFilter_startAt]!, $phase: Iterable!) {
+        heists(startAt: $startAt, phase: $phase) {
+          edges {
+            node {
+              id
+              name
+              startAt
+              phase
+              crewMembers {
+                totalCount
+              }
+              location {
+                placeId
+                latitude
+                longitude
+                name
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      startAt: [
+        {
+          after: dayjs().toISOString(),
+        },
+      ],
+      phase: [HeistPhaseEnum.Planning],
+    },
+  );
+};
+
+/**
  * Will return heists statistics for the last 90 days
  *
  * @todo disable pagination for this query

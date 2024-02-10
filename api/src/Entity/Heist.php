@@ -99,6 +99,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
 #[ApiFilter(SearchFilter::class, properties: ['location.placeId' => 'exact'])]
+#[ApiFilter(DateFilter::class, properties: ['startAt', 'shouldEndAt'])]
 class Heist
 {
     use BlameableTrait;

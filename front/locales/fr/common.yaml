@@ -76,6 +76,39 @@ meta.my_job.description: Consultez votre emploi actuel.
 dashboard.heists.today: Braquages aujourd'hui
 dashboard.heists.no_heists_today: Aucun braquage trouvé pour aujourd'hui.
 
+# Map
+## Settings
+map.settings: Paramètres de la carte
+map.settings.description: Personnalisez la carte selon vos préférences.
+map.settings.show_markers: Afficher les marqueurs
+
+## Filters
+map.filters: Filtres
+map.filters.description: Filtrez les braquages pour voir uniquement ceux qui vous intéressent.
+
+## Help
+map.help: Aide
+map.help.description: Cette carte montre tous les braquages disponibles pour vous à New York. Pour plus d'informations, voir ci-dessous.
+map.help.markers: Marqueurs
+map.help.markers_description: >-
+  Vous pouvez cliquer sur un marqueur pour voir les braquages disponibles à cet endroit.
+  En cliquant sur un braquage, vous pourrez voir plus de détails et le rejoindre si vous le souhaitez.
+  Si vous ne voyez aucun marqueur, assurez-vous de les avoir activés dans les paramètres en haut à droite de la carte.
+  Il est également possible qu'il n'y ait pas de braquages disponibles pour le moment.
+map.help.drawer: Tiroir
+map.help.drawer_description: >-
+  Lors de la sélection d'un emplacement ou d'un braquage, un tiroir apparaîtra sur le côté gauche de l'écran.
+  Ce tiroir contiendra toutes les informations nécessaires et vous permettra d'interagir avec l'emplacement ou le braquage sélectionné.
+map.help.unknow_location: Emplacement inconnu
+map.help.unknow_location_description: >-
+  Si un emplacement n'a jamais été utilisé auparavant, il ne contiendra que des informations de base lorsqu'il est affiché dans le tiroir.
+map.help.filters: Filtres
+map.help.filters_description: >-
+  Vous pouvez utiliser les filtres pour ne montrer que les braquages qui vous intéressent (par exemple, seulement les braquages louds à partir de demain).
+
+## Heists
+map.heists_for_location: Tous les braquages disponibles pour {location}.
+
 # History info
 history_info: Information sur l'historique
 history_info.created_by_at: Créé par {name} le {date} à {time}.

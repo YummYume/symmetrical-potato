@@ -76,6 +76,39 @@ meta.my_job.description: Check your current job status.
 dashboard.heists.today: Heists today
 dashboard.heists.no_heists_today: No heists found for today.
 
+# Map
+## Settings
+map.settings: Map settings
+map.settings.description: Customize the map to your liking.
+map.settings.show_markers: Show markers
+
+## Filters
+map.filters: Filters
+map.filters.description: Filter the map to find the heist you want.
+
+## Help
+map.help: Help
+map.help.description: This map shows all the heists available to you in New York City. For further notice, see below.
+map.help.markers: Markers
+map.help.markers_description: >-
+  You can click on a marker to see the available heists at this location.
+  Upon clicking on a heist, you will be able to see more details and join it if you want.
+  If you do not see any marker, make sure you have enabled them in the settings on the top right corner of the map.
+  It's also possible that there are no heists available at the moment.
+map.help.drawer: Drawer
+map.help.drawer_description: >-
+  When selecting a location or a heist, a drawer will appear on the left side of the screen.
+  This drawer will contain all necessary information and will allow you to interact with the selected location or heist.
+map.help.unknow_location: Unknown location
+map.help.unknow_location_description: >-
+  If a location has never been used before, it will only contain basic information when shown in the drawer.
+map.help.filters: Filters
+map.help.filters_description: >-
+  You can use the filters to show only the heists you are interested in (e.g. only the loud heists starting from tomorrow).
+
+## Heists
+map.heists_for_location: All the heists available for {location}.
+
 # History info
 history_info: History info
 history_info.created_by_at: Created by {name} on {date} at {time}.

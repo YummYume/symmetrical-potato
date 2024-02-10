@@ -27,6 +27,8 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
           address
           reviewCount
           averageRating
+          latitude
+          longitude
         }
 
         heists(location__placeId: $place, phase: $phase) {
@@ -192,7 +194,7 @@ export const getGoogleLocation = async ({
   placeId: string;
 }) => {
   const response = await fetch(
-    `https://places.googleapis.com/v1/places/${placeId}?fields=displayName,formattedAddress&key=${key}&languageCode=${languageCode}`,
+    `https://places.googleapis.com/v1/places/${placeId}?fields=displayName,formattedAddress,location&key=${key}&languageCode=${languageCode}`,
   );
 
   const data: GooglePlace | { error: {} } = await response.json();

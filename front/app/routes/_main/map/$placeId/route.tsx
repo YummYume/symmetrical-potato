@@ -37,6 +37,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
 
   if (isHeister) {
     const { heists } = await getHeistsByCrewMember(context.client, user.id);
+
     userCrewHeistsId = heists.edges.map((edge) => edge.node.id);
   }
 
@@ -65,10 +66,6 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     placeId: params.placeId,
     languageCode: context.locale,
   });
-
-  if (!place) {
-    throw redirect('/map');
-  }
 
   return {
     locale: null,
@@ -115,26 +112,30 @@ export default function PlaceId() {
     ) ?? [];
 
   if (!locationInfo?.location) {
-    return (
-      place && (
-        <>
-          <div>
-            <Dialog.Title asChild>
-              <Heading as="h2" size="8">
-                {place.displayName.text}
-              </Heading>
-            </Dialog.Title>
-            <Section className="space-y-3" size="1">
-              <Dialog.Description>{place.formattedAddress}</Dialog.Description>
-            </Section>
-            {isContractor && (
-              <Link to={`/map/${placeId}/add`} className="link link--green" unstyled>
-                {t('heist.add')}
-              </Link>
-            )}
-          </div>
-        </>
-      )
+    return place ? (
+      <>
+        <div>
+          <Dialog.Title asChild>
+            <Heading as="h2" size="8">
+              {place.displayName.text}
+            </Heading>
+          </Dialog.Title>
+          <Section className="space-y-3" size="1">
+            <Dialog.Description>{place.formattedAddress}</Dialog.Description>
+          </Section>
+          {isContractor && (
+            <Link to={`/map/${placeId}/add`} className="link link--green" unstyled>
+              {t('heist.add')}
+            </Link>
+          )}
+        </div>
+      </>
+    ) : (
+      <Dialog.Title asChild>
+        <Heading as="h2" size="8">
+          {t('location.not_found')}
+        </Heading>
+      </Dialog.Title>
     );
   }
 

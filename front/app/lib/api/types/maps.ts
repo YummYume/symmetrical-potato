@@ -3,4 +3,8 @@ export type GooglePlace = {
     text: string;
   };
   formattedAddress: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
 };
