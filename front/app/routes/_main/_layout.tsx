@@ -54,7 +54,7 @@ const Menu = ({
         {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(
           user.balance,
         )}
-        <span className="sr-only">{t('user.your_balance')}</span>
+        <span className="sr-only">{t('user.your_balance')} : </span>
       </Text>
 
       <Form method="post" className="flex items-center justify-end gap-4" onChange={onChange}>
