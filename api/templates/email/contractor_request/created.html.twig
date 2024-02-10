@@ -3,4 +3,4 @@
 {% trans_default_domain 'email' %}
 
 {% set title = 'contractor_request.created.subject'|trans %}
-{% set text = 'contractor_request.created.text'|trans({name: user.username, reason, request_name, site, url}) %}
+{% set text = 'contractor_request.created.text'|trans({name, reason, request_name, site, url}) %}

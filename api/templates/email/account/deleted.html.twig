@@ -3,4 +3,4 @@
 {% trans_default_domain 'email' %}
 
 {% set title = 'account.deleted.subject'|trans %}
-{% set text = 'account.deleted.text'|trans({name: user.username, site}) %}
+{% set text = 'account.deleted.text'|trans({name, site}) %}
