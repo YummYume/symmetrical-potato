@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Grid, Heading, Section } from '@radix-ui/themes';
+import { Button, Grid, Heading, Section } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -14,7 +14,7 @@ import { createHeist } from '~/lib/api/heist';
 import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
 import { getUsers } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
-import { SubmitButton } from '~/lib/components/form/SubmitButton';
+import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
 import { FieldMultiSelect } from '~/lib/components/form/custom/FieldMultiSelect';
@@ -25,12 +25,12 @@ import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/
 import dayjs from '~/lib/utils/dayjs';
 import { ROLES } from '~/lib/utils/roles';
 import { formatEnums } from '~/lib/utils/tools';
-import { createHeistResolver } from '~/lib/validators/createHeist';
+import { createHeistResolver } from '~/lib/validators/create-heist';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import type { CreateHeistFormData } from '~/lib/validators/createHeist';
+import type { CreateHeistFormData } from '~/lib/validators/create-heist';
 import type { FlashMessage } from '~/root';
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
@@ -72,6 +72,18 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
   let errorMessage: string | null = null;
   const session = await getSession(request.headers.get('Cookie'));
+
+  if (data.objectives && data.objectives.length > 20) {
+    session.flash(FLASH_MESSAGE_KEY, {
+      content: t('heist.objectives.too_much', { ns: 'flash' }),
+      type: 'error',
+    } as FlashMessage);
+
+    return json(
+      { errors: {} },
+      { status: 400, headers: { 'Set-Cookie': await commitSession(session) } },
+    );
+  }
 
   try {
     const { startAtTime, startAtDate, shouldEndAtDate, shouldEndAtTime, ...heistData } = data;
@@ -176,8 +188,10 @@ export default function Add() {
       difficulty: HeistDifficultyEnum.Normal,
       minimumPayout: 100000,
       maximumPayout: 1000000,
-      minimumRequiredRating: 0,
-      allowedEmployees: [],
+      minimumRequiredRating: 1,
+      allowedEmployees: employeesFormatted.filter(
+        (employee) => employee.establishmentId === establishments.edges[0].node.id,
+      ),
       forbiddenUsers: [],
       forbiddenAssets: [],
       objectives: [],
@@ -202,7 +216,7 @@ export default function Add() {
       employeesFormatted.filter((employee) => employee.establishmentId === currentEstablishment),
     );
 
-    methods.setValue('allowedEmployees', []);
+    methods.setValue('allowedEmployees', allowedEmployeesOptions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchEstablishment]);
 
@@ -215,7 +229,12 @@ export default function Add() {
       </Dialog.Title>
       <Section className="space-y-3" size="1">
         <RemixFormProvider {...methods}>
-          <form method="post" className="space-y-4" onSubmit={methods.handleSubmit}>
+          <form
+            id="heist-add-form"
+            method="post"
+            className="space-y-4"
+            onSubmit={methods.handleSubmit}
+          >
             <FieldInput name="name" label={t('name')} type="text" />
             <FieldInput name="description" label={t('description')} type="text" />
             <Grid columns="2" gap="2">
@@ -279,10 +298,12 @@ export default function Add() {
             <FieldInputArray
               name="objectives"
               label={t('heist.objective')}
+              limit={20}
               config={{
                 defaultAppendValue: {
                   name: '',
                   description: '',
+                  optional: false,
                 },
                 add: {
                   text: t('heist.add_objective'),
@@ -298,10 +319,25 @@ export default function Add() {
                     label: t('description'),
                     type: 'text',
                   },
+                  {
+                    name: 'optional',
+                    label: t('optional'),
+                    type: 'checkbox',
+                  },
                 ],
               }}
             />
-            <SubmitButton text={t('create')} />
+            <FormAlertDialog
+              title={t('add')}
+              description={t('heist.add.confirm')}
+              actionColor="green"
+              cancelText={t('cancel')}
+              formId="heist-add-form"
+            >
+              <Button type="button" color="green">
+                {t('create')}
+              </Button>
+            </FormAlertDialog>
           </form>
         </RemixFormProvider>
         <Link to={`/map/${placeId}`}>{t('back')}</Link>

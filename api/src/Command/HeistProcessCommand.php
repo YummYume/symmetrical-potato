@@ -12,6 +12,7 @@ use App\Enum\HeistPhaseEnum;
 use App\Enum\HeistPreferedTacticEnum;
 use App\Repository\HeistRepository;
 use App\Service\Mailer;
+use App\Service\Refunder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -29,6 +30,7 @@ final class HeistProcessCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly HeistRepository $heistRepository,
+        private readonly Refunder $refunder,
         private readonly Mailer $mailer
     ) {
         parent::__construct();
@@ -64,6 +66,10 @@ final class HeistProcessCommand extends Command
                                 $ongoingHeist->getEstablishment()->getContractor(),
                                 $ongoingHeist->getCrewMembers()->isEmpty() ? HeistCancellationReasonEnum::NoCrewMember : HeistCancellationReasonEnum::NoEmployee
                             );
+
+                            if (null === $ongoingHeist->getEmployee()) {
+                                $this->refunder->refundAssetsOfHeist($ongoingHeist);
+                            }
                         } else {
                             $ongoingHeist->setPhase(HeistPhaseEnum::InProgress);
                         }

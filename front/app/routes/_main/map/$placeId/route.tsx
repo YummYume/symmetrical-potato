@@ -1,11 +1,12 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Button, Grid, Heading, Section, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 
-import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
+import { getHeistsByCrewMember } from '~/lib/api/heist';
+import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
 import { getEnv } from '~/lib/utils/env';
 import { getUriId } from '~/lib/utils/path';
 import { ROLES } from '~/lib/utils/roles';
@@ -22,12 +23,21 @@ import { hasPathError } from '~utils/api';
 import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
-  denyAccessUnlessGranted(context.user);
+  const user = denyAccessUnlessGranted(context.user);
   const isContractor = hasRoles(context.user, ROLES.CONTRACTOR);
   const isAdmin = hasRoles(context.user, ROLES.ADMIN);
+  const isHeister = hasRoles(context.user, ROLES.HEISTER);
+
+  // Will be used to check if the current user is already a crew member of the heist
+  let userCrewHeistsId: string[] = [];
 
   if (!params.placeId) {
     throw redirect('/dashboard');
+  }
+
+  if (isHeister) {
+    const { heists } = await getHeistsByCrewMember(context.client, user.id);
+    userCrewHeistsId = heists.edges.map((edge) => edge.node.id);
   }
 
   try {
@@ -38,9 +48,11 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
       locationInfo,
       place: null,
       placeId: params.placeId,
+      userCrewHeistsId,
       isContractor,
       isAdmin,
-      user: context.user,
+      isHeister,
+      user,
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'location')) {
@@ -63,9 +75,11 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     locationInfo: null,
     place,
     placeId: params.placeId,
+    userCrewHeistsId,
     isContractor,
     isAdmin,
-    user: context.user,
+    isHeister,
+    user,
   };
 }
 
@@ -75,13 +89,24 @@ type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
 export default function PlaceId() {
-  const { locationInfo, locale, place, placeId, isContractor, isAdmin, user } =
-    useLoaderData<Loader>();
+  const {
+    locationInfo,
+    locale,
+    place,
+    placeId,
+    isContractor,
+    isAdmin,
+    isHeister,
+    user,
+    userCrewHeistsId,
+  } = useLoaderData<Loader>();
   const { t } = useTranslation();
 
   const heists =
     locationInfo?.heists?.edges?.filter<HeistEdgeWithNode>(
-      (heist): heist is HeistEdgeWithNode => !!heist?.node,
+      (heist): heist is HeistEdgeWithNode =>
+        !!heist?.node &&
+        (isAdmin || isContractor || (isHeister && new Date(heist.node.startAt) > new Date())),
     ) ?? [];
 
   const reviews =
@@ -103,11 +128,7 @@ export default function PlaceId() {
               <Dialog.Description>{place.formattedAddress}</Dialog.Description>
             </Section>
             {isContractor && (
-              <Link
-                to={`/map/${placeId}/add`}
-                className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
-                unstyled
-              >
+              <Link to={`/map/${placeId}/add`} className="link link--green" unstyled>
                 {t('heist.add')}
               </Link>
             )}
@@ -135,11 +156,7 @@ export default function PlaceId() {
         </Section>
       </div>
       {(isContractor || isAdmin) && (
-        <Link
-          to={`/map/${placeId}/add`}
-          className="block w-auto rounded-1 bg-green-10 p-2 text-center font-medium transition-colors hover:bg-green-8"
-          unstyled
-        >
+        <Link to={`/map/${placeId}/add`} className="link link--green" unstyled>
           {t('heist.add')}
         </Link>
       )}
@@ -186,34 +203,65 @@ export default function PlaceId() {
                     {heist.node.name}
                   </Heading>
                 </Link>
+                {isHeister && (
+                  <div>
+                    {!userCrewHeistsId.includes(heist.node?.id) ? (
+                      <FormConfirmDialog
+                        formId={`heist-join-${getUriId(heist.node?.id)}`}
+                        title={t('join')}
+                        description={t('heist.join.confirm')}
+                        action={`/map/${placeId}/${getUriId(heist.node?.id)}/join`}
+                        actionColor="green"
+                      >
+                        <Button type="button" color="green">
+                          {t('join')}
+                        </Button>
+                      </FormConfirmDialog>
+                    ) : (
+                      <>
+                        <Link
+                          to={`/map/${placeId}/${getUriId(heist.node?.id)}/prepare`}
+                          className="link link--blue"
+                          unstyled
+                        >
+                          {t('prepare_heist')}
+                        </Link>
+                        <FormConfirmDialog
+                          formId={`heist-leave-${getUriId(heist.node?.id)}`}
+                          title={t('leave')}
+                          description={t('heist.leave.confirm')}
+                          action={`/map/${placeId}/${getUriId(heist.node?.id)}/leave`}
+                        >
+                          <Button type="button" color="red">
+                            {t('leave')}
+                          </Button>
+                        </FormConfirmDialog>
+                      </>
+                    )}
+                  </div>
+                )}
                 {isAdmin ||
                   (isContractor && heist.node.establishment.contractor.id === user?.id && (
                     <div className="flex items-center">
                       {heist.node.visibility === HeistVisibilityEnum.Draft && (
                         <Link
                           to={`/map/${placeId}/${getUriId(heist.node?.id)}/edit`}
-                          className="block w-auto rounded-1 bg-blue-10 p-2 text-center font-medium transition-colors hover:bg-blue-8"
+                          className="link link--blue"
                           unstyled
                         >
                           {t('edit')}
                         </Link>
                       )}
-                      <Form
-                        id="heist-delete-form"
-                        action={`/map/${placeId}/${getUriId(heist.node?.id)}/delete`}
-                        method="post"
-                        className="hidden"
-                        unstable_viewTransition
-                      />
-                      <FormAlertDialog
+                      <FormConfirmDialog
+                        formId={`heist-delete-${getUriId(heist.node?.id)}`}
                         title={t('delete')}
                         description={t('heist.delete.confirm')}
-                        formId="heist-delete-form"
+                        action={`/map/${placeId}/${getUriId(heist.node?.id)}/delete`}
                       >
                         <Button type="button" color="red">
                           {t('delete')}
                         </Button>
-                      </FormAlertDialog>
+                      </FormConfirmDialog>
                     </div>
                   ))}
               </div>

@@ -2,13 +2,14 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Blockquote, Button, Flex, Heading, IconButton, ScrollArea, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { Rating } from '~/lib/components/Rating';
+import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { UserMainRoleBadge } from '~/lib/components/user/UserMainRoleBadge';
@@ -19,7 +20,6 @@ import { adminUserResolver } from '~/lib/validators/admin/user';
 import { FLASH_MESSAGE_KEY } from '~/root';
 import { UserLocaleEnum, UserStatusEnum } from '~api/types';
 import { getUser, updateUser, updateUserProfile } from '~api/user';
-import { FormAlertDialog } from '~components/dialog/FormAlertDialog';
 import { SubmitButton } from '~components/form/SubmitButton';
 import { FieldInput } from '~components/form/custom/FieldInput';
 import { UserStatusBadge } from '~components/user/UserStatusBadge';
@@ -220,92 +220,62 @@ export default function EditUser() {
       <Flex justify="between" align="center" gap="4" className="mt-auto" role="group">
         {currentUser.id !== user.id ? (
           <Flex align="center" gap="4">
-            <Form
-              id="user-delete-form"
+            <FormConfirmDialog
+              formId="user-delete"
               action="delete"
-              method="post"
-              className="hidden"
-              unstable_viewTransition
-            />
-            <FormAlertDialog
               title={t('delete')}
               description={t('user.delete.confirm', {
                 ns: 'admin',
               })}
-              formId="user-delete-form"
             >
               <Button type="button" color="red">
                 {t('delete')}
               </Button>
-            </FormAlertDialog>
+            </FormConfirmDialog>
             {user.status === UserStatusEnum.Unverified && (
-              <>
-                <Form
-                  id="user-validate-form"
-                  action="validate"
-                  method="post"
-                  className="hidden"
-                  unstable_viewTransition
-                />
-                <FormAlertDialog
-                  title={t('verify')}
-                  description={t('user.verify.confirm', {
-                    ns: 'admin',
-                  })}
-                  formId="user-validate-form"
-                  actionColor="green"
-                >
-                  <Button type="button" color="green">
-                    {t('verify')}
-                  </Button>
-                </FormAlertDialog>
-              </>
+              <FormConfirmDialog
+                formId="user-validate"
+                action="validate"
+                title={t('verify')}
+                description={t('user.verify.confirm', {
+                  ns: 'admin',
+                })}
+                actionColor="green"
+              >
+                <Button type="button" color="green">
+                  {t('verify')}
+                </Button>
+              </FormConfirmDialog>
             )}
             {user.status === UserStatusEnum.Dead && (
-              <>
-                <Form
-                  id="user-revive-form"
-                  action="revive"
-                  method="post"
-                  className="hidden"
-                  unstable_viewTransition
-                />
-                <FormAlertDialog
-                  title={t('revive')}
-                  description={t('user.revive.confirm', {
-                    ns: 'admin',
-                  })}
-                  formId="user-revive-form"
-                  actionColor="green"
-                >
-                  <Button type="button" color="green">
-                    {t('revive')}
-                  </Button>
-                </FormAlertDialog>
-              </>
+              <FormConfirmDialog
+                formId="user-revive"
+                action="revive"
+                title={t('revive')}
+                description={t('user.revive.confirm', {
+                  ns: 'admin',
+                })}
+                actionColor="green"
+              >
+                <Button type="button" color="green">
+                  {t('revive')}
+                </Button>
+              </FormConfirmDialog>
             )}
             {user.status === UserStatusEnum.Verified && (
-              <>
-                <Form
-                  id="user-kill-form"
-                  action="kill"
-                  method="post"
-                  className="hidden"
-                  unstable_viewTransition
-                />
-                <FormAlertDialog
-                  title={t('kill')}
-                  description={t('user.kill.confirm', {
-                    ns: 'admin',
-                  })}
-                  formId="user-kill-form"
-                  actionColor="tomato"
-                >
-                  <Button type="button" color="tomato">
-                    {t('kill')}
-                  </Button>
-                </FormAlertDialog>
-              </>
+              <FormConfirmDialog
+                formId="user-kill"
+                action="kill"
+                title={t('kill')}
+                description={t('user.kill.confirm', {
+                  ns: 'admin',
+                })}
+                actionColor="tomato"
+              >
+                <Button type="button" color="tomato">
+                  {t('kill')}
+                </Button>
+              </FormConfirmDialog>
             )}
           </Flex>
         ) : (

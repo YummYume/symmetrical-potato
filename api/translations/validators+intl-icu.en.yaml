@@ -50,6 +50,7 @@ heist.maximum_payout.invalid: Please enter a valid maximum payout.
 heist.end_date.invalid: Please enter a valid end date.
 heist.end_date.greater_than.start_date: La date de fin doit être supérieur à la date de début.
 heist.objectives.invalid: Please enter a list of objectives in JSON format.
+heist.objectives.size.invalid: You cannot have more than {limit} objectives.
 heist.minimum_required_rating.invalid: Please enter a number.
 heist.prefered_tactic.not_blank: Please enter a recommended tactic.
 heist.prefered_tactic.invalid: The recommended tactic is invalid.
@@ -62,6 +63,11 @@ heist.allowedEmployees.not_blank: Please enter a list of allowed employees.
 heist.establishment.not_blank: Please enter an establishment.
 heist.slot.not_available: This slot is not available for this location.
 heist.place_id.not_blank: Please enter a place ID.
+
+# HeistAsset
+heist_asset.asset_crew_member.unique: This asset is already assigned to this crew member.
+heist_asset.quantity.greater_than_or_equal_to: The quantity cannot be lower than {compared_value}.
+heist_asset.total_spent.greater_than_or_equal_to: The total spent cannot be lower than {compared_value}.
 
 # Location
 location.name.not_blank: Please enter a name.

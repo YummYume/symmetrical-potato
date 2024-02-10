@@ -54,6 +54,12 @@ edit: Edit
 add: Add
 submit: Submit
 more_info: Show more details
+join: Join
+prepare_heist: Prepare heist
+validate: Validate
+leave: Leave
+purchase: Purchase
+optional: Optional
 
 # Meta
 meta.dashboard.title: Dashboard
@@ -79,16 +85,16 @@ history_info.updated_by_at: Updated by {name} on {date} at {time}.
 history_info.updated_by: Updated by {name}.
 history_info.updated_at: Updated on {date} at {time}.
 
-# My profile
+# My Profile
 my_profile: My profile
 
-# My account
+# My Account
 my_account: My account
 my_account.delete.confirm: |
   Are you sure you want to delete your account? All data will be lost.
   This action is irreversible.
 
-# My job
+# My Job
 my_job: My job
 my_job.no_job: No job at the moment.
 my_job.no_job.description: |
@@ -99,25 +105,27 @@ my_job.find_establishment: Find an establishment
 my_job.delete.confirm: Are you sure you want to leave your job?
 my_job.delete.confirm_stop_application: Are you sure you want to delete this application?
 
-# My contractor request
+# My Contractor Request
 my_contractor_request: My contractor request
 my_contractor_request.status.pending: Request pending
 my_contractor_request.status.accepted: Request accepted
 my_contractor_request.status.rejected: Request rejected
 my_contractor_request.warning_message: >-
-  There is no going back once you become a contractor.
-  You will not be able to participate in heists with this account, nor become an employee.
+  There is no going back once you become a contractor. You will not be able to
+  participate in heists with this account, nor become an employee.
 my_contractor_request.status_description.pending: Your request is pending. You will receive an email when a decision is made.
 my_contractor_request.status_description.accepted: >-
-  Your request has been accepted. You can now create establishments and hire employees.
-  You can also create and organize heists.
+  Your request has been accepted. You can now create establishments and hire
+  employees. You can also create and organize heists.
 my_contractor_request.status_description.rejected: Your request has been rejected. You can create a new request if you want.
 my_contractor_request.no_request: No request at the moment.
 my_contractor_request.create: Create a demand
 my_contractor_request.delete.confirm: Are you sure you want to delete your request?
-my_contractor_request.no_request_description: |
+my_contractor_request.no_request_description: >
   You can request to become a contractor.
-  If accepted, you will be able to create establishments and hire employees, as well as create and organize heists.
+
+  If accepted, you will be able to create establishments and hire employees, as
+  well as create and organize heists.
 
 # Heist
 heist.start_at.date: Start date
@@ -137,22 +145,39 @@ heist.visibility: Visibility
 heist.add: Add a heist
 heist.add_objective: Add an objective
 heist.delete.confirm: Are you sure you want to delete this heist?
+heist.leave.confirm: Are you sure you want to leave this heist? You will lose all your assets.
+heist.add.confirm: Are you sure you want to add this heist?
+heist.edit.confirm: Are you sure you want to go public with this heist?
+heist.edit.confirm_description: >-
+  Making this heist public will cost you $15,000. If you cancel this heist, only
+  50% of the sum will be refunded to you.
+heist.join.confirm: Are you sure you want to join this heist?
+heist.employee.chosen: The employee named {name} will help you.
+heist.employee.not_chosen: Choose the one who will help you.
+heist.prepare.employee.not_chosen_warning: >-
+  If no one in the crew chooses an employee to help, the heist will be
+  cancelled.
 heist.phase: Phase
 heist.phase.cancelled: Cancelled
 heist.phase.failed: Failed
 heist.phase.in_progress: In progress
 heist.phase.succeeded: Succeeded
 heist.phase.planning: Planning
-heist.crew_member_count: >-
+heist.crew_member_count: |-
   {count, plural,
     =0 {0 heister}
     one {# heister}
     other {# heisters}
-  }
-  out of 4
+  } out of 4
+
+# Employee
+employee: Employee
+employees: Employees
+employee.motivation: Motivation
 
 # User
 user.balance: Balance
+user.your_balance: Your balance
 user.reason: Registration reason
 user.status: Status
 user.status.verified: Verified
@@ -172,24 +197,46 @@ user.locale.fr: French
 user.global_rating: Global rating
 user.global_rating.none: No rating
 
+# HeistAsset
+heist_asset.add_quantity: Add quantity
+heist_asset.remove_quantity: Remove quantity
+
 # Asset
 asset.name: Name
 asset.description: Description
 asset.price: Price
+asset.quantity: Quantity
 asset.type: Type
 asset.type.asset: Asset
+asset.type.assets: Assets
 asset.type.equipment: Equipment
+asset.type.equipments: Equipments
 asset.type.weapon: Weapon
+asset.type.weapons: Weapons
 asset.max_quantity: Max quantity
 asset.team_asset: Team asset
 asset.heist: Associated heist
+asset.type.assets.catch_phrase: Take everything you need, you don't know what you will find on your way.
+asset.type.equipments.catch_phrase: You will need some equipment to help you. Don't forget them.
+asset.type.weapons.catch_phrase: >-
+  Choose your weapon wisely. You don't want to be caught off guard or worse,
+  unarmed.
 
-# Contractor Request
+# Checkout payment
+checkout_payment.title: Payment
+checkout_payment.caption: summary of cart items
+checkout_payment.description: Total {price}
+checkout_payment.no_assets: No assets to checkout.
+checkout_payment.confirmation: Are you sure you want to checkout?
+checkout_payment.confirmation_description: After the payment, there is no possibility to refund it.
+checkout_payment.clear_cart: Clear cart
+
+# Contractor request
 contractor_request.reason: Reason for the request
 contractor_request.reason.placeholder: Why do you want to become a contractor?
 contractor_request.reason_help: >-
-  This will help us understand why you want to become a contractor.
-  It will also help us to make a decision. Include as much information as possible.
+  This will help us understand why you want to become a contractor. It will also
+  help us to make a decision. Include as much information as possible.
 contractor_request.status: Status
 contractor_request.status.pending: Pending
 contractor_request.status.accepted: Accepted
@@ -217,9 +264,6 @@ establishment.crew_cut: Crew cut
 establishment.average_rating: Average rating
 establishment.average_rating.none: No rating
 establishment.review_count: Review count
-
-# Employee
-employee.motivation: Motivation
 
 # Rating
 rating.star: Rate {rating}

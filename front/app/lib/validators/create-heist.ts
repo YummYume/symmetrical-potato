@@ -1,11 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '../api/types';
-import dayjs from '../utils/dayjs';
-import { zu } from '../utils/zod';
+import { HeistDifficultyEnum, HeistPreferedTacticEnum } from '~/lib//api/types';
+import dayjs from '~/lib/utils/dayjs';
+import { zu } from '~/lib/utils/zod';
 
-export const updateHeistValidationSchema = z
+export const createHeistValidationSchema = z
   .object({
     name: z
       .string()
@@ -96,6 +96,16 @@ export const updateHeistValidationSchema = z
       })
       .array()
       .optional(),
+    establishment: z
+      .string({
+        required_error: 'heist.establishment.required',
+      })
+      .min(1, {
+        message: 'heist.establishment.required',
+      })
+      .includes('establishment', {
+        message: 'heist.establishment.invalid_type',
+      }),
     preferedTactic: z.nativeEnum(HeistPreferedTacticEnum, {
       required_error: 'heist.prefered_tactic.required',
       invalid_type_error: 'heist.prefered_tactic.invalid_type',
@@ -103,10 +113,6 @@ export const updateHeistValidationSchema = z
     difficulty: z.nativeEnum(HeistDifficultyEnum, {
       required_error: 'heist.difficulty.required',
       invalid_type_error: 'heist.difficulty.invalid_type',
-    }),
-    visibility: z.nativeEnum(HeistVisibilityEnum, {
-      required_error: 'heist.visibility.required',
-      invalid_type_error: 'heist.visibility.invalid_type',
     }),
     objectives: z
       .object({
@@ -118,6 +124,7 @@ export const updateHeistValidationSchema = z
           .string()
           .min(10, { message: 'heist.objectives.description.min_length' })
           .max(255, { message: 'heist.objectives.description.max_length' }),
+        optional: z.boolean(),
       })
       .array()
       .optional(),
@@ -153,5 +160,5 @@ export const updateHeistValidationSchema = z
     path: ['maximumPayout'],
   });
 
-export const updateHeistResolver = zodResolver(updateHeistValidationSchema);
-export type UpdateHeistFormData = z.infer<typeof updateHeistValidationSchema>;
+export const createHeistResolver = zodResolver(createHeistValidationSchema);
+export type CreateHeistFormData = z.infer<typeof createHeistValidationSchema>;

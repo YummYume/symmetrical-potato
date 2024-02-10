@@ -1,20 +1,21 @@
 import { redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 
-import { deleteHeist, heistIsMadeBy } from '~/lib/api/heist';
+import { deleteCrewMember, getCrewMemberByUserAndHeist } from '~/lib/api/crew-member';
+import { getPhaseHeist } from '~/lib/api/heist';
+import { HeistPhaseEnum } from '~/lib/api/types';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
 import { ROLES } from '~/lib/utils/roles';
 import { FLASH_MESSAGE_KEY } from '~/root';
-import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
+import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { FlashMessage } from '~/root';
 
 export const action = async ({ request, context, params }: ActionFunctionArgs) => {
-  const currentUser = denyAccessUnlessGranted(context.user, [ROLES.CONTRACTOR]);
-  const isAdmin = hasRoles(context.user, ROLES.ADMIN);
+  const user = denyAccessUnlessGranted(context.user, ROLES.HEISTER);
 
   if (!params.heistId) {
     throw redirect(`/map/${params.placeId}`);
@@ -26,14 +27,11 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
   let errorMessage: string | null = null;
 
   try {
-    const isMadeBy = await heistIsMadeBy(context.client, {
-      id: params.heistId,
-      userId: currentUser.id,
-    });
+    const phase = await getPhaseHeist(context.client, params.heistId);
 
-    if (!isMadeBy && !isAdmin) {
+    if (phase !== HeistPhaseEnum.Planning) {
       session.flash(FLASH_MESSAGE_KEY, {
-        content: t('heist.delete_not_allowed', { ns: 'flash' }),
+        content: t('heist.leave_not_allowed', { ns: 'flash' }),
         type: 'error',
       } as FlashMessage);
 
@@ -44,10 +42,28 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
       });
     }
 
-    await deleteHeist(context.client, params.heistId);
+    const crewMember = await getCrewMemberByUserAndHeist(context.client, {
+      heistId: params.heistId,
+      userId: user.id,
+    });
+
+    if (!crewMember) {
+      session.flash(FLASH_MESSAGE_KEY, {
+        content: t('heist.not_in_crew', { ns: 'flash' }),
+        type: 'error',
+      } as FlashMessage);
+
+      return redirect(`/map/${params.placeId}`, {
+        headers: {
+          'Set-Cookie': await commitSession(session),
+        },
+      });
+    }
+
+    await deleteCrewMember(context.client, crewMember.id);
 
     session.flash(FLASH_MESSAGE_KEY, {
-      content: t('heist.deleted_successfully', { ns: 'flash' }),
+      content: t('heist.leave_successfully', { ns: 'flash' }),
       type: 'success',
     } as FlashMessage);
 
@@ -57,8 +73,8 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
       },
     });
   } catch (error) {
-    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 404, 403])) {
-      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 404, 403]);
+    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 404, 403, 400])) {
+      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 404, 403, 400]);
     } else {
       throw error;
     }
@@ -77,5 +93,3 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
     },
   });
 };
-
-export type Action = typeof action;

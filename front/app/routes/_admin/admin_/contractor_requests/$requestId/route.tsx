@@ -2,7 +2,7 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Blockquote, Button, Flex, Heading, IconButton, ScrollArea, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
@@ -12,6 +12,7 @@ import { ContractorRequestStatusEnum } from '~/lib/api/types';
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { Link } from '~/lib/components/Link';
 import { ContractorRequestStatusBadge } from '~/lib/components/contractor_request/ContractorRequestStatusBadge';
+import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { UserHoverCard } from '~/lib/components/user/UserHoverCard';
 import { i18next } from '~/lib/i18n/index.server';
@@ -197,24 +198,18 @@ export default function EditContractorRequest() {
       </div>
       <Flex justify="between" align="center" gap="4" className="mt-auto" role="group">
         <Flex align="center" gap="4">
-          <Form
-            id="contractor_request-delete-form"
-            action="delete"
-            method="post"
-            className="hidden"
-            unstable_viewTransition
-          />
-          <FormAlertDialog
+          <FormConfirmDialog
+            formId="contractor_request-delete"
             title={t('delete')}
             description={t('contractor_request.delete.confirm', {
               ns: 'admin',
             })}
-            formId="contractor_request-delete-form"
+            action="delete"
           >
-            <Button type="button" color="red">
-              {t('delete')}
+            <Button type="button" color="tomato">
+              {t('contractor_request.reject', { ns: 'admin' })}
             </Button>
-          </FormAlertDialog>
+          </FormConfirmDialog>
         </Flex>
         {contractorRequest.status === ContractorRequestStatusEnum.Pending ? (
           <Flex align="center" gap="4">

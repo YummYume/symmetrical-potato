@@ -12,7 +12,7 @@ user.reset.invalid_token: Le jeton fourni est invalide.
 # Heist
 heist.establishment.not_allowed: Cet établissement ne vous appartient pas.
 heist.slot.not_available: Ce créneau n'est pas disponible pour cette localisation.
-heist.already_started: Le braquage a déjà commencé.
+heist.cannot_join: Vous ne pouvez pas rejoindre ce braquage.
 heist.not_found: Le braquage demandé n'a pas été trouvé.
 
 # CrewMember

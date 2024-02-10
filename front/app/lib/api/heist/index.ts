@@ -12,6 +12,7 @@ import type {
   MutationUpdateHeistArgs,
   UpdateHeistInput,
   QueryHeistArgs,
+  MutationChooseEmployeeHeistArgs,
 } from '~api/types';
 
 /**
@@ -37,6 +38,65 @@ export const getHeists = async (client: GraphQLClient) => {
       }
     }
   `);
+};
+
+/**
+ * Query all heists where the user is a crew member.
+ */
+export const getHeistsByCrewMember = async (client: GraphQLClient, userId: string) => {
+  return client.request<Pick<Query, 'heists'>>(
+    gql`
+      query ($userId: String!) {
+        heists(crewMembers__user__id: $userId) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+    `,
+    {
+      userId,
+    },
+  );
+};
+
+/**
+ * Get the phase of a heist
+ */
+export const getPhaseHeist = async (client: GraphQLClient, id: string) => {
+  const { heist } = await client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
+    gql`
+      query ($id: ID!) {
+        heist(id: $id) {
+          phase
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
+
+  return heist.phase;
+};
+
+export const getHeistPartial = async (client: GraphQLClient, id: string, fields: string = '') => {
+  return client.request<Pick<Query, 'heist'>, QueryHeistArgs>(
+    gql`
+      query ($id: ID!) {
+        heist(id: $id) {
+          id
+          ${fields}
+        }
+      }
+    `,
+    {
+      id: `/heists/${id}`,
+    },
+  );
 };
 
 /**
@@ -208,6 +268,33 @@ export const updateHeist = async (
     `,
     {
       input: { ...input, id: `/heists/${input.id}` },
+    },
+  );
+};
+
+/**
+ * Choose an employee for a heist by a heister
+ */
+export const chooseEmployeeHeist = async (
+  client: GraphQLClient,
+  input: {
+    id: string;
+    employeeId: string;
+  },
+) => {
+  return client.request<Pick<Mutation, 'chooseEmployeeHeist'>, MutationChooseEmployeeHeistArgs>(
+    gql`
+      mutation ChooseEmployeeHeist($input: chooseEmployeeHeistInput!) {
+        chooseEmployeeHeist(input: $input) {
+          heist {
+            id
+            name
+          }
+        }
+      }
+    `,
+    {
+      input: { id: `/heists/${input.id}`, employee: input.employeeId },
     },
   );
 };

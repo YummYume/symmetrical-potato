@@ -29,6 +29,21 @@ establishment.deleted: Establishment deleted successfully.
 heist.created_successfully: Heist created successfully.
 heist.updated_successfully: Heist updated successfully.
 heist.deleted_successfully: Heist deleted successfully.
+heist.prepare.employee.chosen_successfully: Employee chosen successfully.
+heist.prepare.assets.purchased_successfully: Assets purchased successfully.
+heist.delete_not_allowed: You are not allowed to delete this heist.
+heist.join_successfully: You have joined the heist successfully.
+heist.leave_successfully: You have left the heist successfully.
+heist.already_in_crew: You are already in the crew of this heist.
+heist.not_in_crew: You are not in the crew of this heist.
+heist.join_not_allowed: You are not allowed to join this heist.
+heist.leave_not_allowed: You are not allowed to leave this heist.
+heist.prepare.employee.missing: You must choose an employee to help you.
+heist.prepare.employee.aleary_set: You already have an employee to help you.
+heist.prepare.not_in_crew: You are not in the crew of this heist.
+heist.prepare.assets.invalid: Your request contains invalid assets.
+heist.objectives.too_much: You can't have more than 20 objectives.
+heist.prepare.no_employee_available: No employee available.
 
 # Account
 account.updated: Account updated successfully.

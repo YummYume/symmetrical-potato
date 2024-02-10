@@ -54,6 +54,12 @@ edit: Modifier
 add: Ajouter
 submit: Envoyer
 more_info: Afficher plus de détails
+join: Rejoindre
+prepare_heist: Préparer le braquage
+validate: Valider
+leave: Quitter
+purchase: Acheter
+optional: Optionnel
 
 # Meta
 meta.dashboard.title: Tableau de bord
@@ -79,46 +85,54 @@ history_info.updated_by_at: Mis à jour par {name} le {date} à {time}.
 history_info.updated_by: Mis à jour par {name}.
 history_info.updated_at: Mis à jour le {date} à {time}.
 
-# My profile
+# My Profile
 my_profile: Mon profil
 
-# My account
+# My Account
 my_account: Mon compte
 my_account.delete.confirm: |
   Êtes-vous sûr de vouloir supprimer votre compte ?
   Vous ne pourrez pas revenir en arrière.
 
-# My job
+# My Job
 my_job: Mon emploi
 my_job.no_job: Aucun emploi pour le moment
 my_job.no_job.description: |
   Vous pouvez postuler pour un emploi dans un établissement.
   Si vous êtes accepté, vous pourrez y travailler et gagner de l'argent.
-my_job.warning_message: Vous ne pourrez pas participer à des braquages par vous-même une fois que vous serez employé.
+my_job.warning_message: >-
+  Vous ne pourrez pas participer à des braquages par vous-même une fois que vous
+  serez employé.
 my_job.find_establishment: Trouver un établissement
 my_job.delete.confirm: Êtes-vous sûr de vouloir quitter votre emploi ?
 my_job.delete.confirm_stop_application: Êtes-vous sûr de vouloir supprimer cette candidature ?
 
-# My contractor request
+# My Contractor Request
 my_contractor_request: Ma demande de contractant
 my_contractor_request.status.pending: Demande en attente
 my_contractor_request.status.accepted: Demande acceptée
 my_contractor_request.status.rejected: Demande rejetée
 my_contractor_request.warning_message: >-
   Il n'y a pas de retour en arrière une fois que vous devenez un contractant.
-  Vous ne pourrez pas participer à des braquages avec ce compte, ni devenir un employé.
+  Vous ne pourrez pas participer à des braquages avec ce compte, ni devenir un
+  employé.
 my_contractor_request.status_description.pending: >-
-  Votre demande est en attente. Vous serez notifié dès qu'une décision sera prise.
+  Votre demande est en attente. Vous serez notifié dès qu'une décision sera
+  prise.
 my_contractor_request.status_description.accepted: >-
-  Votre demande a été acceptée. Vous pouvez maintenant créer des établissements et embaucher des employés, ainsi que créer et organiser des braquages.
+  Votre demande a été acceptée. Vous pouvez maintenant créer des établissements
+  et embaucher des employés, ainsi que créer et organiser des braquages.
 my_contractor_request.status_description.rejected: >-
-  Votre demande a été rejetée. Vous pouvez créer une nouvelle demande si vous le souhaitez.
+  Votre demande a été rejetée. Vous pouvez créer une nouvelle demande si vous le
+  souhaitez.
 my_contractor_request.no_request: Aucune demande de contractant
 my_contractor_request.create: Créer une demande
 my_contractor_request.delete.confirm: Êtes-vous sûr de vouloir supprimer votre demande ?
-my_contractor_request.no_request_description: |
+my_contractor_request.no_request_description: >
   Vous pouvez demander à devenir un contractant.
-  Si votre demande est acceptée, vous pourrez créer des établissements et embaucher des employés, ainsi que créer et organiser des braquages.
+
+  Si votre demande est acceptée, vous pourrez créer des établissements et
+  embaucher des employés, ainsi que créer et organiser des braquages.
 
 # Heist
 heist.start_at.date: Date de début
@@ -138,22 +152,41 @@ heist.visibility: Visibilité
 heist.add: Ajouter un braquage
 heist.add_objective: Ajouter un objectif
 heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ?
+heist.leave.confirm: >-
+  Êtes-vous sûr de vouloir quitter ce braquage ? Vous allez perdre tous vos
+  équipements.
+heist.add.confirm: Êtes-vous sûr de vouloir ajouter ce braquage ?
+heist.edit.confirm: Êtes-vous sûr de vouloir rendre public ce braquage ?
+heist.edit.confirm_description: >-
+  Rendre ce braquage public vous coutera $15.000, si vous supprimer ce braquage,
+  50% de la somme vous sera remboursé uniquement.
+heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
+heist.employee.chosen: L'employé nommé {name} vous aidera.
+heist.employee.not_chosen: Choisissez celui qui vous aidera.
+heist.prepare.employee.not_chosen_warning: >-
+  Si personne au sein de l'équipe ne choisit un employé pour aider, le braquage
+  sera annulé.
 heist.phase: Phase
 heist.phase.cancelled: Annulé
 heist.phase.failed: Échoué
 heist.phase.in_progress: En cours
 heist.phase.succeeded: Réussi
 heist.phase.planning: Planification
-heist.crew_member_count: >-
+heist.crew_member_count: |-
   {count, plural,
     =0 {0 braqueur}
     one {# braqueur}
     other {# braqueurs}
-  }
-  sur 4
+  } sur 4
+
+# Employee
+employee: Employé
+employees: Employés
+employee.motivation: Motivation
 
 # User
 user.balance: Solde
+user.your_balance: Votre solde
 user.reason: Raison de l'inscription
 user.status: Statut
 user.status.verified: Vérifié
@@ -173,24 +206,49 @@ user.locale.fr: Français
 user.global_rating: Note globale
 user.global_rating.none: Aucune note
 
+# HeistAsset
+heist_asset.add_quantity: Ajouter une quantité
+heist_asset.remove_quantity: Retirer une quantité
+
 # Asset
 asset.name: Nom
 asset.description: Description
 asset.price: Prix
+asset.quantity: Quantité
 asset.type: Type
 asset.type.asset: Asset
+asset.type.assets: Assets
 asset.type.equipment: Équipement
+asset.type.equipments: Équipements
 asset.type.weapon: Arme
+asset.type.weapons: Armes
 asset.max_quantity: Quantité maximale
 asset.team_asset: Asset d'équipe
 asset.heist: Braquage associé
+asset.type.assets.catch_phrase: >-
+  Prenez tout ce dont vous avez besoin, vous ne savez pas ce que vous trouverez
+  sur votre chemin.
+asset.type.equipments.catch_phrase: Vous aurez besoin de certains équipements. Ne les oublie pas.
+asset.type.weapons.catch_phrase: >-
+  Choisissez judicieusement votre arme. Vous ne voulez pas être pris au dépourvu
+  ou, pire, désarmé.
 
-# Contractor Request
+# Checkout payment
+checkout_payment.title: Paiement
+checkout_payment.caption: Récapitulatif des éléments du panier
+checkout_payment.description: Total {price}
+checkout_payment.no_assets: Aucun asset à payer.
+checkout_payment.confirmation: Êtes-vous sûr de vouloir payer ?
+checkout_payment.confirmation_description: Après le paiement, il n'y a pas de possibilité de remboursement.
+checkout_payment.clear_cart: Vider le panier
+
+# Contractor request
 contractor_request.reason: Raison de la demande
 contractor_request.reason.placeholder: Pourquoi voulez-vous devenir un contractant ?
 contractor_request.reason_help: >-
   Cela nous aidera à comprendre pourquoi vous voulez devenir un contractant.
-  Cela nous aidera également à prendre une décision. Incluez autant d'informations que possible.
+  Cela nous aidera également à prendre une décision. Incluez autant
+  d'informations que possible.
 contractor_request.status: Statut
 contractor_request.status.pending: En attente
 contractor_request.status.accepted: Accepté
@@ -218,9 +276,6 @@ establishment.crew_cut: Part de l'équipe
 establishment.average_rating: Note moyenne
 establishment.average_rating.none: Aucune note
 establishment.review_count: Nombre d'avis
-
-# Employee
-employee.motivation: Motivation
 
 # Rating
 rating.star: Noter {rating, number}

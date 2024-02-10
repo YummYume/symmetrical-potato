@@ -1,13 +1,15 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
-import type {
-  Mutation,
-  MutationDeleteLocationArgs,
-  MutationUpdateLocationArgs,
-  Query,
-  QueryLocationArgs,
-  UpdateLocationInput,
+import {
+  type Mutation,
+  type MutationDeleteLocationArgs,
+  type MutationUpdateLocationArgs,
+  type Query,
+  type QueryLocationArgs,
+  type UpdateLocationInput,
 } from '~api/types';
+import { HeistPhaseEnum } from '~api/types';
+
 import type { GooglePlace } from '~api/types/maps';
 
 /**
@@ -16,10 +18,10 @@ import type { GooglePlace } from '~api/types/maps';
 export const getLocationInfo = async (client: GraphQLClient, placeId: string) => {
   return client.request<
     Pick<Query, 'location' | 'heists' | 'reviews'>,
-    { place: string; placeId: string }
+    { place: string; placeId: string; phase: HeistPhaseEnum[] }
   >(
     gql`
-      query ($place: String!, $placeId: ID!) {
+      query ($place: String!, $placeId: ID!, $phase: Iterable) {
         location(id: $placeId) {
           name
           address
@@ -27,7 +29,7 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
           averageRating
         }
 
-        heists(location__placeId: $place) {
+        heists(location__placeId: $place, phase: $phase) {
           edges {
             node {
               difficulty
@@ -66,6 +68,7 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
     {
       placeId: `/locations/${placeId}`,
       place: placeId,
+      phase: [HeistPhaseEnum.Planning],
     },
   );
 };

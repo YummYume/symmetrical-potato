@@ -2,15 +2,16 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Blockquote, Button, Flex, Heading, IconButton, ScrollArea, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
-import { getEstablishment, updateEstablishment } from '~/lib/api/establishments';
+import { getEstablishment, updateEstablishment } from '~/lib/api/establishment';
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { Link } from '~/lib/components/Link';
 import { Rating } from '~/lib/components/Rating';
+import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
 import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
@@ -20,7 +21,6 @@ import { commitSession, getSession } from '~/lib/session.server';
 import { getUriId } from '~/lib/utils/path';
 import { adminEstablishmentResolver } from '~/lib/validators/admin/establishment';
 import { FLASH_MESSAGE_KEY } from '~/root';
-import { FormAlertDialog } from '~components/dialog/FormAlertDialog';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~utils/api';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
@@ -246,24 +246,18 @@ export default function EditEstablishment() {
       </div>
       <Flex justify="between" align="center" gap="4" className="mt-auto" role="group">
         <Flex align="center" gap="4">
-          <Form
-            id="establishment-delete-form"
+          <FormConfirmDialog
+            formId="establishment-delete"
             action="delete"
-            method="post"
-            className="hidden"
-            unstable_viewTransition
-          />
-          <FormAlertDialog
             title={t('delete')}
             description={t('establishment.delete.confirm', {
               ns: 'admin',
             })}
-            formId="establishment-delete-form"
           >
             <Button type="button" color="red">
               {t('delete')}
             </Button>
-          </FormAlertDialog>
+          </FormConfirmDialog>
         </Flex>
         <SubmitButton
           form="establishment-form"

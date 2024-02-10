@@ -25,6 +25,7 @@ export function CheckboxInput<T extends Record<string, unknown>>({
   label,
   id,
   hideLabel = false,
+  hideError = false,
   disabled = undefined,
   required = undefined,
   help = undefined,
@@ -72,7 +73,7 @@ export function CheckboxInput<T extends Record<string, unknown>>({
                   </LabelField>
                 </Flex>
               </Text>
-              {error?.message && (
+              {error?.message && !hideError && (
                 <ErrorField id={errorId}>{t(error.message, { ns: 'validators' })}</ErrorField>
               )}
               {help && <HelpField id={helpId}>{help}</HelpField>}

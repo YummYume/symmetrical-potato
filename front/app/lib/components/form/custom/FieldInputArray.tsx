@@ -1,4 +1,4 @@
-import { Grid, Text, Button } from '@radix-ui/themes';
+import { Grid, Button, Checkbox, Separator } from '@radix-ui/themes';
 import { TextField } from '@radix-ui/themes';
 import { useFieldArray, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -42,10 +42,15 @@ export type FieldInputArrayProps<T extends Record<string, unknown>> = {
    * The className to apply to the container of the input.
    */
   inputContainerClassName?: string;
+  /**
+   * The limit of inputs to display.
+   */
+  limit?: number;
 } & DefaultFieldProps<T> &
-  React.ComponentProps<typeof TextField.Input>;
+  React.RefAttributes<HTMLInputElement>;
 
 export function FieldInputArray<T extends Record<string, unknown>>({
+  limit = 5,
   config,
   translationNamespace = 'common',
   inputContainerClassName = '',
@@ -53,6 +58,7 @@ export function FieldInputArray<T extends Record<string, unknown>>({
   label,
   id,
   hideLabel = false,
+  hideError = false,
   disabled = undefined,
   required = undefined,
   help = undefined,
@@ -72,14 +78,15 @@ export function FieldInputArray<T extends Record<string, unknown>>({
   // Beware of confusion between field and fieldInput here, field is from Control
   return (
     <Grid className={containerClassName} gap="1">
-      <Text as="label" htmlFor={name} className={hideLabel ? 'sr-only' : ''}>
+      <LabelField htmlFor={name} className={hideLabel ? 'sr-only' : undefined}>
         {label}
-      </Text>
+      </LabelField>
       <ul>
         {fields.map((item, index) => {
           return (
-            <li key={item.id} className="mb-2">
-              <Grid>
+            <li key={item.id}>
+              <Grid gap="1" className="p-4">
+                <Separator mb="2" size="4" />
                 {config.fields.map((fieldInput, key) => (
                   <Controller
                     key={`${item.id}-${key}`}
@@ -98,20 +105,33 @@ export function FieldInputArray<T extends Record<string, unknown>>({
                             {`${fieldInput.label} ${index + 1}`}
                           </LabelField>
 
-                          <TextField.Root className={inputContainerClassName}>
-                            <TextField.Input
+                          {fieldInput.type === 'checkbox' ? (
+                            <Checkbox
                               {...register(field.name)}
                               {...rest}
                               id={fieldId}
+                              ref={field.ref}
+                              onCheckedChange={field.onChange}
+                              defaultChecked={!!field.value}
                               aria-describedby={helpId}
                               aria-errormessage={errorId}
                               aria-invalid={!!errorId}
-                              color={errorId ? 'crimson' : rest.color}
-                              type={fieldInput.type}
                             />
-                          </TextField.Root>
+                          ) : (
+                            <TextField.Root className={inputContainerClassName}>
+                              <TextField.Input
+                                {...register(field.name)}
+                                {...rest}
+                                id={fieldId}
+                                aria-describedby={helpId}
+                                aria-errormessage={errorId}
+                                aria-invalid={!!errorId}
+                                type={fieldInput.type}
+                              />
+                            </TextField.Root>
+                          )}
 
-                          {error?.message && (
+                          {error?.message && !hideError && (
                             <ErrorField id={errorId}>
                               {t(error.message, { ns: 'validators' })}
                             </ErrorField>
@@ -130,9 +150,15 @@ export function FieldInputArray<T extends Record<string, unknown>>({
             </li>
           );
         })}
-        <Button type="button" onClick={() => append(config.defaultAppendValue)}>
-          {config.add?.text ?? t('add', { ns: translationNamespace })}
-        </Button>
+        {fields.length < limit && (
+          <Button
+            type="button"
+            onClick={() => append(config.defaultAppendValue)}
+            disabled={disabled}
+          >
+            {config.add?.text ?? t('add', { ns: translationNamespace })}
+          </Button>
+        )}
       </ul>
     </Grid>
   );

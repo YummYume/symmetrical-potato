@@ -2,7 +2,7 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Button, Flex, Heading, IconButton, ScrollArea, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
@@ -12,6 +12,7 @@ import { AssetTypeEnum } from '~/lib/api/types';
 import { HistoryInfoPopover } from '~/lib/components/HistoryInfoPopover';
 import { Link } from '~/lib/components/Link';
 import { AssetTypeBadge } from '~/lib/components/asset/AssetTypeBadge';
+import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
 import { CheckboxInput } from '~/lib/components/form/custom/CheckboxInput';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
@@ -20,7 +21,6 @@ import { commitSession, getSession } from '~/lib/session.server';
 import { formatEnums } from '~/lib/utils/tools';
 import { adminAssetResolver } from '~/lib/validators/admin/asset';
 import { FLASH_MESSAGE_KEY } from '~/root';
-import { FormAlertDialog } from '~components/dialog/FormAlertDialog';
 import { SubmitButton } from '~components/form/SubmitButton';
 import { FieldInput } from '~components/form/custom/FieldInput';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~utils/api';
@@ -197,24 +197,18 @@ export default function EditAsset() {
       </div>
       <Flex justify="between" align="center" gap="4" className="mt-auto" role="group">
         <Flex align="center" gap="4">
-          <Form
-            id="asset-delete-form"
-            action="delete"
-            method="post"
-            className="hidden"
-            unstable_viewTransition
-          />
-          <FormAlertDialog
+          <FormConfirmDialog
+            formId="asset-delete"
             title={t('delete')}
             description={t('asset.delete.confirm', {
               ns: 'admin',
             })}
-            formId="asset-delete-form"
+            action="delete"
           >
             <Button type="button" color="red">
               {t('delete')}
             </Button>
-          </FormAlertDialog>
+          </FormConfirmDialog>
         </Flex>
         <SubmitButton
           form="asset-form"

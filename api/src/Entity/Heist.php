@@ -33,10 +33,10 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HeistRepository::class)]
-#[ApiFilter(DateFilter::class, properties: ['startAt'])]
 #[ApiResource(
     security: 'is_granted("ROLE_USER")',
     operations: [],
+    processor: HeistProcessor::class,
     graphQlOperations: [
         new Query(
             normalizationContext: [
@@ -51,7 +51,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Mutation(
             name: 'create',
-            processor: HeistProcessor::class,
             normalizationContext: [
                 'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
             ],
@@ -76,6 +75,19 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             security: 'is_granted("UPDATE", object)'
         ),
+        new Mutation(
+            name: 'chooseEmployee',
+            normalizationContext: [
+                'groups' => [self::READ, self::BLAMEABLE, self::TIMESTAMPABLE],
+            ],
+            denormalizationContext: [
+                'groups' => [self::CHOOSE_EMPLOYEE],
+            ],
+            validationContext: [
+                'groups' => [self::CHOOSE_EMPLOYEE],
+            ],
+            security: 'is_granted("CHOOSE_EMPLOYEE", object)'
+        ),
         new DeleteMutation(
             name: 'delete',
             security: 'is_granted("DELETE", object)'
@@ -83,6 +95,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[SlotAvailable(groups: [self::CREATE, self::UPDATE])]
+#[ApiFilter(DateFilter::class, properties: ['startAt'])]
 #[ApiFilter(MatchFilter::class, properties: ['phase'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
 #[ApiFilter(SearchFilter::class, properties: ['location.placeId' => 'exact'])]
@@ -95,12 +108,15 @@ class Heist
     public const READ_PUBLIC = 'heist:read:public';
     public const CREATE = 'heist:create';
     public const UPDATE = 'heist:update';
+    public const CHOOSE_EMPLOYEE = 'heist:choose:employee';
 
     public const MAX_ALLOWED_CREW_MEMBERS = 4;
     public const MAX_OBJECTIVES_PER_HEIST = 20;
     public const MAX_CIVILIAN_CASUALTIES_PER_HEIST = 50;
     public const MAX_COP_KILLS_PER_HEIST = 1000;
     public const CIVILIAN_CLEANUP_COST = 1000;
+    public const CREATE_HEIST_PRICE = 15000;
+    public const PERCENTAGE_REFUND = 0.5;
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -185,6 +201,11 @@ class Heist
     /** @var array<int, array<string, string|bool>> */
     #[ORM\Column(type: Types::JSON)]
     #[Groups([self::READ, self::CREATE, self::UPDATE])]
+    #[Assert\Count(
+        groups: [self::CREATE, self::UPDATE],
+        max: 20,
+        maxMessage: 'heist.objectives.size.invalid',
+    )]
     private array $objectives = [];
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
@@ -213,7 +234,7 @@ class Heist
     #[Groups([self::READ])]
     private Collection $crewMembers;
 
-    #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Location::class, cascade: ['remove'])]
+    #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Location::class)]
     #[Groups([self::READ])]
     private ?Location $location = null;
 
@@ -231,7 +252,7 @@ class Heist
 
     #[ORM\ManyToOne(inversedBy: 'heists', targetEntity: Employee::class)]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    #[Groups([self::READ])]
+    #[Groups([self::READ, self::UPDATE, self::CHOOSE_EMPLOYEE])]
     private ?Employee $employee = null;
 
     #[ORM\ManyToOne(inversedBy: 'heists')]

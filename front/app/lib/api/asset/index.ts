@@ -10,7 +10,7 @@ import type {
 } from '~api/types';
 
 /**
- * Query all assets.
+ * Get all assets.
  */
 export const getAssets = async (client: GraphQLClient) => {
   return client.request<Pick<Query, 'assets'>>(gql`
@@ -21,6 +21,7 @@ export const getAssets = async (client: GraphQLClient) => {
             id
             name
             price
+            maxQuantity
             type
             description
             teamAsset
@@ -32,7 +33,32 @@ export const getAssets = async (client: GraphQLClient) => {
 };
 
 /**
- * Query an asset by id.
+ * Get all forbidden assets for a heist.
+ */
+export const getAssetsForbiddenForHeist = async (client: GraphQLClient, heistId: string) => {
+  return client.request<Pick<Query, 'assets'>, { heistId: string }>(
+    gql`
+      query ($heistId: String) {
+        assets(forbiddenHeists__id: $heistId) {
+          edges {
+            node {
+              id
+              name
+              price
+              type
+              description
+              teamAsset
+            }
+          }
+        }
+      }
+    `,
+    { heistId: `/heists/${heistId}` },
+  );
+};
+
+/**
+ * Get a asset by id.
  */
 export const getAsset = async (client: GraphQLClient, id: string) => {
   return client.request<Pick<Query, 'asset'>, QueryAssetArgs>(

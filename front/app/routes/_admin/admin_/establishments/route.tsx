@@ -3,7 +3,7 @@ import { Outlet, useLoaderData, useLocation } from '@remix-run/react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
-import { getEstablishments } from '~/lib/api/establishments';
+import { getEstablishments } from '~/lib/api/establishment';
 import { NavLink } from '~/lib/components/Link';
 import { getUriId } from '~/lib/utils/path';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';

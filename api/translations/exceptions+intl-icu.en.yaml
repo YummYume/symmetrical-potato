@@ -12,7 +12,7 @@ user.reset.invalid_token: The provided token is invalid.
 # Heist
 heist.establishment.not_allowed: This establishment does not belong to you.
 heist.slot.not_available: This slot is not available for this location.
-heist.already_started: The heist has already started.
+heist.cannot_join: You cannot join this heist.
 heist.not_found: The requested heist was not found.
 
 # CrewMember
