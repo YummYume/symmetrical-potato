@@ -8,7 +8,7 @@ use App\Repository\AssetRepository;
 use App\Repository\HeistAssetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class Refund
+final class Refunder
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

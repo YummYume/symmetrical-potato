@@ -14,7 +14,7 @@ use App\Enum\HeistVisibilityEnum;
 use App\Google\GoogleMaps;
 use App\Helper\ExceptionHelper;
 use App\Repository\LocationRepository;
-use App\Service\Refund;
+use App\Service\Refunder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -37,7 +37,7 @@ final class HeistProcessor implements ProcessorInterface
         private readonly Security $security,
         private readonly ExceptionHelper $exceptionHelper,
         private readonly GoogleMaps $googleMaps,
-        private readonly Refund $refund,
+        private readonly Refunder $refunder,
     ) {
     }
 
@@ -109,7 +109,7 @@ final class HeistProcessor implements ProcessorInterface
 
                 $this->entityManager->persist($user);
 
-                $this->refund->refundAssetsOfHeist($heist);
+                $this->refunder->refundAssetsOfHeist($heist);
             }
 
             return $this->removeProcessor->process($heist, $operation, $uriVariables, $context);

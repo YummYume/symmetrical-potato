@@ -54,7 +54,6 @@ final class HeistVoter extends Voter
             self::UPDATE => $this->canUpdate($heist, $user),
             self::CHOOSE_EMPLOYEE => $this->canChooseEmployee($heist, $user),
             self::DELETE => $this->canDelete($heist, $user),
-
             default => throw new \LogicException('This code should not be reached!')
         };
     }
@@ -98,7 +97,7 @@ final class HeistVoter extends Voter
             /**
              * @var Heist|null $heistFound
              */
-            $heistFound = $establishment->getHeists()->findFirst(fn (int $key, Heist $h) => $heist === $h);
+            $heistFound = $establishment->getHeists()->findFirst(static fn (int $key, Heist $heistEstablishment) => $heist === $heistEstablishment);
 
             if (null === $heistFound) {
                 return false;
@@ -122,7 +121,7 @@ final class HeistVoter extends Voter
         }
 
         return $this->security->isGranted(User::ROLE_HEISTER)
-        && (bool) $user->getCrewMembers()->findFirst(fn (int $key, CrewMember $crewMember) => $heist === $crewMember->getHeist() && null === $crewMember->getHeist()->getEmployee())
+        && (bool) $user->getCrewMembers()->findFirst(static fn (int $key, CrewMember $crewMember) => $heist === $crewMember->getHeist() && null === $crewMember->getHeist()->getEmployee())
         && HeistPhaseEnum::Planning === $heist->getPhase();
     }
 

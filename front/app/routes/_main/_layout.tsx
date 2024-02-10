@@ -51,7 +51,10 @@ const Menu = ({
   return (
     <Flex align="center" gap="4" justify="end">
       <Text as="span" size="2">
-        ${user.balance.toLocaleString()}
+        {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(
+          user.balance,
+        )}
+        <span className="sr-only">{t('user.your_balance')}</span>
       </Text>
 
       <Form method="post" className="flex items-center justify-end gap-4" onChange={onChange}>

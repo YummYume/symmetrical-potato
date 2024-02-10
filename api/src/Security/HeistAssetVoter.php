@@ -54,7 +54,6 @@ final class HeistAssetVoter extends Voter
 
     private function canRead(HeistAsset $heistAsset): bool
     {
-        // TODO
         return true;
     }
 

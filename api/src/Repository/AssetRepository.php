@@ -6,6 +6,7 @@ use App\Entity\Asset;
 use App\Entity\Heist;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 
 /**
  * @extends ServiceEntityRepository<Asset>
@@ -34,9 +35,7 @@ final class AssetRepository extends ServiceEntityRepository
             ->leftJoin('ha.crewMember', 'cm')
             ->leftJoin('cm.heist', 'h')
             ->where($qb->expr()->eq('h.id', ':heistId'))
-            ->setParameters([
-                'heistId' => $heist->getId()->toBinary(),
-            ])
+            ->setParameter('heistId', $heist->getId(), UuidType::NAME)
             ->getQuery()
             ->getResult()
         ;

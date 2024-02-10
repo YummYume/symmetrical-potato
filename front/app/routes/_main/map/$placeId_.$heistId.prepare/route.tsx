@@ -1,4 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
+import { PlusCircledIcon, MinusCircledIcon } from '@radix-ui/react-icons';
 import { Box, Button, Flex, Grid, Heading, Section, Tabs, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
@@ -582,6 +583,8 @@ export default function Prepare() {
               value={key}
               text={t(`asset.type.${key}.catch_phrase`)}
               assets={assets[value]}
+              addIcon={<PlusCircledIcon aria-label={t('heist_asset.add_quantity')} />}
+              removeIcon={<MinusCircledIcon aria-label={t('heist_asset.remove_quantity')} />}
               setGlobalQuantity={(assetId) =>
                 getQuantity(assetId) + (cart[assetId] ? cart[assetId].heistAsset?.quantity ?? 0 : 0)
               }
@@ -604,6 +607,7 @@ export default function Prepare() {
                     {t('checkout_payment.clear_cart')}
                   </Button>
                   <PaymentDisplay
+                    title={t('checkout_payment.caption')}
                     assets={asssetsPurchasedFormatted}
                     rows={{
                       name: t('asset.name'),
@@ -613,7 +617,12 @@ export default function Prepare() {
                   />
                   <Flex gap="4" align="center" justify="end">
                     <Text size="3">
-                      {t('checkout_payment.description', { price: totalPrice.toLocaleString() })}
+                      {t('checkout_payment.description', {
+                        price: new Intl.NumberFormat(undefined, {
+                          style: 'currency',
+                          currency: 'USD',
+                        }).format(totalPrice),
+                      })}
                     </Text>
                     <FormAlertDialog
                       title={t('checkout_payment.confirmation')}

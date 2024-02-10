@@ -1,6 +1,7 @@
 import { Table } from '@radix-ui/themes';
 
 type PaymentDisplayProps = {
+  title: string;
   assets: { quantity: number; name: string; price: number }[];
   rows: {
     name: string;
@@ -8,9 +9,10 @@ type PaymentDisplayProps = {
     quantity: string;
   };
 };
-export function PaymentDisplay({ assets, rows }: PaymentDisplayProps) {
+export function PaymentDisplay({ title, assets, rows }: PaymentDisplayProps) {
   return (
     <Table.Root>
+      <caption className="sr-only">{title}</caption>
       <Table.Header>
         <Table.Row>
           <Table.ColumnHeaderCell>{rows.name}</Table.ColumnHeaderCell>
@@ -23,7 +25,12 @@ export function PaymentDisplay({ assets, rows }: PaymentDisplayProps) {
         {assets.map((asset, index) => (
           <Table.Row key={index}>
             <Table.Cell>{asset.name}</Table.Cell>
-            <Table.Cell>{asset.price}</Table.Cell>
+            <Table.Cell>
+              {new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency: 'USD',
+              }).format(asset.price)}
+            </Table.Cell>
             <Table.Cell>{asset.quantity}</Table.Cell>
           </Table.Row>
         ))}

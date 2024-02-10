@@ -8,6 +8,8 @@ type TabsAssetProps = {
   text: string;
   value: string;
   assets: Record<string, Asset>;
+  addIcon: JSX.Element;
+  removeIcon: JSX.Element;
   setGlobalQuantity: (assetId: string) => number;
   setQuantity: (assetId: string) => number;
   onAddAsset: (asset: Asset) => void;
@@ -17,6 +19,8 @@ export function TabsAsset({
   text,
   value,
   assets,
+  addIcon,
+  removeIcon,
   setGlobalQuantity,
   setQuantity,
   onAddAsset,
@@ -39,12 +43,12 @@ export function TabsAsset({
             <CardAsset asset={assets[type]} quantity={setGlobalQuantity(assets[type].id)} />
             {setGlobalQuantity(assets[type].id) < assets[type].maxQuantity && (
               <Button type="button" onClick={() => onAddAsset(assets[type])}>
-                +
+                {addIcon}
               </Button>
             )}
             {setQuantity(assets[type].id) > 0 && (
               <Button type="button" onClick={() => onRemoveAsset(assets[type])}>
-                -
+                {removeIcon}
               </Button>
             )}
           </Grid>

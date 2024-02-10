@@ -66,8 +66,8 @@ heist.place_id.not_blank: Please enter a place ID.
 
 # HeistAsset
 heist_asset.asset_crew_member.unique: This asset is already assigned to this crew member.
-heist_asset.quantity.greater_than_or_equal_to: The quantity cannot be lower than 1.
-heist_asset.total_spent.greater_than_or_equal_to: The total spent cannot be lower than 0.
+heist_asset.quantity.greater_than_or_equal_to: The quantity cannot be lower than {compared_value}.
+heist_asset.total_spent.greater_than_or_equal_to: The total spent cannot be lower than {compared_value}.
 
 # Location
 location.name.not_blank: Please enter a name.

@@ -67,8 +67,8 @@ heist.place_id.not_blank: Veuillez saisir un identifiant de lieu.
 
 # HeistAsset
 heist_asset.asset_crew_member.unique: Vous avez déjà associé cet asset à ce membre d'équipe.
-heist_asset.quantity.greater_than_or_equal_to: La quantité ne peut pas être inférieure à 1.
-heist_asset.total_spent.greater_than_or_equal_to: Le montant total dépensé ne peut pas être inférieur à 0.
+heist_asset.quantity.greater_than_or_equal_to: La quantité ne peut pas être inférieure à {compared_value}.
+heist_asset.total_spent.greater_than_or_equal_to: Le montant total dépensé ne peut pas être inférieur à {compared_value}.
 
 # Location
 location.name.not_blank: Veuillez saisir un nom.
