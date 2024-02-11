@@ -137,7 +137,9 @@ heist.visibility.required: La visibilité est requis
 heist.visibility.invalid_type: La visibilité est invalide
 
 # Map
+map.filters.date_greater_than_or_equal_now: La date doit être supérieure ou égale à la date actuelle.
 map.filters.start_at_min_greater_than_max: La date de début minimale doit être antérieure à la date de début maximale.
 map.filters.start_at_min_equals_max: La date de début minimale doit être différente de la date de début maximale.
 map.filters.prefered_tactics_invalid_type: Les tactiques préférées sélectionnées sont invalides.
 map.filters.difficulties_invalid_type: Les difficultés sélectionnées sont invalides.
+map.filters.minimum_payout_greater_than_maximum_payout: Le paiement minimum doit être inférieur au paiement maximum.

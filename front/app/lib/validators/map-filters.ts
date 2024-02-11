@@ -1,6 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
+import dayjs from '~utils/dayjs';
+
 import { HeistDifficultyEnum, HeistPreferedTacticEnum } from '../api/types';
 
 export const mapFiltersValidationSchema = z
@@ -89,19 +91,63 @@ export const mapFiltersValidationSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.startAtMin && data.startAtMax) {
-      if (data.startAtMin > data.startAtMax) {
+      if (dayjs(data.startAtMin).isAfter(data.startAtMax)) {
         ctx.addIssue({
           code: 'custom',
           path: ['startAtMin'],
           message: 'map.filters.start_at_min_greater_than_max',
         });
       }
+    }
 
-      if (data.startAtMin === data.startAtMax) {
+    if (data.shouldEndAtMin && data.shouldEndAtMax) {
+      if (dayjs(data.startAtMax).isBefore(data.startAtMin)) {
         ctx.addIssue({
           code: 'custom',
           path: ['startAtMin'],
           message: 'map.filters.start_at_min_equals_max',
+        });
+      }
+    }
+
+    if (data.startAtMin && dayjs(data.startAtMin).isBefore(dayjs().startOf('day'))) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['startAtMin'],
+        message: 'map.filters.date_greater_than_or_equal_now',
+      });
+    }
+
+    if (data.startAtMax && dayjs(data.startAtMax).isBefore(dayjs().startOf('day'))) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['startAtMax'],
+        message: 'map.filters.date_greater_than_or_equal_now',
+      });
+    }
+
+    if (data.startAtMin && dayjs(data.startAtMin).isBefore(dayjs().startOf('day'))) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['startAtMin'],
+        message: 'map.filters.date_greater_than_or_equal_now',
+      });
+    }
+
+    if (data.startAtMax && dayjs(data.startAtMax).isBefore(dayjs().startOf('day'))) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['startAtMax'],
+        message: 'map.filters.date_greater_than_or_equal_now',
+      });
+    }
+
+    if (data.minimumPayout && data.maximumPayout) {
+      if (data.minimumPayout > data.maximumPayout) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['minimumPayout'],
+          message: 'map.filters.minimum_payout_greater_than_maximum_payout',
         });
       }
     }
