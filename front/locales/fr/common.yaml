@@ -471,3 +471,13 @@ establishment.apply.minimum_hours: >-
 rating.star: Noter {rating, number}
 rating.label: Sélection de la note
 rating.label.read_only: Noté {rating, number} sur {total}
+
+# Review
+review.rating: Note
+review.comment: Commentaire
+review.comment.placeholder: Écrire un avis...
+review.add_review: Ajouter un avis
+review.edit_review: Modifier votre avis
+review.no_review: Aucun avis
+review.no_review_description: Soyez le premier à donner votre avis sur ce lieu.
+review.no_review_description_establishment: Soyez le premier à donner votre avis sur cet établissement.

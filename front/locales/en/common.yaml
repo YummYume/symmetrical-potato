@@ -460,3 +460,13 @@ establishment.apply.minimum_hours: >-
 rating.star: Rate {rating}
 rating.label: Rating selection
 rating.label.read_only: Rated {rating} out of {total}
+
+# Review
+review.rating: Rating
+review.comment: Comment
+review.comment.placeholder: Write a review...
+review.add_review: Add a review
+review.edit_review: Edit your review
+review.no_review: No review
+review.no_review_description: Be the first to review this location.
+review.no_review_description_establishment: Be the first to review this establishment.
