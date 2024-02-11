@@ -22,7 +22,8 @@ const defaultOptions: React.ComponentProps<typeof Map> = {
       ],
     },
   ],
-  zoom: 11,
+  zoom: 14,
+  maxZoom: 20,
   streetViewControl: false,
   mapTypeControl: false,
   zoomControl: true,
@@ -31,6 +32,14 @@ const defaultOptions: React.ComponentProps<typeof Map> = {
 
 export default function HeistMap({
   options = {},
-}: Readonly<{ options: React.ComponentProps<typeof Map> }>) {
-  return <Map {...defaultOptions} {...options} />;
+  children,
+}: {
+  options: React.ComponentProps<typeof Map>;
+  children?: React.ReactNode;
+}) {
+  return (
+    <Map {...defaultOptions} {...options}>
+      {children}
+    </Map>
+  );
 }

@@ -7,6 +7,9 @@ number.must_be_integer: Ce nombre doit être un entier.
 # Boolean
 boolean.not_a_boolean: Cette valeur doit être soit vrai, soit fausse.
 
+# Array
+array.not_an_array: Cette valeur doit être un tableau.
+
 # Login
 login.username.required: Veuillez saisir votre nom d'utilisateur.
 login.password.required: Veuillez saisir votre mot de passe.
@@ -121,9 +124,6 @@ heist.allowed_employees.min_length: Veuillez sélectionner au moins un employé 
 heist.allowed_employees.max_length: Veuillez sélectionner moins de 10 employés autorisés.
 heist.forbidden_assets.value.invalid_type: Veuillez sélectionner une valide.
 heist.forbidden_users.value.invalid_type: Veuillez sélectionner un braqueur valide.
-heist.minimum_required_rating.invalid_type: La note minimale est invalide.
-heist.minimum_required_rating.positive: La note minimale doit être positive.
-heist.minimum_required_rating.max: La note minimale doit être de 5 maximum.
 heist.difficulty.required: Veuillez sélectionner une difficulté.
 heist.difficulty.invalid_type: La difficulté sélectionnée est invalide.
 heist.objectives.name.min_length: Le nom doit comporter au moins 2 caractères.
@@ -132,3 +132,11 @@ heist.objectives.description.min_length: La description doit comporter au moins 
 heist.objectives.description.max_length: La description doit comporter moins de 255 caractères.
 heist.visibility.required: La visibilité est requis
 heist.visibility.invalid_type: La visibilité est invalide
+
+# Map
+map.filters.date_greater_than_or_equal_now: La date doit être supérieure ou égale à la date actuelle.
+map.filters.start_at_min_greater_than_max: La date de début minimale doit être antérieure à la date de début maximale.
+map.filters.start_at_min_equals_max: La date de début minimale doit être différente de la date de début maximale.
+map.filters.prefered_tactics_invalid_type: Les tactiques préférées sélectionnées sont invalides.
+map.filters.difficulties_invalid_type: Les difficultés sélectionnées sont invalides.
+map.filters.minimum_payout_greater_than_maximum_payout: Le paiement minimum doit être inférieur au paiement maximum.

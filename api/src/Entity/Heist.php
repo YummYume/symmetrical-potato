@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
@@ -18,6 +19,7 @@ use App\Enum\HeistPhaseEnum;
 use App\Enum\HeistPreferedTacticEnum;
 use App\Enum\HeistVisibilityEnum;
 use App\Filter\MatchFilter;
+use App\Filter\MatchUuidFilter;
 use App\Filter\UuidFilter;
 use App\Repository\HeistRepository;
 use App\State\HeistProcessor;
@@ -95,10 +97,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[SlotAvailable(groups: [self::CREATE, self::UPDATE])]
-#[ApiFilter(DateFilter::class, properties: ['startAt'])]
-#[ApiFilter(MatchFilter::class, properties: ['phase'])]
+#[ApiFilter(MatchFilter::class, properties: ['phase', 'difficulty', 'visibility', 'preferedTactic'])]
+#[ApiFilter(MatchUuidFilter::class, properties: ['establishment.id'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]
 #[ApiFilter(SearchFilter::class, properties: ['location.placeId' => 'exact'])]
+#[ApiFilter(DateFilter::class, properties: ['startAt', 'shouldEndAt'])]
+#[ApiFilter(RangeFilter::class, properties: ['minimumPayout', 'maximumPayout'])]
 class Heist
 {
     use BlameableTrait;
@@ -207,11 +211,6 @@ class Heist
         maxMessage: 'heist.objectives.size.invalid',
     )]
     private array $objectives = [];
-
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[Groups([self::READ, self::CREATE, self::UPDATE])]
-    #[Assert\Type(groups: [self::CREATE, self::UPDATE], type: 'float', message: 'heist.minimum_required_rating.invalid')]
-    private ?float $minimumRequiredRating = null;
 
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
     #[Groups([self::READ, self::CREATE, self::UPDATE])]
@@ -422,18 +421,6 @@ class Heist
     public function setObjectives(array $objectives): static
     {
         $this->objectives = $objectives;
-
-        return $this;
-    }
-
-    public function getMinimumRequiredRating(): ?float
-    {
-        return $this->minimumRequiredRating;
-    }
-
-    public function setMinimumRequiredRating(?float $minimumRequiredRating): static
-    {
-        $this->minimumRequiredRating = $minimumRequiredRating;
 
         return $this;
     }

@@ -21,17 +21,40 @@ import { FieldInput } from '~components/form/custom/FieldInput';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~utils/api';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
-import type { ActionFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, MetaFunction } from '@remix-run/node';
 import type { AdminAssetFormData } from '~/lib/validators/admin/asset';
 import type { FlashMessage } from '~/root';
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);
 
-  return {};
+  const t = await i18next.getFixedT(request, 'admin');
+
+  return {
+    meta: {
+      title: t('meta.assets_create.title', {
+        ns: 'admin',
+      }),
+      description: t('meta.assets_create.description', {
+        ns: 'admin',
+      }),
+    },
+  };
 }
 
 export type Loader = typeof loader;
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [
+    { title: data.meta.title },
+    { name: 'description', content: data.meta.description },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
 
 export async function action({ request, context }: ActionFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);

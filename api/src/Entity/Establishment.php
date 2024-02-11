@@ -108,7 +108,7 @@ class Establishment
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE, User::READ])]
+    #[Groups([self::READ_PUBLIC, self::CREATE, self::UPDATE, User::READ, Heist::READ])]
     #[Assert\NotBlank(message: 'establishment.name.not_blank', groups: [self::CREATE, self::UPDATE])]
     #[Assert\Length(
         min: 1,

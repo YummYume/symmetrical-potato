@@ -57,19 +57,6 @@ export const updateHeistValidationSchema = z
           message: 'heist.maximum_payout.positive',
         }),
     ),
-    minimumRequiredRating: zu.number(
-      z.coerce
-        .number({
-          invalid_type_error: 'heist.minimum_required_rating.invalid_type',
-        })
-        .positive({
-          message: 'heist.minimum_required_rating.positive',
-        })
-        .max(5, {
-          message: 'heist.minimum_required_rating.max',
-        })
-        .optional(),
-    ),
     allowedEmployees: z
       .object({
         value: z.string({
@@ -118,7 +105,7 @@ export const updateHeistValidationSchema = z
           .string()
           .min(10, { message: 'heist.objectives.description.min_length' })
           .max(255, { message: 'heist.objectives.description.max_length' }),
-        optional: z.boolean().optional(),
+        optional: zu.boolean(z.boolean({ invalid_type_error: 'boolean.not_a_boolean' })),
       })
       .array()
       .optional(),
@@ -155,4 +142,5 @@ export const updateHeistValidationSchema = z
   });
 
 export const updateHeistResolver = zodResolver(updateHeistValidationSchema);
+
 export type UpdateHeistFormData = z.infer<typeof updateHeistValidationSchema>;

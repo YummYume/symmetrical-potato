@@ -1,9 +1,10 @@
-import { Card, Container, Flex, Heading, Section, Text } from '@radix-ui/themes';
+import { Container, Heading, Section, Text } from '@radix-ui/themes';
 import { useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import { getHeistsForToday } from '~/lib/api/heist';
-import { HeistPhaseBadge } from '~/lib/components/heist/HeistPhaseBadge';
+import { HeistHoverCard } from '~/lib/components/heist/HeistHoverCard';
+import { HeistListItem } from '~/lib/components/heist/HeistListItem';
 import { i18next } from '~/lib/i18n/index.server';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link } from '~components/Link';
@@ -19,7 +20,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   return {
     heists: response.heists.edges,
-    locale: context.locale,
     pageInfo: response.heists.pageInfo,
     meta: {
       title: t('meta.dashboard.title'),
@@ -44,7 +44,7 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { heists, locale } = useLoaderData<Loader>();
+  const { heists } = useLoaderData<Loader>();
 
   return (
     <main className="py-10">
@@ -65,43 +65,36 @@ export default function Dashboard() {
             <ul className="space-y-3">
               {heists
                 .sort((a, b) => -dayjs(a.node.startAt).diff(dayjs(b.node.startAt)))
-                .map(({ node: { crewMembers, id, name, startAt, phase, location } }) => {
-                  const heistStartAt = dayjs(startAt).locale(locale);
-
+                .map(({ node }) => {
                   return (
-                    <Card asChild key={id}>
-                      <li>
+                    <li key={node.id}>
+                      <HeistHoverCard
+                        name={node.name}
+                        description={node.description}
+                        startAt={node.startAt}
+                        shouldEndAt={node.shouldEndAt}
+                        minimumPayout={node.minimumPayout}
+                        maximumPayout={node.maximumPayout}
+                        objectiveCount={node.objectives.length}
+                        heistersCount={node.crewMembers.totalCount}
+                        phase={node.phase}
+                        preferedTactic={node.preferedTactic}
+                        difficulty={node.difficulty}
+                        location={node.location.name}
+                        establishment={node.establishment.name}
+                        align="end"
+                      >
                         {/* TODO heist page */}
-                        <Link to={`/map/${location.placeId}`}>
-                          <Flex justify="between" gap="1">
-                            <Flex direction="column" justify="between" gap="1" align="start">
-                              <Text as="p" size="2" weight="bold">
-                                {name}
-                              </Text>
-                              <Text as="p" color="gray" size="2">
-                                {heistStartAt.isSameOrAfter(dayjs().locale(locale), 'hours')
-                                  ? heistStartAt.fromNow()
-                                  : heistStartAt.toNow()}
-                              </Text>
-                            </Flex>
-                            <Flex direction="column" justify="between" gap="1" align="end">
-                              <Text
-                                as="p"
-                                size="2"
-                                weight="bold"
-                                aria-label={t('heist.crew_member_count', {
-                                  count: crewMembers.totalCount,
-                                })}
-                              >
-                                {crewMembers.totalCount}
-                                <span> / 4</span>
-                              </Text>
-                              <HeistPhaseBadge phase={phase} />
-                            </Flex>
-                          </Flex>
+                        <Link to={`/map/${node.location.placeId}`}>
+                          <HeistListItem
+                            name={node.name}
+                            crewMembers={node.crewMembers.totalCount}
+                            startAt={node.startAt}
+                            phase={node.phase}
+                          />
                         </Link>
-                      </li>
-                    </Card>
+                      </HeistHoverCard>
+                    </li>
                   );
                 })}
             </ul>

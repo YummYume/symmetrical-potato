@@ -19,6 +19,7 @@ import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
 import { FieldMultiSelect } from '~/lib/components/form/custom/FieldMultiSelect';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
+import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~/lib/utils/api';
@@ -30,6 +31,7 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import type { Option } from '~/lib/types/select';
 import type { UpdateHeistFormData } from '~/lib/validators/update-heist';
 import type { FlashMessage } from '~/root';
 
@@ -59,10 +61,11 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     // Get the establishments of the current user
     const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
     const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
-
-    const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
-    const { assets } = await getAssets(context.client);
-    const { users } = await getUsers(context.client);
+    const [{ employees }, { assets }, { users }] = await Promise.all([
+      getEmployeesEstablishments(context.client, establishmentsIds),
+      getAssets(context.client),
+      getUsers(context.client),
+    ]);
 
     return {
       user,
@@ -143,7 +146,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       id: params?.heistId,
       minimumPayout: +heistData.minimumPayout,
       maximumPayout: +heistData.maximumPayout,
-      minimumRequiredRating: +(heistData?.minimumRequiredRating ?? 0),
       startAt: dayjs(`${startAtDate} ${startAtTime}`).toISOString(),
       shouldEndAt: dayjs(`${shouldEndAtDate} ${shouldEndAtTime}`).utc(false).toISOString(),
       allowedEmployees: heistData.allowedEmployees.map((allowedEmployee) => allowedEmployee.value),
@@ -182,12 +184,11 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   );
 }
 
-type Option = { label: string; value: string };
+export type Action = typeof action;
 
 export default function Edit() {
   const { t } = useTranslation();
   const { placeId, heist, employees, assets, users, user } = useLoaderData<Loader>();
-
   const usersFormatted = users.edges.reduce<Option[]>((acc, curr) => {
     if (user.id !== curr.node.id) {
       acc.push({
@@ -198,12 +199,10 @@ export default function Edit() {
 
     return acc;
   }, []);
-
   const assetsFormatted: Option[] = assets.edges.map((edge) => ({
     label: edge.node.name,
     value: edge.node.id,
   }));
-
   const employeesFormatted = employees.edges.reduce<Option[]>((acc, curr) => {
     if (heist.establishment.id === curr.node.establishment.id) {
       acc.push({
@@ -214,14 +213,18 @@ export default function Edit() {
 
     return acc;
   }, []);
-
-  const heistVisibilities = formatEnums(Object.values(HeistVisibilityEnum));
-  const heistPreferedTactics = formatEnums(Object.values(HeistPreferedTacticEnum));
-  const heistDifficulties = formatEnums(Object.values(HeistDifficultyEnum));
-
+  const heistVisibilities = formatEnums(Object.values(HeistVisibilityEnum), 'heist.visibility');
+  const heistPreferedTactics = formatEnums(
+    Object.values(HeistPreferedTacticEnum),
+    'heist.prefered_tactic',
+  );
+  const heistDifficulties = formatEnums(Object.values(HeistDifficultyEnum), 'heist.difficulty');
   const methods = useRemixForm<UpdateHeistFormData>({
     mode: 'onSubmit',
     resolver: updateHeistResolver,
+    submitConfig: {
+      unstable_viewTransition: true,
+    },
     defaultValues: {
       name: heist.name,
       description: heist.description,
@@ -233,7 +236,6 @@ export default function Edit() {
       difficulty: heist.difficulty,
       minimumPayout: heist.minimumPayout,
       maximumPayout: heist.maximumPayout,
-      minimumRequiredRating: heist.minimumRequiredRating,
       allowedEmployees: heist.allowedEmployees.edges.map((edge) => ({
         value: edge.node.id,
         label: edge.node.user.username,
@@ -247,7 +249,12 @@ export default function Edit() {
         label: edge.node.name,
       })),
       visibility: heist.visibility,
-      objectives: heist.objectives,
+      objectives: heist.objectives.map(
+        (objective: { name: string; description: string; optional?: boolean }) => ({
+          ...objective,
+          optional: objective.optional ?? false,
+        }),
+      ),
     },
   });
 
@@ -266,8 +273,8 @@ export default function Edit() {
             className="space-y-4"
             onSubmit={methods.handleSubmit}
           >
-            <FieldInput name="name" label={t('name')} type="text" />
-            <FieldInput name="description" label={t('description')} type="text" />
+            <FieldInput name="name" label={t('name')} type="text" required />
+            <TextAreaInput name="description" label={t('description')} />
             <Grid columns="2" gap="2">
               <FieldInput name="startAtDate" label={t('heist.start_at.date')} type="date" />
               <FieldInput name="startAtTime" label={t('heist.start_at.time')} type="time" />
@@ -288,13 +295,6 @@ export default function Edit() {
               <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
               <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
             </Grid>
-            <FieldInput
-              name="minimumRequiredRating"
-              label={t('heist.minimum_required_rating')}
-              type="number"
-              min={0}
-              max={5}
-            />
             <FieldMultiSelect
               name="allowedEmployees"
               label={t('heist.allowed_employees')}

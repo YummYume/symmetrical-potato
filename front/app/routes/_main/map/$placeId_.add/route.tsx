@@ -30,6 +30,7 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import type { Option } from '~/lib/types/select';
 import type { CreateHeistFormData } from '~/lib/validators/create-heist';
 import type { FlashMessage } from '~/root';
 
@@ -39,10 +40,11 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   // Get the establishments of the current user
   const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
   const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
-
-  const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
-  const { assets } = await getAssets(context.client);
-  const { users } = await getUsers(context.client);
+  const [{ employees }, { assets }, { users }] = await Promise.all([
+    getEmployeesEstablishments(context.client, establishmentsIds),
+    getAssets(context.client),
+    getUsers(context.client),
+  ]);
 
   return {
     user,
@@ -91,7 +93,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       ...heistData,
       minimumPayout: +heistData.minimumPayout,
       maximumPayout: +heistData.maximumPayout,
-      minimumRequiredRating: +(heistData?.minimumRequiredRating ?? 0),
       startAt: dayjs(`${startAtDate} ${startAtTime}`).toISOString(),
       shouldEndAt: dayjs(`${shouldEndAtDate} ${shouldEndAtTime}`).toISOString(),
       visibility: HeistVisibilityEnum.Draft,
@@ -132,8 +133,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
   );
 }
-
-type Option = { label: string; value: string };
 
 export default function Add() {
   const { t } = useTranslation();
@@ -188,7 +187,6 @@ export default function Add() {
       difficulty: HeistDifficultyEnum.Normal,
       minimumPayout: 100000,
       maximumPayout: 1000000,
-      minimumRequiredRating: 1,
       allowedEmployees: employeesFormatted.filter(
         (employee) => employee.establishmentId === establishments.edges[0].node.id,
       ),
@@ -257,13 +255,6 @@ export default function Add() {
               <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
               <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
             </Grid>
-            <FieldInput
-              name="minimumRequiredRating"
-              label={t('heist.minimum_required_rating')}
-              type="number"
-              min={0}
-              max={5}
-            />
             <FieldSelect
               name="establishment"
               label={t('establishment')}

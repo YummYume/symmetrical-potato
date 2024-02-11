@@ -24,11 +24,11 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~utils/api';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
-import type { ActionFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, MetaFunction } from '@remix-run/node';
 import type { AdminEstablishmentFormData } from '~/lib/validators/admin/establishment';
 import type { FlashMessage } from '~/root';
 
-export async function loader({ context, params }: LoaderFunctionArgs) {
+export async function loader({ request, context, params }: LoaderFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);
 
   if (!params.establishmentId) {
@@ -36,10 +36,19 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   }
 
   try {
-    const response = await getEstablishment(context.client, params.establishmentId);
+    const t = await i18next.getFixedT(request, 'admin');
+    const { establishment } = await getEstablishment(context.client, params.establishmentId);
 
     return {
-      establishment: response.establishment,
+      establishment,
+      meta: {
+        title: t('meta.establishments_edit.title', {
+          ns: 'admin',
+        }),
+        description: t('meta.establishments_edit.description', {
+          ns: 'admin',
+        }),
+      },
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'establishment')) {
@@ -54,6 +63,18 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
 }
 
 export type Loader = typeof loader;
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [
+    { title: data.meta.title },
+    { name: 'description', content: data.meta.description },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);

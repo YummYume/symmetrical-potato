@@ -26,11 +26,11 @@ import { UserStatusBadge } from '~components/user/UserStatusBadge';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~utils/api';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
-import type { ActionFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, MetaFunction } from '@remix-run/node';
 import type { AdminUserFormData } from '~/lib/validators/admin/user';
 import type { FlashMessage } from '~/root';
 
-export async function loader({ context, params }: LoaderFunctionArgs) {
+export async function loader({ request, context, params }: LoaderFunctionArgs) {
   const currentUser = denyAdminAccessUnlessGranted(context.user);
 
   if (!params.userId) {
@@ -38,11 +38,20 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   }
 
   try {
-    const response = await getUser(context.client, params.userId);
+    const t = await i18next.getFixedT(request, 'admin');
+    const { user } = await getUser(context.client, params.userId);
 
     return {
-      user: response.user,
+      user,
       currentUser,
+      meta: {
+        title: t('meta.users_edit.title', {
+          ns: 'admin',
+        }),
+        description: t('meta.users_edit.description', {
+          ns: 'admin',
+        }),
+      },
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'user')) {
@@ -57,6 +66,18 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
 }
 
 export type Loader = typeof loader;
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [
+    { title: data.meta.title },
+    { name: 'description', content: data.meta.description },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);

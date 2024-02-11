@@ -1,3 +1,33 @@
+# Meta
+meta.home.title: Accueil
+meta.home.description: Bienvenue dans le panneau d'administration de Symmetrical Potato.
+meta.assets.title: Assets
+meta.assets.description: Gérer les assets de Symmetrical Potato.
+meta.assets_create.title: Créer un asset
+meta.assets_create.description: Créer un nouvel asset.
+meta.assets_edit.title: Modifier l'asset
+meta.assets_edit.description: Modifier un asset.
+meta.contractor_requests.title: Demandes de contractant
+meta.contractor_requests.description: Gérer les demandes de contractant de Symmetrical Potato.
+meta.contractor_requests_edit.title: Modifier la demande de contractant
+meta.contractor_requests_edit.description: Modifier une demande de contractant.
+meta.establishments.title: Établissements
+meta.establishments.description: Gérer les établissements de Symmetrical Potato.
+meta.establishments_edit.title: Modifier l'établissement
+meta.establishments_edit.description: Modifier un établissement.
+meta.heists.title: Braquages
+meta.heists.description: Gérer les braquages de Symmetrical Potato.
+meta.heists_edit.title: Modifier le braquage
+meta.heists_edit.description: Modifier un braquage.
+meta.locations.title: Lieux
+meta.locations.description: Gérer les lieux de Symmetrical Potato.
+meta.locations_edit.title: Modifier le lieu
+meta.locations_edit.description: Modifier un lieu.
+meta.users.title: Utilisateurs
+meta.users.description: Gérer les utilisateurs de Symmetrical Potato.
+meta.users_edit.title: Modifier l'utilisateur
+meta.users_edit.description: Modifier un utilisateur.
+
 # User
 user.verify.confirm: >
   Êtes-vous sûr de vouloir vérifier cet utilisateur ? Il recevra un e-mail l'informant qu'il peut maintenant se connecter.
@@ -39,6 +69,9 @@ location.delete.confirm: >-
 # Establishment
 establishment.delete.confirm: >-
   Êtes-vous sûr de vouloir supprimer cet établissement ? Toutes les données associées à cet établissement seront supprimées.
+
+# Heist
+heist.delete.confirm: Êtes-vous sûr de vouloir supprimer ce braquage ? Toutes les données liées à ce braquage seront perdues.
 
 # Dashboard
 ## Heists

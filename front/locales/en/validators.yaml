@@ -11,6 +11,9 @@ number.must_be_integer: This number must be an integer.
 # Boolean
 boolean.not_a_boolean: This value must be either true or false.
 
+# Array
+array.not_an_array: This value must be an array.
+
 # Login
 login.username.required: Please enter your username.
 login.password.required: Please enter your password.
@@ -122,9 +125,6 @@ heist.allowed_employees.min_length: Please select at least 1 allowed employee.
 heist.allowed_employees.max_length: Please select at most 10 allowed employees.
 heist.forbidden_assets.value.invalid: The selected forbidden asset is invalid.
 heist.forbidden_users.value.invalid_type: The selected forbidden heister is invalid.
-heist.minimum_required_rating.invalid_type: The minimum required rating is invalid.
-heist.minimum_required_rating.positive: The minimum required rating must be positive.
-heist.minimum_required_rating.max: The minimum rating must be 5 or less.
 heist.difficulty.required: Please select a difficulty.
 heist.difficulty.invalid_type: The selected difficulty is invalid.
 heist.objectives.name.min_length: The name must be at least 2 characters long.
@@ -133,3 +133,11 @@ heist.objectives.description.min_length: The description must be at least 10 cha
 heist.objectives.description.max_length: The description must be less than 255 characters long.
 heist.visibility.required: The visibility is required.
 heist.visibility.invalid_type: The visibility is invalid.
+
+# Map
+map.filters.date_greater_than_or_equal_now: The date must be greater than or equal to the current date.
+map.filters.start_at_min_greater_than_max: The minimum start date must be before the maximum start date.
+map.filters.start_at_min_equals_max: The minimum start date must be different from the maximum start date.
+map.filters.prefered_tactics_invalid_type: The selected prefered tactics are invalid.
+map.filters.difficulties_invalid_type: The selected difficulties are invalid.
+map.filters.minimum_payout_greater_than_maximum_payout: The minimum payout must be less than the maximum payout.

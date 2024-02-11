@@ -1,3 +1,33 @@
+# Meta
+meta.home.title: Home
+meta.home.description: Welcome to the admin panel of Symmetrical Potato.
+meta.assets.title: Assets
+meta.assets.description: Manage the assets of Symmetrical Potato.
+meta.assets_create.title: Create Asset
+meta.assets_create.description: Create a new asset.
+meta.assets_edit.title: Edit Asset
+meta.assets_edit.description: Edit an asset.
+meta.contractor_requests.title: Contractor Requests
+meta.contractor_requests.description: Manage the contractor requests of Symmetrical Potato.
+meta.contractor_requests_edit.title: Edit Contractor Request
+meta.contractor_requests_edit.description: Edit a contractor request.
+meta.establishments.title: Establishments
+meta.establishments.description: Manage the establishments of Symmetrical Potato.
+meta.establishments_edit.title: Edit Establishment
+meta.establishments_edit.description: Edit an establishment.
+meta.heists.title: Heists
+meta.heists.description: Manage the heists of Symmetrical Potato.
+meta.heists_edit.title: Edit Heist
+meta.heists_edit.description: Edit a heist.
+meta.locations.title: Locations
+meta.locations.description: Manage the locations of Symmetrical Potato.
+meta.locations_edit.title: Edit Location
+meta.locations_edit.description: Edit a location.
+meta.users.title: Users
+meta.users.description: Manage the users of Symmetrical Potato.
+meta.users_edit.title: Edit User
+meta.users_edit.description: Edit a user.
+
 # User
 user.verify.confirm: Are you sure you want to verify this user? They will receive an email notifying them that they can now login.
 user.delete.confirm: Are you sure you want to delete this user? All data associated with this user will be deleted.
@@ -34,6 +64,9 @@ location.delete.confirm: Are you sure you want to delete this location? All data
 
 # Establishment
 establishment.delete.confirm: Are you sure you want to delete this establishment? All data associated with this establishment will be deleted.
+
+# Heist
+heist.delete.confirm: Are you sure you want to delete this heist? All the data related to this heist will be lost.
 
 # Dashboard
 ## Heists

@@ -60,10 +60,15 @@ validate: Valider
 leave: Quitter
 purchase: Acheter
 optional: Optionnel
+apply: Appliquer
+select: Sélectionner...
+search: Rechercher
 
 # Meta
 meta.dashboard.title: Tableau de bord
 meta.dashboard.description: Votre tableau de bord personnel. Vraiment le vôtre.
+meta.map.title: Carte
+meta.map.description: Trouvez le braquage parfait en utilisant la carte de New York.
 meta.my_contractor_request.title: Ma demande de contractant
 meta.my_contractor_request.description: Vérifiez le statut de votre demande de contractant.
 meta.my_account.title: Mon compte
@@ -75,6 +80,87 @@ meta.my_job.description: Consultez votre emploi actuel.
 # Dashboard
 dashboard.heists.today: Braquages aujourd'hui
 dashboard.heists.no_heists_today: Aucun braquage trouvé pour aujourd'hui.
+
+# Map
+## Settings
+map.settings: Paramètres de la carte
+map.settings.description: Personnalisez la carte selon vos préférences.
+map.settings.show_markers: Afficher les marqueurs
+
+## Filters
+map.filters: Filtres
+map.filters.description: Filtrez les braquages pour voir uniquement ceux qui vous intéressent.
+map.filters.start_at_min: Date de début minimale
+map.filters.start_at_max: Date de début maximale
+map.filters.end_at_min: Date de fin estimée minimale
+map.filters.end_at_max: Date de fin estimée maximale
+map.filters.minimum_payout: Paiement minimum
+map.filters.maximum_payout: Paiement maximum
+map.filters.prefered_tactics: Tactiques préférées
+map.filters.difficulties: Difficultés
+map.filters.establishments: Établissements
+
+## Help
+map.help: Aide
+map.help.description: >-
+  Cette carte montre tous les braquages disponibles à New York.
+  Des contrôles sont disponibles pour vous aider à personnaliser la carte et filtrer les braquages.
+
+### Controls
+map.help.controls: Contrôles
+map.help.location_list: Liste des emplacements
+map.help.location_list_description: >-
+  Une liste est directement disponible pour vous permettre de rechercher tous les emplacements disponibles.
+  Vous pouvez utiliser cette liste pour zoomer sur un emplacement spécifique et voir plus de détails.
+map.help.heist_list: Liste des braquages
+map.help.heist_list_description: >-
+  Une liste est directement disponible pour vous permettre de rechercher tous les braquages disponibles.
+  Vous pouvez utiliser cette liste pour zoomer sur un braquage spécifique et voir plus de détails.
+map.help.filters: Filtres
+map.help.filters_description: >-
+  Vous pouvez utiliser les filtres pour ne montrer que les braquages qui vous intéressent (par exemple, seulement les braquages louds à partir de demain).
+map.help.settings: Paramètres
+map.help.settings_description: >-
+  Vous pouvez utiliser les paramètres pour personnaliser la carte selon vos préférences (par exemple, afficher ou masquer les marqueurs sur la carte).
+
+### On the map
+map.help.on_map: Sur la carte
+map.help.markers: Marqueurs
+map.help.markers_description: >-
+  Vous pouvez cliquer sur un marqueur pour voir les braquages disponibles à cet endroit.
+  En cliquant sur un braquage, vous pourrez voir plus de détails et le rejoindre si vous le souhaitez.
+  Si vous ne voyez aucun marqueur, assurez-vous de les avoir activés dans les paramètres en haut à droite de la carte.
+  Il est également possible qu'il n'y ait pas de braquages disponibles pour le moment.
+map.help.drawer: Tiroir
+map.help.drawer_description: >-
+  Lors de la sélection d'un emplacement ou d'un braquage, un tiroir apparaîtra sur le côté gauche de l'écran.
+  Ce tiroir contiendra toutes les informations nécessaires et vous permettra d'interagir avec l'emplacement ou le braquage sélectionné.
+map.help.unknow_location: Emplacement inconnu
+map.help.unknow_location_description: >-
+  Si un emplacement n'a jamais été utilisé auparavant, il ne contiendra que des informations de base lorsqu'il est affiché dans le tiroir.
+
+## Locations
+map.locations: Emplacements
+map.locations.all: Tous les emplacements disponibles avec au moins un braquage.
+map.locations.focus_on_location: Se déplacer sur l'emplacement {location}.
+map.locations.results: >-
+  {count, plural,
+    =0 {Aucun emplacement trouvé}
+    one {1 emplacement trouvé}
+    other {# emplacements trouvés}
+  }.
+
+## Heists
+map.heists: Braquages
+map.heists.all_available: Tous les braquages disponibles.
+map.heists.all_available_for_location: Tous les braquages disponibles pour {location}.
+map.heists.focus_on_heist: Se déplacer sur le braquage {heist}.
+map.heists.results: >-
+  {count, plural,
+    =0 {Aucun braquage trouvé}
+    one {# braquage trouvé}
+    other {# braquages trouvés}
+  }.
 
 # History info
 history_info: Information sur l'historique
@@ -135,8 +221,19 @@ my_contractor_request.no_request_description: >
   embaucher des employés, ainsi que créer et organiser des braquages.
 
 # Heist
+heist.name: Nom
+heist.description: Description
+heist.no_description: Aucune description disponible.
+heist.objective_count: >-
+  {count, plural,
+    =0 {Aucun objectif}
+    one {# objectif}
+    other {# objectifs}
+  }
+heist.start_at: Date de début
 heist.start_at.date: Date de début
 heist.start_at.time: Heure de début
+heist.should_end_at: Date de fin estimée
 heist.should_end_at.date: Date de fin estimée
 heist.should_end_at.time: Heure de fin estimée
 heist.prefered_tactic: Tactique préférée
@@ -147,7 +244,6 @@ heist.difficulty: Difficulté
 heist.allowed_employees: Employés autorisés
 heist.forbidden_users: Braqueurs interdits
 heist.forbidden_assets: Assets interdits
-heist.minimum_required_rating: Note minimale requise
 heist.visibility: Visibilité
 heist.add: Ajouter un braquage
 heist.add_objective: Ajouter un objectif
@@ -156,10 +252,10 @@ heist.leave.confirm: >-
   Êtes-vous sûr de vouloir quitter ce braquage ? Vous allez perdre tous vos
   équipements.
 heist.add.confirm: Êtes-vous sûr de vouloir ajouter ce braquage ?
-heist.edit.confirm: Êtes-vous sûr de vouloir rendre public ce braquage ?
+heist.edit.confirm: Êtes-vous sûr de vouloir rendre ce braquage public ?
 heist.edit.confirm_description: >-
-  Rendre ce braquage public vous coutera $15.000, si vous supprimer ce braquage,
-  50% de la somme vous sera remboursé uniquement.
+  Rendre ce braquage public vous coutera $15.000.
+  Supprimer ce braquage ne vous remboursera que 50% de ce que vous avez payé.
 heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
 heist.employee.chosen: L'employé nommé {name} vous aidera.
 heist.employee.not_chosen: Choisissez celui qui vous aidera.
@@ -172,12 +268,23 @@ heist.phase.failed: Échoué
 heist.phase.in_progress: En cours
 heist.phase.succeeded: Réussi
 heist.phase.planning: Planification
+heist.crew_members: Braqueurs
 heist.crew_member_count: |-
   {count, plural,
     =0 {0 braqueur}
     one {# braqueur}
     other {# braqueurs}
-  } sur 4
+  } sur 4.
+heist.prefered_tactic.stealth: Furtif
+heist.prefered_tactic.loud: En force
+heist.prefered_tactic.semistealth: Semi-furtif
+heist.prefered_tactic.unknown: Inconnu
+heist.difficulty.normal: Normal
+heist.difficulty.hard: Difficile
+heist.difficulty.veryhard: Très difficile
+heist.difficulty.overkill: Overkill
+heist.visibility.public: Public
+heist.visibility.draft: Brouillon
 
 # Employee
 employee: Employé
@@ -264,6 +371,13 @@ location.longitude: Longitude
 location.average_rating: Note moyenne
 location.average_rating.none: Aucune note
 location.review_count: Nombre d'avis
+location.not_found: Emplacement introuvable
+location.heists_count: >-
+  {count, plural,
+    =0 {Aucun braquage}
+    one {# braquage}
+    other {# braquages}
+  }
 
 # Establishment
 establishment.name: Nom

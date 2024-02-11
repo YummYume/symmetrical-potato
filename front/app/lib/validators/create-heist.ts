@@ -57,19 +57,6 @@ export const createHeistValidationSchema = z
           message: 'heist.maximum_payout.positive',
         }),
     ),
-    minimumRequiredRating: zu.number(
-      z.coerce
-        .number({
-          invalid_type_error: 'heist.minimum_required_rating.invalid_type',
-        })
-        .positive({
-          message: 'heist.minimum_required_rating.positive',
-        })
-        .max(5, {
-          message: 'heist.minimum_required_rating.max',
-        })
-        .optional(),
-    ),
     allowedEmployees: z
       .object({
         value: z.string({

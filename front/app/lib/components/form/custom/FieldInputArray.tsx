@@ -1,6 +1,5 @@
-import { Grid, Button, Checkbox, Separator } from '@radix-ui/themes';
-import { TextField } from '@radix-ui/themes';
-import { useFieldArray, Controller } from 'react-hook-form';
+import { Grid, Button, Card, Flex } from '@radix-ui/themes';
+import { useFieldArray } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useRemixFormContext } from 'remix-hook-form';
 
@@ -8,8 +7,11 @@ import { Error } from '~/lib/components/form/fields/Error';
 import { Help } from '~/lib/components/form/fields/Help';
 import { Label } from '~/lib/components/form/fields/Label';
 
+import { CheckboxInput } from './CheckboxInput';
+import { FieldInput } from './FieldInput';
+
 import type { HTMLInputTypeAttribute } from 'react';
-import type { ArrayPath, FieldArray, Path } from 'react-hook-form';
+import type { ArrayPath, FieldArray } from 'react-hook-form';
 import type { DefaultFieldProps } from '~/lib/types/form';
 
 type Config<T extends Record<string, unknown>> = {
@@ -69,7 +71,7 @@ export function FieldInputArray<T extends Record<string, unknown>>({
   ...rest
 }: FieldInputArrayProps<T>) {
   const { t } = useTranslation();
-  const { register, control } = useRemixFormContext<T>();
+  const { control } = useRemixFormContext<T>();
   const { fields, append, remove } = useFieldArray({
     control,
     name: name as ArrayPath<T>,
@@ -78,79 +80,67 @@ export function FieldInputArray<T extends Record<string, unknown>>({
   // Beware of confusion between field and fieldInput here, field is from Control
   return (
     <Grid className={containerClassName} gap="1">
-      <LabelField htmlFor={name} className={hideLabel ? 'sr-only' : undefined}>
+      <LabelField as="span" className={hideLabel ? 'sr-only' : undefined}>
         {label}
       </LabelField>
-      <ul>
+      <ul className="space-y-3">
         {fields.map((item, index) => {
           return (
             <li key={item.id}>
-              <Grid gap="1" className="p-4">
-                <Separator mb="2" size="4" />
-                {config.fields.map((fieldInput, key) => (
-                  <Controller
-                    key={`${item.id}-${key}`}
-                    name={`${name}.${index}.${fieldInput.name}` as Path<T>}
-                    control={control}
-                    render={({ field, fieldState: { error } }) => {
-                      const fieldId = id ?? field.name;
-                      const helpId = help ? `${fieldId}-help` : undefined;
-                      const errorId = error?.message ? `${fieldId}-error` : undefined;
-                      return (
-                        <>
-                          <LabelField
-                            htmlFor={fieldId}
-                            className={hideLabel ? 'sr-only' : undefined}
-                          >
-                            {`${fieldInput.label} ${index + 1}`}
-                          </LabelField>
+              <Card>
+                <Grid gap="2">
+                  {config.fields.map((fieldInput, key) => (
+                    <div className="contents" key={`${item.id}-${key}`}>
+                      {fieldInput.type === 'checkbox' && (
+                        <CheckboxInput
+                          name={`${name}.${index}.${fieldInput.name}`}
+                          label={`${fieldInput.label} ${index + 1}`}
+                          hideLabel={hideLabel}
+                          hideError={hideError}
+                          disabled={disabled}
+                          required={required}
+                          labelRender={LabelField}
+                          helpRender={HelpField}
+                          errorRender={ErrorField}
+                        />
+                      )}
+                      {fieldInput.type !== 'checkbox' && (
+                        <FieldInput
+                          name={`${name}.${index}.${fieldInput.name}`}
+                          label={`${fieldInput.label} ${index + 1}`}
+                          type={fieldInput.type}
+                          hideLabel={hideLabel}
+                          hideError={hideError}
+                          disabled={disabled}
+                          required={required}
+                          labelRender={LabelField}
+                          helpRender={HelpField}
+                          errorRender={ErrorField}
+                          inputContainerClassName={inputContainerClassName}
+                          {...rest}
+                        />
+                      )}
+                    </div>
+                  ))}
 
-                          {fieldInput.type === 'checkbox' ? (
-                            <Checkbox
-                              {...register(field.name)}
-                              {...rest}
-                              id={fieldId}
-                              ref={field.ref}
-                              onCheckedChange={field.onChange}
-                              defaultChecked={!!field.value}
-                              aria-describedby={helpId}
-                              aria-errormessage={errorId}
-                              aria-invalid={!!errorId}
-                            />
-                          ) : (
-                            <TextField.Root className={inputContainerClassName}>
-                              <TextField.Input
-                                {...register(field.name)}
-                                {...rest}
-                                id={fieldId}
-                                aria-describedby={helpId}
-                                aria-errormessage={errorId}
-                                aria-invalid={!!errorId}
-                                type={fieldInput.type}
-                              />
-                            </TextField.Root>
-                          )}
-
-                          {error?.message && !hideError && (
-                            <ErrorField id={errorId}>
-                              {t(error.message, { ns: 'validators' })}
-                            </ErrorField>
-                          )}
-                          {help && <HelpField id={helpId}>{help}</HelpField>}
-                        </>
-                      );
-                    }}
-                  />
-                ))}
-
-                <Button type="button" color="crimson" onClick={() => remove(index)}>
-                  {config.delete?.text ?? t('delete', { ns: translationNamespace })}
-                </Button>
-              </Grid>
+                  {!disabled && (
+                    <Flex justify="end" align="center" gap="2">
+                      <Button
+                        type="button"
+                        className="w-fit"
+                        color="crimson"
+                        onClick={() => remove(index)}
+                      >
+                        {config.delete?.text ?? t('delete', { ns: translationNamespace })}
+                      </Button>
+                    </Flex>
+                  )}
+                </Grid>
+              </Card>
             </li>
           );
         })}
-        {fields.length < limit && (
+        {fields.length < limit && !disabled && (
           <Button
             type="button"
             onClick={() => append(config.defaultAppendValue)}
