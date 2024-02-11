@@ -3,6 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import { getHeistsForToday } from '~/lib/api/heist';
+import { HeistHoverCard } from '~/lib/components/heist/HeistHoverCard';
 import { HeistListItem } from '~/lib/components/heist/HeistListItem';
 import { i18next } from '~/lib/i18n/index.server';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
@@ -64,18 +65,35 @@ export default function Dashboard() {
             <ul className="space-y-3">
               {heists
                 .sort((a, b) => -dayjs(a.node.startAt).diff(dayjs(b.node.startAt)))
-                .map(({ node: { crewMembers, id, name, startAt, phase, location } }) => {
+                .map(({ node }) => {
                   return (
-                    <li key={id}>
-                      {/* TODO heist page */}
-                      <Link to={`/map/${location.placeId}`}>
-                        <HeistListItem
-                          name={name}
-                          crewMembers={crewMembers.totalCount}
-                          startAt={startAt}
-                          phase={phase}
-                        />
-                      </Link>
+                    <li key={node.id}>
+                      <HeistHoverCard
+                        name={node.name}
+                        description={node.description}
+                        startAt={node.startAt}
+                        shouldEndAt={node.shouldEndAt}
+                        minimumPayout={node.minimumPayout}
+                        maximumPayout={node.maximumPayout}
+                        objectiveCount={node.objectives.length}
+                        heistersCount={node.crewMembers.totalCount}
+                        phase={node.phase}
+                        preferedTactic={node.preferedTactic}
+                        difficulty={node.difficulty}
+                        location={node.location.name}
+                        establishment={node.establishment.name}
+                        align="end"
+                      >
+                        {/* TODO heist page */}
+                        <Link to={`/map/${node.location.placeId}`}>
+                          <HeistListItem
+                            name={node.name}
+                            crewMembers={node.crewMembers.totalCount}
+                            startAt={node.startAt}
+                            phase={node.phase}
+                          />
+                        </Link>
+                      </HeistHoverCard>
                     </li>
                   );
                 })}

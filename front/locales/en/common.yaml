@@ -237,17 +237,16 @@ heist.difficulty: Difficulty
 heist.allowed_employees: Allowed employees
 heist.forbidden_users: Forbidden heisters
 heist.forbidden_assets: Forbidden assets
-heist.minimum_required_rating: Minimum required rating
 heist.visibility: Visibility
 heist.add: Add a heist
 heist.add_objective: Add an objective
 heist.delete.confirm: Are you sure you want to delete this heist?
 heist.leave.confirm: Are you sure you want to leave this heist? You will lose all your assets.
 heist.add.confirm: Are you sure you want to add this heist?
-heist.edit.confirm: Are you sure you want to go public with this heist?
+heist.edit.confirm: Are you sure you want to make this heist public?
 heist.edit.confirm_description: >-
-  Making this heist public will cost you $15,000. If you cancel this heist, only
-  50% of the sum will be refunded to you.
+  Making this heist public will cost you $15,000.
+  Canceling the heist will only refund you 50% of the cost.
 heist.join.confirm: Are you sure you want to join this heist?
 heist.employee.chosen: The employee named {name} will help you.
 heist.employee.not_chosen: Choose the one who will help you.
@@ -275,6 +274,8 @@ heist.difficulty.normal: Normal
 heist.difficulty.hard: Hard
 heist.difficulty.veryhard: Very hard
 heist.difficulty.overkill: Overkill
+heist.visibility.public: Public
+heist.visibility.draft: Draft
 
 # Employee
 employee: Employee

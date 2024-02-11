@@ -93,7 +93,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       ...heistData,
       minimumPayout: +heistData.minimumPayout,
       maximumPayout: +heistData.maximumPayout,
-      minimumRequiredRating: +(heistData?.minimumRequiredRating ?? 0),
       startAt: dayjs(`${startAtDate} ${startAtTime}`).toISOString(),
       shouldEndAt: dayjs(`${shouldEndAtDate} ${shouldEndAtTime}`).toISOString(),
       visibility: HeistVisibilityEnum.Draft,
@@ -188,7 +187,6 @@ export default function Add() {
       difficulty: HeistDifficultyEnum.Normal,
       minimumPayout: 100000,
       maximumPayout: 1000000,
-      minimumRequiredRating: 1,
       allowedEmployees: employeesFormatted.filter(
         (employee) => employee.establishmentId === establishments.edges[0].node.id,
       ),
@@ -257,13 +255,6 @@ export default function Add() {
               <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
               <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
             </Grid>
-            <FieldInput
-              name="minimumRequiredRating"
-              label={t('heist.minimum_required_rating')}
-              type="number"
-              min={0}
-              max={5}
-            />
             <FieldSelect
               name="establishment"
               label={t('establishment')}

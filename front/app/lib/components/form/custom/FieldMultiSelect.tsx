@@ -1,4 +1,5 @@
 import { Grid } from '@radix-ui/themes';
+import { useId, type ComponentProps } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
@@ -8,7 +9,6 @@ import { Error } from '~/lib/components/form/fields/Error';
 import { Help } from '~/lib/components/form/fields/Help';
 import { Label } from '~/lib/components/form/fields/Label';
 
-import type { ComponentProps } from 'react';
 import type { DefaultFieldProps } from '~/lib/types/form';
 import type { Option } from '~/lib/types/select';
 
@@ -43,11 +43,13 @@ export function FieldMultiSelect<T extends Record<string, unknown>>({
 }: FieldSelectProps<T>) {
   const { t } = useTranslation();
   const { control, register } = useRemixFormContext<T>();
+  const instanceId = useId();
 
   return (
     <Grid className={containerClassName} gap="1">
       <Controller
         name={name}
+        disabled={disabled}
         control={control}
         render={({ field, fieldState: { error } }) => {
           const fieldId = id ?? field.name;
@@ -92,9 +94,10 @@ export function FieldMultiSelect<T extends Record<string, unknown>>({
                 aria-invalid={!!errorId}
                 key={`field_multi_select_key_${JSON.stringify(options)}`}
                 isMulti={true}
-                isDisabled={disabled}
+                isDisabled={field.disabled}
                 options={translatedOptions}
                 defaultValue={defaultValue}
+                instanceId={instanceId}
                 onChange={(newValue) => newValue && field.onChange(newValue)}
               />
               {error?.message && !hideError && (

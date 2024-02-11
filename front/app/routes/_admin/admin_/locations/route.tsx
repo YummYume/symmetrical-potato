@@ -4,23 +4,45 @@ import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
 import { NavLink } from '~/lib/components/Link';
+import { i18next } from '~/lib/i18n/index.server';
 import { getUriId } from '~/lib/utils/path';
 import { getLocations } from '~api/location';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
-import type { LoaderFunctionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);
 
+  const t = await i18next.getFixedT(request, 'admin');
   const response = await getLocations(context.client);
 
   return {
     locations: response.locations,
+    meta: {
+      title: t('meta.locations.title', {
+        ns: 'admin',
+      }),
+      description: t('meta.locations.description', {
+        ns: 'admin',
+      }),
+    },
   };
 }
 
 export type Loader = typeof loader;
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [
+    { title: data.meta.title },
+    { name: 'description', content: data.meta.description },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
 
 export default function Locations() {
   const { locations } = useLoaderData<Loader>();

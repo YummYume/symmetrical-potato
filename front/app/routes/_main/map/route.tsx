@@ -381,6 +381,8 @@ export default function MapPage() {
             />
           ))}
         </HeistMap>
+
+        {/* Drawer */}
         <Dialog.Root
           open={drawerOpen}
           modal={false}

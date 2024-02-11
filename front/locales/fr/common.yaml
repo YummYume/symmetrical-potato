@@ -244,7 +244,6 @@ heist.difficulty: Difficulté
 heist.allowed_employees: Employés autorisés
 heist.forbidden_users: Braqueurs interdits
 heist.forbidden_assets: Assets interdits
-heist.minimum_required_rating: Note minimale requise
 heist.visibility: Visibilité
 heist.add: Ajouter un braquage
 heist.add_objective: Ajouter un objectif
@@ -253,10 +252,10 @@ heist.leave.confirm: >-
   Êtes-vous sûr de vouloir quitter ce braquage ? Vous allez perdre tous vos
   équipements.
 heist.add.confirm: Êtes-vous sûr de vouloir ajouter ce braquage ?
-heist.edit.confirm: Êtes-vous sûr de vouloir rendre public ce braquage ?
+heist.edit.confirm: Êtes-vous sûr de vouloir rendre ce braquage public ?
 heist.edit.confirm_description: >-
-  Rendre ce braquage public vous coutera $15.000, si vous supprimer ce braquage,
-  50% de la somme vous sera remboursé uniquement.
+  Rendre ce braquage public vous coutera $15.000.
+  Supprimer ce braquage ne vous remboursera que 50% de ce que vous avez payé.
 heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
 heist.employee.chosen: L'employé nommé {name} vous aidera.
 heist.employee.not_chosen: Choisissez celui qui vous aidera.
@@ -284,6 +283,8 @@ heist.difficulty.normal: Normal
 heist.difficulty.hard: Difficile
 heist.difficulty.veryhard: Très difficile
 heist.difficulty.overkill: Overkill
+heist.visibility.public: Public
+heist.visibility.draft: Brouillon
 
 # Employee
 employee: Employé

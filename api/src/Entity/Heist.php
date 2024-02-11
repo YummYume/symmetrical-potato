@@ -212,11 +212,6 @@ class Heist
     )]
     private array $objectives = [];
 
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[Groups([self::READ, self::CREATE, self::UPDATE])]
-    #[Assert\Type(groups: [self::CREATE, self::UPDATE], type: 'float', message: 'heist.minimum_required_rating.invalid')]
-    private ?float $minimumRequiredRating = null;
-
     #[ORM\Column(length: 50, enumType: HeistPreferedTacticEnum::class)]
     #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private HeistPreferedTacticEnum $preferedTactic = HeistPreferedTacticEnum::Unknown;
@@ -426,18 +421,6 @@ class Heist
     public function setObjectives(array $objectives): static
     {
         $this->objectives = $objectives;
-
-        return $this;
-    }
-
-    public function getMinimumRequiredRating(): ?float
-    {
-        return $this->minimumRequiredRating;
-    }
-
-    public function setMinimumRequiredRating(?float $minimumRequiredRating): static
-    {
-        $this->minimumRequiredRating = $minimumRequiredRating;
 
         return $this;
     }

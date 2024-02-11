@@ -5,22 +5,45 @@ import { useTranslation } from 'react-i18next';
 
 import { getHeists } from '~/lib/api/heist';
 import { NavLink } from '~/lib/components/Link';
+import { HeistPhaseBadge } from '~/lib/components/heist/HeistPhaseBadge';
+import { i18next } from '~/lib/i18n/index.server';
 import { getUriId } from '~/lib/utils/path';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
-import type { LoaderFunctionArgs } from '@remix-run/node';
+import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);
 
+  const t = await i18next.getFixedT(request, 'admin');
   const response = await getHeists(context.client);
 
   return {
     heists: response.heists,
+    meta: {
+      title: t('meta.heists.title', {
+        ns: 'admin',
+      }),
+      description: t('meta.heists.description', {
+        ns: 'admin',
+      }),
+    },
   };
 }
 
 export type Loader = typeof loader;
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [
+    { title: data.meta.title },
+    { name: 'description', content: data.meta.description },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
 
 export default function Heists() {
   const { heists } = useLoaderData<Loader>();
@@ -50,7 +73,7 @@ export default function Heists() {
                           {({ isActive, isPending }) => (
                             <>
                               <span>{edge.node.name}</span>
-                              <span>{edge.node.location.name}</span>
+                              <HeistPhaseBadge phase={edge.node.phase} variant="solid" />
                               <div
                                 className={clsx('panel__sidebar-item-background', {
                                   'panel__sidebar-item-background--active': isActive,
