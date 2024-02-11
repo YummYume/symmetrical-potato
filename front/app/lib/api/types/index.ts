@@ -325,7 +325,6 @@ export type Heist = Node & {
   location: Maybe<Location>;
   maximumPayout: Scalars['Float']['output'];
   minimumPayout: Scalars['Float']['output'];
-  minimumRequiredRating: Maybe<Scalars['Float']['output']>;
   name: Scalars['String']['output'];
   objectives: Scalars['Iterable']['output'];
   phase: HeistPhaseEnum;
@@ -1582,7 +1581,6 @@ export type CreateHeistInput = {
   forbiddenUsers?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   maximumPayout: Scalars['Float']['input'];
   minimumPayout: Scalars['Float']['input'];
-  minimumRequiredRating?: InputMaybe<Scalars['Float']['input']>;
   name: Scalars['String']['input'];
   objectives: Scalars['Iterable']['input'];
   /** Used to get or create the location of the heist on create, not mapped. */
@@ -1612,7 +1610,6 @@ export type CreateHeistNestedPayload = Node & {
   location: Maybe<Location>;
   maximumPayout: Scalars['Float']['output'];
   minimumPayout: Scalars['Float']['output'];
-  minimumRequiredRating: Maybe<Scalars['Float']['output']>;
   name: Scalars['String']['output'];
   objectives: Scalars['Iterable']['output'];
   phase: HeistPhaseEnum;
@@ -2390,7 +2387,6 @@ export type UpdateHeistInput = {
   id: Scalars['ID']['input'];
   maximumPayout?: InputMaybe<Scalars['Float']['input']>;
   minimumPayout?: InputMaybe<Scalars['Float']['input']>;
-  minimumRequiredRating?: InputMaybe<Scalars['Float']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   objectives?: InputMaybe<Scalars['Iterable']['input']>;
   preferedTactic?: InputMaybe<HeistPreferedTacticEnum>;
