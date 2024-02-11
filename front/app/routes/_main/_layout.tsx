@@ -1,7 +1,7 @@
-import { HamburgerMenuIcon } from '@radix-ui/react-icons';
+import { HamburgerMenuIcon, PlusIcon } from '@radix-ui/react-icons';
 import { Button, DropdownMenu, Flex, Separator, Text } from '@radix-ui/themes';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
-import { useEffect, useState, type FormEvent, type ComponentProps } from 'react';
+import { useEffect, useState, type ComponentProps, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Drawer } from '~/lib/components/Drawer';
@@ -50,6 +50,21 @@ const Menu = ({
 
   return (
     <Flex align="center" gap="4" justify="end">
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+          <Button aria-label={t('add')} variant="soft">
+            <PlusIcon />
+          </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Item>
+            <Link className="w-full" to="/establishment/new" unstyled>
+              {t('new.establishment')}
+            </Link>
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+
       <Text weight="bold" as="span" size="2">
         {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(
           user.balance,
@@ -113,7 +128,11 @@ export default function Layout() {
   const LINKS = [
     { to: '/dashboard', label: t('dashboard') },
     { to: '/map', label: t('map') },
+    { to: '/establishment', label: t('establishments') },
   ];
+
+  // TODO : Contractor only
+  LINKS.push({ to: '/employee', label: t('employees') });
 
   const onChange = (event: FormEvent<HTMLFormElement>) => {
     setIsChangingPreferences(true);

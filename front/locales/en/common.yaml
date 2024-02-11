@@ -281,6 +281,7 @@ heist.visibility.draft: Draft
 employee: Employee
 employees: Employees
 employee.motivation: Motivation
+employee.code_name: Code name
 
 # User
 user.balance: Balance
@@ -383,3 +384,6 @@ establishment.review_count: Review count
 rating.star: Rate {rating}
 rating.label: Rating selection
 rating.label.read_only: Rated {rating} out of {total}
+
+# New dropdown
+new.establishment: New establishment
