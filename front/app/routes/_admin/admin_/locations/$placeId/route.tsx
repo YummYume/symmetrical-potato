@@ -20,11 +20,11 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~utils/api';
 import { denyAdminAccessUnlessGranted } from '~utils/security.server';
 
-import type { ActionFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, MetaFunction } from '@remix-run/node';
 import type { AdminLocationFormData } from '~/lib/validators/admin/location';
 import type { FlashMessage } from '~/root';
 
-export async function loader({ context, params }: LoaderFunctionArgs) {
+export async function loader({ request, context, params }: LoaderFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);
 
   if (!params.placeId) {
@@ -32,10 +32,19 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   }
 
   try {
-    const response = await getLocation(context.client, params.placeId);
+    const t = await i18next.getFixedT(request, 'admin');
+    const { location } = await getLocation(context.client, params.placeId);
 
     return {
-      location: response.location,
+      location,
+      meta: {
+        title: t('meta.locations_edit.title', {
+          ns: 'admin',
+        }),
+        description: t('meta.locations_edit.description', {
+          ns: 'admin',
+        }),
+      },
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'locations')) {
@@ -50,6 +59,18 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
 }
 
 export type Loader = typeof loader;
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [
+    { title: data.meta.title },
+    { name: 'description', content: data.meta.description },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
   denyAdminAccessUnlessGranted(context.user);

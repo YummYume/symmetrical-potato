@@ -124,9 +124,6 @@ heist.allowed_employees.min_length: Veuillez sélectionner au moins un employé 
 heist.allowed_employees.max_length: Veuillez sélectionner moins de 10 employés autorisés.
 heist.forbidden_assets.value.invalid_type: Veuillez sélectionner une valide.
 heist.forbidden_users.value.invalid_type: Veuillez sélectionner un braqueur valide.
-heist.minimum_required_rating.invalid_type: La note minimale est invalide.
-heist.minimum_required_rating.positive: La note minimale doit être positive.
-heist.minimum_required_rating.max: La note minimale doit être de 5 maximum.
 heist.difficulty.required: Veuillez sélectionner une difficulté.
 heist.difficulty.invalid_type: La difficulté sélectionnée est invalide.
 heist.objectives.name.min_length: Le nom doit comporter au moins 2 caractères.

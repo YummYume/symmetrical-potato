@@ -26,7 +26,7 @@ export const getHeists = async (client: GraphQLClient) => {
           node {
             id
             name
-            startAt
+            phase
             location {
               name
             }
@@ -102,7 +102,20 @@ export const getHeistPartial = async (client: GraphQLClient, id: string, fields:
 /**
  * Get a heist by id
  */
-export const getHeist = async (client: GraphQLClient, id: string) => {
+export const getHeist = async (client: GraphQLClient, id: string, asAdmin = false) => {
+  const adminFields = gql`
+    createdAt
+    updatedAt
+    createdBy {
+      id
+      username
+    }
+    updatedBy {
+      id
+      username
+    }
+  `;
+
   return client.request<Pick<Query, 'heist'>>(
     gql`
       query ($id: ID!) {
@@ -115,7 +128,11 @@ export const getHeist = async (client: GraphQLClient, id: string) => {
           minimumPayout
           maximumPayout
           visibility
-          minimumRequiredRating
+          preferedTactic
+          difficulty
+          visibility
+          objectives
+          phase
           forbiddenAssets {
             edges {
               node {
@@ -149,10 +166,7 @@ export const getHeist = async (client: GraphQLClient, id: string) => {
               id
             }
           }
-          preferedTactic
-          difficulty
-          visibility
-          objectives
+          ${asAdmin ? adminFields : ''}
         }
       }
     `,
@@ -327,21 +341,34 @@ export const getHeistsForToday = async (client: GraphQLClient) => {
     gql`
       query ($startAt: [HeistFilter_startAt]!) {
         heists(startAt: $startAt) {
-          pageInfo {
-            endCursor
-            hasNextPage
-          }
           edges {
             node {
               id
               name
+              description
+              minimumPayout
+              maximumPayout
               startAt
+              shouldEndAt
+              objectives
               phase
+              preferedTactic
+              difficulty
+              establishment {
+                id
+                name
+              }
               crewMembers {
                 totalCount
               }
               location {
                 placeId
+                name
+                address
+                latitude
+                longitude
+                reviewCount
+                averageRating
               }
             }
           }

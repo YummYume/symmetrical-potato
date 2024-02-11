@@ -33,9 +33,7 @@ export const HeistListItem = ({
             {name}
           </Text>
           <Text as="p" color="gray" size="2">
-            {heistStartAt.isSameOrAfter(dayjs().locale(i18n.language), 'hours')
-              ? heistStartAt.fromNow()
-              : heistStartAt.toNow()}
+            {heistStartAt.format('lll')}
           </Text>
         </Flex>
         <Flex direction="column" justify="between" gap="1" align="end">
