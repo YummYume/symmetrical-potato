@@ -19,7 +19,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   return {
     heists: response.heists.edges,
-    locale: context.locale,
     pageInfo: response.heists.pageInfo,
     meta: {
       title: t('meta.dashboard.title'),
@@ -44,7 +43,7 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { heists, locale } = useLoaderData<Loader>();
+  const { heists } = useLoaderData<Loader>();
 
   return (
     <main className="py-10">
@@ -74,7 +73,6 @@ export default function Dashboard() {
                           name={name}
                           crewMembers={crewMembers.totalCount}
                           startAt={startAt}
-                          locale={locale}
                           phase={phase}
                         />
                       </Link>
