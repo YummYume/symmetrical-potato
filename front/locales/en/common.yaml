@@ -60,10 +60,15 @@ validate: Validate
 leave: Leave
 purchase: Purchase
 optional: Optional
+apply: Apply
+select: Select...
+search: Search
 
 # Meta
 meta.dashboard.title: Dashboard
 meta.dashboard.description: Your personal dashboard. Trully yours.
+meta.map.title: Map
+meta.map.description: Find the perfect heist using New York City's map.
 meta.my_contractor_request.title: My contractor request
 meta.my_contractor_request.description: Check the status of your contractor request.
 meta.my_account.title: My account
@@ -85,10 +90,41 @@ map.settings.show_markers: Show markers
 ## Filters
 map.filters: Filters
 map.filters.description: Filter the map to find the heist you want.
+map.filters.start_at_min: Minimum start date
+map.filters.start_at_max: Maximum start date
+map.filters.end_at_min: Minimum estimated end date
+map.filters.end_at_max: Maximum estimated end date
+map.filters.minimum_payout: Minimum payout
+map.filters.maximum_payout: Maximum payout
+map.filters.prefered_tactics: Prefered tactics
+map.filters.difficulties: Difficulties
+map.filters.establishments: Establishments
 
 ## Help
 map.help: Help
-map.help.description: This map shows all the heists available to you in New York City. For further notice, see below.
+map.help.description: >-
+  This map shows all the heists available to you in New York City.
+  Controls are available to help you customize the map to your liking and filter the heists.
+
+### Controls
+map.help.controls: Controls
+map.help.location_list: Location list
+map.help.location_list_description: >-
+  A list is directly available for you to search through all the locations available.
+  You can use this list to zoom in on a specific location and see more details.
+map.help.heist_list: Heist list
+map.help.heist_list_description: >-
+  A list is directly available for you to search through all the heists available.
+  You can use this list to zoom in on a specific heist and see more details.
+map.help.filters: Filters
+map.help.filters_description: >-
+  You can use the filters to show only the heists you are interested in (e.g. only the loud heists starting from tomorrow).
+map.help.settings: Settings
+map.help.settings_description: >-
+  You can use the settings to customize the map to your liking (e.g. show or hide the markers on the map).
+
+### On the map
+map.help.on_map: On the map
 map.help.markers: Markers
 map.help.markers_description: >-
   You can click on a marker to see the available heists at this location.
@@ -102,12 +138,29 @@ map.help.drawer_description: >-
 map.help.unknow_location: Unknown location
 map.help.unknow_location_description: >-
   If a location has never been used before, it will only contain basic information when shown in the drawer.
-map.help.filters: Filters
-map.help.filters_description: >-
-  You can use the filters to show only the heists you are interested in (e.g. only the loud heists starting from tomorrow).
+
+## Locations
+map.locations: Locations
+map.locations.all: All locations available with at least one heist.
+map.locations.focus_on_location: Focus on location {location}.
+map.locations.results: >-
+  {count, plural,
+    =0 {No location found}
+    one {1 location found}
+    other {# locations found}
+  }.
 
 ## Heists
-map.heists_for_location: All the heists available for {location}.
+map.heists: Heists
+map.heists.all_available: All the heists available.
+map.heists.all_available_for_location: All the heists available for {location}.
+map.heists.focus_on_heist: Focus on heist {heist}.
+map.heists.results: >-
+  {count, plural,
+    =0 {No heist found}
+    one {1 heist found}
+    other {# heists found}
+  }.
 
 # History info
 history_info: History info
@@ -161,8 +214,19 @@ my_contractor_request.no_request_description: >
   well as create and organize heists.
 
 # Heist
+heist.name: Name
+heist.description: Description
+heist.no_description: No description available.
+heist.objective_count: >-
+  {count, plural,
+    =0 {No objective}
+    one {1 objective}
+    other {# objectives}
+  }
+heist.start_at: Start date
 heist.start_at.date: Start date
 heist.start_at.time: Start time
+heist.should_end_at: Estimated end date
 heist.should_end_at.date: Estimated end date
 heist.should_end_at.time: Estimated end time
 heist.prefered_tactic: Prefered tactic
@@ -196,12 +260,21 @@ heist.phase.failed: Failed
 heist.phase.in_progress: In progress
 heist.phase.succeeded: Succeeded
 heist.phase.planning: Planning
+heist.crew_members: Heisters
 heist.crew_member_count: |-
   {count, plural,
     =0 {0 heister}
     one {# heister}
     other {# heisters}
-  } out of 4
+  } out of 4.
+heist.prefered_tactic.stealth: Stealth
+heist.prefered_tactic.loud: Loud
+heist.prefered_tactic.semistealth: Semi-stealth
+heist.prefered_tactic.unknown: Unknown
+heist.difficulty.normal: Normal
+heist.difficulty.hard: Hard
+heist.difficulty.veryhard: Very hard
+heist.difficulty.overkill: Overkill
 
 # Employee
 employee: Employee
@@ -285,6 +358,13 @@ location.longitude: Longitude
 location.average_rating: Average rating
 location.average_rating.none: No rating
 location.review_count: Review count
+location.not_found: Location not found
+location.heists_count: >-
+  {count, plural,
+    =0 {No heist}
+    one {1 heist}
+    other {# heists}
+  }
 
 # Establishment
 establishment.name: Name

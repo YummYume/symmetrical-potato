@@ -439,6 +439,29 @@ export type HeistEdge = {
   node: Maybe<Heist>;
 };
 
+export type HeistFilter_MaximumPayout = {
+  between?: InputMaybe<Scalars['String']['input']>;
+  gt?: InputMaybe<Scalars['String']['input']>;
+  gte?: InputMaybe<Scalars['String']['input']>;
+  lt?: InputMaybe<Scalars['String']['input']>;
+  lte?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type HeistFilter_MinimumPayout = {
+  between?: InputMaybe<Scalars['String']['input']>;
+  gt?: InputMaybe<Scalars['String']['input']>;
+  gte?: InputMaybe<Scalars['String']['input']>;
+  lt?: InputMaybe<Scalars['String']['input']>;
+  lte?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type HeistFilter_ShouldEndAt = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  strictly_after?: InputMaybe<Scalars['String']['input']>;
+  strictly_before?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type HeistFilter_StartAt = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -963,14 +986,21 @@ export type QueryHeistsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   crewMembers__user__id?: InputMaybe<Scalars['String']['input']>;
+  difficulty?: InputMaybe<Scalars['Iterable']['input']>;
   employee__user__id?: InputMaybe<Scalars['String']['input']>;
   establishment__contractor__id?: InputMaybe<Scalars['String']['input']>;
+  establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   location__placeId?: InputMaybe<Scalars['String']['input']>;
   location__placeId_list?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  maximumPayout?: InputMaybe<Array<InputMaybe<HeistFilter_MaximumPayout>>>;
+  minimumPayout?: InputMaybe<Array<InputMaybe<HeistFilter_MinimumPayout>>>;
   phase?: InputMaybe<Scalars['Iterable']['input']>;
+  preferedTactic?: InputMaybe<Scalars['Iterable']['input']>;
+  shouldEndAt?: InputMaybe<Array<InputMaybe<HeistFilter_ShouldEndAt>>>;
   startAt?: InputMaybe<Array<InputMaybe<HeistFilter_StartAt>>>;
+  visibility?: InputMaybe<Scalars['Iterable']['input']>;
 };
 
 export type QueryLocationArgs = {
@@ -2335,9 +2365,7 @@ export type UpdateEstablishmentPayload = {
 
 /** Updates a HeistAsset. */
 export type UpdateHeistAssetInput = {
-  asset?: InputMaybe<Scalars['String']['input']>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  crewMember?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   quantity?: InputMaybe<Scalars['Int']['input']>;
 };

@@ -364,39 +364,87 @@ export const getHeistsForToday = async (client: GraphQLClient) => {
  *
  * @todo disable pagination for this query
  */
-export const getUpcomingHeists = async (client: GraphQLClient) => {
+export const getUpcomingHeists = async (
+  client: GraphQLClient,
+  filters: QueryHeistsArgs | undefined = {},
+) => {
+  const variables: QueryHeistsArgs = {
+    ...filters,
+    startAt: filters.startAt ?? [
+      {
+        after: dayjs().startOf('day').toISOString(),
+      },
+    ],
+    phase: [HeistPhaseEnum.Planning],
+  };
+
+  if (!filters.startAt) {
+    filters.startAt = [
+      {
+        after: dayjs().startOf('day').toISOString(),
+      },
+    ];
+  } else if (filters.startAt.at(0) && !filters.startAt.at(0)?.after) {
+    filters.startAt[0].after = dayjs().startOf('day').toISOString();
+  }
+
   return client.request<Pick<Query, 'heists'>, QueryHeistsArgs>(
     gql`
-      query ($startAt: [HeistFilter_startAt]!, $phase: Iterable!) {
-        heists(startAt: $startAt, phase: $phase) {
+      query (
+        $startAt: [HeistFilter_startAt]!
+        $shouldEndAt: [HeistFilter_shouldEndAt]
+        $minimumPayout: [HeistFilter_minimumPayout]
+        $maximumPayout: [HeistFilter_maximumPayout]
+        $difficulty: Iterable
+        $preferedTactic: Iterable
+        $establishment__id: Iterable
+        $phase: Iterable!
+      ) {
+        heists(
+          startAt: $startAt
+          shouldEndAt: $shouldEndAt
+          minimumPayout: $minimumPayout
+          maximumPayout: $maximumPayout
+          difficulty: $difficulty
+          preferedTactic: $preferedTactic
+          establishment__id: $establishment__id
+          phase: $phase
+        ) {
           edges {
             node {
               id
               name
+              description
+              minimumPayout
+              maximumPayout
               startAt
+              shouldEndAt
+              objectives
               phase
+              preferedTactic
+              difficulty
+              establishment {
+                id
+                name
+              }
               crewMembers {
                 totalCount
               }
               location {
                 placeId
+                name
+                address
                 latitude
                 longitude
-                name
+                reviewCount
+                averageRating
               }
             }
           }
         }
       }
     `,
-    {
-      startAt: [
-        {
-          after: dayjs().toISOString(),
-        },
-      ],
-      phase: [HeistPhaseEnum.Planning],
-    },
+    variables,
   );
 };
 

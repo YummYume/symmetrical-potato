@@ -30,6 +30,7 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { denyAccessUnlessGranted } from '~utils/security.server';
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import type { Option } from '~/lib/types/select';
 import type { CreateHeistFormData } from '~/lib/validators/create-heist';
 import type { FlashMessage } from '~/root';
 
@@ -39,10 +40,11 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   // Get the establishments of the current user
   const { establishments } = await getEstablishmentsOfContractor(context.client, user.id);
   const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
-
-  const { employees } = await getEmployeesEstablishments(context.client, establishmentsIds);
-  const { assets } = await getAssets(context.client);
-  const { users } = await getUsers(context.client);
+  const [{ employees }, { assets }, { users }] = await Promise.all([
+    getEmployeesEstablishments(context.client, establishmentsIds),
+    getAssets(context.client),
+    getUsers(context.client),
+  ]);
 
   return {
     user,
@@ -132,8 +134,6 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
   );
 }
-
-type Option = { label: string; value: string };
 
 export default function Add() {
   const { t } = useTranslation();

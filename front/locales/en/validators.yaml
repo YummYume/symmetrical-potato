@@ -11,6 +11,9 @@ number.must_be_integer: This number must be an integer.
 # Boolean
 boolean.not_a_boolean: This value must be either true or false.
 
+# Array
+array.not_an_array: This value must be an array.
+
 # Login
 login.username.required: Please enter your username.
 login.password.required: Please enter your password.
@@ -133,3 +136,9 @@ heist.objectives.description.min_length: The description must be at least 10 cha
 heist.objectives.description.max_length: The description must be less than 255 characters long.
 heist.visibility.required: The visibility is required.
 heist.visibility.invalid_type: The visibility is invalid.
+
+# Map
+map.filters.start_at_min_greater_than_max: The minimum start date must be before the maximum start date.
+map.filters.start_at_min_equals_max: The minimum start date must be different from the maximum start date.
+map.filters.prefered_tactics_invalid_type: The selected prefered tactics are invalid.
+map.filters.difficulties_invalid_type: The selected difficulties are invalid.

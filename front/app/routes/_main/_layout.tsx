@@ -50,7 +50,7 @@ const Menu = ({
 
   return (
     <Flex align="center" gap="4" justify="end">
-      <Text as="span" size="2">
+      <Text weight="bold" as="span" size="2">
         {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(
           user.balance,
         )}

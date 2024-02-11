@@ -8,6 +8,7 @@ import { Error } from '~/lib/components/form/fields/Error';
 import { Help } from '~/lib/components/form/fields/Help';
 import { Label } from '~/lib/components/form/fields/Label';
 
+import type { ComponentProps } from 'react';
 import type { DefaultFieldProps } from '~/lib/types/form';
 import type { Option } from '~/lib/types/select';
 
@@ -20,10 +21,12 @@ export type FieldSelectProps<T extends Record<string, unknown>> = {
    * The namespace to use for translating the options' labels.
    */
   translationNamespace?: string;
-} & DefaultFieldProps<T>;
+} & DefaultFieldProps<T> &
+  ComponentProps<typeof Select>;
 
 export function FieldMultiSelect<T extends Record<string, unknown>>({
   options,
+  translationNamespace = 'common',
   name,
   label,
   id,
@@ -51,18 +54,35 @@ export function FieldMultiSelect<T extends Record<string, unknown>>({
           const ariaLabelledBy = `${fieldId}-label`;
           const helpId = help ? `${fieldId}-help` : undefined;
           const errorId = error?.message ? `${fieldId}-error` : undefined;
+          const translatedOptions = options.map((option) => {
+            if (!translationNamespace) {
+              return option;
+            }
+
+            return {
+              ...option,
+              label: t(option.label, { ns: translationNamespace }),
+            };
+          });
+
           let defaultValue: Option[] = [];
+
           if (field.value && Array.isArray(field.value)) {
-            defaultValue = options.filter((o) =>
-              (field.value as Option[]).find((v) => v.value === o.value),
-            );
+            defaultValue = options
+              .filter((o) => (field.value as Option[]).find((v) => v.value === o.value))
+              .map((o) => ({
+                ...o,
+                label: translationNamespace ? t(o.label, { ns: translationNamespace }) : o.label,
+              }));
           }
+
           return (
             <>
               <LabelField htmlFor={fieldId} className={hideLabel ? 'sr-only' : undefined}>
                 {label}
               </LabelField>
               <Select
+                placeholder={t('select')}
                 {...register(name)}
                 {...rest}
                 id={fieldId}
@@ -73,7 +93,7 @@ export function FieldMultiSelect<T extends Record<string, unknown>>({
                 key={`field_multi_select_key_${JSON.stringify(options)}`}
                 isMulti={true}
                 isDisabled={disabled}
-                options={options}
+                options={translatedOptions}
                 defaultValue={defaultValue}
                 onChange={(newValue) => newValue && field.onChange(newValue)}
               />

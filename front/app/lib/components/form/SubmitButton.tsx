@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 export type BaseSubmitButtonProps = {
   text: string;
   submittingText?: string;
+  allowNavigating?: boolean;
 };
 
 export type SubmitButtonContent = (props: BaseSubmitButtonProps) => JSX.Element;
@@ -16,11 +17,18 @@ export type SubmitButtonProps = { content?: SubmitButtonContent } & BaseSubmitBu
 export const SubmitButton = ({
   text,
   submittingText,
+  allowNavigating = false,
   content: Content,
   ...rest
 }: SubmitButtonProps) => {
   const navigation = useNavigation();
-  const isSubmitting = useMemo(() => navigation.state === 'submitting', [navigation.state]);
+  const isSubmitting = useMemo(() => {
+    if (!allowNavigating) {
+      return navigation.state === 'submitting';
+    }
+
+    return navigation.state === 'loading';
+  }, [navigation.state, allowNavigating]);
 
   return (
     <Button type="submit" {...rest} disabled={rest.disabled || isSubmitting}>

@@ -10,22 +10,20 @@ import type { HeistPhaseEnum } from '~/lib/api/types';
 
 export type HeistListItemProps = {
   name: string;
-  crewMembers: number;
+  crewMembers?: number;
   startAt: string;
-  locale: string;
   phase: HeistPhaseEnum;
 } & ComponentProps<typeof Card>;
 
 export const HeistListItem = ({
   name,
-  crewMembers,
+  crewMembers = 0,
   startAt,
-  locale,
   phase,
   ...rest
 }: HeistListItemProps) => {
-  const { t } = useTranslation();
-  const heistStartAt = dayjs(startAt).locale(locale);
+  const { t, i18n } = useTranslation();
+  const heistStartAt = dayjs(startAt).locale(i18n.language);
 
   return (
     <Card {...rest}>
@@ -35,7 +33,7 @@ export const HeistListItem = ({
             {name}
           </Text>
           <Text as="p" color="gray" size="2">
-            {heistStartAt.isSameOrAfter(dayjs().locale(locale), 'hours')
+            {heistStartAt.isSameOrAfter(dayjs().locale(i18n.language), 'hours')
               ? heistStartAt.fromNow()
               : heistStartAt.toNow()}
           </Text>

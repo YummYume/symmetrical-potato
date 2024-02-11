@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, HoverCard, Text } from '@radix-ui/themes';
 import { useTranslation } from 'react-i18next';
 
+import { truncate } from '~/lib/utils/string';
 import { Rating } from '~components/Rating';
 
 import { UserAvatar } from './UserAvatar';
@@ -29,7 +30,12 @@ export const UserHoverCard = ({
   return (
     <HoverCard.Root>
       <HoverCard.Trigger>{children}</HoverCard.Trigger>
-      <HoverCard.Content side="top" align="center" {...rest}>
+      <HoverCard.Content
+        side="top"
+        align="center"
+        style={{ minWidth: 250, maxWidth: 300 }}
+        {...rest}
+      >
         <Flex gap="4">
           <UserAvatar username={username} mainRole={mainRole} size="2" />
           <Box>
@@ -39,7 +45,7 @@ export const UserHoverCard = ({
               align="start"
               justify="between"
             >
-              <Heading size="3" as="h3">
+              <Heading size="3" as="h2">
                 {username}
               </Heading>
 
@@ -55,8 +61,8 @@ export const UserHoverCard = ({
               </Flex>
             </Flex>
 
-            <Text as="p" size="2" style={{ maxWidth: 300 }} mt="3">
-              {description ? description : t('user.no_description')}
+            <Text as="p" size="2" mt="3">
+              {description ? truncate(description, 150) : t('user.no_description')}
             </Text>
           </Box>
         </Flex>

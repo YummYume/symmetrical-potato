@@ -1,6 +1,7 @@
 import {
   Link as RemixLink,
   NavLink as RemixNavLink,
+  useSearchParams,
   type LinkProps as RemixLinkProps,
   type NavLinkProps as RemixNavLinkProps,
 } from '@remix-run/react';
@@ -21,6 +22,10 @@ export type LinkProps = {
    * Whether to add default classes to the link element or not.
    */
   unstyled?: boolean;
+  /**
+   * Whether to add the current search params to the link or not.
+   */
+  withCurrentSearchParams?: boolean;
   children?: React.ReactElement | React.ReactNode;
 } & RemixLinkProps &
   React.RefAttributes<HTMLAnchorElement>;
@@ -56,6 +61,10 @@ export type NavLinkProps = {
    * Whether to add default classes to the link element or not.
    */
   unstyled?: boolean;
+  /**
+   * Whether to add the current search params to the link or not.
+   */
+  withCurrentSearchParams?: boolean;
   children?: React.ReactNode | ((props: NavLinkRenderProps) => React.ReactNode);
 } & RemixNavLinkProps &
   React.RefAttributes<HTMLAnchorElement>;
@@ -64,13 +73,31 @@ export type NavLinkProps = {
  * A wrapper around Remix's Link component that adds some default classes and uses view transitions.
  */
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
-  { to, className, unstyled = false, children, ...props },
+  { to, className, unstyled = false, children, withCurrentSearchParams = false, ...props },
   forwardedRef,
 ) {
+  const [url, search] = to.split('?');
+  const [searchParams] = useSearchParams();
+  const currentSearchParams = new URLSearchParams(search);
+
+  if (withCurrentSearchParams) {
+    searchParams.forEach((value, key) => {
+      if (key.endsWith('[]')) {
+        currentSearchParams.append(key, value);
+      } else {
+        currentSearchParams.set(key, value);
+      }
+    });
+  }
+
   return (
     <RemixLink
       ref={forwardedRef}
-      to={to}
+      to={
+        withCurrentSearchParams && currentSearchParams.toString()
+          ? `${url}?${currentSearchParams}`
+          : to
+      }
       prefetch="intent"
       className={twMerge(
         clsx({
@@ -113,19 +140,42 @@ export const NavLinkActiveIndicator = ({
 /**
  * A wrapper around Remix's NavLink component that adds some default classes and uses view transitions.
  */
-export const NavLink = ({
-  to,
-  className,
-  activeClassName,
-  pendingClassName,
-  transitioningClassName,
-  unstyled = false,
-  children,
-  ...props
-}: NavLinkProps) => {
+export const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(function NavLink(
+  {
+    to,
+    className,
+    activeClassName,
+    pendingClassName,
+    transitioningClassName,
+    unstyled = false,
+    withCurrentSearchParams = false,
+    children,
+    ...props
+  },
+  forwardedRef,
+) {
+  const [url, search] = to.split('?');
+  const [searchParams] = useSearchParams();
+  const currentSearchParams = new URLSearchParams(search);
+
+  if (withCurrentSearchParams) {
+    searchParams.forEach((value, key) => {
+      if (key.endsWith('[]')) {
+        currentSearchParams.append(key, value);
+      } else {
+        currentSearchParams.set(key, value);
+      }
+    });
+  }
+
   return (
     <RemixNavLink
-      to={to}
+      to={
+        withCurrentSearchParams && currentSearchParams.toString()
+          ? `${url}?${currentSearchParams}`
+          : to
+      }
+      ref={forwardedRef}
       prefetch="intent"
       className={({ isActive, isPending, isTransitioning }) => {
         return twMerge(
@@ -158,4 +208,4 @@ export const NavLink = ({
       }}
     </RemixNavLink>
   );
-};
+});
