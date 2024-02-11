@@ -382,6 +382,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::Normal,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_BILE],
             'location' => LocationFixtures::LOCATION_CHASE_BANK,
             'objectives' => self::HEIST_NO_REST_FOR_THE_WICKED_OBJECTIVES,
         ],
@@ -398,6 +399,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Succeeded,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_BILE],
             'location' => LocationFixtures::LOCATION_CHASE_BANK,
             'objectives' => self::HEIST_NO_REST_FOR_THE_WICKED_OBJECTIVES,
         ],
@@ -414,6 +416,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Failed,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_BILE],
             'location' => LocationFixtures::LOCATION_CHASE_BANK,
             'objectives' => self::HEIST_NO_REST_FOR_THE_WICKED_OBJECTIVES,
         ],
@@ -427,6 +430,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::Overkill,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_OLD_WAREHOUSE_RED_HOOK,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_BOB],
             'location' => LocationFixtures::LOCATION_BROOKLYN_BRIDGE,
             'objectives' => self::HEIST_ROAD_RAGE_OBJECTIVES,
         ],
@@ -443,6 +447,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Succeeded,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_OLD_WAREHOUSE_RED_HOOK,
             'employee' => UserFixtures::EMPLOYEE_BOB,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_BOB],
             'location' => LocationFixtures::LOCATION_BROOKLYN_BRIDGE,
             'objectives' => self::HEIST_ROAD_RAGE_OBJECTIVES,
         ],
@@ -459,6 +464,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Failed,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_OLD_WAREHOUSE_RED_HOOK,
             'employee' => UserFixtures::EMPLOYEE_BOB,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_BOB],
             'location' => LocationFixtures::LOCATION_BROOKLYN_BRIDGE,
             'objectives' => self::HEIST_ROAD_RAGE_OBJECTIVES,
         ],
@@ -472,6 +478,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::Overkill,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_CENTRAL_PARK_CAVE,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_INFILTRATED_CIVILIAN],
             'location' => LocationFixtures::LOCATION_TIFFANY_AND_CO,
             'objectives' => self::HEIST_DIRTY_ICE_OBJECTIVES,
         ],
@@ -488,6 +495,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Succeeded,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_CENTRAL_PARK_CAVE,
             'employee' => UserFixtures::EMPLOYEE_INFILTRATED_CIVILIAN,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_INFILTRATED_CIVILIAN],
             'location' => LocationFixtures::LOCATION_TIFFANY_AND_CO,
             'objectives' => self::HEIST_DIRTY_ICE_OBJECTIVES,
         ],
@@ -504,6 +512,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Failed,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_CENTRAL_PARK_CAVE,
             'employee' => UserFixtures::EMPLOYEE_INFILTRATED_CIVILIAN,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_INFILTRATED_CIVILIAN],
             'location' => LocationFixtures::LOCATION_TIFFANY_AND_CO,
             'objectives' => self::HEIST_DIRTY_ICE_OBJECTIVES,
         ],
@@ -517,6 +526,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::Hard,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_BROWNSTONE_BASEMENT,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_FAKE_COP],
             'location' => LocationFixtures::LOCATION_MARQUEE,
             'objectives' => self::HEIST_ROCK_THE_CRADLE_OBJECTIVES,
         ],
@@ -533,6 +543,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Succeeded,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_BROWNSTONE_BASEMENT,
             'employee' => UserFixtures::EMPLOYEE_FAKE_COP,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_FAKE_COP],
             'location' => LocationFixtures::LOCATION_MARQUEE,
             'objectives' => self::HEIST_ROCK_THE_CRADLE_OBJECTIVES,
         ],
@@ -549,6 +560,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Failed,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_BROWNSTONE_BASEMENT,
             'employee' => UserFixtures::EMPLOYEE_FAKE_COP,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_FAKE_COP],
             'location' => LocationFixtures::LOCATION_MARQUEE,
             'objectives' => self::HEIST_ROCK_THE_CRADLE_OBJECTIVES,
         ],
@@ -562,6 +574,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::Hard,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_INDUSTRIAL_BUILDING_LONG_ISLAND_CITY,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_FAKE_GUARD],
             'location' => LocationFixtures::LOCATION_MUSEUM_OF_MODERN_ART,
             'objectives' => self::HEIST_UNDER_THE_SURPHAZE_OBJECTIVES,
         ],
@@ -578,6 +591,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Succeeded,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_INDUSTRIAL_BUILDING_LONG_ISLAND_CITY,
             'employee' => UserFixtures::EMPLOYEE_FAKE_GUARD,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_FAKE_GUARD],
             'location' => LocationFixtures::LOCATION_MUSEUM_OF_MODERN_ART,
             'objectives' => self::HEIST_UNDER_THE_SURPHAZE_OBJECTIVES,
         ],
@@ -594,6 +608,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Failed,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_INDUSTRIAL_BUILDING_LONG_ISLAND_CITY,
             'employee' => UserFixtures::EMPLOYEE_FAKE_GUARD,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_FAKE_GUARD],
             'location' => LocationFixtures::LOCATION_MUSEUM_OF_MODERN_ART,
             'objectives' => self::HEIST_UNDER_THE_SURPHAZE_OBJECTIVES,
         ],
@@ -607,6 +622,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::VeryHard,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_BILE],
             'location' => LocationFixtures::LOCATION_BANK_AMERICA_TOWER,
             'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
@@ -623,6 +639,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Succeeded,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_BILE],
             'location' => LocationFixtures::LOCATION_BANK_AMERICA_TOWER,
             'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
@@ -639,6 +656,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Failed,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ROOFTOP_GARDEN,
             'employee' => UserFixtures::EMPLOYEE_BILE,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_BILE],
             'location' => LocationFixtures::LOCATION_BANK_AMERICA_TOWER,
             'objectives' => self::HEIST_GOLD_SHARKE_OBJECTIVES,
         ],
@@ -652,6 +670,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::VeryHard,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_PRIVATE_LIBRARY,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_POLLING_MAN],
             'location' => LocationFixtures::LOCATION_RED_HOOK_TERMINAL,
             'objectives' => self::HEIST_99_BOXES_OBJECTIVES,
         ],
@@ -668,6 +687,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Succeeded,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_PRIVATE_LIBRARY,
             'employee' => UserFixtures::EMPLOYEE_POLLING_MAN,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_POLLING_MAN],
             'location' => LocationFixtures::LOCATION_RED_HOOK_TERMINAL,
             'objectives' => self::HEIST_99_BOXES_OBJECTIVES,
         ],
@@ -684,6 +704,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Failed,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_PRIVATE_LIBRARY,
             'employee' => UserFixtures::EMPLOYEE_POLLING_MAN,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_POLLING_MAN],
             'location' => LocationFixtures::LOCATION_RED_HOOK_TERMINAL,
             'objectives' => self::HEIST_99_BOXES_OBJECTIVES,
         ],
@@ -697,6 +718,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'difficulty' => HeistDifficultyEnum::Overkill,
             'phase' => HeistPhaseEnum::Planning,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_SUBWAY_STATION,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_GANG_MEMBER],
             'location' => LocationFixtures::LOCATION_ONE57,
             'objectives' => self::HEIST_TOUCH_THE_SKY_OBJECTIVES,
         ],
@@ -713,6 +735,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Succeeded,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_SUBWAY_STATION,
             'employee' => UserFixtures::EMPLOYEE_GANG_MEMBER,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_GANG_MEMBER],
             'location' => LocationFixtures::LOCATION_ONE57,
             'objectives' => self::HEIST_TOUCH_THE_SKY_OBJECTIVES,
         ],
@@ -729,6 +752,7 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             'phase' => HeistPhaseEnum::Failed,
             'establishment' => EstablishmentFixtures::ESTABLISHMENT_ABANDONED_SUBWAY_STATION,
             'employee' => UserFixtures::EMPLOYEE_GANG_MEMBER,
+            'allowedEmployees' => [UserFixtures::EMPLOYEE_GANG_MEMBER],
             'location' => LocationFixtures::LOCATION_ONE57,
             'objectives' => self::HEIST_TOUCH_THE_SKY_OBJECTIVES,
         ],
@@ -751,6 +775,10 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
             $establishment = $this->getReference(EstablishmentFixtures::REFERENCE_IDENTIFIER.$heist['establishment'], Establishment::class);
             /** @var Location $location */
             $location = $this->getReference(LocationFixtures::REFERENCE_IDENTIFIER.$heist['location'], Location::class);
+            $allowedEmployees = array_map(
+                fn (string $employee): Employee => $this->getReference(EmployeeFixtures::REFERENCE_IDENTIFIER.$employee, Employee::class),
+                $heist['allowedEmployees'] ?? []
+            );
             $endedAt = $heist['endedAt'] ?? null;
             $visibility = HeistVisibilityEnum::Draft;
 
@@ -778,8 +806,15 @@ final class HeistFixtures extends Fixture implements DependentFixtureInterface
                 ->setEmployee($employee)
                 ->setLocation($location)
                 ->setVisibility($visibility)
-                ->setObjectives($heist['objectives'])
+                ->setObjectives(array_map(
+                    static fn (array $objective): array => [...$objective, 'optional' => $objective['optional'] ?? false],
+                    $heist['objectives']
+                ))
             ;
+
+            foreach ($allowedEmployees as $allowedEmployee) {
+                $newHeist->addAllowedEmployee($allowedEmployee);
+            }
 
             $manager->persist($newHeist);
             $this->addReference(self::REFERENCE_IDENTIFIER.$key, $newHeist);
