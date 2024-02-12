@@ -283,6 +283,7 @@ employees: Employees
 employee.motivation: Motivation
 employee.code_name: Code name
 employee.edit: Edit employee
+employee.status: Statut
 
 # User
 user.balance: Balance

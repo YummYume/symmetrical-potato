@@ -16,7 +16,7 @@ export default function Employees() {
               <Table.ColumnHeaderCell className="whitespace-nowrap">
                 {t('employee.code_name')}
               </Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell>{t('user.status')}</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>{t('employee.status')}</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>{t('employee.motivation')}</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>{t('description')}</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
