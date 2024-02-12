@@ -34,7 +34,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.0.9
+          bun-version: 1.0.26
 
       - name: Cache CSS build
         uses: actions/cache@v3

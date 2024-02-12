@@ -99,7 +99,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.0.20
+          bun-version: 1.0.26
 
       - name: Caching dependencies
         uses: actions/cache@v3
