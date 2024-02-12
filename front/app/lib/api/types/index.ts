@@ -1055,6 +1055,7 @@ export type QueryReviewsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   location__placeId?: InputMaybe<Scalars['String']['input']>;
   location__placeId_list?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  user__id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type QueryTokenArgs = {
