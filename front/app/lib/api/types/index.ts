@@ -172,6 +172,7 @@ export type Employee = Node & {
   establishment: Establishment;
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
+  planning: Maybe<Scalars['Iterable']['output']>;
   status: Maybe<EmployeeStatusEnum>;
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<User>;
@@ -1037,6 +1038,7 @@ export type QueryReviewArgs = {
 export type QueryReviewsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   location__placeId?: InputMaybe<Scalars['String']['input']>;
@@ -1399,6 +1401,7 @@ export type CreateEmployeeNestedPayload = Node & {
   establishment: CreateEstablishmentNestedPayload;
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
+  planning: Maybe<Scalars['Iterable']['output']>;
   status: Maybe<EmployeeStatusEnum>;
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<CreateUserNestedPayload>;
@@ -1447,6 +1450,7 @@ export type CreateEmployeePayloadData = Node & {
   establishment: CreateEstablishmentNestedPayload;
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
+  planning: Maybe<Scalars['Iterable']['output']>;
   status: Maybe<EmployeeStatusEnum>;
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<CreateUserNestedPayload>;
@@ -2241,6 +2245,7 @@ export type UpdateEmployeeNestedPayload = Node & {
   establishment: Maybe<UpdateEstablishmentNestedPayload>;
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
+  planning: Maybe<Scalars['Iterable']['output']>;
   status: Maybe<EmployeeStatusEnum>;
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<UpdateUserNestedPayload>;
@@ -2289,6 +2294,7 @@ export type UpdateEmployeePayloadData = Node & {
   establishment: Maybe<UpdateEstablishmentNestedPayload>;
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
+  planning: Maybe<Scalars['Iterable']['output']>;
   status: Maybe<EmployeeStatusEnum>;
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<UpdateUserNestedPayload>;
@@ -2540,6 +2546,7 @@ export type ValidateEmployeeNestedPayload = Node & {
   establishment: Establishment;
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
+  planning: Maybe<Scalars['Iterable']['output']>;
   status: Maybe<EmployeeStatusEnum>;
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<ValidateUserNestedPayload>;
@@ -2564,6 +2571,7 @@ export type ValidateEmployeePayloadData = Node & {
   establishment: Establishment;
   id: Scalars['ID']['output'];
   motivation: Maybe<Scalars['String']['output']>;
+  planning: Maybe<Scalars['Iterable']['output']>;
   status: Maybe<EmployeeStatusEnum>;
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<ValidateUserNestedPayload>;

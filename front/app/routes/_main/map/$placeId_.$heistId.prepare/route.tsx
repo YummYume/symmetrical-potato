@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { PlusCircledIcon, MinusCircledIcon } from '@radix-ui/react-icons';
-import { Box, Button, Flex, Grid, Heading, Section, Tabs, Text } from '@radix-ui/themes';
+import { PlusCircledIcon, MinusCircledIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import { Box, Button, Callout, Flex, Grid, Heading, Section, Tabs, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 import { useEffect, useState } from 'react';
@@ -18,7 +18,6 @@ import {
 import { getHeistPartial } from '~/lib/api/heist';
 import { bulkCreateHeistAssets, bulkUpdateHeistAssets } from '~/lib/api/heist-asset';
 import { AssetTypeEnum } from '~/lib/api/types';
-import { Callout } from '~/lib/components/Callout';
 import { Link } from '~/lib/components/Link';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { SubmitButton } from '~/lib/components/form/SubmitButton';
@@ -562,14 +561,12 @@ export default function Prepare() {
               </RemixFormProvider>
             )}
             {!employee && (
-              <Callout
-                content={t('heist.prepare.employee.not_chosen_warning')}
-                icon="ExclamationTriangleIcon"
-                color="orange"
-                role="alert"
-                size="1"
-                className="mt-3"
-              />
+              <Callout.Root color="orange" mt="3">
+                <Callout.Icon>
+                  <ExclamationTriangleIcon />
+                </Callout.Icon>
+                <Callout.Text>{t('heist.prepare.employee.not_chosen_warning')}</Callout.Text>
+              </Callout.Root>
             )}
           </Tabs.Content>
 

@@ -1,4 +1,4 @@
-import { Container, Flex, Heading, Text } from '@radix-ui/themes';
+import { Card, Container, Flex, Heading, Text } from '@radix-ui/themes';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -75,27 +75,31 @@ export default function Profile() {
             {user.username}
           </Heading>
 
-          <Flex
-            direction={{ initial: 'column', md: 'row' }}
-            gap={{ initial: '2', md: '4' }}
-            className="p-2 md:p-0"
-          >
-            <Flex direction="row" gap={{ initial: '1', md: '2' }}>
-              <Flex direction="column" gap="2" align="center">
-                <UserAvatar username={user.username} mainRole={user.mainRole} size="6" />
-                <UserMainRoleBadge mainRole={user.mainRole} />
+          <Card>
+            <Flex
+              direction={{ initial: 'column', md: 'row' }}
+              gap={{ initial: '2', md: '4' }}
+              className="p-2 md:p-0"
+            >
+              <Flex direction="row" gap={{ initial: '1', md: '2' }}>
+                <Flex direction="column" gap="2" align="center">
+                  <UserAvatar username={user.username} mainRole={user.mainRole} size="6" />
+                  <UserMainRoleBadge mainRole={user.mainRole} />
+                </Flex>
+                <Text as="p" size="5">
+                  {user.profile.description ?? t('user.no_description')}
+                </Text>
               </Flex>
-              <Text as="p" size="5">
-                {user.profile.description ?? t('user.no_description')}
-              </Text>
+              {user.globalRating && (
+                <Flex direction="column" gap="1" align="end">
+                  <Text as="span" weight="bold" size="2">
+                    {t('user.global_rating')}
+                  </Text>
+                  <Rating style={{ width: 125 }} value={user.globalRating} readOnly />
+                </Flex>
+              )}
             </Flex>
-            {user.globalRating && (
-              <Flex direction="column" gap="2" align="end">
-                <Text as="span">{t('user.global_rating')}</Text>
-                <Rating style={{ width: 150 }} value={user.globalRating} readOnly />
-              </Flex>
-            )}
-          </Flex>
+          </Card>
         </Flex>
       </Container>
     </main>

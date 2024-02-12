@@ -14,6 +14,7 @@ import { EmployeeStatusEnum } from '~/lib/api/types';
 import { Link } from '~/lib/components/Link';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { i18next } from '~/lib/i18n/index.server';
+import { getUriId } from '~/lib/utils/path';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
@@ -126,9 +127,22 @@ export default function Job() {
                   )}
                   <Flex mt="6" direction="column" gap="3">
                     <Flex className="text-left" direction="column" gap="1">
-                      <Text>{t('employee.motivation')}</Text>
-                      <Blockquote>{user.employee.motivation}</Blockquote>
+                      <Text weight="bold" size="3" color="gray">
+                        {t('establishment')}
+                      </Text>
+                      {/* TODO establishment link */}
+                      <Link to={`/establishments/${getUriId(user.employee.establishment.id)}`}>
+                        {user.employee.establishment.name}
+                      </Link>
                     </Flex>
+                    {user.employee.motivation && (
+                      <Flex className="text-left" direction="column" gap="1">
+                        <Text weight="bold" size="3" color="gray">
+                          {t('employee.motivation')}
+                        </Text>
+                        <Blockquote>{user.employee.motivation}</Blockquote>
+                      </Flex>
+                    )}
                     <div className="mt-6 text-center">
                       <Form
                         id="employee-delete-form"

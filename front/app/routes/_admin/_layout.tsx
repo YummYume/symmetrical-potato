@@ -78,14 +78,20 @@ const Menu = ({
             {t('my_contractor_request')}
           </Link>
         </DropdownMenu.Item>
-        {user.roles.includes(ROLES.EMPLOYEE) ||
-          (user.roles.includes(ROLES.USER) && (
-            <DropdownMenu.Item>
-              <Link className="w-full" to="/job" unstyled>
-                {t('my_job')}
-              </Link>
-            </DropdownMenu.Item>
-          ))}
+        {(user.roles.includes(ROLES.EMPLOYEE) || user.roles.includes(ROLES.USER)) && (
+          <DropdownMenu.Item>
+            <Link className="w-full" to="/job" unstyled>
+              {t('my_job')}
+            </Link>
+          </DropdownMenu.Item>
+        )}
+        {user.roles.includes(ROLES.EMPLOYEE) && (
+          <DropdownMenu.Item>
+            <Link className="w-full" to="/planning" unstyled>
+              {t('my_planning')}
+            </Link>
+          </DropdownMenu.Item>
+        )}
         <DropdownMenu.Separator />
         <DropdownMenu.Item>
           <Link className="w-full" to="/dashboard" unstyled>

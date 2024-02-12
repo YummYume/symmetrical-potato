@@ -1,5 +1,6 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
+import dayjs from '~/lib/utils/dayjs';
 import {
   type Mutation,
   type MutationDeleteLocationArgs,
@@ -10,6 +11,7 @@ import {
 } from '~api/types';
 import { HeistPhaseEnum } from '~api/types';
 
+import type { QueryHeistsArgs } from '~api/types';
 import type { GooglePlace } from '~api/types/maps';
 
 /**
@@ -18,10 +20,10 @@ import type { GooglePlace } from '~api/types/maps';
 export const getLocationInfo = async (client: GraphQLClient, placeId: string) => {
   return client.request<
     Pick<Query, 'location' | 'heists' | 'reviews'>,
-    { place: string; placeId: string; phase: HeistPhaseEnum[] }
+    { place: string; placeId: string; phase: HeistPhaseEnum[]; startAt: QueryHeistsArgs['startAt'] }
   >(
     gql`
-      query ($place: String!, $placeId: ID!, $phase: Iterable) {
+      query ($place: String!, $placeId: ID!, $phase: Iterable, $startAt: [HeistFilter_startAt]!) {
         location(id: $placeId) {
           name
           address
@@ -31,7 +33,7 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
           longitude
         }
 
-        heists(location__placeId: $place, phase: $phase) {
+        heists(location__placeId: $place, phase: $phase, startAt: $startAt) {
           edges {
             node {
               difficulty
@@ -71,6 +73,11 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
       placeId: `/locations/${placeId}`,
       place: placeId,
       phase: [HeistPhaseEnum.Planning],
+      startAt: [
+        {
+          after: dayjs().startOf('day').toISOString(),
+        },
+      ],
     },
   );
 };

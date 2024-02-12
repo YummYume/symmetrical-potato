@@ -63,6 +63,8 @@ optional: Optionnel
 apply: Appliquer
 select: Sélectionner...
 search: Rechercher
+contractor: Contractant
+reviews: Avis
 
 # Meta
 meta.dashboard.title: Tableau de bord
@@ -76,6 +78,7 @@ meta.my_account.description: Modifiez vos paramètres de compte.
 meta.profile.description: Consultez le profil de {name}.
 meta.my_job.title: Mon emploi
 meta.my_job.description: Consultez votre emploi actuel.
+meta.establishment.description: Consultez l'établissement {name}.
 
 # Dashboard
 dashboard.heists.today: Braquages aujourd'hui
@@ -192,6 +195,12 @@ my_job.warning_message: >-
 my_job.find_establishment: Trouver un établissement
 my_job.delete.confirm: Êtes-vous sûr de vouloir quitter votre emploi ?
 my_job.delete.confirm_stop_application: Êtes-vous sûr de vouloir supprimer cette candidature ?
+my_job.status.pending: En attente
+my_job.status_description.pending: Votre candidature est en attente. Vous serez notifié dès qu'une décision sera prise.
+my_job.status.active: Accepté
+my_job.status_description.active: Votre candidature a été acceptée. Vous pouvez maintenant travailler à l'établissement.
+my_job.status.rejected: Rejeté
+my_job.status_description.rejected: Votre candidature a été rejetée. Vous pouvez postuler à nouveau si vous le souhaitez.
 
 # My Contractor Request
 my_contractor_request: Ma demande de contractant
@@ -219,6 +228,9 @@ my_contractor_request.no_request_description: >
 
   Si votre demande est acceptée, vous pourrez créer des établissements et
   embaucher des employés, ainsi que créer et organiser des braquages.
+
+# My planning
+my_planning: Mon planning
 
 # Heist
 heist.name: Nom
@@ -258,10 +270,9 @@ heist.edit.confirm_description: >-
   Supprimer ce braquage ne vous remboursera que 50% de ce que vous avez payé.
 heist.join.confirm: Êtes-vous sûr de vouloir rejoindre ce braquage ?
 heist.employee.chosen: L'employé nommé {name} vous aidera.
-heist.employee.not_chosen: Choisissez celui qui vous aidera.
+heist.employee.not_chosen: Choisissez un employé pour vous assister.
 heist.prepare.employee.not_chosen_warning: >-
-  Si personne au sein de l'équipe ne choisit un employé pour aider, le braquage
-  sera annulé.
+  Si aucun employé n'est choisi par l'équipe avant le début du braquage, ce dernier sera annulé.
 heist.phase: Phase
 heist.phase.cancelled: Annulé
 heist.phase.failed: Échoué
@@ -338,7 +349,7 @@ asset.heist: Braquage associé
 asset.type.assets.catch_phrase: >-
   Prenez tout ce dont vous avez besoin, vous ne savez pas ce que vous trouverez
   sur votre chemin.
-asset.type.equipments.catch_phrase: Vous aurez besoin de certains équipements. Ne les oublie pas.
+asset.type.equipments.catch_phrase: Les équipements sont précieux, ne les oubliez pas.
 asset.type.weapons.catch_phrase: >-
   Choisissez judicieusement votre arme. Vous ne voulez pas être pris au dépourvu
   ou, pire, désarmé.
@@ -395,6 +406,9 @@ establishment.average_rating.none: Aucune note
 establishment.review_count: Nombre d'avis
 establishment.new: Nouvel établissement
 establishment.edit: Modifier l'établissement
+establishment.no_heists: Aucun braquage pour le moment.
+establishment.no_reviews: Aucun avis pour le moment.
+establishment.no_employees: Aucun employé pour le moment.
 
 # Rating
 rating.star: Noter {rating, number}

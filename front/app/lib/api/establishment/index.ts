@@ -56,7 +56,20 @@ export const getEstablishments = async (client: GraphQLClient) => {
 /**
  * Query an establishment by id.
  */
-export const getEstablishment = async (client: GraphQLClient, id: string) => {
+export const getEstablishment = async (client: GraphQLClient, id: string, asAdmin = false) => {
+  const adminFields = gql`
+    createdAt
+    updatedAt
+    createdBy {
+      id
+      username
+    }
+    updatedBy {
+      id
+      username
+    }
+  `;
+
   return client.request<Pick<Query, 'establishment'>, QueryEstablishmentArgs>(
     gql`
       query GetEstablishment($id: ID!) {
@@ -79,16 +92,7 @@ export const getEstablishment = async (client: GraphQLClient, id: string) => {
               description
             }
           }
-          createdAt
-          updatedAt
-          createdBy {
-            id
-            username
-          }
-          updatedBy {
-            id
-            username
-          }
+          ${asAdmin ? adminFields : ''}
         }
       }
     `,

@@ -109,6 +109,9 @@ class Employee
     public const VALIDATE = 'employee:validate';
     public const UPDATE = 'employee:update';
 
+    public const PLANNING_REASON_HEIST = 'heist';
+    public const PLANNING_REASON_TIME_OFF = 'time_off';
+
     public const DAY_MONDAY = 'monday';
     public const DAY_TUESDAY = 'tuesday';
     public const DAY_WEDNESDAY = 'wednesday';
@@ -190,7 +193,7 @@ class Employee
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[ApiProperty(security: '')]
-    #[Groups([self::READ, self::CREATE])]
+    #[Groups([self::READ, User::READ, self::CREATE])]
     #[Assert\NotBlank(
         message: 'employee.motivation.not_blank',
         groups: [self::CREATE]
@@ -205,7 +208,7 @@ class Employee
     private ?string $motivation = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups([self::READ, self::READ_PUBLIC, self::UPDATE])]
+    #[Groups([self::READ, User::READ, self::READ_PUBLIC, self::UPDATE])]
     #[Assert\Length(
         max: 1000,
         maxMessage: 'employee.description.max_length',
@@ -423,6 +426,59 @@ class Employee
     public function hasContractor(User $user): bool
     {
         return $this->establishment?->getContractor() === $user;
+    }
+
+    /**
+     * @return array<string, array<int, array<string, string>>>
+     */
+    #[ApiProperty(security: 'is_granted("READ", object)')]
+    #[Groups([self::READ_PUBLIC, self::READ, User::READ])]
+    public function getPlanning(): array
+    {
+        $planning = [];
+
+        if (EmployeeStatusEnum::Active !== $this->status) {
+            return $planning;
+        }
+
+        $year = (int) (new \DateTimeImmutable())->format('Y');
+        $week = (int) (new \DateTimeImmutable())->format('W');
+
+        foreach (self::DAYS as $day) {
+            $heists = $this->heists->filter(
+                static fn (Heist $heist) => $heist->getStartAt()->format('Y') === (string) $year && $heist->getStartAt()->format('W') === (string) $week && $heist->getStartAt()->format('l') === $day
+            );
+
+            foreach ($heists as $heist) {
+                $planning[$day][] = [
+                    'reason' => self::PLANNING_REASON_HEIST,
+                    'startAt' => $heist->getStartAt()->format('H:i'),
+                    'endAt' => $heist->getShouldEndAt()->format('H:i'),
+                    'heist' => [
+                        'id' => $heist->getId(),
+                        'name' => $heist->getName(),
+                    ],
+                ];
+            }
+
+            $timeOffs = $this->timeOffs->filter(
+                static fn (EmployeeTimeOff $timeOff) => $timeOff->getStartAt()->format('Y') === (string) $year && $timeOff->getStartAt()->format('W') === (string) $week && $timeOff->getStartAt()->format('l') === $day
+            );
+
+            foreach ($timeOffs as $timeOff) {
+                $planning[$day][] = [
+                    'reason' => self::PLANNING_REASON_TIME_OFF,
+                    'startAt' => $timeOff->getStartAt()->format('H:i'),
+                    'endAt' => $timeOff->getEndAt()->format('H:i'),
+                    'timeOff' => [
+                        'id' => $timeOff->getId(),
+                        'reason' => $timeOff->getReason(),
+                    ],
+                ];
+            }
+        }
+
+        return $planning;
     }
 
     /**

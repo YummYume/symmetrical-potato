@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ThemeContext } from '~lib/context/Theme';
 
+import dayjs from '../utils/dayjs';
+
 const HOURS = [
   '0:00',
   '1:00',
@@ -30,12 +32,22 @@ const HOURS = [
   '21:00',
   '22:00',
   '23:00',
-];
+] as const;
+
+export const DAYS = [
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
+] as const;
 
 const randomColor = () => {
   const randomNumber = Math.floor(Math.random() * 360) + 1;
 
-  return `oklch(66.6% 0.15 ${randomNumber} / 0.75)`;
+  return `oklch(66.6% 0.15 47 / 0.75)`;
 };
 
 const stringToMinutes = (time: string) => {
@@ -44,14 +56,31 @@ const stringToMinutes = (time: string) => {
   return +hours * 60 + +minutes;
 };
 
+export type DayHeistHour = {
+  reason: 'heist';
+  startAt: string;
+  endAt: string;
+  heist: {
+    id: string;
+    name: string;
+  };
+};
+
+export type DayTimeOffHour = {
+  reason: 'time_off';
+  startAt: string;
+  endAt: string;
+  timeOff: {
+    id: string;
+    reason?: string;
+  };
+};
+
 export type Day = {
   name: string;
   employees: {
     name: string;
-    hours: {
-      start: string;
-      end: string;
-    }[];
+    hours: (DayHeistHour | DayTimeOffHour)[];
   }[];
 };
 
@@ -76,7 +105,7 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
             style={{ gridTemplateColumns: `repeat(${employees?.length}, 1fr` }}
           >
             {/* Sub columns */}
-            {employees?.map(({ hours, name }) => {
+            {employees?.map(({ hours, name }, index) => {
               const customStyle: {
                 [key: string]: string;
               } = {
@@ -86,11 +115,11 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
               return (
                 <div
                   className="grid grid-rows-[repeat(calc(24*60),1fr)]"
-                  key={name}
+                  key={`${name}-${index}`}
                   style={customStyle}
                 >
                   {/* Employee hours */}
-                  {hours.map(({ end, start }, i) => (
+                  {hours.map(({ endAt, startAt }, i) => (
                     <Tooltip.Provider key={i}>
                       <Tooltip.Root>
                         <Tooltip.Trigger asChild>
@@ -98,8 +127,8 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
                             aria-label={t('more_info')}
                             className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
                             style={{
-                              gridRowEnd: stringToMinutes(end),
-                              gridRowStart: stringToMinutes(start),
+                              gridRowEnd: dayjs(endAt).format('HH:mm'),
+                              gridRowStart: dayjs(startAt).format('HH:mm'),
                             }}
                           ></button>
                         </Tooltip.Trigger>
@@ -108,7 +137,7 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
                             <Card>
                               <p>{name}</p>
                               <p>
-                                {start} - {end}
+                                {startAt} - {endAt}
                               </p>
                             </Card>
                           </Tooltip.Content>

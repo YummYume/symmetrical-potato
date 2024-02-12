@@ -63,6 +63,8 @@ optional: Optional
 apply: Apply
 select: Select...
 search: Search
+contractor: Contractor
+reviews: Reviews
 
 # Meta
 meta.dashboard.title: Dashboard
@@ -76,6 +78,7 @@ meta.my_account.description: Edit your account settings.
 meta.profile.description: View the profile of {name}.
 meta.my_job.title: My job
 meta.my_job.description: Check your current job status.
+meta.establishment.description: View the establishment {name}.
 
 # Dashboard
 dashboard.heists.today: Heists today
@@ -190,6 +193,12 @@ my_job.warning_message: You will not be able to join heists by yourself once you
 my_job.find_establishment: Find an establishment
 my_job.delete.confirm: Are you sure you want to leave your job?
 my_job.delete.confirm_stop_application: Are you sure you want to delete this application?
+my_job.status.pending: Application pending
+my_job.status_description.pending: Your application is pending. You will receive an email when a decision is made.
+my_job.status.active: Application accepted
+my_job.status_description.active: Your application has been accepted. You can now work at the establishment.
+my_job.status.rejected: Application rejected
+my_job.status_description.rejected: Your application has been rejected. You can apply for another job if you want.
 
 # My Contractor Request
 my_contractor_request: My contractor request
@@ -212,6 +221,9 @@ my_contractor_request.no_request_description: >
 
   If accepted, you will be able to create establishments and hire employees, as
   well as create and organize heists.
+
+# My planning
+my_planning: My planning
 
 # Heist
 heist.name: Name
@@ -249,10 +261,9 @@ heist.edit.confirm_description: >-
   Canceling the heist will only refund you 50% of the cost.
 heist.join.confirm: Are you sure you want to join this heist?
 heist.employee.chosen: The employee named {name} will help you.
-heist.employee.not_chosen: Choose the one who will help you.
+heist.employee.not_chosen: Choose an employee to assist you.
 heist.prepare.employee.not_chosen_warning: >-
-  If no one in the crew chooses an employee to help, the heist will be
-  cancelled.
+  If no employee is chosen by the team before the start of the heist, the heist will be canceled.
 heist.phase: Phase
 heist.phase.cancelled: Cancelled
 heist.phase.failed: Failed
@@ -327,7 +338,7 @@ asset.max_quantity: Max quantity
 asset.team_asset: Team asset
 asset.heist: Associated heist
 asset.type.assets.catch_phrase: Take everything you need, you don't know what you will find on your way.
-asset.type.equipments.catch_phrase: You will need some equipment to help you. Don't forget them.
+asset.type.equipments.catch_phrase: Equipment is precious, don't forget it.
 asset.type.weapons.catch_phrase: >-
   Choose your weapon wisely. You don't want to be caught off guard or worse,
   unarmed.
@@ -383,6 +394,9 @@ establishment.average_rating.none: No rating
 establishment.review_count: Review count
 establishment.new: New establishment
 establishment.edit: Edit establishment
+establishment.no_heists: No heists yet.
+establishment.no_reviews: No reviews yet.
+establishment.no_employees: No employees yet.
 
 # Rating
 rating.star: Rate {rating}

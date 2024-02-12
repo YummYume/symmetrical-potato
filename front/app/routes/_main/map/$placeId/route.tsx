@@ -98,14 +98,10 @@ export default function PlaceId() {
     userCrewHeistsId,
   } = useLoaderData<Loader>();
   const { t } = useTranslation();
-
   const heists =
     locationInfo?.heists?.edges?.filter<HeistEdgeWithNode>(
-      (heist): heist is HeistEdgeWithNode =>
-        !!heist?.node &&
-        (isAdmin || isContractor || (isHeister && new Date(heist.node.startAt) > new Date())),
+      (heist): heist is HeistEdgeWithNode => !!heist?.node,
     ) ?? [];
-
   const reviews =
     locationInfo?.reviews?.edges?.filter<ReviewEdgeWithNode>(
       (review): review is ReviewEdgeWithNode => !!review?.node,

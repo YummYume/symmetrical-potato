@@ -38,6 +38,9 @@ export const getEmployee = async (client: GraphQLClient, id: string) => {
       query ($id: ID!) {
         employee(id: $id) {
           id
+          codeName
+          weeklySchedule
+          planning
           user {
             id
             username
@@ -60,12 +63,14 @@ export const getEmployeesEstablishments = async (client: GraphQLClient, ids: str
           edges {
             node {
               id
+              codeName
               establishment {
                 id
               }
               user {
                 id
                 username
+                mainRole
               }
             }
           }
