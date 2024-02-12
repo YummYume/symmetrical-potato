@@ -481,3 +481,6 @@ review.edit_review: Modifier votre avis
 review.no_review: Aucun avis
 review.no_review_description: Soyez le premier à donner votre avis sur ce lieu.
 review.no_review_description_establishment: Soyez le premier à donner votre avis sur cet établissement.
+review.create.confirm: Êtes-vous sûr de vouloir ajouter cet avis ?
+review.delete.confirm: Êtes-vous sûr de vouloir supprimer votre avis ?
+review.edit.confirm: Êtes-vous sûr de vouloir éditer votre avis ?

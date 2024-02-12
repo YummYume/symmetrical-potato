@@ -62,7 +62,7 @@ export const createReview = async (
 ) => {
   return client.request<Pick<Mutation, 'createReview'>>(
     gql`
-      mutation CreateReview($input: CreateReviewInput!) {
+      mutation CreateReview($input: createReviewInput!) {
         createReview(input: $input) {
           review {
             id
@@ -83,7 +83,7 @@ export const updateReview = async (
 ) => {
   return client.request<Pick<Mutation, 'updateReview'>>(
     gql`
-      mutation UpdateReview($input: UpdateReviewInput!) {
+      mutation UpdateReview($input: updateReviewInput!) {
         updateReview(input: $input) {
           review {
             id
@@ -91,7 +91,12 @@ export const updateReview = async (
         }
       }
     `,
-    { input },
+    {
+      input: {
+        ...input,
+        id: `/reviews/${input.id}`,
+      },
+    },
   );
 };
 
@@ -109,7 +114,7 @@ export const deleteReview = async (client: GraphQLClient, id: string) => {
         }
       }
     `,
-    { id },
+    { id: `/reviews/${id}` },
   );
 };
 

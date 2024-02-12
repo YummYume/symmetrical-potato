@@ -134,6 +134,8 @@ export default function PlaceId() {
       (review): review is ReviewEdgeWithNode => !!review?.node,
     ) ?? [];
 
+  const userReview = reviews && reviews.find((review) => review.node.user.id === user.id);
+
   if (!locationInfo?.location) {
     return place ? (
       <div>

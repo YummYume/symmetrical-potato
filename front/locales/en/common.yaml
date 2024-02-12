@@ -470,3 +470,6 @@ review.edit_review: Edit your review
 review.no_review: No review
 review.no_review_description: Be the first to review this location.
 review.no_review_description_establishment: Be the first to review this establishment.
+review.create.confirm: Are you sure you want to add this review?
+review.delete.confirm: Are you sure you want to delete your review?
+review.edit.confirm: Are you sure you want to edit your review?

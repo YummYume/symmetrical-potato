@@ -8,7 +8,7 @@ export const reviewValidationSchema = z.object({
     required_error: 'review.rating.required',
     invalid_type_error: 'review.rating.invalid_type',
   }),
-  comment: z.string().trim().min(1, 'review.min_length').max(1000, 'review.max_length'),
+  comment: z.string().trim().min(1, 'review.min_length').max(1000, 'review.max_length').optional(),
 });
 
 export const reviewResolver = zodResolver(reviewValidationSchema);

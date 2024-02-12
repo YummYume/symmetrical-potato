@@ -58,3 +58,8 @@ job.updated: Emploi mis à jour avec succès.
 # Employee
 employee.updated: Employé mis à jour avec succès.
 employee.deleted: Employé supprimé avec succès.
+
+# Review
+review.create_successfully: Avis crée avec succès.
+review.update_successfully: Avis mis à jour avec succès.
+review.delete_successfully: Avis supprimé avec succès.

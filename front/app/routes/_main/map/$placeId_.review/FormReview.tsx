@@ -1,17 +1,21 @@
+import { Button } from '@radix-ui/themes';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
 
+import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
+import { getUriId } from '~/lib/utils/path';
 import { reviewResolver, type ReviewFormData } from '~/lib/validators/review';
 
-import type { ReviewRatingEnum } from '~/lib/api/types';
+import type { ReviewEdge, ReviewRatingEnum } from '~/lib/api/types';
 
 type FormReviewProps = {
-  review?: ReviewFormData;
+  review?: ReviewEdge;
+  placeId: string;
 };
 
-export function FormReview({ review }: FormReviewProps) {
+export function FormReview({ review, placeId }: FormReviewProps) {
   const { t } = useTranslation();
 
   const ratings = {
@@ -32,29 +36,46 @@ export function FormReview({ review }: FormReviewProps) {
     label,
   })) as { value: ReviewRatingEnum; label: string }[];
 
+  const title = review ? t('edit') : t('add');
+  const description = review ? t('review.edit.confirm') : t('review.create.confirm');
+  const buttonText = review ? t('update') : t('create');
+
+  const action = `/map/${placeId}/review/${review ? `${getUriId(review.node.id)}/edit` : 'new'}`;
+
   const methods = useRemixForm<ReviewFormData>({
     mode: 'onSubmit',
     resolver: reviewResolver,
     submitConfig: {
+      action,
       unstable_viewTransition: true,
     },
-    defaultValues: review || {
-      rating: reviewRatings[0].value,
-      comment: '',
+    defaultValues: {
+      rating: review?.node.rating ?? reviewRatings[0].value,
+      comment: review?.node.comment ?? '',
     },
   });
 
   return (
     <RemixFormProvider {...methods}>
-      <form>
+      <form id="review-form" onSubmit={methods.handleSubmit}>
         <FieldSelect label={t('review.rating')} name="rating" options={reviewRatings} />
         <TextAreaInput
           label={t('review.comment')}
           name="comment"
           placeholder={t('review.comment.placeholder')}
-          required
           rows={5}
         />
+        <FormAlertDialog
+          title={title}
+          description={description}
+          actionColor="green"
+          cancelText={t('cancel')}
+          formId="review-form"
+        >
+          <Button type="button" color="green">
+            {buttonText}
+          </Button>
+        </FormAlertDialog>
       </form>
     </RemixFormProvider>
   );
