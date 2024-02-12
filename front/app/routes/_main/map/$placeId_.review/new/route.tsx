@@ -17,7 +17,7 @@ import type { ReviewFormData } from '~/lib/validators/review';
 import type { FlashMessage } from '~/root';
 
 export async function action({ params, request, context }: ActionFunctionArgs) {
-  denyAccessUnlessGranted(context.user, ROLES.HEISTER);
+  const user = denyAccessUnlessGranted(context.user, ROLES.HEISTER);
 
   if (!params.placeId) {
     throw redirect('/map');
@@ -37,6 +37,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
     await createReview(context.client, {
       rating: data.rating,
       comment: data.comment,
+      user: user.id,
       location: params.placeId,
     });
 
@@ -51,8 +52,8 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
       },
     });
   } catch (error) {
-    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401])) {
-      errorMessage = getMessageForErrorStatusCodes(error, [422, 401]);
+    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 403])) {
+      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 403]);
     } else {
       throw error;
     }

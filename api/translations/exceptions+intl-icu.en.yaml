@@ -18,6 +18,9 @@ heist.not_found: The requested heist was not found.
 # CrewMember
 crew_member.already_joined: You have already joined this heist.
 
+# Review
+review.already_exists: You have already left a review.
+
 # Google API
 google_api.bad_request: The provided information is invalid.
 google_api.not_found: The requested resource was not found.

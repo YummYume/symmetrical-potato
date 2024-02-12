@@ -70,7 +70,12 @@ export const createReview = async (
         }
       }
     `,
-    { input },
+    {
+      input: {
+        ...input,
+        location: input.location ? `/locations/${input.location}` : null,
+      },
+    },
   );
 };
 

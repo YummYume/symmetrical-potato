@@ -90,6 +90,7 @@ establishment.employee_cut.max: La part de l'employé doit être au maximum de 9
 establishment.crew_cut.min: La part de l'équipe doit être au moins de 1 %.
 establishment.crew_cut.max: La part de l'équipe doit être au maximum de 99 %.
 establishment.cuts.sum_not_100: Les parts de l'entrepreneur, de l'employé et de l'équipe doivent totaliser 100 %.
+
 # Heist
 heist.name.required: Veuillez saisir un nom.
 heist.name.min_length: Le nom doit comporter au moins 2 caractères.
@@ -132,6 +133,9 @@ heist.objectives.description.min_length: La description doit comporter au moins 
 heist.objectives.description.max_length: La description doit comporter moins de 255 caractères.
 heist.visibility.required: La visibilité est requis
 heist.visibility.invalid_type: La visibilité est invalide
+
+# Review
+review.comment.max_length: Le commentaire doit comporter au plus 1000 caractères.
 
 # Map
 map.filters.date_greater_than_or_equal_now: La date doit être supérieure ou égale à la date actuelle.

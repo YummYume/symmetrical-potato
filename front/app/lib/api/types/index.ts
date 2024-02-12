@@ -1661,6 +1661,7 @@ export type CreateReviewInput = {
   establishment?: InputMaybe<Scalars['String']['input']>;
   location?: InputMaybe<Scalars['String']['input']>;
   rating: ReviewRatingEnum;
+  user: Scalars['String']['input'];
 };
 
 /** Creates a Review. */

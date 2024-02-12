@@ -60,6 +60,6 @@ employee.updated: Employee updated successfully.
 employee.deleted: Employee deleted successfully.
 
 # Review
-review.create_successfully: Review created successfully.
-review.update_successfully: Review updated successfully.
-review.delete_successfully: Review deleted successfully.
+review.created_successfully: Review created successfully.
+review.updated_successfully: Review updated successfully.
+review.deleted_successfully: Review deleted successfully.

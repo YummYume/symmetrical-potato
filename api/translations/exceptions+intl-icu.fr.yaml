@@ -18,6 +18,9 @@ heist.not_found: Le braquage demandé n'a pas été trouvé.
 # CrewMember
 crew_member.already_joined: Vous avez déjà rejoint ce braquage.
 
+# Review
+review.already_exists: Vous avez déjà laissé un avis.
+
 # Google API
 google_api.bad_request: Les informations fournies sont invalides.
 google_api.not_found: La ressource demandée n'a pas été trouvée.

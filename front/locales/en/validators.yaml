@@ -135,6 +135,9 @@ heist.objectives.description.max_length: The description must be less than 255 c
 heist.visibility.required: The visibility is required.
 heist.visibility.invalid_type: The visibility is invalid.
 
+# Review
+review.comment.max_length: The comment must be at most 1000 characters long.
+
 # Map
 map.filters.date_greater_than_or_equal_now: The date must be greater than or equal to the current date.
 map.filters.start_at_min_greater_than_max: The minimum start date must be before the maximum start date.

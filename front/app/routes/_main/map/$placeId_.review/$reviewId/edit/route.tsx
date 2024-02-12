@@ -45,7 +45,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
     });
 
     session.flash(FLASH_MESSAGE_KEY, {
-      content: t('review.update_successfully', { ns: 'flash' }),
+      content: t('review.updated_successfully', { ns: 'flash' }),
       type: 'success',
     } as FlashMessage);
 
@@ -55,8 +55,8 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
       },
     });
   } catch (error) {
-    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401])) {
-      errorMessage = getMessageForErrorStatusCodes(error, [422, 401]);
+    if (error instanceof ClientError && hasErrorStatusCodes(error, [422, 401, 403])) {
+      errorMessage = getMessageForErrorStatusCodes(error, [422, 401, 403]);
     } else {
       throw error;
     }

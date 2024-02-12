@@ -33,7 +33,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
     await deleteReview(context.client, params.reviewId);
 
     session.flash(FLASH_MESSAGE_KEY, {
-      content: t('review.delete_successfully', { ns: 'flash' }),
+      content: t('review.deleted_successfully', { ns: 'flash' }),
       type: 'success',
     } as FlashMessage);
 
