@@ -15,6 +15,7 @@ front_cookie_secret: "{{ vault_front_cookie_secret }}"
 front_site_host: "{{ vault_front_site_host }}"
 front_sentry_dsn: "{{ vault_front_sentry_dsn }}"
 front_sentry_token: "{{ vault_front_sentry_token }}"
+front_google_maps_key: "{{ vault_front_google_maps_key }}"
 
 # API
 api_app_env: "{{ vault_api_app_env }}"
@@ -36,3 +37,5 @@ api_jwt_passphrase: "{{ vault_api_jwt_passphrase }}"
 
 api_site_name: "{{ vault_api_site_name }}"
 api_site_base_url: "{{ vault_api_site_base_url }}"
+
+api_google_maps_key: "{{ vault_api_google_maps_key }}"

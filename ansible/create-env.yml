@@ -23,6 +23,7 @@
       COOKIE_SECRET={{ front_cookie_secret }}
       SITE_HOST={{ front_site_host }}
       SENTRY_DSN={{ front_sentry_dsn }}
+      GOOGLE_MAPS_API_KEY={{ front_google_maps_key }}
 
 - name: Create .sentryclirc file Front
   ansible.builtin.copy:
@@ -50,12 +51,13 @@
       APP_SECRET={{ api_app_secret }}
       APP_DEBUG={{ api_app_debug }}
       DATABASE_URL={{ api_database_url }}
-      MAILER_DSN={{ vault_api_mailer_dsn }}
-      MAILER_NOREPLY_EMAIL={{ vault_api_mailer_noreply_email }}
-      MAILER_NOREPLY_NAME={{ vault_api_mailer_noreply_name }}
-      MESSENGER_TRANSPORT_DSN={{ vault_api_messenger_transport_dsn }}
-      CORS_ALLOW_ORIGIN={{ vault_api_cors_allow_origin }}
-      SENTRY_DSN={{ vault_api_sentry_dsn }}
-      JWT_PASSPHRASE={{ vault_api_jwt_passphrase }}
-      SITE_NAME="{{ vault_api_site_name }}"
-      SITE_BASE_URL="{{ vault_api_site_base_url }}"
+      MAILER_DSN={{ api_mailer_dsn }}
+      MAILER_NOREPLY_EMAIL={{ api_mailer_noreply_email }}
+      MAILER_NOREPLY_NAME={{ api_mailer_noreply_name }}
+      MESSENGER_TRANSPORT_DSN={{ api_messenger_transport_dsn }}
+      CORS_ALLOW_ORIGIN={{ api_cors_allow_origin }}
+      SENTRY_DSN={{ api_sentry_dsn }}
+      JWT_PASSPHRASE={{ api_jwt_passphrase }}
+      SITE_NAME="{{ api_site_name }}"
+      SITE_BASE_URL="{{ api_site_base_url }}"
+      GOOGLE_MAPS_API_KEY={{ api_google_maps_key }}
