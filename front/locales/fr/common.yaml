@@ -290,6 +290,9 @@ heist.visibility.draft: Brouillon
 employee: Employé
 employees: Employés
 employee.motivation: Motivation
+employee.code_name: Nom de code
+employee.edit: Modifier l'employé
+employee.status: Statut
 
 # User
 user.balance: Solde
@@ -390,6 +393,8 @@ establishment.crew_cut: Part de l'équipe
 establishment.average_rating: Note moyenne
 establishment.average_rating.none: Aucune note
 establishment.review_count: Nombre d'avis
+establishment.new: Nouvel établissement
+establishment.edit: Modifier l'établissement
 
 # Rating
 rating.star: Noter {rating, number}
