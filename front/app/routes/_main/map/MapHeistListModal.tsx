@@ -88,8 +88,14 @@ export const MapHeistListModal = ({
                       phase={heist.phase}
                       preferedTactic={heist.preferedTactic}
                       difficulty={heist.difficulty}
-                      location={heist.location.name}
-                      establishment={heist.establishment.name}
+                      location={{
+                        id: heist.location.placeId,
+                        name: heist.location.name,
+                      }}
+                      establishment={{
+                        id: heist.establishment.id,
+                        name: heist.establishment.name,
+                      }}
                       align="end"
                     >
                       <NavLink

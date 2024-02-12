@@ -1,195 +1,58 @@
-import { Container } from '@radix-ui/themes';
+import { Container, Flex, Heading } from '@radix-ui/themes';
+import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import Schedule from '~/lib/components/Schedule';
-import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
-
-import type { LoaderFunctionArgs } from '@remix-run/node';
-import type { Day } from '~/lib/components/Schedule';
+import { getEmployee } from '~/lib/api/employee';
+import Schedule, { DAYS } from '~/lib/components/Schedule';
+import { ROLES } from '~/lib/utils/roles';
+import { denyAccessUnlessGranted, hasRoles } from '~/lib/utils/security.server';
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  denyAccessUnlessGranted(context.user);
+  const user = denyAccessUnlessGranted(context.user);
 
-  return {};
+  if (!hasRoles(user, [ROLES.EMPLOYEE]) || !user.employee.id) {
+    throw redirect('/dashboard');
+  }
+
+  const { employee } = await getEmployee(context.client, user.employee.id);
+
+  return {
+    employee,
+  };
 }
 
 export type Loader = typeof loader;
 
 export default function Planning() {
-  const days: Day[] = [
-    {
-      name: 'Monday',
-      employees: [
-        {
-          name: 'Michael Smith',
-          hours: [
-            { start: '9:00', end: '12:00' },
-            { start: '13:00', end: '17:00' },
-          ],
-        },
-        {
-          name: 'Emily Johnson',
-          hours: [
-            { start: '8:30', end: '12:30' },
-            { start: '13:30', end: '16:30' },
-          ],
-        },
-        {
-          name: 'David Williams',
-          hours: [
-            { start: '10:00', end: '12:30' },
-            { start: '13:30', end: '18:00' },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Tuesday',
-      employees: [
-        {
-          name: 'Michael Smith',
-          hours: [
-            { start: '9:00', end: '12:00' },
-            { start: '13:00', end: '17:00' },
-          ],
-        },
-        {
-          name: 'Emily Johnson',
-          hours: [
-            { start: '8:00', end: '12:00' },
-            { start: '13:00', end: '16:00' },
-          ],
-        },
-        {
-          name: 'Sophia Brown',
-          hours: [
-            { start: '10:30', end: '12:30' },
-            { start: '13:30', end: '18:30' },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Wednesday',
-      employees: [
-        {
-          name: 'Michael Smith',
-          hours: [
-            { start: '9:00', end: '12:00' },
-            { start: '13:00', end: '17:00' },
-          ],
-        },
-        {
-          name: 'Emily Johnson',
-          hours: [
-            { start: '8:30', end: '12:30' },
-            { start: '13:30', end: '16:30' },
-          ],
-        },
-        {
-          name: 'James Wilson',
-          hours: [
-            { start: '10:00', end: '12:30' },
-            { start: '13:30', end: '18:00' },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Thursday',
-      employees: [
-        {
-          name: 'Michael Smith',
-          hours: [
-            { start: '9:00', end: '12:00' },
-            { start: '13:00', end: '17:00' },
-          ],
-        },
-        {
-          name: 'Emily Johnson',
-          hours: [
-            { start: '8:00', end: '12:00' },
-            { start: '13:00', end: '16:00' },
-          ],
-        },
-        {
-          name: 'Olivia Taylor',
-          hours: [
-            { start: '10:30', end: '12:30' },
-            { start: '13:30', end: '18:30' },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Friday',
-      employees: [
-        {
-          name: 'Michael Smith',
-          hours: [
-            { start: '9:00', end: '12:00' },
-            { start: '13:00', end: '17:00' },
-          ],
-        },
-        {
-          name: 'Emily Johnson',
-          hours: [
-            { start: '8:30', end: '12:30' },
-            { start: '13:30', end: '16:30' },
-          ],
-        },
-        {
-          name: 'Daniel Martinez',
-          hours: [
-            { start: '10:00', end: '12:30' },
-            { start: '13:30', end: '18:00' },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Saturday',
-      employees: [
-        {
-          name: 'Sophia Brown',
-          hours: [
-            { start: '9:00', end: '14:00' },
-            { start: '14:30', end: '18:00' },
-          ],
-        },
-        {
-          name: 'James Wilson',
-          hours: [
-            { start: '8:30', end: '13:30' },
-            { start: '14:00', end: '17:30' },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Sunday',
-      employees: [
-        {
-          name: 'Olivia Taylor',
-          hours: [
-            { start: '10:00', end: '15:00' },
-            { start: '15:30', end: '18:00' },
-          ],
-        },
-        {
-          name: 'Daniel Martinez',
-          hours: [
-            { start: '11:00', end: '16:00' },
-            { start: '16:30', end: '19:30' },
-          ],
-        },
-      ],
-    },
-  ];
+  const { employee } = useLoaderData<Loader>();
+  const { t } = useTranslation();
+  const planning = useMemo(() => {
+    return DAYS.map((day) => {
+      const dayPlanning = employee.planning[day] ?? [];
+
+      return {
+        name: day,
+        employees: [
+          {
+            name: employee.codeName,
+            hours: dayPlanning,
+          },
+        ],
+      };
+    });
+  }, [employee]);
 
   return (
     <main className="py-10">
       <Container>
-        <Schedule days={days} />
+        <Flex gap="9" direction="column">
+          <Heading align="center" as="h1" size="9">
+            {t('my_planning')}
+          </Heading>
+          <Schedule days={planning} />
+        </Flex>
       </Container>
     </main>
   );

@@ -1,12 +1,15 @@
 import { Box, Flex, Grid, Heading, HoverCard, Separator, Text } from '@radix-ui/themes';
 import { useTranslation } from 'react-i18next';
 
+import { getUriId } from '~/lib/utils/path';
 import { truncate } from '~/lib/utils/string';
 import dayjs from '~utils/dayjs';
 
 import { HeistDifficultyBadge } from './HeistDifficultyBadge';
 import { HeistPhaseBadge } from './HeistPhaseBadge';
 import { HeistPreferedTacticBadge } from './HeistPreferedTacticBadge';
+
+import { Link } from '../Link';
 
 import type { ComponentProps } from 'react';
 import type { HeistDifficultyEnum, HeistPhaseEnum, HeistPreferedTacticEnum } from '~/lib/api/types';
@@ -23,8 +26,14 @@ export type HeistHoverCardProps = {
   phase?: HeistPhaseEnum;
   preferedTactic?: HeistPreferedTacticEnum;
   difficulty?: HeistDifficultyEnum;
-  location?: string;
-  establishment?: string;
+  location?: {
+    id: string;
+    name: string;
+  };
+  establishment?: {
+    id: string;
+    name: string;
+  };
   children?: JSX.Element;
 } & ComponentProps<typeof HoverCard.Content>;
 
@@ -76,18 +85,13 @@ export const HeistHoverCard = ({
 
           {(establishment || location) && (
             <Flex gap="1" align="center" mt="1">
-              {/* TODO establishment link ? */}
               {establishment && (
-                <Text as="p" size="2" color="gray">
-                  {establishment}
-                </Text>
+                <Link to={`/establishments/${getUriId(establishment.id)}`}>
+                  {establishment.name}
+                </Link>
               )}
               {establishment && location && <Separator orientation="vertical" />}
-              {location && (
-                <Text as="p" size="2" color="gray">
-                  {location}
-                </Text>
-              )}
+              {location && <Link to={`/map/${location.id}`}>{location.name}</Link>}
             </Flex>
           )}
 

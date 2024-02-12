@@ -80,8 +80,14 @@ export default function Dashboard() {
                         phase={node.phase}
                         preferedTactic={node.preferedTactic}
                         difficulty={node.difficulty}
-                        location={node.location.name}
-                        establishment={node.establishment.name}
+                        location={{
+                          id: node.location.placeId,
+                          name: node.location.name,
+                        }}
+                        establishment={{
+                          id: node.establishment.id,
+                          name: node.establishment.name,
+                        }}
                         align="end"
                       >
                         {/* TODO heist page */}

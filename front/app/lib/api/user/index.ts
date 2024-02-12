@@ -44,6 +44,16 @@ export const getCurrentUser = async (client: GraphQLClient) => {
         locale
         roles
         mainRole
+        employee {
+          id
+          codeName
+          motivation
+          status
+          establishment {
+            id
+            name
+          }
+        }
         profile {
           id
           description

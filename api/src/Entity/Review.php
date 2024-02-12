@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Entity\Traits\BlameableTrait;
 use App\Entity\Traits\TimestampableTrait;
 use App\Enum\ReviewRatingEnum;
+use App\Filter\MatchUuidFilter;
 use App\Repository\ReviewRepository;
 use App\State\ReviewProcessor;
 use App\Validator\CanReview;
@@ -72,7 +73,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['location.placeId' => 'exact'])]
 #[UniqueEntity(
     fields: ['user', 'establishment'],
     errorPath: 'establishment',
@@ -93,6 +93,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'review.establishment_or_location',
     groups: [self::CREATE]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['location.placeId' => 'exact'])]
+#[ApiFilter(MatchUuidFilter::class, properties: ['establishment.id'])]
 class Review
 {
     use BlameableTrait;

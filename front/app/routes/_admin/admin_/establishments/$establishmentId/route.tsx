@@ -37,7 +37,7 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
 
   try {
     const t = await i18next.getFixedT(request, 'admin');
-    const { establishment } = await getEstablishment(context.client, params.establishmentId);
+    const { establishment } = await getEstablishment(context.client, params.establishmentId, true);
 
     return {
       establishment,

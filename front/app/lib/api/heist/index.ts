@@ -476,6 +476,54 @@ export const getUpcomingHeists = async (
 };
 
 /**
+ * Will return heists for the given establishment.
+ */
+export const getHeistsForEstablishment = async (client: GraphQLClient, establishmentId: string) => {
+  return client.request<Pick<Query, 'heists'>, QueryHeistsArgs>(
+    gql`
+      query ($establishment__id: Iterable) {
+        heists(establishment__id: $establishment__id) {
+          edges {
+            node {
+              id
+              name
+              description
+              minimumPayout
+              maximumPayout
+              startAt
+              shouldEndAt
+              objectives
+              phase
+              preferedTactic
+              difficulty
+              establishment {
+                id
+                name
+              }
+              crewMembers {
+                totalCount
+              }
+              location {
+                placeId
+                name
+                address
+                latitude
+                longitude
+                reviewCount
+                averageRating
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      establishment__id: [`/establishments/${establishmentId}`],
+    },
+  );
+};
+
+/**
  * Will return heists statistics for the last 90 days
  *
  * @todo disable pagination for this query

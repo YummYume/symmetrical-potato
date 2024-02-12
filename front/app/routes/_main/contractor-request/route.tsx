@@ -243,12 +243,16 @@ export default function ContractorRequest() {
                   )}
                   <Flex mt="6" direction="column" gap="3">
                     <Flex className="text-left" direction="column" gap="1">
-                      <Text>{t('contractor_request.reason')}</Text>
+                      <Text weight="bold" size="3" color="gray">
+                        {t('contractor_request.reason')}
+                      </Text>
                       <Blockquote>{user.contractorRequest.reason}</Blockquote>
                     </Flex>
                     {user.contractorRequest.adminComment && (
                       <Flex className="text-left" direction="column" gap="1">
-                        <Text>{t('contractor_request.admin_comment')}</Text>
+                        <Text weight="bold" size="3" color="gray">
+                          {t('contractor_request.admin_comment')}
+                        </Text>
                         <Blockquote>{user.contractorRequest.adminComment}</Blockquote>
                       </Flex>
                     )}
