@@ -207,7 +207,7 @@ final class Mailer
                 'user' => $user,
                 'heistAsset' => $heistAsset,
                 'site' => $this->siteName,
-                'heist' => $heist->getName(),
+                'heist' => $heist,
             ])
         ;
 
