@@ -28,7 +28,7 @@ import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
 import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
-import { FormReview } from '../$placeId_.review/FormReview';
+import { FormReview } from '../$placeId_/review/FormReview';
 
 import type { MetaFunction } from '@remix-run/node';
 
@@ -220,7 +220,7 @@ export default function PlaceId() {
                             formId={`heist-join-${getUriId(node?.id)}`}
                             title={t('join')}
                             description={t('heist.join.confirm')}
-                            action={`/map/${placeId}/${getUriId(node?.id)}/join`}
+                            action={`/map/${placeId}/heist/${getUriId(node?.id)}/join`}
                             actionColor="green"
                           >
                             <Button type="button" color="green">
@@ -230,7 +230,7 @@ export default function PlaceId() {
                         ) : (
                           <>
                             <Link
-                              to={`/map/${placeId}/${getUriId(node?.id)}/prepare`}
+                              to={`/map/${placeId}/heist/${getUriId(node?.id)}/prepare`}
                               className="link link--blue"
                               unstyled
                             >
@@ -240,7 +240,7 @@ export default function PlaceId() {
                               formId={`heist-leave-${getUriId(node?.id)}`}
                               title={t('leave')}
                               description={t('heist.leave.confirm')}
-                              action={`/map/${placeId}/${getUriId(node?.id)}/leave`}
+                              action={`/map/${placeId}/heist/${getUriId(node?.id)}/leave`}
                             >
                               <Button type="button" color="red">
                                 {t('leave')}
@@ -255,7 +255,7 @@ export default function PlaceId() {
                       (isContractor && node.establishment.contractor.id === user?.id && (
                         <div className="flex items-center gap-2">
                           {node.visibility === HeistVisibilityEnum.Draft && (
-                            <Link to={`/map/${placeId}/${getUriId(node?.id)}/edit`}>
+                            <Link to={`/map/${placeId}/heist/${getUriId(node?.id)}/edit`}>
                               <div className="flex h-8 items-center rounded-2 bg-accent-9 px-3 text-[black]">
                                 {t('edit')}
                               </div>
@@ -265,7 +265,7 @@ export default function PlaceId() {
                             formId={`heist-delete-${getUriId(node?.id)}`}
                             title={t('delete')}
                             description={t('heist.delete.confirm')}
-                            action={`/map/${placeId}/${getUriId(node?.id)}/delete`}
+                            action={`/map/${placeId}/heist/${getUriId(node?.id)}/delete`}
                           >
                             <Button type="button" color="ruby">
                               {t('delete')}

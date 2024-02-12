@@ -33,6 +33,34 @@ export const getAssets = async (client: GraphQLClient) => {
 };
 
 /**
+ * Get all Global assets.
+ */
+export const getGlobalAssets = async (client: GraphQLClient) => {
+  return client.request<Pick<Query, 'assets'>>(
+    gql`
+      query ($heistId: String) {
+        assets(heist__id: $heistId) {
+          edges {
+            node {
+              id
+              name
+              price
+              maxQuantity
+              type
+              description
+              teamAsset
+            }
+          }
+        }
+      }
+    `,
+    {
+      heistId: '',
+    },
+  );
+};
+
+/**
  * Get all forbidden assets for a heist.
  */
 export const getAssetsForbiddenForHeist = async (client: GraphQLClient, heistId: string) => {
