@@ -1,5 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Button, Flex, Grid, Heading, Section, Text } from '@radix-ui/themes';
+import { LayersIcon, Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
+import { Button, Flex, Flex, Grid, Heading, Section, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';

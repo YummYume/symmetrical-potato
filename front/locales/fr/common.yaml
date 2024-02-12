@@ -327,6 +327,8 @@ heist.difficulty.veryhard: Très difficile
 heist.difficulty.overkill: Overkill
 heist.visibility.public: Public
 heist.visibility.draft: Brouillon
+heist.asset.add: Ajouter un asset
+heist.asset.no_assets: Aucun assets pour ce braquage.
 
 # Employee
 employee: Employé
@@ -379,6 +381,7 @@ heist_asset.add_quantity: Ajouter une quantité
 heist_asset.remove_quantity: Retirer une quantité
 
 # Asset
+asset.title.plural: Assets
 asset.name: Nom
 asset.description: Description
 asset.price: Prix

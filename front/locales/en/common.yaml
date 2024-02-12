@@ -319,6 +319,8 @@ heist.difficulty.veryhard: Very hard
 heist.difficulty.overkill: Overkill
 heist.visibility.public: Public
 heist.visibility.draft: Draft
+heist.asset.add: Add an asset
+heist.asset.no_assets: No assets for this heist.
 
 # Employee
 employee: Employee
@@ -371,6 +373,7 @@ heist_asset.add_quantity: Add quantity
 heist_asset.remove_quantity: Remove quantity
 
 # Asset
+asset.title.plural: Assets
 asset.name: Name
 asset.description: Description
 asset.price: Price

@@ -74,7 +74,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   let errorMessage: string | null = null;
 
   try {
-    const newAsset = await createAsset(context.client, data);
+    const newAsset = await createAsset(context.client, data, true);
 
     session.flash(FLASH_MESSAGE_KEY, {
       content: t('asset.created', { ns: 'flash' }),
