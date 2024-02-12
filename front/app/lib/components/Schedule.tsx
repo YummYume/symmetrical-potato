@@ -45,15 +45,8 @@ export const DAYS = [
 ] as const;
 
 const randomColor = () => {
-  const randomNumber = Math.floor(Math.random() * 360) + 1;
-
+  // TODO make the color depend on something ?
   return `oklch(66.6% 0.15 47 / 0.75)`;
-};
-
-const stringToMinutes = (time: string) => {
-  const [hours, minutes] = time.split(':');
-
-  return +hours * 60 + +minutes;
 };
 
 export type DayHeistHour = {

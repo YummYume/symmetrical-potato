@@ -486,7 +486,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         CrewMember::READ,
         CrewMember::READ_PUBLIC,
         Establishment::READ_PUBLIC,
-        Employee::READ
+        Employee::READ,
     ])]
     public function getMainRole(): ?string
     {
