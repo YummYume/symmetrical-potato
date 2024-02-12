@@ -4,10 +4,12 @@
 trap "exit" SIGINT
 trap "exit" SIGTERM
 
-echo "Installing dependencies"
+# echo "Installing dependencies"
 
-bun install
+# bun install
 
-echo "Starting dev server"
+# echo "Starting dev server"
 
-bun run dev
+# bun run dev
+
+tail -f /dev/null

@@ -3,4 +3,4 @@
 {% trans_default_domain 'email' %}
 
 {% set title = 'heist.cancelled.subject'|trans({heist}) %}
-{% set text = 'heist.cancelled.text'|trans({heist, name: user.name, reason, site}) %}
+{% set text = 'heist.cancelled.text'|trans({heist: heist.name, name: user.username, reason, site}) %}

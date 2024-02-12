@@ -207,6 +207,7 @@ final class Mailer
                 'user' => $user,
                 'heistAsset' => $heistAsset,
                 'site' => $this->siteName,
+                'heist' => $heist->getName(),
             ])
         ;
 
@@ -479,6 +480,11 @@ final class Mailer
                 'user' => $user,
                 'heist' => $heist,
                 'site' => $this->siteName,
+                'civilian_casualties' => $crewMember->getCivilianCasualties(),
+                'kills' => $crewMember->getKills(),
+                'objectives_completed' => $crewMember->getObjectivesCompleted(),
+                'payout' => $crewMember->getPayout(),
+                'status' => $crewMember->getStatus()->value,
             ])
         ;
 
@@ -513,6 +519,10 @@ final class Mailer
                 'user' => $user,
                 'heist' => $heist,
                 'site' => $this->siteName,
+                'civilian_casualties' => $crewMember->getCivilianCasualties(),
+                'kills' => $crewMember->getKills(),
+                'status' => $crewMember->getStatus()->value,
+                'payout' => $crewMember->getPayout(),
             ])
         ;
 
