@@ -15,12 +15,13 @@ import { Link } from '~/lib/components/Link';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { i18next } from '~/lib/i18n/index.server';
 import { getUriId } from '~/lib/utils/path';
+import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const user = denyAccessUnlessGranted(context.user);
+  const user = denyAccessUnlessGranted(context.user, [ROLES.HEISTER, ROLES.EMPLOYEE]);
   const t = await i18next.getFixedT(request, 'common');
 
   return json({

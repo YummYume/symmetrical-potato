@@ -53,6 +53,43 @@ export const getEmployee = async (client: GraphQLClient, id: string) => {
 };
 
 /**
+ * Query the list of employees for a contractor.
+ */
+export const getEmployeesForContractor = async (client: GraphQLClient, contractorId: string) => {
+  return client.request<Pick<Query, 'employees'>, QueryEmployeesArgs>(
+    gql`
+      query ($establishment__contractor__id: String!) {
+        employees(establishment__contractor__id: $establishment__contractor__id) {
+          edges {
+            node {
+              id
+              codeName
+              status
+              motivation
+              description
+              planning
+              user {
+                id
+                username
+                mainRole
+                globalRating
+                profile {
+                  id
+                  description
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      establishment__contractor__id: `/users/${contractorId}`,
+    },
+  );
+};
+
+/**
  * Query the list of employees of given establishments
  */
 export const getEmployeesEstablishments = async (client: GraphQLClient, ids: string[]) => {
@@ -64,6 +101,8 @@ export const getEmployeesEstablishments = async (client: GraphQLClient, ids: str
             node {
               id
               codeName
+              status
+              description
               establishment {
                 id
               }
@@ -71,6 +110,10 @@ export const getEmployeesEstablishments = async (client: GraphQLClient, ids: str
                 id
                 username
                 mainRole
+                globalRating
+                profile {
+                  description
+                }
               }
             }
           }

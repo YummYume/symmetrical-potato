@@ -59,6 +59,9 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'location')) {
       throw e;
     }
+
+    // TODO remove this
+    console.error('Location not found', e);
   }
 
   const place = await getGoogleLocation({

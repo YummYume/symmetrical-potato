@@ -387,6 +387,54 @@ export const getHeistsForToday = async (client: GraphQLClient) => {
 };
 
 /**
+ * Will return heists for a user.
+ */
+export const getHeistsForUser = async (client: GraphQLClient, userId: string) => {
+  return client.request<Pick<Query, 'heists'>, QueryHeistsArgs>(
+    gql`
+      query ($crewMembers__user__id: String!) {
+        heists(crewMembers__user__id: $crewMembers__user__id) {
+          edges {
+            node {
+              id
+              name
+              description
+              minimumPayout
+              maximumPayout
+              startAt
+              shouldEndAt
+              objectives
+              phase
+              preferedTactic
+              difficulty
+              establishment {
+                id
+                name
+              }
+              crewMembers {
+                totalCount
+              }
+              location {
+                placeId
+                name
+                address
+                latitude
+                longitude
+                reviewCount
+                averageRating
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      crewMembers__user__id: `/users/${userId}`,
+    },
+  );
+};
+
+/**
  * Will return upcoming heists
  *
  * @todo disable pagination for this query

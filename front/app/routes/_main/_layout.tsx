@@ -50,21 +50,6 @@ const Menu = ({
 
   return (
     <Flex align="center" gap="4" justify="end">
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger>
-          <Button aria-label={t('add')} variant="soft">
-            <PlusIcon />
-          </Button>
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content>
-          <DropdownMenu.Item>
-            <Link className="w-full" to="/establishment/new" unstyled>
-              {t('establishment.new')}
-            </Link>
-          </DropdownMenu.Item>
-        </DropdownMenu.Content>
-      </DropdownMenu.Root>
-
       <Text weight="bold" as="span" size="2">
         {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(
           user.balance,
@@ -80,6 +65,23 @@ const Menu = ({
         </noscript>
       </Form>
 
+      {user.roles.includes(ROLES.CONTRACTOR) && (
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger>
+            <Button aria-label={t('add')} variant="soft">
+              <PlusIcon />
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            <DropdownMenu.Item>
+              <Link className="w-full" to="/establishment/new" unstyled>
+                {t('establishment.new')}
+              </Link>
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      )}
+
       <UserDropdown username={user.username}>
         <DropdownMenu.Separator />
         <DropdownMenu.Item>
@@ -92,18 +94,32 @@ const Menu = ({
             {t('my_account')}
           </Link>
         </DropdownMenu.Item>
-        <DropdownMenu.Item>
-          <Link className="w-full" to="/contractor-request" unstyled>
-            {t('my_contractor_request')}
-          </Link>
-        </DropdownMenu.Item>
-        {(user.roles.includes(ROLES.EMPLOYEE) || user.roles.includes(ROLES.USER)) && (
+        {user.roles.includes(ROLES.HEISTER) && (
+          <DropdownMenu.Item>
+            <Link className="w-full" to="/my-heists" unstyled>
+              {t('my_heists')}
+            </Link>
+          </DropdownMenu.Item>
+        )}
+        {user.roles.includes(ROLES.CONTRACTOR) && (
+          <DropdownMenu.Item>
+            <Link className="w-full" to="/my-employees" unstyled>
+              {t('my_employees')}
+            </Link>
+          </DropdownMenu.Item>
+        )}
+        {(user.roles.includes(ROLES.EMPLOYEE) || user.roles.includes(ROLES.HEISTER)) && (
           <DropdownMenu.Item>
             <Link className="w-full" to="/job" unstyled>
               {t('my_job')}
             </Link>
           </DropdownMenu.Item>
         )}
+        <DropdownMenu.Item>
+          <Link className="w-full" to="/contractor-request" unstyled>
+            {t('my_contractor_request')}
+          </Link>
+        </DropdownMenu.Item>
         {user.roles.includes(ROLES.EMPLOYEE) && (
           <DropdownMenu.Item>
             <Link className="w-full" to="/planning" unstyled>
@@ -134,11 +150,8 @@ export default function Layout() {
   const LINKS = [
     { to: '/dashboard', label: t('dashboard') },
     { to: '/map', label: t('map') },
-    { to: '/establishment', label: t('establishments') },
+    { to: '/establishments', label: t('establishments') },
   ];
-
-  // TODO : Contractor only
-  LINKS.push({ to: '/employee', label: t('employees') });
 
   const onChange = (event: FormEvent<HTMLFormElement>) => {
     setIsChangingPreferences(true);

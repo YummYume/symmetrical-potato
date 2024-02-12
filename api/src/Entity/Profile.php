@@ -65,7 +65,19 @@ class Profile
     private ?Uuid $id = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups([self::READ, self::UPDATE, User::READ, User::READ_PUBLIC, ContractorRequest::READ, Establishment::READ_PUBLIC])]
+    #[Groups([
+        self::READ,
+        self::UPDATE,
+        User::READ,
+        User::READ_PUBLIC,
+        ContractorRequest::READ,
+        Heist::READ,
+        Review::READ_PUBLIC,
+        CrewMember::READ,
+        CrewMember::READ_PUBLIC,
+        Establishment::READ_PUBLIC,
+        Employee::READ,
+    ])]
     #[Assert\Length(
         groups: [self::UPDATE],
         max: 1000,

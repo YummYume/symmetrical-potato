@@ -24,6 +24,12 @@ export const getReviewsForEstablishment = async (
               user {
                 id
                 username
+                mainRole
+                globalRating
+                profile {
+                  id
+                  description
+                }
               }
             }
           }

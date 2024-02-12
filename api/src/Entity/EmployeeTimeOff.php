@@ -19,7 +19,8 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: EmployeeTimeOffRepository::class)]
 #[ApiResource(
-    security: 'is_granted("ROLE_USER")',
+    // Temporary until implemented
+    security: 'is_granted("ROLE_ADMIN")',
     operations: [],
     graphQlOperations: [
         new Query(),

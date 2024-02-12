@@ -207,6 +207,9 @@ export const getGoogleLocation = async ({
   const data: GooglePlace | { error: {} } = await response.json();
 
   if ('error' in data) {
+    // TODO remove this
+    console.error('Error fetching location from Google Maps', data.error);
+
     return null;
   }
 
