@@ -59,7 +59,7 @@ export default function Establishment() {
                 </Table.Cell>
                 {/* TODO : Only owner */}
                 <Table.Cell>
-                  <Link aria-label={t('edit')} to="establishment/edit">
+                  <Link aria-label={t('edit')} to="edit">
                     <Pencil2Icon className="size-6" />
                   </Link>
                 </Table.Cell>

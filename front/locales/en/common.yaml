@@ -282,6 +282,7 @@ employee: Employee
 employees: Employees
 employee.motivation: Motivation
 employee.code_name: Code name
+employee.edit: Edit employee
 
 # User
 user.balance: Balance
@@ -379,11 +380,10 @@ establishment.crew_cut: Crew cut
 establishment.average_rating: Average rating
 establishment.average_rating.none: No rating
 establishment.review_count: Review count
+establishment.new: New establishment
+establishment.edit: Edit establishment
 
 # Rating
 rating.star: Rate {rating}
 rating.label: Rating selection
 rating.label.read_only: Rated {rating} out of {total}
-
-# New dropdown
-new.establishment: New establishment

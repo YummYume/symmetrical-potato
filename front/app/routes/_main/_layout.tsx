@@ -59,7 +59,7 @@ const Menu = ({
         <DropdownMenu.Content>
           <DropdownMenu.Item>
             <Link className="w-full" to="/establishment/new" unstyled>
-              {t('new.establishment')}
+              {t('establishment.new')}
             </Link>
           </DropdownMenu.Item>
         </DropdownMenu.Content>

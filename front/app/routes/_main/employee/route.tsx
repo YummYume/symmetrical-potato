@@ -36,7 +36,7 @@ export default function Employees() {
                   repudiandae ipsam necessitatibus amet quae excepturi atque.
                 </Table.Cell>
                 <Table.Cell>
-                  <Link aria-label={t('edit')} to="employee/edit">
+                  <Link aria-label={t('edit')} to="edit">
                     <Pencil2Icon className="size-6" />
                   </Link>
                 </Table.Cell>

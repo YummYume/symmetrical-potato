@@ -1,14 +1,19 @@
-import { Container, Grid } from '@radix-ui/themes';
+import { Container, Heading } from '@radix-ui/themes';
 import { useTranslation } from 'react-i18next';
+
+import Form from '../establishment/Form';
 
 export default function New() {
   const { t } = useTranslation();
 
   return (
-    <main className="py-10">
-      <Container className="space-y-16">
-        <Grid width="100%" columns={{ initial: '1', md: '2' }} gap="3"></Grid>
-      </Container>
-    </main>
+    <Container className="space-y-12 px-4 lg:px-0" size="2">
+      <main className="space-y-12 py-10">
+        <Heading className="text-center" size="9">
+          {t('establishment.new')}
+        </Heading>
+        <Form />
+      </main>
+    </Container>
   );
 }
