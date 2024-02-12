@@ -3,4 +3,4 @@
 {% trans_default_domain 'email' %}
 
 {% set title = 'contractor_request.accepted.subject'|trans %}
-{% set text = 'contractor_request.accepted.text'|trans({name, site}) %}
+{% set text = 'contractor_request.accepted.text'|trans({name: user.name, site}) %}

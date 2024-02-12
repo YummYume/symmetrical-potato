@@ -3,4 +3,4 @@
 {% trans_default_domain 'email' %}
 
 {% set title = 'account.revived.subject'|trans %}
-{% set text = 'account.revived.text'|trans({name, site}) %}
+{% set text = 'account.revived.text'|trans({name: user.name, site}) %}

@@ -3,4 +3,4 @@
 {% trans_default_domain 'email' %}
 
 {% set title = 'account.validated.subject'|trans %}
-{% set text = 'account.validated.text'|trans({name, site, url}) %}
+{% set text = 'account.validated.text'|trans({name: user.name, site, url}) %}
