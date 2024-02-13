@@ -5,3 +5,6 @@ parameters:
         - migrations/
         - src/
         - tests/
+    ignoreErrors:
+        - '#^Asserted type string for \$attribute with type string does not narrow down the type\.$#'
+        - '#^Asserted type mixed for \$subject with type mixed does not narrow down the type\.$#'

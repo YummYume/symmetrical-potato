@@ -18,7 +18,7 @@ RUN apk add --update \
   adduser -DH -h /home/www-data -s /sbin/nologin -u 1000 www-data && \
   rm -rf /usr/local/bin/install-php-extensions
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
 COPY docker/prod/php/overrides.ini /usr/local/etc/php/conf.d/overrides.ini
 
