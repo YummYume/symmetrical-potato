@@ -5,7 +5,16 @@ import {
   InfoCircledIcon,
   QuestionMarkCircledIcon,
 } from '@radix-ui/react-icons';
-import { Blockquote, Button, Callout, Container, Flex, Heading, Text } from '@radix-ui/themes';
+import {
+  Blockquote,
+  Button,
+  Callout,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  Text,
+} from '@radix-ui/themes';
 import { json } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { EmployeeStatusEnum } from '~/lib/api/types';
 import { Link } from '~/lib/components/Link';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
+import { EmployeeScheduleList } from '~/lib/components/employee/EmployeeScheduleList';
 import { i18next } from '~/lib/i18n/index.server';
 import { getUriId } from '~/lib/utils/path';
 import { ROLES } from '~/lib/utils/roles';
@@ -127,22 +137,32 @@ export default function Job() {
                     </Callout.Root>
                   )}
                   <Flex mt="6" direction="column" gap="3">
-                    <Flex className="text-left" direction="column" gap="1">
-                      <Text weight="bold" size="3" color="gray">
-                        {t('establishment')}
-                      </Text>
-                      <Link to={`/establishments/${getUriId(user.employee.establishment.id)}`}>
-                        {user.employee.establishment.name}
-                      </Link>
-                    </Flex>
-                    {user.employee.motivation && (
+                    <Grid columns={{ initial: '1', md: '2' }} gap={{ initial: '2', md: '9' }}>
+                      <Flex direction="column" gap="2">
+                        <Flex className="text-left" direction="column" gap="1">
+                          <Text weight="bold" size="3" color="gray">
+                            {t('establishment')}
+                          </Text>
+                          <Link to={`/establishments/${getUriId(user.employee.establishment.id)}`}>
+                            {user.employee.establishment.name}
+                          </Link>
+                        </Flex>
+                        {user.employee.motivation && (
+                          <Flex className="text-left" direction="column" gap="1">
+                            <Text weight="bold" size="3" color="gray">
+                              {t('employee.motivation')}
+                            </Text>
+                            <Blockquote>{user.employee.motivation}</Blockquote>
+                          </Flex>
+                        )}
+                      </Flex>
                       <Flex className="text-left" direction="column" gap="1">
                         <Text weight="bold" size="3" color="gray">
-                          {t('employee.motivation')}
+                          {t('employee.schedule')}
                         </Text>
-                        <Blockquote>{user.employee.motivation}</Blockquote>
+                        <EmployeeScheduleList schedule={user.employee.weeklySchedule} />
                       </Flex>
-                    )}
+                    </Grid>
                     <div className="mt-6 text-center">
                       <Form
                         id="employee-delete-form"

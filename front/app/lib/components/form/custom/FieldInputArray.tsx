@@ -9,20 +9,31 @@ import { Label } from '~/lib/components/form/fields/Label';
 
 import { CheckboxInput } from './CheckboxInput';
 import { FieldInput } from './FieldInput';
+import { FieldSelect } from './FieldSelect';
 
 import type { HTMLInputTypeAttribute } from 'react';
 import type { ArrayPath, FieldArray } from 'react-hook-form';
 import type { DefaultFieldProps } from '~/lib/types/form';
+import type { Option } from '~/lib/types/select';
+
+type Field =
+  | {
+      name: string;
+      label: string;
+      type: 'select';
+      options: Option[];
+    }
+  | {
+      name: string;
+      label: string;
+      type: HTMLInputTypeAttribute;
+    };
 
 type Config<T extends Record<string, unknown>> = {
   defaultAppendValue:
     | FieldArray<T, ArrayPath<T> & (string | undefined)>
     | FieldArray<T, ArrayPath<T> & (string | undefined)>[];
-  fields: {
-    name: string;
-    label: string;
-    type: HTMLInputTypeAttribute;
-  }[];
+  fields: Field[];
   add?: {
     text: string;
   };
@@ -97,6 +108,20 @@ export function FieldInputArray<T extends Record<string, unknown>>({
                 <Grid gap="2">
                   {config.fields.map((fieldInput, key) => (
                     <div className="contents" key={`${item.id}-${key}`}>
+                      {fieldInput.type === 'select' && 'options' in fieldInput && (
+                        <FieldSelect
+                          name={`${name}.${index}.${fieldInput.name}`}
+                          label={`${fieldInput.label} ${index + 1}`}
+                          options={fieldInput.options}
+                          hideLabel={hideLabel}
+                          hideError={hideError}
+                          disabled={disabled}
+                          required={required}
+                          labelRender={LabelField}
+                          helpRender={HelpField}
+                          errorRender={ErrorField}
+                        />
+                      )}
                       {fieldInput.type === 'checkbox' && (
                         <CheckboxInput
                           name={`${name}.${index}.${fieldInput.name}`}
@@ -110,7 +135,7 @@ export function FieldInputArray<T extends Record<string, unknown>>({
                           errorRender={ErrorField}
                         />
                       )}
-                      {fieldInput.type !== 'checkbox' && (
+                      {!['checkbox', 'select'].includes(fieldInput.type) && (
                         <FieldInput
                           name={`${name}.${index}.${fieldInput.name}`}
                           label={`${fieldInput.label} ${index + 1}`}

@@ -92,6 +92,7 @@ establishment.employee_cut.max: The employee cut must be at most 99%.
 establishment.crew_cut.min: The crew cut must be at least 1%.
 establishment.crew_cut.max: The crew cut must be at most 99%.
 establishment.cuts.sum_not_100: The contractor, employee, and crew cuts must sum to 100%.
+
 # Heist
 heist.name.required: Please enter a name.
 heist.name.min_length: The name must be at least 2 characters long.
@@ -141,3 +142,12 @@ map.filters.start_at_min_equals_max: The minimum start date must be different fr
 map.filters.prefered_tactics_invalid_type: The selected prefered tactics are invalid.
 map.filters.difficulties_invalid_type: The selected difficulties are invalid.
 map.filters.minimum_payout_greater_than_maximum_payout: The minimum payout must be less than the maximum payout.
+
+# Employee
+employee.motivation.required: Please enter a motivation.
+employee.motivation.min: The motivation must be at least 10 characters long.
+employee.motivation.max: The motivation must be at most 1000 characters long.
+employee.code_name.required: Please enter a code name.
+employee.code_name.min: The code name must be at least 1 character long.
+employee.code_name.max: The code name must be at most 50 characters long.
+employee.description.max: The description must be at most 1000 characters long.

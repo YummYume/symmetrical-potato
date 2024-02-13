@@ -50,5 +50,6 @@ account.updated: Account updated successfully.
 account.deleted: Account deleted successfully. You will receive an email confirming the deletion of your account.
 
 # Job (employee)
+job.created: Application sent successfully.
 job.deleted: Job deleted successfully.
 job.deleted_demand: Application deleted successfully.

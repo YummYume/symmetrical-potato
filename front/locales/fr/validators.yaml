@@ -140,3 +140,12 @@ map.filters.start_at_min_equals_max: La date de début minimale doit être diff�
 map.filters.prefered_tactics_invalid_type: Les tactiques préférées sélectionnées sont invalides.
 map.filters.difficulties_invalid_type: Les difficultés sélectionnées sont invalides.
 map.filters.minimum_payout_greater_than_maximum_payout: Le paiement minimum doit être inférieur au paiement maximum.
+
+# Employee
+employee.motivation.required: Veuillez saisir une motivation.
+employee.motivation.min: La motivation doit comporter au moins 10 caractères.
+employee.motivation.max: La motivation doit comporter au plus 1000 caractères.
+employee.code_name.required: Veuillez saisir un nom de code.
+employee.code_name.min: Le nom de code doit comporter au moins 1 caractère.
+employee.code_name.max: Le nom de code doit comporter au plus 50 caractères.
+employee.description.max: La description doit comporter au plus 1000 caractères.

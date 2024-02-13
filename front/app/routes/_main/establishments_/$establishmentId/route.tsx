@@ -22,12 +22,13 @@ import { i18next } from '~/lib/i18n/index.server';
 import { hasPathError } from '~/lib/utils/api';
 import dayjs from '~/lib/utils/dayjs';
 import { getUriId } from '~/lib/utils/path';
-import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
+import { ROLES } from '~/lib/utils/roles';
+import { denyAccessUnlessGranted, hasRoles } from '~/lib/utils/security.server';
 
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 
 export async function loader({ request, context, params }: LoaderFunctionArgs) {
-  denyAccessUnlessGranted(context.user);
+  const user = denyAccessUnlessGranted(context.user);
 
   if (!params.establishmentId) {
     throw new Response(null, {
@@ -46,6 +47,7 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
     const t = await i18next.getFixedT(request, 'common');
 
     return json({
+      canApply: hasRoles(user, [ROLES.HEISTER]) && !user.employee,
       establishment,
       heists: heists.edges,
       reviews: reviews.edges,
@@ -85,7 +87,7 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
 
 export default function Establishment() {
   const { t } = useTranslation();
-  const { establishment, heists, reviews, employees } = useLoaderData<Loader>();
+  const { canApply, establishment, heists, reviews, employees } = useLoaderData<Loader>();
 
   return (
     <main className="py-10">
@@ -249,6 +251,12 @@ export default function Establishment() {
                 </Tabs.Content>
 
                 <Tabs.Content value="employees">
+                  {canApply && (
+                    <Flex mb="2" justify="end">
+                      <Link to="apply">Apply</Link>
+                    </Flex>
+                  )}
+
                   {employees.length === 0 && (
                     <Text as="p" size="2" color="gray">
                       {t('establishment.no_employees')}

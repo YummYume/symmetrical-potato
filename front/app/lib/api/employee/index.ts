@@ -1,11 +1,17 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
 import type {
+  CreateEmployeeInput,
   Mutation,
+  MutationCreateEmployeeArgs,
   MutationDeleteEmployeeArgs,
+  MutationUpdateEmployeeArgs,
+  MutationValidateEmployeeArgs,
   Query,
   QueryEmployeeArgs,
   QueryEmployeesArgs,
+  UpdateEmployeeInput,
+  ValidateEmployeeInput,
 } from '~api/types';
 
 /**
@@ -121,6 +127,69 @@ export const getEmployeesEstablishments = async (client: GraphQLClient, ids: str
       }
     `,
     { establishment__id: ids },
+  );
+};
+
+/**
+ * Create an employee.
+ */
+export const createEmployee = async (
+  client: GraphQLClient,
+  input: Omit<CreateEmployeeInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'createEmployee'>, MutationCreateEmployeeArgs>(
+    gql`
+      mutation ($input: createEmployeeInput!) {
+        createEmployee(input: $input) {
+          employee {
+            id
+          }
+        }
+      }
+    `,
+    { input },
+  );
+};
+
+/**
+ * Validate an employee.
+ */
+export const validateEmployee = async (
+  client: GraphQLClient,
+  input: Omit<ValidateEmployeeInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'validateEmployee'>, MutationValidateEmployeeArgs>(
+    gql`
+      mutation ($input: validateEmployeeInput!) {
+        validateEmployee(input: $input) {
+          employee {
+            id
+          }
+        }
+      }
+    `,
+    { input },
+  );
+};
+
+/**
+ * Update an employee.
+ */
+export const updateEmployee = async (
+  client: GraphQLClient,
+  input: Omit<UpdateEmployeeInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'updateEmployee'>, MutationUpdateEmployeeArgs>(
+    gql`
+      mutation ($input: updateEmployeeInput!) {
+        updateEmployee(input: $input) {
+          employee {
+            id
+          }
+        }
+      }
+    `,
+    { input },
   );
 };
 
