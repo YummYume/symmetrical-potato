@@ -12,6 +12,8 @@ import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { reviewResolver } from '~/lib/validators/review';
 import { FLASH_MESSAGE_KEY } from '~/root';
 
+import { getRatingByValue } from '../../FormReview';
+
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { ReviewFormData } from '~/lib/validators/review';
 import type { FlashMessage } from '~/root';
@@ -40,7 +42,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
   try {
     await updateReview(context.client, {
       id: params.reviewId,
-      rating: data.rating,
+      rating: getRatingByValue(data.rating),
       comment: data.comment,
     });
 

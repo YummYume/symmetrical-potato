@@ -2,39 +2,42 @@ import { Button } from '@radix-ui/themes';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
 
+import { ReviewRatingEnum } from '~/lib/api/types';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
-import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
+import { FieldRating } from '~/lib/components/form/custom/FieldRating';
 import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { getUriId } from '~/lib/utils/path';
 import { reviewResolver, type ReviewFormData } from '~/lib/validators/review';
 
-import type { ReviewEdge, ReviewRatingEnum } from '~/lib/api/types';
+import type { ReviewEdge } from '~/lib/api/types';
 
 type FormReviewProps = {
   review?: ReviewEdge;
   placeId: string;
 };
 
+type Ratings = Record<ReviewRatingEnum, number>;
+
+export const ratings: Ratings = {
+  ZeroPointFive: 0.5,
+  One: 1,
+  OnePointFive: 1.5,
+  Two: 2,
+  TwoPointFive: 2.5,
+  Three: 3,
+  ThreePointFive: 3.5,
+  Four: 4,
+  FourPointFive: 4.5,
+  Five: 5,
+};
+
+export const getRatingByValue = (value: number): ReviewRatingEnum => {
+  const rating = Object.entries(ratings).find(([, v]) => v === value);
+  return rating ? (rating[0] as ReviewRatingEnum) : ReviewRatingEnum.One;
+};
+
 export function FormReview({ review, placeId }: FormReviewProps) {
   const { t } = useTranslation();
-
-  const ratings = {
-    ZeroPointFive: '0.5',
-    One: '1',
-    OnePointFive: '1.5',
-    Two: '2',
-    TwoPointFive: '2.5',
-    Three: '3',
-    ThreePointFive: '3.5',
-    Four: '4',
-    FourPointFive: '4.5',
-    Five: '5',
-  };
-
-  const reviewRatings = Object.entries(ratings).map(([value, label]) => ({
-    value,
-    label,
-  })) as { value: ReviewRatingEnum; label: string }[];
 
   const title = review ? t('edit') : t('add');
   const description = review ? t('review.edit.confirm') : t('review.create.confirm');
@@ -50,7 +53,7 @@ export function FormReview({ review, placeId }: FormReviewProps) {
       unstable_viewTransition: true,
     },
     defaultValues: {
-      rating: review?.node.rating ?? reviewRatings[0].value,
+      rating: (review?.node.rating && ratings[review?.node.rating]) ?? 1,
       comment: review?.node.comment ?? '',
     },
   });
@@ -58,7 +61,7 @@ export function FormReview({ review, placeId }: FormReviewProps) {
   return (
     <RemixFormProvider {...methods}>
       <form id="review-form" onSubmit={methods.handleSubmit}>
-        <FieldSelect label={t('review.rating')} name="rating" options={reviewRatings} />
+        <FieldRating style={{ maxWidth: 100 }} label={t('review.rating')} name="rating" />
         <TextAreaInput
           label={t('review.comment')}
           name="comment"
