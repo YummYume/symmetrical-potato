@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getHeistsByCrewMember } from '~/lib/api/heist';
 import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
+import { i18next } from '~/lib/i18n/index.server';
 import { getEnv } from '~/lib/utils/env';
 import { getUriId } from '~/lib/utils/path';
 import { ROLES } from '~/lib/utils/roles';
@@ -22,7 +23,9 @@ import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
 import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
-export async function loader({ context, params }: LoaderFunctionArgs) {
+import type { MetaFunction } from '@remix-run/node';
+
+export async function loader({ request, context, params }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
   const isContractor = hasRoles(context.user, ROLES.CONTRACTOR);
   const isAdmin = hasRoles(context.user, ROLES.ADMIN);
@@ -34,6 +37,8 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   if (!params.placeId) {
     throw redirect('/dashboard');
   }
+
+  const t = await i18next.getFixedT(request, 'common');
 
   if (isHeister) {
     const { heists } = await getHeistsByCrewMember(context.client, user.id);
@@ -54,6 +59,12 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
       isAdmin,
       isHeister,
       user,
+      meta: {
+        title: locationInfo.location.name,
+        description: t('meta.location.description', {
+          address: locationInfo.location.address,
+        }),
+      },
     };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'location')) {
@@ -80,10 +91,28 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     isAdmin,
     isHeister,
     user,
+    meta: {
+      title: place?.displayName ?? t('location.not_found'),
+      description: t('meta.location.description', {
+        address: place?.formattedAddress ?? '',
+      }),
+    },
   };
 }
 
 export type Loader = typeof loader;
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [
+    { title: data.meta.title },
+    { name: 'description', content: data.meta.description },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
 
 type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };

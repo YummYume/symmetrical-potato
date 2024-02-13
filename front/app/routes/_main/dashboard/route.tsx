@@ -6,6 +6,7 @@ import { getHeistsForToday } from '~/lib/api/heist';
 import { HeistHoverCard } from '~/lib/components/heist/HeistHoverCard';
 import { HeistListItem } from '~/lib/components/heist/HeistListItem';
 import { i18next } from '~/lib/i18n/index.server';
+import { getUriId } from '~/lib/utils/path';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link } from '~components/Link';
 import dayjs from '~utils/dayjs';
@@ -89,8 +90,7 @@ export default function Dashboard() {
                         }}
                         align="end"
                       >
-                        {/* TODO heist page */}
-                        <Link to={`/map/${node.location.placeId}`}>
+                        <Link to={`/map/${node.location.placeId}/${getUriId(node.id)}`}>
                           <HeistListItem
                             name={node.name}
                             crewMembers={node.crewMembers.totalCount}

@@ -153,17 +153,52 @@ export const getHeist = async (client: GraphQLClient, id: string, asAdmin = fals
             edges {
               node {
                 id
+                codeName
                 user {
                   id
                   username
+                  mainRole
+                  globalRating
+                  profile {
+                    description
+                  }
                 }
               }
             }
           }
           establishment {
             id
+            name
             contractor {
               id
+              username
+              mainRole
+              globalRating
+              profile {
+                description
+              }
+            }
+          }
+          crewMembers {
+            totalCount
+            edges {
+              node {
+                id
+                civilianCasualties
+                kills
+                objectivesCompleted
+                payout
+                status
+                user {
+                  id
+                  username
+                  mainRole
+                  globalRating
+                  profile {
+                    description
+                  }
+                }
+              }
             }
           }
           ${asAdmin ? adminFields : ''}

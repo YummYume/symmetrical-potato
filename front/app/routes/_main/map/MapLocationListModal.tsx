@@ -73,7 +73,6 @@ export const MapLocationListModal = ({
               <ul className="space-y-3">
                 {filteredLocations.map((location) => (
                   <li className="flex items-center justify-center gap-2" key={location.placeId}>
-                    {/* TODO heist page */}
                     <NavLink
                       unstyled
                       className="grow"

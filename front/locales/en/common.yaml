@@ -85,6 +85,8 @@ meta.my_heists.title: My heists
 meta.my_heists.description: All the heists you are part of.
 meta.my_employees.title: My employees
 meta.my_employees.description: Manage your employees.
+meta.location.description: All available heists and information for {address}.
+meta.heist.description: View the heist {name}.
 
 # Dashboard
 dashboard.heists.today: Heists today

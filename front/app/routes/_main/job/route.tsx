@@ -131,7 +131,6 @@ export default function Job() {
                       <Text weight="bold" size="3" color="gray">
                         {t('establishment')}
                       </Text>
-                      {/* TODO establishment link */}
                       <Link to={`/establishments/${getUriId(user.employee.establishment.id)}`}>
                         {user.employee.establishment.name}
                       </Link>

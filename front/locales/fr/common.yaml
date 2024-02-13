@@ -85,6 +85,8 @@ meta.my_heists.title: Mes braquages
 meta.my_heists.description: Tous les braquages dont vous faites partie.
 meta.my_employees.title: Mes employés
 meta.my_employees.description: Gérez vos employés.
+meta.location.description: Tous les braquages et informations disponibles pour {address}.
+meta.heist.description: Consultez le braquage {name}.
 
 # Dashboard
 dashboard.heists.today: Braquages aujourd'hui
