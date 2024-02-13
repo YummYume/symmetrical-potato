@@ -177,7 +177,21 @@ export const createAsset = async (
 export const updateAsset = async (
   client: GraphQLClient,
   input: Omit<UpdateAssetInput, 'clientMutationId'>,
+  hasAdmin = false,
 ) => {
+  const adminFields = gql`
+  createdAt
+  updatedAt
+  createdBy {
+    id
+    username
+  }
+  updatedBy {
+    id
+    username
+  }
+`;
+
   return client.request<Pick<Mutation, 'updateAsset'>, { input: UpdateAssetInput }>(
     gql`
       mutation ($input: updateAssetInput!) {
@@ -193,16 +207,7 @@ export const updateAsset = async (
               id
               name
             }
-            createdAt
-            updatedAt
-            createdBy {
-              id
-              username
-            }
-            updatedBy {
-              id
-              username
-            }
+            ${hasAdmin ? adminFields : ''}
           }
         }
       }

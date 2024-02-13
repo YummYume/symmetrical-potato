@@ -1,6 +1,8 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Grid, Heading, Section } from '@radix-ui/themes';
+import { Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
+import { Button, Grid, Heading, Section } from '@radix-ui/themes';
 import { redirect } from '@remix-run/node';
+import { Link } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
 import { useTypedLoaderData } from 'remix-typedjson';
@@ -8,6 +10,7 @@ import { useTypedLoaderData } from 'remix-typedjson';
 import { getHeistPartial } from '~/lib/api/heist';
 import Popover from '~/lib/components/Popover';
 import { AssetListItem } from '~/lib/components/asset/AssetListItem';
+import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { hasPathError } from '~/lib/utils/api';
@@ -99,6 +102,7 @@ export default function Assets() {
 
   return (
     <Grid gap="3">
+      <Link to={`/map/${heist.location.placeId}`}>{t('back')}</Link>
       <div>
         <Dialog.Title asChild>
           <Heading as="h2" size="8">
@@ -113,7 +117,38 @@ export default function Assets() {
         <Section className="space-y-3" size="1">
           <>
             {assets.edges.length > 0 ? (
-              assets.edges.map(({ node }) => <AssetListItem key={node.id} asset={node} />)
+              assets.edges.map(({ node }) => (
+                <Grid
+                  key={node.id}
+                  className="mt-2"
+                  columns="1fr auto auto auto"
+                  gap="3"
+                  align="center"
+                >
+                  <AssetListItem asset={node} />
+                  <Popover
+                    triggerChildren={<Pencil1Icon />}
+                    triggerColor="blue"
+                    triggerProps={{ variant: 'solid' }}
+                  >
+                    <AssetForm
+                      placeId={heist.location.placeId}
+                      heistId={getUriId(heist.id)}
+                      asset={node}
+                    />
+                  </Popover>
+                  <FormConfirmDialog
+                    formId={`asset-delete-${getUriId(node.id)}`}
+                    title={t('delete')}
+                    description={t('asset.delete.confirm')}
+                    action={`/map/${heist.location.placeId}/heist/${getUriId(heist.id)}/assets/${getUriId(node.id)}/delete`}
+                  >
+                    <Button type="button" color="red">
+                      <TrashIcon />
+                    </Button>
+                  </FormConfirmDialog>
+                </Grid>
+              ))
             ) : (
               <p>{t('heist.asset.no_assets')}</p>
             )}

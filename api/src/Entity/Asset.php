@@ -81,7 +81,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     groups: [self::CREATE, self::UPDATE],
     ignoreNull: false
 )]
-#[ApiFilter(UuidFilter::class, properties: ['heist.id'])]
+#[ApiFilter(UuidFilter::class, properties: ['heist.id', 'forbiddenHeists.id'])]
 class Asset
 {
     use BlameableTrait;

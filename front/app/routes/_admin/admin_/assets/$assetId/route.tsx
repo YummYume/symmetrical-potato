@@ -100,10 +100,14 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   let errorMessage: string | null = null;
 
   try {
-    await updateAsset(context.client, {
-      id: `/assets/${params.assetId}`,
-      ...data,
-    });
+    await updateAsset(
+      context.client,
+      {
+        id: `/assets/${params.assetId}`,
+        ...data,
+      },
+      true,
+    );
 
     session.flash(FLASH_MESSAGE_KEY, {
       content: t('asset.updated', { ns: 'flash' }),

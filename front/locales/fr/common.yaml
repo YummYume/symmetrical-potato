@@ -396,6 +396,7 @@ asset.type.weapons: Armes
 asset.max_quantity: Quantité maximale
 asset.team_asset: Asset d'équipe
 asset.heist: Braquage associé
+asset.delete.confirm: Êtes-vous sûr de vouloir supprimer cet asset ?
 asset.type.assets.catch_phrase: >-
   Prenez tout ce dont vous avez besoin, vous ne savez pas ce que vous trouverez
   sur votre chemin.
