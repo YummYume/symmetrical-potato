@@ -58,6 +58,15 @@ final class HeistVoter extends Voter
         };
     }
 
+    /**
+     * Check if the employee is available for the heist.
+     */
+    private function betweenDates(\DateTime $startAt, \DateTime $shouldEndAt, \DateTime $startAtToCheck, \DateTime $shouldEndAtToCheck): bool
+    {
+        return ($startAtToCheck >= $startAt && $startAtToCheck <= $shouldEndAt)
+            || ($shouldEndAtToCheck >= $startAt && $shouldEndAtToCheck <= $shouldEndAt);
+    }
+
     private function canRead(Heist $heist, User $user): bool
     {
         if ($this->security->isGranted(User::ROLE_ADMIN) || HeistVisibilityEnum::Public === $heist->getVisibility()) {
@@ -120,7 +129,12 @@ final class HeistVoter extends Voter
             return true;
         }
 
+        $isEmployeeAvailable = (bool) $heist->getEmployee()->getHeists()->findFirst(static function (int $key, Heist $heistEmployee) use ($heist) {
+            return !self::betweenDates($heist->getStartAt(), $heist->getShouldEndAt(), $heistEmployee->getStartAt(), $heistEmployee->getShouldEndAt());
+        });
+
         return $this->security->isGranted(User::ROLE_HEISTER)
+        && $isEmployeeAvailable
         && (bool) $user->getCrewMembers()->findFirst(static fn (int $key, CrewMember $crewMember) => $heist === $crewMember->getHeist() && null === $crewMember->getHeist()->getEmployee())
         && HeistPhaseEnum::Planning === $heist->getPhase();
     }

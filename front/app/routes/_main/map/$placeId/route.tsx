@@ -149,7 +149,7 @@ export default function PlaceId() {
           <Dialog.Description>{place.formattedAddress}</Dialog.Description>
         </Section>
         {isContractor && (
-          <Link to={`/map/${placeId}/add`}>
+          <Link to={`/map/${placeId}/heist/add`}>
             <div className="flex h-8 w-fit items-center rounded-2 bg-accent-9 px-3 text-[black]">
               {t('heist.add')}
             </div>
