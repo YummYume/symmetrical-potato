@@ -413,8 +413,8 @@ export default function Prepare() {
   const removeAsset = async (asset: Asset) => {
     setCart((prev) => {
       const cartAsset = prev[asset.id];
-      console.log(cartAsset);
-      if (!cartAsset) {
+
+      if (!cartAsset || !cartAsset.newQuantity) {
         return { ...prev };
       }
 
@@ -430,6 +430,11 @@ export default function Prepare() {
       }
 
       setTotalPrice((prev) => prev - asset.price);
+
+      if (cartAsset.heistAsset) {
+        const { newQuantity, ...rest } = cartAsset;
+        return { ...prev, [cartAsset.id]: rest };
+      }
 
       const { [cartAsset.id]: _, ...rest } = prev;
 
