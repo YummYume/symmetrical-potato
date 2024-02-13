@@ -25,6 +25,9 @@ export const getAssets = async (client: GraphQLClient) => {
             type
             description
             teamAsset
+            heist {
+              id
+            }
           }
         }
       }

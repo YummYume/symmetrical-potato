@@ -141,7 +141,10 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     // Organize the assets by type
     const assetsOrganized = assets.edges.reduce<AssetsOrganized>(
       (acc, curr) => {
-        if (!assetsForbidden.edges.some((edge) => edge.node.id === curr.node.id)) {
+        if (
+          !assetsForbidden.edges.some((edge) => edge.node.id === curr.node.id) &&
+          (curr.node.heist === null || curr.node.heist.id === `/heists/${params.heistId}`)
+        ) {
           acc[curr.node.type][curr.node.name] = curr.node;
         }
 
@@ -321,6 +324,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 export default function Prepare() {
   const { t } = useTranslation();
   const {
+    user,
     assets,
     assetsPurchased,
     employee,
@@ -409,8 +413,8 @@ export default function Prepare() {
   const removeAsset = async (asset: Asset) => {
     setCart((prev) => {
       const cartAsset = prev[asset.id];
-
-      if (!cartAsset || !cartAsset.newQuantity) {
+      console.log(cartAsset);
+      if (!cartAsset) {
         return { ...prev };
       }
 
@@ -468,8 +472,8 @@ export default function Prepare() {
     },
     submitHandlers: {
       onInvalid: async (errors) => {
-        const { assetsPurchased } = errors;
         //@ts-ignore
+        const { assetsPurchased } = errors;
         if (assetsPurchased?.message) {
           toast.error(assetsPurchased.message, {
             position: 'bottom-right',
@@ -621,18 +625,28 @@ export default function Prepare() {
                         }).format(totalPrice),
                       })}
                     </Text>
-                    <FormAlertDialog
-                      title={t('checkout_payment.confirmation')}
-                      description={t('checkout_payment.confirmation_description')}
-                      actionColor="green"
-                      cancelText={t('cancel')}
-                      formId="heist-prepare-assets-form"
-                    >
-                      <Button type="button" color="green">
-                        {t('purchase')}
-                      </Button>
-                    </FormAlertDialog>
+                    {totalPrice > 0 && user.balance - totalPrice >= 0 && (
+                      <FormAlertDialog
+                        title={t('checkout_payment.confirmation')}
+                        description={t('checkout_payment.confirmation_description')}
+                        actionColor="green"
+                        cancelText={t('cancel')}
+                        formId="heist-prepare-assets-form"
+                      >
+                        <Button type="button" color="green">
+                          {t('purchase')}
+                        </Button>
+                      </FormAlertDialog>
+                    )}
                   </Flex>
+                  {!(totalPrice > 0 && user.balance - totalPrice >= 0) && (
+                    <Callout.Root color="red" mt="3">
+                      <Callout.Icon>
+                        <ExclamationTriangleIcon />
+                      </Callout.Icon>
+                      <Callout.Text>{t('checkout_payment.insufficient_funds')}</Callout.Text>
+                    </Callout.Root>
+                  )}
                 </>
               ) : (
                 <Text size="2" className="mb-2">

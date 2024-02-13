@@ -15,6 +15,9 @@ heist.slot.not_available: Ce créneau n'est pas disponible pour cette localisati
 heist.cannot_join: Vous ne pouvez pas rejoindre ce braquage.
 heist.not_found: Le braquage demandé n'a pas été trouvé.
 
+# HeistAsset
+heist_asset.insufficient_funds: Vous n'avez pas assez de fonds pour acheter.
+
 # CrewMember
 crew_member.already_joined: Vous avez déjà rejoint ce braquage.
 

@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RemixFormProvider, getValidatedFormData, useRemixForm } from 'remix-hook-form';
 
-import { getGlobalAssets } from '~/lib/api/asset';
+import { getAssets } from '~/lib/api/asset';
 import { getEmployeesEstablishments } from '~/lib/api/employee';
 import { getEstablishmentsOfContractor } from '~/lib/api/establishment';
 import { createHeist } from '~/lib/api/heist';
@@ -44,7 +44,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   const establishmentsIds = establishments.edges.map((edge) => edge.node.id);
   const [{ employees }, { assets }, { users }] = await Promise.all([
     getEmployeesEstablishments(context.client, establishmentsIds),
-    getGlobalAssets(context.client),
+    getAssets(context.client),
     getUsers(context.client),
   ]);
 
@@ -151,10 +151,16 @@ export default function Add() {
     return acc;
   }, []);
 
-  const assetsFormatted: Option[] = assets.edges.map((edge) => ({
-    label: edge.node.name,
-    value: edge.node.id,
-  }));
+  const assetsFormatted = assets.edges.reduce<Option[]>((acc, curr) => {
+    if (!curr.node.heist) {
+      acc.push({
+        label: curr.node.name,
+        value: curr.node.id,
+      });
+    }
+
+    return acc;
+  }, []);
 
   const employeesFormatted: (Option & { establishmentId: string })[] = employees.edges.map(
     (edge) => ({

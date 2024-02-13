@@ -400,6 +400,7 @@ checkout_payment.title: Payment
 checkout_payment.caption: summary of cart items
 checkout_payment.description: Total {price}
 checkout_payment.no_assets: No assets to checkout.
+checkout_payment.insufficient_funds: You do not have enough funds to purchase.
 checkout_payment.confirmation: Are you sure you want to checkout?
 checkout_payment.confirmation_description: After the payment, there is no possibility to refund it.
 checkout_payment.clear_cart: Clear cart

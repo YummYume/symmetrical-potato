@@ -15,6 +15,9 @@ heist.slot.not_available: This slot is not available for this location.
 heist.cannot_join: You cannot join this heist.
 heist.not_found: The requested heist was not found.
 
+# HeistAsset
+heist_asset.insufficient_funds: You do not have enough funds to purchase.
+
 # CrewMember
 crew_member.already_joined: You have already joined this heist.
 

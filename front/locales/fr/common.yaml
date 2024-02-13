@@ -410,6 +410,7 @@ checkout_payment.title: Paiement
 checkout_payment.caption: Récapitulatif des éléments du panier
 checkout_payment.description: Total {price}
 checkout_payment.no_assets: Aucun asset à payer.
+checkout_payment.insufficient_funds: Vous n'avez pas assez d'argent pour payer.
 checkout_payment.confirmation: Êtes-vous sûr de vouloir payer ?
 checkout_payment.confirmation_description: Après le paiement, il n'y a pas de possibilité de remboursement.
 checkout_payment.clear_cart: Vider le panier
