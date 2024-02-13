@@ -229,7 +229,7 @@ export default function MapPage() {
   }, [heists, selectedLocation]);
   const mapOptions = useMemo<React.ComponentProps<typeof Map>>(() => {
     return {
-      center: placeIdData
+      defaultCenter: placeIdData
         ? {
             lat:
               placeIdData.locationInfo?.location?.latitude ??
