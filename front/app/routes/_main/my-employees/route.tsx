@@ -59,14 +59,16 @@ export default function Employees() {
   }, [employees, showOnlyPending]);
   const planning = useMemo(() => {
     return DAYS.map((day) => {
-      const dayPlannings = employees.map(({ node }) => {
-        const dayPlanning = node.planning[day] ?? [];
+      const dayPlannings = employees
+        .filter(({ node }) => node.status === EmployeeStatusEnum.Active)
+        .map(({ node }) => {
+          const dayPlanning = node.planning[day] ?? [];
 
-        return {
-          name: node.codeName,
-          hours: dayPlanning,
-        };
-      });
+          return {
+            name: node.codeName,
+            hours: dayPlanning,
+          };
+        });
 
       return {
         name: day,

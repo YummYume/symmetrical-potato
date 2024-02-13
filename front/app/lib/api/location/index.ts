@@ -2,6 +2,7 @@ import { gql, type GraphQLClient } from 'graphql-request';
 
 import dayjs from '~/lib/utils/dayjs';
 import {
+  HeistPhaseEnum,
   type Mutation,
   type MutationDeleteLocationArgs,
   type MutationUpdateLocationArgs,
@@ -9,7 +10,6 @@ import {
   type QueryLocationArgs,
   type UpdateLocationInput,
 } from '~api/types';
-import { HeistPhaseEnum } from '~api/types';
 
 import type { QueryHeistsArgs } from '~api/types';
 import type { GooglePlace } from '~api/types/maps';
@@ -43,11 +43,21 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
               name
               preferedTactic
               startAt
+              shouldEndAt
               visibility
+              objectives
+              name
+              description
+              phase
+              crewMembers {
+                totalCount
+              }
               establishment {
                 contractor {
                   id
                 }
+                id
+                name
               }
             }
           }
@@ -64,6 +74,7 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
                 id
                 username
               }
+              ratingNumber
             }
           }
         }

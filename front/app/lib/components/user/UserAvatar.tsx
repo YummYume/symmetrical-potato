@@ -23,7 +23,7 @@ export const UserAvatar = ({ username, mainRole, ...rest }: UserAvatarProps) => 
   } else if (mainRole === ROLES.EMPLOYEE) {
     color = 'iris';
   } else if (mainRole === ROLES.CONTRACTOR) {
-    color = 'crimson';
+    color = 'ruby';
   }
 
   return <Avatar aria-hidden="true" variant="solid" color={color} {...rest} fallback={fallback} />;

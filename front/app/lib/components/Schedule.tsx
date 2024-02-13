@@ -44,9 +44,15 @@ export const DAYS = [
   'sunday',
 ] as const;
 
-const randomColor = () => {
-  // TODO make the color depend on something ?
-  return `oklch(66.6% 0.15 47 / 0.75)`;
+const randomColor = (string: string) => {
+  let total = 0;
+
+  // Sum up the ASCII values of each character in the string
+  for (let i = 0; i < string.length; i++) {
+    total += string.charCodeAt(i);
+  }
+
+  return `${(((total % 360) + 360) % 360) + 1}`;
 };
 
 export type DayHeistHour = {
@@ -102,7 +108,7 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
               const customStyle: {
                 [key: string]: string;
               } = {
-                '--color': randomColor(),
+                '--color': randomColor(name),
               };
 
               return (

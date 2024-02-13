@@ -30,7 +30,7 @@ export const UserMainRoleBadge = ({ mainRole, ...rest }: UserMainRoleBadgeProps)
 
   if (mainRole === ROLES.CONTRACTOR) {
     return (
-      <Badge color="crimson" size="1" className="h-fit w-fit" {...rest}>
+      <Badge color="ruby" size="1" className="h-fit w-fit" {...rest}>
         {t('user.role.contractor')}
       </Badge>
     );

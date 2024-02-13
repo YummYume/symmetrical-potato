@@ -1,7 +1,6 @@
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Blockquote, Button, Flex, Heading, IconButton, ScrollArea, Text } from '@radix-ui/themes';
-import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import { json, redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
@@ -227,7 +226,7 @@ export default function EditContractorRequest() {
             })}
             action="delete"
           >
-            <Button type="button" color="tomato">
+            <Button type="button" color="ruby">
               {t('contractor_request.reject', { ns: 'admin' })}
             </Button>
           </FormConfirmDialog>
@@ -242,7 +241,7 @@ export default function EditContractorRequest() {
                 ns: 'admin',
               })}
               formId="contractor_request-form"
-              actionColor="tomato"
+              actionColor="ruby"
               submitButtonProps={{
                 name: 'status',
                 value: ContractorRequestStatusEnum.Rejected,
@@ -251,7 +250,7 @@ export default function EditContractorRequest() {
                 },
               }}
             >
-              <Button type="button" color="tomato">
+              <Button type="button" color="ruby">
                 {t('contractor_request.reject', { ns: 'admin' })}
               </Button>
             </FormAlertDialog>

@@ -1,6 +1,6 @@
-import { Grid, Button, Card, Flex } from '@radix-ui/themes';
+import { PlusIcon, TrashIcon } from '@radix-ui/react-icons';
+import { Card, Grid, IconButton } from '@radix-ui/themes';
 import { useFieldArray } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { useRemixFormContext } from 'remix-hook-form';
 
 import { Error } from '~/lib/components/form/fields/Error';
@@ -70,7 +70,6 @@ export function FieldInputArray<T extends Record<string, unknown>>({
   errorRender: ErrorField = Error,
   ...rest
 }: FieldInputArrayProps<T>) {
-  const { t } = useTranslation();
   const { control } = useRemixFormContext<T>();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -83,11 +82,18 @@ export function FieldInputArray<T extends Record<string, unknown>>({
       <LabelField as="span" className={hideLabel ? 'sr-only' : undefined}>
         {label}
       </LabelField>
-      <ul className="space-y-3">
+      <ul className="grid gap-2">
         {fields.map((item, index) => {
           return (
             <li key={item.id}>
               <Card>
+                {!disabled && (
+                  <div className="text-right">
+                    <IconButton color="ruby" onClick={() => remove(index)} type="button">
+                      <TrashIcon />
+                    </IconButton>
+                  </div>
+                )}
                 <Grid gap="2">
                   {config.fields.map((fieldInput, key) => (
                     <div className="contents" key={`${item.id}-${key}`}>
@@ -122,32 +128,20 @@ export function FieldInputArray<T extends Record<string, unknown>>({
                       )}
                     </div>
                   ))}
-
-                  {!disabled && (
-                    <Flex justify="end" align="center" gap="2">
-                      <Button
-                        type="button"
-                        className="w-fit"
-                        color="crimson"
-                        onClick={() => remove(index)}
-                      >
-                        {config.delete?.text ?? t('delete', { ns: translationNamespace })}
-                      </Button>
-                    </Flex>
-                  )}
                 </Grid>
               </Card>
             </li>
           );
         })}
         {fields.length < limit && !disabled && (
-          <Button
-            type="button"
-            onClick={() => append(config.defaultAppendValue)}
+          <IconButton
             disabled={disabled}
+            onClick={() => append(config.defaultAppendValue)}
+            type="button"
+            className="!w-full"
           >
-            {config.add?.text ?? t('add', { ns: translationNamespace })}
-          </Button>
+            <PlusIcon />
+          </IconButton>
         )}
       </ul>
     </Grid>

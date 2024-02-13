@@ -414,6 +414,12 @@ location.heists_count: >-
     one {# braquage}
     other {# braquages}
   }
+location.reviews_count: >-
+  {count, plural,
+    =0 {Aucun avis}
+    one {1 avis}
+    other {# avis}
+  }
 
 # Establishment
 establishment.name: Nom

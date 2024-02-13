@@ -16,38 +16,6 @@ textarea {
   }
 }
 
-.link {
-  color: white;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  flex-shrink: 0;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  vertical-align: top;
-  padding-left: var(--space-3);
-  padding-right: var(--space-3);
-  gap: var(--space-2);
-  font-size: var(--font-size-2);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-2);
-  letter-spacing: var(--letter-spacing-2);
-  border-radius: max(var(--radius-2), var(--radius-full));
-  height: var(--base-button-height);
-  --base-button-height: var(--space-6);
-  --base-button-classic-active-padding-top: 2px;
-
-  &--blue {
-    @apply bg-blue-10;
-  }
-
-  &--green {
-    @apply bg-green-10;
-  }
-}
-
 // Drawer
 .drawer {
   @apply absolute inset-0 z-50 overflow-y-auto rounded-3 bg-slate-1 p-6

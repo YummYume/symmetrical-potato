@@ -402,6 +402,12 @@ location.heists_count: >-
     one {1 heist}
     other {# heists}
   }
+location.reviews_count: >-
+  {count, plural,
+    =0 {No review}
+    one {1 review}
+    other {# reviews}
+  }
 
 # Establishment
 establishment.name: Name

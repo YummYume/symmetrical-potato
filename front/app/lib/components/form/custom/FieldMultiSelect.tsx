@@ -1,4 +1,4 @@
-import { Grid } from '@radix-ui/themes';
+import { Grid, useThemeContext } from '@radix-ui/themes';
 import { useId, type ComponentProps } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -44,6 +44,9 @@ export function FieldMultiSelect<T extends Record<string, unknown>>({
   const { t } = useTranslation();
   const { control, register } = useRemixFormContext<T>();
   const instanceId = useId();
+  const { appearance } = useThemeContext();
+
+  const isDark = appearance === 'dark';
 
   return (
     <Grid className={containerClassName} gap="1">
@@ -99,6 +102,30 @@ export function FieldMultiSelect<T extends Record<string, unknown>>({
                 defaultValue={defaultValue}
                 instanceId={instanceId}
                 onChange={(newValue) => newValue && field.onChange(newValue)}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    backgroundColor: 'var(--color-surface)',
+                    border: 'none',
+                    boxShadow: state.isFocused
+                      ? 'inset 0 0 0 1px var(--gray-a8)'
+                      : 'inset 0 0 0 1px var(--gray-a7)',
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    backgroundColor: 'var(--slate-2)',
+                  }),
+                  multiValue: (baseStyles) => ({
+                    ...baseStyles,
+                    color: 'black',
+                    backgroundColor: 'var(--accent-9)',
+                  }),
+                  option: (baseStyles, state) => ({
+                    ...baseStyles,
+                    backgroundColor: state.isFocused ? 'var(--accent-9)' : 'transparent',
+                    color: state.isFocused ? 'black' : 'var(--gray-12)',
+                  }),
+                }}
               />
               {error?.message && !hideError && (
                 <ErrorField id={errorId}>{t(error.message, { ns: 'validators' })}</ErrorField>

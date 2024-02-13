@@ -60,7 +60,7 @@ export function TextAreaInput<T extends Record<string, unknown>>({
                 defaultValue={defaultValue}
                 disabled={field.disabled}
                 required={required}
-                color={errorId ? 'crimson' : rest.color}
+                color={errorId ? 'ruby' : rest.color}
               />
               {error?.message && !hideError && (
                 <ErrorField id={errorId}>{t(error.message, { ns: 'validators' })}</ErrorField>
