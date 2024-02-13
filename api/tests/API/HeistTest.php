@@ -100,7 +100,7 @@ final class HeistTest extends AbstractTestCase
      * @param array<int, mixed> $result   The expected result
      * @param string|null       $username The username to use to authenticate the user
      */
-    public function checkUserCanSeeHeists(array $result, string $username = null): void
+    public function checkUserCanSeeHeists(array $result, ?string $username = null): void
     {
         static::checkResourceJsonEquals('heists {
             edges {

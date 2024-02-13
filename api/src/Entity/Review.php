@@ -125,7 +125,7 @@ class Review
 
     #[ORM\ManyToOne(inversedBy: 'reviews', targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ_PUBLIC, self::CREATE])]
+    #[Groups([self::READ_PUBLIC])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews', targetEntity: Establishment::class)]

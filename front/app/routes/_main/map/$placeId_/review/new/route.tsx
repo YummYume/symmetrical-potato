@@ -17,7 +17,7 @@ import type { ReviewFormData } from '~/lib/validators/review';
 import type { FlashMessage } from '~/root';
 
 export async function action({ params, request, context }: ActionFunctionArgs) {
-  const user = denyAccessUnlessGranted(context.user, ROLES.HEISTER);
+  denyAccessUnlessGranted(context.user, ROLES.HEISTER);
 
   if (!params.placeId) {
     throw redirect('/map');
@@ -37,7 +37,6 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
     await createReview(context.client, {
       rating: data.rating,
       comment: data.comment,
-      user: user.id,
       location: params.placeId,
     });
 
