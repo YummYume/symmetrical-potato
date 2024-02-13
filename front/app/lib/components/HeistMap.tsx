@@ -1,7 +1,7 @@
 import { Map } from '@vis.gl/react-google-maps';
 
 const defaultOptions: React.ComponentProps<typeof Map> = {
-  center: { lat: 40.758, lng: 73.9855 },
+  defaultCenter: { lat: 40.758, lng: 73.9855 },
   restriction: {
     latLngBounds: {
       north: 40.9176,
@@ -22,7 +22,7 @@ const defaultOptions: React.ComponentProps<typeof Map> = {
       ],
     },
   ],
-  zoom: 14,
+  defaultZoom: 14,
   maxZoom: 20,
   streetViewControl: false,
   mapTypeControl: false,
