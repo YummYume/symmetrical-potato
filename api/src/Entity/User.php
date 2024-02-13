@@ -377,7 +377,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([self::READ, self::READ_PUBLIC, ContractorRequest::READ, Establishment::READ_PUBLIC])]
+    #[Groups([
+        self::READ,
+        self::READ_PUBLIC,
+        ContractorRequest::READ,
+        Heist::READ,
+        Review::READ_PUBLIC,
+        CrewMember::READ,
+        CrewMember::READ_PUBLIC,
+        Establishment::READ_PUBLIC,
+        Employee::READ,
+    ])]
     private ?Profile $profile = null;
 
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: ContractorRequest::class, orphanRemoval: true)]
@@ -401,6 +411,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /** @var ArrayCollection<int, Establishment> */
     #[ORM\OneToMany(mappedBy: 'contractor', targetEntity: Establishment::class, orphanRemoval: true)]
+    #[Groups([self::READ, self::READ_PUBLIC])]
     private Collection $establishments;
 
     /** @var ArrayCollection<int, Heist> */

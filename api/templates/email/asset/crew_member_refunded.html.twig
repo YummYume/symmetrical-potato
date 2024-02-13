@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Refunded !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'asset.crew_member_refunded.subject'|trans() %}
+{% set text = 'asset.crew_member_refunded.text'|trans({amount: heistAsset.totalSpent, asset: heistAsset.asset.name, balance: user.balance, heist: heist.name, name: user.username, quantity: heistAsset.quantity, site}) %}

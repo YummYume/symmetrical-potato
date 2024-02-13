@@ -10,6 +10,7 @@ use App\Entity\Employee;
 use App\Entity\User;
 use App\Enum\EmployeeStatusEnum;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bundle\SecurityBundle\Security;
 
 final class ActiveEmployeeExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
@@ -56,7 +57,7 @@ final class ActiveEmployeeExtension implements QueryCollectionExtensionInterface
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
 
-        // If the user is not an admin or contractor, only return public heists
+        // If the user is not an admin or contractor, only return active employees
         if (!$this->security->isGranted(User::ROLE_ADMIN)
             && !$this->security->isGranted(User::ROLE_EMPLOYEE)
             && !$this->security->isGranted(User::ROLE_CONTRACTOR)
@@ -80,7 +81,7 @@ final class ActiveEmployeeExtension implements QueryCollectionExtensionInterface
                     "$rootAlias.user = :$userParameter",
                 ))
                 ->setParameter("$activeParameter", EmployeeStatusEnum::Active)
-                ->setParameter("$userParameter", $user)
+                ->setParameter("$userParameter", $user->getId(), UuidType::NAME)
             ;
         }
     }

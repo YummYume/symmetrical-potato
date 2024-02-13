@@ -53,7 +53,7 @@ final class CrewMemberVoter extends Voter
 
     private function canRead(): bool
     {
-        // TODO
+        // Anyone can read
         return true;
     }
 

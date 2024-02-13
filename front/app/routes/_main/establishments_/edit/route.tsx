@@ -2,7 +2,7 @@ import { TrashIcon } from '@radix-ui/react-icons';
 import { Container, Flex, Heading, IconButton } from '@radix-ui/themes';
 import { useTranslation } from 'react-i18next';
 
-import Form from '../establishment/Form';
+import Form from '../../establishments/Form';
 
 export default function Edit() {
   const { t } = useTranslation();

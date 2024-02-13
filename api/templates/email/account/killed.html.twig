@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Killed !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'account.killed.subject'|trans %}
+{% set text = 'account.killed.text'|trans({name: user.username, site}) %}

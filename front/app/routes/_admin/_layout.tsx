@@ -1,5 +1,5 @@
-import { HamburgerMenuIcon } from '@radix-ui/react-icons';
-import { Button, DropdownMenu, Flex } from '@radix-ui/themes';
+import { HamburgerMenuIcon, PlusIcon } from '@radix-ui/react-icons';
+import { Button, DropdownMenu, Flex, Text } from '@radix-ui/themes';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 import { useEffect, useState, type ComponentProps, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -53,6 +53,13 @@ const Menu = ({
 
   return (
     <Flex align="center" gap="4" justify="end">
+      <Text weight="bold" as="span" size="2">
+        {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(
+          user.balance,
+        )}
+        <span className="sr-only">{t('user.your_balance')} : </span>
+      </Text>
+
       <Form method="post" className="flex items-center justify-end gap-4" onChange={onChange}>
         <Locale defaultValue={locale} disabled={isChangingPreferences} />
         <Lightswitch defaultChecked={useDarkMode} disabled={isChangingPreferences} />
@@ -60,6 +67,23 @@ const Menu = ({
           <SubmitButton text={t('submit')} />
         </noscript>
       </Form>
+
+      {user.roles.includes(ROLES.CONTRACTOR) && (
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger>
+            <Button aria-label={t('add')} variant="soft">
+              <PlusIcon />
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            <DropdownMenu.Item>
+              <Link className="w-full" to="/establishment/new" unstyled>
+                {t('establishment.new')}
+              </Link>
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      )}
 
       <UserDropdown username={user.username}>
         <DropdownMenu.Separator />
@@ -73,18 +97,32 @@ const Menu = ({
             {t('my_account')}
           </Link>
         </DropdownMenu.Item>
-        <DropdownMenu.Item>
-          <Link className="w-full" to="/contractor-request" unstyled>
-            {t('my_contractor_request')}
-          </Link>
-        </DropdownMenu.Item>
-        {(user.roles.includes(ROLES.EMPLOYEE) || user.roles.includes(ROLES.USER)) && (
+        {user.roles.includes(ROLES.HEISTER) && (
+          <DropdownMenu.Item>
+            <Link className="w-full" to="/my-heists" unstyled>
+              {t('my_heists')}
+            </Link>
+          </DropdownMenu.Item>
+        )}
+        {user.roles.includes(ROLES.CONTRACTOR) && (
+          <DropdownMenu.Item>
+            <Link className="w-full" to="/my-employees" unstyled>
+              {t('my_employees')}
+            </Link>
+          </DropdownMenu.Item>
+        )}
+        {(user.roles.includes(ROLES.EMPLOYEE) || user.roles.includes(ROLES.HEISTER)) && (
           <DropdownMenu.Item>
             <Link className="w-full" to="/job" unstyled>
               {t('my_job')}
             </Link>
           </DropdownMenu.Item>
         )}
+        <DropdownMenu.Item>
+          <Link className="w-full" to="/contractor-request" unstyled>
+            {t('my_contractor_request')}
+          </Link>
+        </DropdownMenu.Item>
         {user.roles.includes(ROLES.EMPLOYEE) && (
           <DropdownMenu.Item>
             <Link className="w-full" to="/planning" unstyled>

@@ -2,7 +2,7 @@ import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { Button, Flex } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs, type SerializeFrom } from '@remix-run/node';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
-import { useEffect, useState, type FormEvent, type ComponentProps } from 'react';
+import { useEffect, useState, type ComponentProps, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Drawer } from '~/lib/components/Drawer';

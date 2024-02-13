@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Refused !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'contractor_request.refused.subject'|trans %}
+{% set text = 'contractor_request.refused.text'|trans({name: contractorRequest.user.username, site}) %}

@@ -153,17 +153,52 @@ export const getHeist = async (client: GraphQLClient, id: string, asAdmin = fals
             edges {
               node {
                 id
+                codeName
                 user {
                   id
                   username
+                  mainRole
+                  globalRating
+                  profile {
+                    description
+                  }
                 }
               }
             }
           }
           establishment {
             id
+            name
             contractor {
               id
+              username
+              mainRole
+              globalRating
+              profile {
+                description
+              }
+            }
+          }
+          crewMembers {
+            totalCount
+            edges {
+              node {
+                id
+                civilianCasualties
+                kills
+                objectivesCompleted
+                payout
+                status
+                user {
+                  id
+                  username
+                  mainRole
+                  globalRating
+                  profile {
+                    description
+                  }
+                }
+              }
             }
           }
           ${asAdmin ? adminFields : ''}
@@ -382,6 +417,54 @@ export const getHeistsForToday = async (client: GraphQLClient) => {
           before: dayjs().endOf('day').toISOString(),
         },
       ],
+    },
+  );
+};
+
+/**
+ * Will return heists for a user.
+ */
+export const getHeistsForUser = async (client: GraphQLClient, userId: string) => {
+  return client.request<Pick<Query, 'heists'>, QueryHeistsArgs>(
+    gql`
+      query ($crewMembers__user__id: String!) {
+        heists(crewMembers__user__id: $crewMembers__user__id) {
+          edges {
+            node {
+              id
+              name
+              description
+              minimumPayout
+              maximumPayout
+              startAt
+              shouldEndAt
+              objectives
+              phase
+              preferedTactic
+              difficulty
+              establishment {
+                id
+                name
+              }
+              crewMembers {
+                totalCount
+              }
+              location {
+                placeId
+                name
+                address
+                latitude
+                longitude
+                reviewCount
+                averageRating
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      crewMembers__user__id: `/users/${userId}`,
     },
   );
 };

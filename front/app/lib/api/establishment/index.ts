@@ -46,6 +46,21 @@ export const getEstablishments = async (client: GraphQLClient) => {
             id
             name
             description
+            minimumWage
+            minimumWorkTimePerWeek
+            contractorCut
+            employeeCut
+            crewCut
+            averageRating
+            contractor {
+              id
+              username
+              mainRole
+              globalRating
+              profile {
+                description
+              }
+            }
           }
         }
       }

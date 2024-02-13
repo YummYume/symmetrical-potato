@@ -279,6 +279,7 @@ export type EstablishmentEmployeesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   allowedHeists__id?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  establishment__contractor__id?: InputMaybe<Scalars['String']['input']>;
   establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
@@ -341,6 +342,7 @@ export type HeistAllowedEmployeesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   allowedHeists__id?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  establishment__contractor__id?: InputMaybe<Scalars['String']['input']>;
   establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
@@ -546,6 +548,7 @@ export type MeUser = Node & {
   createdBy: Maybe<MeUser>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<Employee>;
+  establishments: Maybe<EstablishmentCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -558,6 +561,14 @@ export type MeUser = Node & {
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<MeUser>;
   username: Scalars['String']['output'];
+};
+
+export type MeUserEstablishmentsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  contractor__id?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Mutation = {
@@ -945,6 +956,7 @@ export type QueryEmployeesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   allowedHeists__id?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  establishment__contractor__id?: InputMaybe<Scalars['String']['input']>;
   establishment__id?: InputMaybe<Scalars['Iterable']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
@@ -1168,6 +1180,7 @@ export type User = Node & {
   createdBy: Maybe<User>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<Employee>;
+  establishments: Maybe<EstablishmentCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -1180,6 +1193,14 @@ export type User = Node & {
   updatedAt: Maybe<Scalars['String']['output']>;
   updatedBy: Maybe<User>;
   username: Scalars['String']['output'];
+};
+
+export type UserEstablishmentsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  contractor__id?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Cursor connection for User. */
@@ -1930,6 +1951,7 @@ export type KillUserNestedPayload = Node & {
   createdBy: Maybe<KillUserNestedPayload>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<Employee>;
+  establishments: Maybe<EstablishmentCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -1960,6 +1982,7 @@ export type KillUserPayloadData = Node & {
   createdBy: Maybe<KillUserNestedPayload>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<Employee>;
+  establishments: Maybe<EstablishmentCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -2122,6 +2145,7 @@ export type ReviveUserNestedPayload = Node & {
   createdBy: Maybe<ReviveUserNestedPayload>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<Employee>;
+  establishments: Maybe<EstablishmentCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -2152,6 +2176,7 @@ export type ReviveUserPayloadData = Node & {
   createdBy: Maybe<ReviveUserNestedPayload>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<Employee>;
+  establishments: Maybe<EstablishmentCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -2359,6 +2384,30 @@ export type UpdateEstablishmentNestedPayload = Node & {
   updatedBy: Maybe<UpdateUserNestedPayload>;
 };
 
+/** Cursor connection for updateEstablishmentNestedPayload. */
+export type UpdateEstablishmentNestedPayloadCursorConnection = {
+  __typename?: 'updateEstablishmentNestedPayloadCursorConnection';
+  edges: Maybe<Array<Maybe<UpdateEstablishmentNestedPayloadEdge>>>;
+  pageInfo: UpdateEstablishmentNestedPayloadPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of updateEstablishmentNestedPayload. */
+export type UpdateEstablishmentNestedPayloadEdge = {
+  __typename?: 'updateEstablishmentNestedPayloadEdge';
+  cursor: Scalars['String']['output'];
+  node: Maybe<UpdateEstablishmentNestedPayload>;
+};
+
+/** Information about the current page. */
+export type UpdateEstablishmentNestedPayloadPageInfo = {
+  __typename?: 'updateEstablishmentNestedPayloadPageInfo';
+  endCursor: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor: Maybe<Scalars['String']['output']>;
+};
+
 /** Updates a Establishment. */
 export type UpdateEstablishmentPayload = {
   __typename?: 'updateEstablishmentPayload';
@@ -2484,6 +2533,7 @@ export type UpdateUserNestedPayload = Node & {
   createdBy: Maybe<UpdateUserNestedPayload>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<UpdateEmployeeNestedPayload>;
+  establishments: Maybe<UpdateEstablishmentNestedPayloadCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -2514,6 +2564,7 @@ export type UpdateUserPayloadData = Node & {
   createdBy: Maybe<UpdateUserNestedPayload>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<UpdateEmployeeNestedPayload>;
+  establishments: Maybe<UpdateEstablishmentNestedPayloadCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -2595,6 +2646,7 @@ export type ValidateUserNestedPayload = Node & {
   createdBy: Maybe<ValidateUserNestedPayload>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<ValidateEmployeeNestedPayload>;
+  establishments: Maybe<EstablishmentCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
@@ -2625,6 +2677,7 @@ export type ValidateUserPayloadData = Node & {
   createdBy: Maybe<ValidateUserNestedPayload>;
   email: Maybe<Scalars['String']['output']>;
   employee: Maybe<ValidateEmployeeNestedPayload>;
+  establishments: Maybe<EstablishmentCursorConnection>;
   /** You should probably not use this method directly unless necessary. */
   globalRating: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];

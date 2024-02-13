@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { NavLink } from '~/lib/components/Link';
 import { HeistHoverCard } from '~/lib/components/heist/HeistHoverCard';
 import { HeistListItem } from '~/lib/components/heist/HeistListItem';
+import { getUriId } from '~/lib/utils/path';
 
 import type { Loader } from './route';
 import type { useLoaderData } from '@remix-run/react';
@@ -75,7 +76,6 @@ export const MapHeistListModal = ({
               <ul className="space-y-3">
                 {filteredHeists.map(({ node: heist }) => (
                   <li className="flex items-center justify-center gap-2" key={heist.id}>
-                    {/* TODO heist page */}
                     <HeistHoverCard
                       name={heist.name}
                       description={heist.description}
@@ -101,7 +101,7 @@ export const MapHeistListModal = ({
                       <NavLink
                         unstyled
                         className="grow"
-                        to={`/map/${heist.location.placeId}`}
+                        to={`/map/${heist.location.placeId}/${getUriId(heist.id)}`}
                         withCurrentSearchParams
                         onClick={(e) => {
                           if (onHeistClick) {

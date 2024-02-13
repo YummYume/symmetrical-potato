@@ -79,6 +79,14 @@ meta.profile.description: Consultez le profil de {name}.
 meta.my_job.title: Mon emploi
 meta.my_job.description: Consultez votre emploi actuel.
 meta.establishment.description: Consultez l'établissement {name}.
+meta.establishments.title: Établissements
+meta.establishments.description: Tous les établissements disponibles.
+meta.my_heists.title: Mes braquages
+meta.my_heists.description: Tous les braquages dont vous faites partie.
+meta.my_employees.title: Mes employés
+meta.my_employees.description: Gérez vos employés.
+meta.location.description: Tous les braquages et informations disponibles pour {address}.
+meta.heist.description: Consultez le braquage {name}.
 
 # Dashboard
 dashboard.heists.today: Braquages aujourd'hui
@@ -232,6 +240,17 @@ my_contractor_request.no_request_description: >
 # My planning
 my_planning: Mon planning
 
+# My employees
+my_employees: Mes employés
+my_employees.all: Tous mes employés
+my_employees.full_schedule: Planning complet
+my_employees.show_only_pending: Montrer seulement les employés en attente
+
+# My heists
+my_heists: Mes braquages
+my_heists.all: Tous les braquages auxquels je participe
+my_heists.no_heists_found: Aucun braquage trouvé.
+
 # Heist
 heist.name: Nom
 heist.description: Description
@@ -304,6 +323,9 @@ employee.motivation: Motivation
 employee.code_name: Nom de code
 employee.edit: Modifier l'employé
 employee.status: Statut
+employee.status.active: Actif
+employee.status.rejected: Rejeté
+employee.status.pending: En attente
 
 # User
 user.balance: Solde
@@ -409,6 +431,7 @@ establishment.edit: Modifier l'établissement
 establishment.no_heists: Aucun braquage pour le moment.
 establishment.no_reviews: Aucun avis pour le moment.
 establishment.no_employees: Aucun employé pour le moment.
+establishment.show_only_owner: Montrer seulement les établissements que je possède
 
 # Rating
 rating.star: Noter {rating, number}

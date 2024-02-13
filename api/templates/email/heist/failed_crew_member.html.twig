@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Failed !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'heist.failed_crew_member.subject'|trans({heist}) %}
+{% set text = 'heist.failed_crew_member.text'|trans({civilian_casualties, heist, kills, name: user.username, objectives_completed, payout, site, status}) %}

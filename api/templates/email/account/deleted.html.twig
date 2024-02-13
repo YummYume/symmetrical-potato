@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Account deleted !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'account.deleted.subject'|trans %}
+{% set text = 'account.deleted.text'|trans({name: user.username, site}) %}

@@ -1,5 +1,6 @@
 {% extends 'email/layout.html.twig' %}
 
-{% block content %}
-    <h1>Account validated !</h1>
-{% endblock %}
+{% trans_default_domain 'email' %}
+
+{% set title = 'account.validated.subject'|trans %}
+{% set text = 'account.validated.text'|trans({name: user.username, site, url}) %}

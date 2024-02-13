@@ -15,12 +15,13 @@ import { Link } from '~/lib/components/Link';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
 import { i18next } from '~/lib/i18n/index.server';
 import { getUriId } from '~/lib/utils/path';
+import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const user = denyAccessUnlessGranted(context.user);
+  const user = denyAccessUnlessGranted(context.user, [ROLES.HEISTER, ROLES.EMPLOYEE]);
   const t = await i18next.getFixedT(request, 'common');
 
   return json({
@@ -130,7 +131,6 @@ export default function Job() {
                       <Text weight="bold" size="3" color="gray">
                         {t('establishment')}
                       </Text>
-                      {/* TODO establishment link */}
                       <Link to={`/establishments/${getUriId(user.employee.establishment.id)}`}>
                         {user.employee.establishment.name}
                       </Link>

@@ -97,7 +97,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     groups: [self::VALIDATE],
 )]
 #[ApiFilter(MatchUuidFilter::class, properties: ['establishment.id'])]
-#[ApiFilter(UuidFilter::class, properties: ['allowedHeists.id'])]
+#[ApiFilter(UuidFilter::class, properties: ['allowedHeists.id', 'establishment.contractor.id'])]
 class Employee
 {
     use BlameableTrait;

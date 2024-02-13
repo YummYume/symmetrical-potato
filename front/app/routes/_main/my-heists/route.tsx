@@ -2,11 +2,12 @@ import { Container, Heading, Section, Text } from '@radix-ui/themes';
 import { useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import { getHeistsForToday } from '~/lib/api/heist';
+import { getHeistsForUser } from '~/lib/api/heist';
 import { HeistHoverCard } from '~/lib/components/heist/HeistHoverCard';
 import { HeistListItem } from '~/lib/components/heist/HeistListItem';
 import { i18next } from '~/lib/i18n/index.server';
 import { getUriId } from '~/lib/utils/path';
+import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { Link } from '~components/Link';
 import dayjs from '~utils/dayjs';
@@ -14,16 +15,16 @@ import dayjs from '~utils/dayjs';
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  denyAccessUnlessGranted(context.user);
+  const user = denyAccessUnlessGranted(context.user, [ROLES.HEISTER]);
 
   const t = await i18next.getFixedT(request, 'common');
-  const response = await getHeistsForToday(context.client);
+  const { heists } = await getHeistsForUser(context.client, getUriId(user.id));
 
   return {
-    heists: response.heists.edges,
+    heists: heists.edges,
     meta: {
-      title: t('meta.dashboard.title'),
-      description: t('meta.dashboard.description'),
+      title: t('meta.my_heists.title'),
+      description: t('meta.my_heists.description'),
     },
   };
 }
@@ -42,7 +43,7 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
   ];
 };
 
-export default function Dashboard() {
+export default function MyHeists() {
   const { t } = useTranslation();
   const { heists } = useLoaderData<Loader>();
 
@@ -50,15 +51,15 @@ export default function Dashboard() {
     <main className="py-10">
       <Container className="space-y-16">
         <Heading align="center" as="h1" size="9">
-          {t('dashboard')}
+          {t('my_heists')}
         </Heading>
         <Section className="space-y-3">
           <Heading as="h2" size="6">
-            {t('dashboard.heists.today')}
+            {t('my_heists.all')}
           </Heading>
           {heists.length === 0 && (
             <Text as="p" size="2" color="gray">
-              {t('dashboard.heists.no_heists_today')}
+              {t('my_heists.no_heists_found')}
             </Text>
           )}
           {heists.length > 0 && (
