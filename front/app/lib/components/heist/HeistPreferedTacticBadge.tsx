@@ -17,7 +17,7 @@ export const HeistPreferedTacticBadge = ({
 
   if (preferedTactic === HeistPreferedTacticEnum.Loud) {
     return (
-      <Badge color="crimson" size="1" className="h-fit w-fit" {...rest}>
+      <Badge color="ruby" size="1" className="h-fit w-fit" {...rest}>
         <span className="sr-only">{t('heist.prefered_tactic')} :</span>{' '}
         {t('heist.prefered_tactic.loud')}
       </Badge>

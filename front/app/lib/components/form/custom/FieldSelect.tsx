@@ -75,7 +75,7 @@ export function FieldSelect<T extends Record<string, unknown>>({
                   aria-describedby={helpId}
                   aria-errormessage={errorId}
                   aria-invalid={!!errorId}
-                  color={errorId ? 'crimson' : rest.color}
+                  color={errorId ? 'ruby' : rest.color}
                 />
                 <Select.Content>
                   {options.map((option) => (

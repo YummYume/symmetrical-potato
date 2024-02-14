@@ -1,7 +1,6 @@
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Blockquote, Button, Flex, Heading, IconButton, ScrollArea, Text } from '@radix-ui/themes';
-import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import { json, redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
@@ -291,9 +290,9 @@ export default function EditUser() {
                 description={t('user.kill.confirm', {
                   ns: 'admin',
                 })}
-                actionColor="tomato"
+                actionColor="ruby"
               >
-                <Button type="button" color="tomato">
+                <Button type="button" color="ruby">
                   {t('kill')}
                 </Button>
               </FormConfirmDialog>

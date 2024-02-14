@@ -1,5 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Button, Grid, Heading, Section } from '@radix-ui/themes';
+import { ArrowLeftIcon } from '@radix-ui/react-icons';
+import { Button, Flex, Grid, Heading, Section } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -19,6 +20,7 @@ import { FieldInput } from '~/lib/components/form/custom/FieldInput';
 import { FieldInputArray } from '~/lib/components/form/custom/FieldInputArray';
 import { FieldMultiSelect } from '~/lib/components/form/custom/FieldMultiSelect';
 import { FieldSelect } from '~/lib/components/form/custom/FieldSelect';
+import { TextAreaInput } from '~/lib/components/form/custom/TextAreaInput';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
@@ -182,7 +184,7 @@ export default function Add() {
       startAtTime: startAt.format('HH:mm'),
       shouldEndAtDate: shouldEndAt.format('YYYY-MM-DD'),
       shouldEndAtTime: shouldEndAt.format('HH:mm'),
-      establishment: establishments.edges[0].node.id,
+      establishment: establishments.edges.at(0)?.node.id,
       preferedTactic: HeistPreferedTacticEnum.Loud,
       difficulty: HeistDifficultyEnum.Normal,
       minimumPayout: 100000,
@@ -219,13 +221,13 @@ export default function Add() {
   }, [watchEstablishment]);
 
   return (
-    <div>
+    <>
       <Dialog.Title asChild>
         <Heading as="h2" size="8">
           {t('add')}
         </Heading>
       </Dialog.Title>
-      <Section className="space-y-3" size="1">
+      <Section size="1">
         <RemixFormProvider {...methods}>
           <form
             id="heist-add-form"
@@ -234,11 +236,13 @@ export default function Add() {
             onSubmit={methods.handleSubmit}
           >
             <FieldInput name="name" label={t('name')} type="text" />
-            <FieldInput name="description" label={t('description')} type="text" />
+            <TextAreaInput name="description" label={t('description')} />
+
             <Grid columns="2" gap="2">
               <FieldInput name="startAtDate" label={t('heist.start_at.date')} type="date" />
               <FieldInput name="startAtTime" label={t('heist.start_at.time')} type="time" />
             </Grid>
+
             <Grid columns="2" gap="2">
               <FieldInput
                 name="shouldEndAtDate"
@@ -251,10 +255,12 @@ export default function Add() {
                 type="time"
               />
             </Grid>
+
             <Grid columns="2" gap="2">
               <FieldInput name="minimumPayout" label={t('heist.minimum_payout')} type="number" />
               <FieldInput name="maximumPayout" label={t('heist.maximum_payout')} type="number" />
             </Grid>
+
             <FieldSelect
               name="establishment"
               label={t('establishment')}
@@ -296,9 +302,6 @@ export default function Add() {
                   description: '',
                   optional: false,
                 },
-                add: {
-                  text: t('heist.add_objective'),
-                },
                 fields: [
                   {
                     name: 'name',
@@ -318,21 +321,27 @@ export default function Add() {
                 ],
               }}
             />
-            <FormAlertDialog
-              title={t('add')}
-              description={t('heist.add.confirm')}
-              actionColor="green"
-              cancelText={t('cancel')}
-              formId="heist-add-form"
-            >
-              <Button type="button" color="green">
-                {t('create')}
-              </Button>
-            </FormAlertDialog>
+            <Flex gap="2">
+              <Link to={`/map/${placeId}`}>
+                <div className="flex h-8 items-center rounded-2 bg-gray-9 px-3 text-[white]">
+                  <ArrowLeftIcon />
+                </div>
+              </Link>
+              <FormAlertDialog
+                title={t('add')}
+                description={t('heist.add.confirm')}
+                actionColor="green"
+                cancelText={t('cancel')}
+                formId="heist-add-form"
+              >
+                <Button className="grow" type="button" color="jade">
+                  {t('create')}
+                </Button>
+              </FormAlertDialog>
+            </Flex>
           </form>
         </RemixFormProvider>
-        <Link to={`/map/${placeId}`}>{t('back')}</Link>
       </Section>
-    </div>
+    </>
   );
 }

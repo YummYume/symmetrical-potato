@@ -78,7 +78,7 @@ export function FieldInput<T extends Record<string, unknown>>({
                   defaultValue={defaultValue}
                   disabled={field.disabled}
                   required={required}
-                  color={errorId ? 'crimson' : rest.color}
+                  color={errorId ? 'ruby' : rest.color}
                 />
                 {rightSlot}
               </TextField.Root>

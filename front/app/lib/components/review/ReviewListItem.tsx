@@ -1,4 +1,4 @@
-import { Card, Flex, Text } from '@radix-ui/themes';
+import { Card, Grid, Text } from '@radix-ui/themes';
 
 import { getUriId } from '~/lib/utils/path';
 import { truncate } from '~/lib/utils/string';
@@ -25,7 +25,7 @@ export type ReviewListItemProps = {
 export const ReviewListItem = ({ user, comment, rating, ...rest }: ReviewListItemProps) => {
   return (
     <Card size="2" {...rest}>
-      <Flex gap="4" direction={{ initial: 'column', sm: 'row' }}>
+      <Grid className="!grid-cols-[max-content_auto]" gap="4" columns="2">
         <UserHoverCard
           username={user.username}
           mainRole={user.mainRole}
@@ -36,15 +36,15 @@ export const ReviewListItem = ({ user, comment, rating, ...rest }: ReviewListIte
             <UserAvatar username={user.username} mainRole={user.mainRole} />
           </Link>
         </UserHoverCard>
-        {comment ? (
-          <Text as="p" size="3" className="grow">
-            {truncate(comment, 300)}
-          </Text>
-        ) : (
-          <div className="grow" />
-        )}
-        <Rating style={{ width: 125 }} value={rating} readOnly />
-      </Flex>
+        <Grid gap="2">
+          <Rating style={{ width: 125 }} value={rating} readOnly />
+          {comment && (
+            <Text as="p" size="3" className="grow">
+              {truncate(comment, 300)}
+            </Text>
+          )}
+        </Grid>
+      </Grid>
     </Card>
   );
 };

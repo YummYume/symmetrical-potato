@@ -1,5 +1,4 @@
-import { Flex, Grid, Text } from '@radix-ui/themes';
-import { Checkbox } from '@radix-ui/themes';
+import { Checkbox, Flex, Grid, Text } from '@radix-ui/themes';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useRemixFormContext } from 'remix-hook-form';
@@ -66,7 +65,7 @@ export function CheckboxInput<T extends Record<string, unknown>>({
                     aria-invalid={!!errorId}
                     disabled={field.disabled}
                     required={required}
-                    color={errorId ? 'crimson' : rest.color}
+                    color={errorId ? 'ruby' : rest.color}
                   />
                   <LabelField as="span" className={hideLabel ? 'sr-only' : undefined}>
                     {label}

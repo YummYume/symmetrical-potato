@@ -1,8 +1,8 @@
 .panel {
-  @apply grid h-[32rem] grid-cols-[25%_75%] overflow-hidden;
+  @apply grid h-[32rem] grid-cols-[25%_75%];
 
   &__sidebar {
-    @apply h-[32rem] rounded-l-5 border-2;
+    @apply h-[32rem] overflow-clip rounded-l-5 border-2;
   }
 
   &__sidebar-list {
