@@ -43,7 +43,6 @@ export const ProgressBar = ({
     isAnimating: active,
     minimum,
   });
-
   const barStatus = useMemo(() => {
     return {
       progress: isFinished ? 0 : progress * 100,

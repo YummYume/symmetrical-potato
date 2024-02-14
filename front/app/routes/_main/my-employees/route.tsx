@@ -106,6 +106,7 @@ export default function Employees() {
                 <Table.ColumnHeaderCell className="whitespace-nowrap">
                   {t('user')}
                 </Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell>{t('establishment')}</Table.ColumnHeaderCell>
                 <Table.ColumnHeaderCell>{t('employee.status')}</Table.ColumnHeaderCell>
                 <Table.ColumnHeaderCell>{t('employee.motivation')}</Table.ColumnHeaderCell>
                 <Table.ColumnHeaderCell>{t('description')}</Table.ColumnHeaderCell>
@@ -127,9 +128,14 @@ export default function Employees() {
                       globalRating={node.user.globalRating}
                       mainRole={node.user.mainRole}
                     >
-                      <Link to={`/users/${node.user.id}`}>{node.user.username}</Link>
+                      <Link to={`/profile/${getUriId(node.user.id)}`}>{node.user.username}</Link>
                     </UserHoverCard>
                   </Table.RowHeaderCell>
+                  <Table.Cell>
+                    <Link to={`/establishments/${getUriId(node.establishment.id)}`}>
+                      {node.establishment.name}
+                    </Link>
+                  </Table.Cell>
                   <Table.Cell>{t(`employee.status.${node.status.toLowerCase()}`)}</Table.Cell>
                   <Table.Cell>{node.motivation && truncate(node.motivation, 100)}</Table.Cell>
                   <Table.Cell>{node.description && truncate(node.description, 100)}</Table.Cell>

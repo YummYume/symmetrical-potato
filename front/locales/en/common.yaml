@@ -75,10 +75,10 @@ meta.my_contractor_request.title: My contractor request
 meta.my_contractor_request.description: Check the status of your contractor request.
 meta.my_account.title: My account
 meta.my_account.description: Edit your account settings.
-meta.profile.description: View the profile of {name}.
+meta.profile.description: View the profile of {{ name }}.
 meta.my_job.title: My job
 meta.my_job.description: Check your current job status.
-meta.establishment.description: View the establishment {name}.
+meta.establishment.description: View the establishment {{ name }}.
 meta.establishments.title: Establishments
 meta.establishments.description: All the establishments available.
 meta.my_heists.title: My heists
@@ -86,7 +86,20 @@ meta.my_heists.description: All the heists you are part of.
 meta.my_employees.title: My employees
 meta.my_employees.description: Manage your employees.
 meta.location.description: All available heists and information for {address}.
-meta.heist.description: View the heist {name}.
+meta.heist.description: View the heist {{ name }}.
+meta.establishment_apply.title: Apply for a job
+meta.establishment_apply.description: Apply for a job at {{ name }}.
+meta.employee_edit.title: Edit employee
+meta.employee_edit.description: Edit the employee {{ name }}.
+
+# Days
+day.monday: Monday
+day.tuesday: Tuesday
+day.wednesday: Wednesday
+day.thursday: Thursday
+day.friday: Friday
+day.saturday: Saturday
+day.sunday: Sunday
 
 # Dashboard
 dashboard.heists.today: Heists today
@@ -312,11 +325,24 @@ employee: Employee
 employees: Employees
 employee.motivation: Motivation
 employee.code_name: Code name
+employee.code_name.help: This name will be used to identify the employee more easily for heisters.
 employee.edit: Edit employee
 employee.status: Statut
 employee.status.active: Active
 employee.status.rejected: Rejected
 employee.status.pending: Pending
+employee.schedule: Schedule
+employee.schedule.add: Add a new entry
+employee.schedule.start_at: Start hour
+employee.schedule.end_at: End hour
+employee.schedule.day: Day
+employee.schedule.free_day: Free day
+employee.description: Description
+employee.delete.confirm: Are you sure you want to delete this employee?
+employee.reject: Reject
+employee.reject.confirm: Are you sure you want to reject this employee?
+employee.accept: Accept
+employee.accept.confirm: Are you sure you want to accept this employee?
 
 # User
 user.balance: Balance
@@ -426,6 +452,9 @@ establishment.no_heists: No heists yet.
 establishment.no_reviews: No reviews yet.
 establishment.no_employees: No employees yet.
 establishment.show_only_owner: Show only my establishments
+establishment.apply_to: Apply for {name}
+establishment.apply.minimum_hours: >-
+  This establishment requires a minimum of {hours, plural, =0 {0 hours} one {1 hour} other {# hours}} of work per week.
 
 # Rating
 rating.star: Rate {rating}

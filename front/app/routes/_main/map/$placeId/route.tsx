@@ -93,7 +93,7 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
     isHeister,
     user,
     meta: {
-      title: place?.displayName ?? t('location.not_found'),
+      title: place?.displayName?.text ?? t('location.not_found'),
       description: t('meta.location.description', {
         address: place?.formattedAddress ?? '',
       }),

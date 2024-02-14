@@ -213,9 +213,6 @@ export const getGoogleLocation = async ({
 }) => {
   const response = await fetch(
     `https://places.googleapis.com/v1/places/${placeId}?fields=displayName,formattedAddress,location&key=${key}&languageCode=${languageCode}`,
-    {
-      referrer: process.env.SITE_HOST,
-    },
   );
 
   const data: GooglePlace | { error: {} } = await response.json();

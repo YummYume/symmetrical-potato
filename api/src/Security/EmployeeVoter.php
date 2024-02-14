@@ -107,7 +107,7 @@ final class EmployeeVoter extends Voter
             return true;
         }
 
-        return ($employee->getUser() === $user && $this->security->isGranted(User::ROLE_EMPLOYEE))
+        return $employee->getUser() === $user
             || ($this->security->isGranted(User::ROLE_CONTRACTOR) && $employee->hasContractor($user))
         ;
     }

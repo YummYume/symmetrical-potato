@@ -49,6 +49,8 @@ export const getCurrentUser = async (client: GraphQLClient) => {
           codeName
           motivation
           status
+          weeklySchedule
+          planning
           establishment {
             id
             name

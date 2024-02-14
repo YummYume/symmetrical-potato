@@ -227,7 +227,7 @@ export default function EditContractorRequest() {
             action="delete"
           >
             <Button type="button" color="ruby">
-              {t('contractor_request.reject', { ns: 'admin' })}
+              {t('delete')}
             </Button>
           </FormConfirmDialog>
         </Flex>
