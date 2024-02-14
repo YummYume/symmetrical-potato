@@ -31,6 +31,7 @@ export const getLocationInfo = async (client: GraphQLClient, placeId: string) =>
           averageRating
           latitude
           longitude
+          placeId
         }
 
         heists(location__placeId: $place, phase: $phase, startAt: $startAt) {

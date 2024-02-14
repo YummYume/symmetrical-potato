@@ -353,6 +353,7 @@ export type HeistAssetsArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
+  heist__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -370,6 +371,7 @@ export type HeistForbiddenAssetsArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
+  heist__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -909,6 +911,7 @@ export type QueryAssetsArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   forbiddenHeists__id?: InputMaybe<Scalars['String']['input']>;
+  heist__id?: InputMaybe<Scalars['String']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -1055,6 +1058,7 @@ export type QueryReviewsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   location__placeId?: InputMaybe<Scalars['String']['input']>;
   location__placeId_list?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  user__id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type QueryTokenArgs = {

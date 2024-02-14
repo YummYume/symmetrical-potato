@@ -267,7 +267,7 @@ class Heist
     private Collection $forbiddenAssets;
 
     /** @var ArrayCollection<int, Asset> */
-    #[ORM\OneToMany(mappedBy: 'heist', targetEntity: Asset::class)]
+    #[ORM\OneToMany(mappedBy: 'heist', targetEntity: Asset::class, orphanRemoval: true)]
     #[Groups([self::READ, self::CREATE, self::UPDATE])]
     private Collection $assets;
 

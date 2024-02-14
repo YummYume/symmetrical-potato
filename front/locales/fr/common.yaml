@@ -327,6 +327,8 @@ heist.difficulty.veryhard: Très difficile
 heist.difficulty.overkill: Overkill
 heist.visibility.public: Public
 heist.visibility.draft: Brouillon
+heist.asset.add: Ajouter un asset
+heist.asset.no_assets: Aucun assets pour ce braquage.
 
 # Employee
 employee: Employé
@@ -379,6 +381,7 @@ heist_asset.add_quantity: Ajouter une quantité
 heist_asset.remove_quantity: Retirer une quantité
 
 # Asset
+asset.title.plural: Assets
 asset.name: Nom
 asset.description: Description
 asset.price: Prix
@@ -393,6 +396,7 @@ asset.type.weapons: Armes
 asset.max_quantity: Quantité maximale
 asset.team_asset: Asset d'équipe
 asset.heist: Braquage associé
+asset.delete.confirm: Êtes-vous sûr de vouloir supprimer cet asset ?
 asset.type.assets.catch_phrase: >-
   Prenez tout ce dont vous avez besoin, vous ne savez pas ce que vous trouverez
   sur votre chemin.
@@ -406,6 +410,7 @@ checkout_payment.title: Paiement
 checkout_payment.caption: Récapitulatif des éléments du panier
 checkout_payment.description: Total {price}
 checkout_payment.no_assets: Aucun asset à payer.
+checkout_payment.insufficient_funds: Vous n'avez pas assez d'argent pour payer.
 checkout_payment.confirmation: Êtes-vous sûr de vouloir payer ?
 checkout_payment.confirmation_description: Après le paiement, il n'y a pas de possibilité de remboursement.
 checkout_payment.clear_cart: Vider le panier
@@ -471,3 +476,16 @@ establishment.apply.minimum_hours: >-
 rating.star: Noter {rating, number}
 rating.label: Sélection de la note
 rating.label.read_only: Noté {rating, number} sur {total}
+
+# Review
+review.rating: Note
+review.comment: Commentaire
+review.comment.placeholder: Écrire un avis...
+review.add_review: Ajouter un avis
+review.edit_review: Modifier votre avis
+review.no_review: Aucun avis
+review.no_review_description: Soyez le premier à donner votre avis sur ce lieu.
+review.no_review_description_establishment: Soyez le premier à donner votre avis sur cet établissement.
+review.create.confirm: Êtes-vous sûr de vouloir ajouter cet avis ?
+review.delete.confirm: Êtes-vous sûr de vouloir supprimer votre avis ?
+review.edit.confirm: Êtes-vous sûr de vouloir éditer votre avis ?

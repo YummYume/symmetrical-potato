@@ -58,3 +58,8 @@ job.updated: Job updated successfully.
 # Employee
 employee.updated: Employee updated successfully.
 employee.deleted: Employee deleted successfully.
+
+# Review
+review.created_successfully: Review created successfully.
+review.updated_successfully: Review updated successfully.
+review.deleted_successfully: Review deleted successfully.

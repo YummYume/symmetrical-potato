@@ -319,6 +319,8 @@ heist.difficulty.veryhard: Very hard
 heist.difficulty.overkill: Overkill
 heist.visibility.public: Public
 heist.visibility.draft: Draft
+heist.asset.add: Add an asset
+heist.asset.no_assets: No assets for this heist.
 
 # Employee
 employee: Employee
@@ -371,6 +373,7 @@ heist_asset.add_quantity: Add quantity
 heist_asset.remove_quantity: Remove quantity
 
 # Asset
+asset.title.plural: Assets
 asset.name: Name
 asset.description: Description
 asset.price: Price
@@ -385,6 +388,7 @@ asset.type.weapons: Weapons
 asset.max_quantity: Max quantity
 asset.team_asset: Team asset
 asset.heist: Associated heist
+asset.delete.confirm: Are you sure you want to delete this asset?
 asset.type.assets.catch_phrase: Take everything you need, you don't know what you will find on your way.
 asset.type.equipments.catch_phrase: Equipment is precious, don't forget it.
 asset.type.weapons.catch_phrase: >-
@@ -396,6 +400,7 @@ checkout_payment.title: Payment
 checkout_payment.caption: summary of cart items
 checkout_payment.description: Total {price}
 checkout_payment.no_assets: No assets to checkout.
+checkout_payment.insufficient_funds: You do not have enough funds to purchase.
 checkout_payment.confirmation: Are you sure you want to checkout?
 checkout_payment.confirmation_description: After the payment, there is no possibility to refund it.
 checkout_payment.clear_cart: Clear cart
@@ -460,3 +465,16 @@ establishment.apply.minimum_hours: >-
 rating.star: Rate {rating}
 rating.label: Rating selection
 rating.label.read_only: Rated {rating} out of {total}
+
+# Review
+review.rating: Rating
+review.comment: Comment
+review.comment.placeholder: Write a review...
+review.add_review: Add a review
+review.edit_review: Edit your review
+review.no_review: No review
+review.no_review_description: Be the first to review this location.
+review.no_review_description_establishment: Be the first to review this establishment.
+review.create.confirm: Are you sure you want to add this review?
+review.delete.confirm: Are you sure you want to delete your review?
+review.edit.confirm: Are you sure you want to edit your review?

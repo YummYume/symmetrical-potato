@@ -25,11 +25,42 @@ export const getAssets = async (client: GraphQLClient) => {
             type
             description
             teamAsset
+            heist {
+              id
+            }
           }
         }
       }
     }
   `);
+};
+
+/**
+ * Get all Global assets.
+ */
+export const getGlobalAssets = async (client: GraphQLClient) => {
+  return client.request<Pick<Query, 'assets'>>(
+    gql`
+      query ($heistId: String) {
+        assets(heist__id: $heistId) {
+          edges {
+            node {
+              id
+              name
+              price
+              maxQuantity
+              type
+              description
+              teamAsset
+            }
+          }
+        }
+      }
+    `,
+    {
+      heistId: '',
+    },
+  );
 };
 
 /**
@@ -99,7 +130,21 @@ export const getAsset = async (client: GraphQLClient, id: string) => {
 export const createAsset = async (
   client: GraphQLClient,
   input: Omit<CreateAssetInput, 'clientMutationId'>,
+  hasAdmin = false,
 ) => {
+  const adminFields = gql`
+  createdAt
+  updatedAt
+  createdBy {
+    id
+    username
+  }
+  updatedBy {
+    id
+    username
+  }
+`;
+
   return client.request<Pick<Mutation, 'createAsset'>, { input: CreateAssetInput }>(
     gql`
       mutation ($input: createAssetInput!) {
@@ -115,22 +160,16 @@ export const createAsset = async (
               id
               name
             }
-            createdAt
-            updatedAt
-            createdBy {
-              id
-              username
-            }
-            updatedBy {
-              id
-              username
-            }
+            ${hasAdmin ? adminFields : ''}
           }
         }
       }
     `,
     {
-      input,
+      input: {
+        ...input,
+        heist: input.heist ? `/heists/${input.heist}` : undefined,
+      },
     },
   );
 };
@@ -141,7 +180,21 @@ export const createAsset = async (
 export const updateAsset = async (
   client: GraphQLClient,
   input: Omit<UpdateAssetInput, 'clientMutationId'>,
+  hasAdmin = false,
 ) => {
+  const adminFields = gql`
+  createdAt
+  updatedAt
+  createdBy {
+    id
+    username
+  }
+  updatedBy {
+    id
+    username
+  }
+`;
+
   return client.request<Pick<Mutation, 'updateAsset'>, { input: UpdateAssetInput }>(
     gql`
       mutation ($input: updateAssetInput!) {
@@ -157,16 +210,7 @@ export const updateAsset = async (
               id
               name
             }
-            createdAt
-            updatedAt
-            createdBy {
-              id
-              username
-            }
-            updatedBy {
-              id
-              username
-            }
+            ${hasAdmin ? adminFields : ''}
           }
         }
       }

@@ -47,6 +47,14 @@ final class ReviewProcessor implements ProcessorInterface
             throw $this->exceptionHelper->createTranslatableHttpException(403, 'user.not_authenticated');
         }
 
+        $cond = $user->getReviews()->findFirst(static fn (int $key, Review $review) => $data->getLocation() && ($data->getLocation() === $review->getLocation())
+        || $data->getEstablishment() && ($data->getEstablishment() === $review->getEstablishment())
+        );
+
+        if ($cond) {
+            throw $this->exceptionHelper->createTranslatableHttpException(403, 'review.already_exists');
+        }
+
         $data->setUser($user);
 
         // Re-run validation so the UniqueEntity constraint is checked (user was previously null so it was skipped)
