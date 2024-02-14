@@ -89,6 +89,8 @@ meta.location.description: All available heists and information for {address}.
 meta.heist.description: View the heist {{ name }}.
 meta.establishment_apply.title: Apply for a job
 meta.establishment_apply.description: Apply for a job at {{ name }}.
+meta.employee_edit.title: Edit employee
+meta.employee_edit.description: Edit the employee {{ name }}.
 
 # Days
 day.monday: Monday
@@ -323,6 +325,7 @@ employee: Employee
 employees: Employees
 employee.motivation: Motivation
 employee.code_name: Code name
+employee.code_name.help: This name will be used to identify the employee more easily for heisters.
 employee.edit: Edit employee
 employee.status: Statut
 employee.status.active: Active
@@ -334,6 +337,12 @@ employee.schedule.start_at: Start hour
 employee.schedule.end_at: End hour
 employee.schedule.day: Day
 employee.schedule.free_day: Free day
+employee.description: Description
+employee.delete.confirm: Are you sure you want to delete this employee?
+employee.reject: Reject
+employee.reject.confirm: Are you sure you want to reject this employee?
+employee.accept: Accept
+employee.accept.confirm: Are you sure you want to accept this employee?
 
 # User
 user.balance: Balance

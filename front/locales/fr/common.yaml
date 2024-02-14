@@ -89,6 +89,8 @@ meta.location.description: Tous les braquages et informations disponibles pour {
 meta.heist.description: Consultez le braquage {{ name }}.
 meta.establishment_apply.title: Postuler à un emploi
 meta.establishment_apply.description: Postulez pour un emploi à l'établissement {{ name }}.
+meta.employee_edit.title: Modifier un employé
+meta.employee_edit.description: Modifier l'employé {{ name }}.
 
 # Days
 day.monday: Lundi
@@ -331,7 +333,8 @@ employee: Employé
 employees: Employés
 employee.motivation: Motivation
 employee.code_name: Nom de code
-employee.edit: Modifier l'employé
+employee.code_name.help: Ce nom sera utilisé pour identifier l'employé plus facilement pour les braqueurs.
+employee.edit: Modifier un employé
 employee.status: Statut
 employee.status.active: Actif
 employee.status.rejected: Rejeté
@@ -342,6 +345,12 @@ employee.schedule.start_at: Heure de début
 employee.schedule.end_at: Heure de fin
 employee.schedule.day: Jour
 employee.schedule.free_day: Jour de repos
+employee.description: Description
+employee.delete.confirm: Êtes-vous sûr de vouloir supprimer cet employé ?
+employee.reject: Rejeter
+employee.reject.confirm: Êtes-vous sûr de vouloir rejeter cet employé ?
+employee.accept: Accepter
+employee.accept.confirm: Êtes-vous sûr de vouloir accepter cet employé ?
 
 # User
 user.balance: Solde

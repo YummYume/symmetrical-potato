@@ -53,3 +53,8 @@ account.deleted: Compte supprimé avec succès. Vous allez recevoir un e-mail co
 job.created: Candidature envoyée avec succès.
 job.deleted: Emploi supprimé avec succès.
 job.deleted_demand: Candidature supprimée avec succès.
+job.updated: Emploi mis à jour avec succès.
+
+# Employee
+employee.updated: Employé mis à jour avec succès.
+employee.deleted: Employé supprimé avec succès.

@@ -74,6 +74,11 @@ export const getEmployeesForContractor = async (client: GraphQLClient, contracto
               motivation
               description
               planning
+              weeklySchedule
+              establishment {
+                id
+                name
+              }
               user {
                 id
                 username
