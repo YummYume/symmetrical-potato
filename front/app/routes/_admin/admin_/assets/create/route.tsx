@@ -118,6 +118,9 @@ export default function CreateAsset() {
     submitConfig: {
       unstable_viewTransition: true,
     },
+    defaultValues: {
+      teamAsset: false,
+    },
   });
 
   return (
