@@ -1,4 +1,4 @@
-import { Grid, useThemeContext } from '@radix-ui/themes';
+import { Grid } from '@radix-ui/themes';
 import { useId, type ComponentProps } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -44,9 +44,6 @@ export function FieldMultiSelect<T extends Record<string, unknown>>({
   const { t } = useTranslation();
   const { control, register } = useRemixFormContext<T>();
   const instanceId = useId();
-  const { appearance } = useThemeContext();
-
-  const isDark = appearance === 'dark';
 
   return (
     <Grid className={containerClassName} gap="1">
