@@ -144,7 +144,10 @@ export default function Establishments() {
                     {isContractor && (
                       <Table.Cell>
                         {node.contractor.id === user.id && (
-                          <Link aria-label={t('edit')} to="edit">
+                          <Link
+                            aria-label={t('edit')}
+                            to={`/establishments/${getUriId(node.id)}/edit`}
+                          >
                             <Pencil2Icon className="size-6" />
                           </Link>
                         )}

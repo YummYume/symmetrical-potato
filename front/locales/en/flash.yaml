@@ -24,6 +24,7 @@ location.deleted: Location deleted successfully.
 # Establishment
 establishment.updated: Establishment updated successfully.
 establishment.deleted: Establishment deleted successfully.
+establishment.created: Establishment created successfully.
 
 # Heist
 heist.created_successfully: Heist created successfully.

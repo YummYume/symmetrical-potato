@@ -74,7 +74,7 @@ const Menu = ({
           </DropdownMenu.Trigger>
           <DropdownMenu.Content>
             <DropdownMenu.Item>
-              <Link className="w-full" to="/establishment/new" unstyled>
+              <Link className="w-full" to="/establishments/new" unstyled>
                 {t('establishment.new')}
               </Link>
             </DropdownMenu.Item>
