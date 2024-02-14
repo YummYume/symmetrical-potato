@@ -1,4 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
+import { ArrowLeftIcon } from '@radix-ui/react-icons';
 import { Button, Grid, Heading, Section } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
@@ -24,6 +25,7 @@ import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes, hasPathError } from '~/lib/utils/api';
 import dayjs from '~/lib/utils/dayjs';
+import { getUriId } from '~/lib/utils/path';
 import { ROLES } from '~/lib/utils/roles';
 import { formatEnums } from '~/lib/utils/tools';
 import { updateHeistResolver } from '~/lib/validators/update-heist';
@@ -49,13 +51,13 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     const isPublic = await heistIsPublic(context.client, params.heistId);
 
     if (isPublic) {
-      return redirect(`/map/${params.placeId}`);
+      return redirect(`/map/${params.placeId}/heist/${params.heistId}`);
     }
 
     const { heist } = await getHeist(context.client, params.heistId);
 
     if (heist.establishment.contractor.id !== user.id && !isAdmin) {
-      return redirect(`/map/${params.placeId}`);
+      return redirect(`/map/${params.placeId}/heist/${params.heistId}`);
     }
 
     // Get the establishments of the current user
@@ -95,14 +97,14 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user, ROLES.CONTRACTOR);
   const isAdmin = hasRoles(context.user, ROLES.ADMIN);
 
-  if (!params?.heistId) {
+  if (!params.heistId) {
     throw redirect(`/map/${params.placeId}`);
   }
 
   const isPublic = await heistIsPublic(context.client, params.heistId);
 
   if (isPublic) {
-    return redirect(`/map/${params.placeId}`);
+    return redirect(`/map/${params.placeId}/heist/${params.heistId}`);
   }
 
   const isMadeBy = await heistIsMadeBy(context.client, {
@@ -111,7 +113,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   });
 
   if (!isMadeBy && !isAdmin) {
-    throw redirect(`/map/${params.placeId}`);
+    throw redirect(`/map/${params.placeId}/heist/${params.heistId}`);
   }
 
   const t = await i18next.getFixedT(request, ['validators', 'flash']);
@@ -158,7 +160,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       type: 'success',
     } as FlashMessage);
 
-    return redirect(`/map/${params.placeId}`, {
+    return redirect(`/map/${params.placeId}/heist/${params.heistId}`, {
       headers: {
         'Set-Cookie': await commitSession(session),
       },
@@ -268,6 +270,15 @@ export default function Edit() {
 
   return (
     <div>
+      <Link
+        className="flex items-center gap-1 pb-1 pl-2"
+        to={`/map/${placeId}/heist/${getUriId(heist.id)}`}
+      >
+        <span aria-hidden="true">
+          <ArrowLeftIcon width="20" height="20" />
+        </span>
+        {t('back')}
+      </Link>
       <Dialog.Title asChild>
         <Heading as="h2" size="8">
           {t('edit')} - {heist.name}
@@ -382,7 +393,6 @@ export default function Edit() {
             )}
           </form>
         </RemixFormProvider>
-        <Link to={`/map/${placeId}`}>{t('back')}</Link>
       </Section>
     </div>
   );

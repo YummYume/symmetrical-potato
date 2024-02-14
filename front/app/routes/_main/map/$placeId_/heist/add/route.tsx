@@ -25,6 +25,7 @@ import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
 import dayjs from '~/lib/utils/dayjs';
+import { getUriId } from '~/lib/utils/path';
 import { ROLES } from '~/lib/utils/roles';
 import { formatEnums } from '~/lib/utils/tools';
 import { createHeistResolver } from '~/lib/validators/create-heist';
@@ -91,7 +92,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
   try {
     const { startAtTime, startAtDate, shouldEndAtDate, shouldEndAtTime, ...heistData } = data;
-    await createHeist(context.client, {
+    const { createHeist: createdHeist } = await createHeist(context.client, {
       ...heistData,
       minimumPayout: +heistData.minimumPayout,
       maximumPayout: +heistData.maximumPayout,
@@ -110,7 +111,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       type: 'success',
     } as FlashMessage);
 
-    return redirect(`/map/${params.placeId}`, {
+    return redirect(`/map/${params.placeId}/heist/${getUriId(createdHeist.heist.id)}`, {
       headers: {
         'Set-Cookie': await commitSession(session),
       },
@@ -175,8 +176,11 @@ export default function Add() {
     value: edge.node.id,
   }));
 
-  const heistPreferedTactics = formatEnums(Object.values(HeistPreferedTacticEnum));
-  const heistDifficulties = formatEnums(Object.values(HeistDifficultyEnum));
+  const heistPreferedTactics = formatEnums(
+    Object.values(HeistPreferedTacticEnum),
+    'heist.prefered_tactic',
+  );
+  const heistDifficulties = formatEnums(Object.values(HeistDifficultyEnum), 'heist.difficulty');
 
   const dateNow = dayjs();
   const startAt = dateNow.add(15, 'minutes');

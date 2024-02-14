@@ -23,6 +23,7 @@ use App\Filter\MatchUuidFilter;
 use App\Filter\UuidFilter;
 use App\Repository\HeistRepository;
 use App\State\HeistProcessor;
+use App\Validator\CanBeChosen;
 use App\Validator\SlotAvailable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -97,6 +98,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[SlotAvailable(groups: [self::CREATE, self::UPDATE])]
+#[CanBeChosen(groups: [self::CHOOSE_EMPLOYEE])]
 #[ApiFilter(MatchFilter::class, properties: ['phase', 'difficulty', 'visibility', 'preferedTactic'])]
 #[ApiFilter(MatchUuidFilter::class, properties: ['establishment.id'])]
 #[ApiFilter(UuidFilter::class, properties: ['establishment.contractor.id', 'employee.user.id', 'crewMembers.user.id'])]

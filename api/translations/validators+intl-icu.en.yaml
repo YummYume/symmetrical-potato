@@ -144,6 +144,7 @@ employee.weekly_schedule.overlap: >-
   Day "{day}" with entry number {entry} overlaps with another entry ({startAt} - {endAt} and {scheduleForDayStartAt} - {scheduleForDayEndAt}).
 employee.weekly_schedule.total_hours_less_than_minimum: >-
   The total number of work hours for the weekly schedule is less than the minimum required by the establishment ({minimumWorkTimePerWeek} required, {totalHours} in total).
+employee.cannot_be_chosen: This employee cannot be chosen for this heist. They are not available at the required time.
 
 # CrewMember
 crew_member.cannot_join: You cannot join this heist.

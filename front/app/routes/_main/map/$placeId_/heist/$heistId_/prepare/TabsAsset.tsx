@@ -41,14 +41,14 @@ export function TabsAsset({
             align="center"
           >
             <CardAsset asset={assets[type]} quantity={setGlobalQuantity(assets[type].id)} />
-            {setGlobalQuantity(assets[type].id) < assets[type].maxQuantity && (
-              <Button type="button" onClick={() => onAddAsset(assets[type])}>
-                {addIcon}
-              </Button>
-            )}
             {setQuantity(assets[type].id) > 0 && (
               <Button type="button" onClick={() => onRemoveAsset(assets[type])}>
                 {removeIcon}
+              </Button>
+            )}
+            {setGlobalQuantity(assets[type].id) < assets[type].maxQuantity && (
+              <Button type="button" onClick={() => onAddAsset(assets[type])}>
+                {addIcon}
               </Button>
             )}
           </Grid>
