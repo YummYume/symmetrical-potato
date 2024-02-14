@@ -27,8 +27,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   return {
     meta: {
-      title: t('meta.establishments_new.title', {}),
-      description: t('meta.establishments_new.description', {}),
+      title: t('meta.establishments_new.title'),
+      description: t('meta.establishments_new.description'),
     },
   };
 }

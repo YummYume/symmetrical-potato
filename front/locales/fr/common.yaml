@@ -93,6 +93,10 @@ meta.establishment_apply.title: Postuler à un emploi
 meta.establishment_apply.description: Postulez pour un emploi à l'établissement {{ name }}.
 meta.employee_edit.title: Modifier un employé
 meta.employee_edit.description: Modifier l'employé {{ name }}.
+meta.establishments_new.title: Nouvel établissement
+meta.establishments_new.description: Créez un nouvel établissement.
+meta.establishment_edit.title: Modifier l'établissement
+meta.establishment_edit.description: Modifier l'établissement {{ name }}.
 
 # Days
 day.monday: Lundi

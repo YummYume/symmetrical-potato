@@ -44,6 +44,7 @@ final class CreateAdminCommand extends Command
 
             $user = (new User())
                 ->addRole(User::ROLE_ADMIN)
+                ->addRole(User::ROLE_HEISTER)
                 ->setStatus(UserStatusEnum::Verified)
             ;
 

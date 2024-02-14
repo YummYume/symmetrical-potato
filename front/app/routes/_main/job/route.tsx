@@ -133,12 +133,12 @@ export default function Job() {
   const methods = useRemixForm<UpdateEmployeeFormData>({
     mode: 'onSubmit',
     resolver: updateEmployeeResolver,
-    disabled: user.employee.status !== EmployeeStatusEnum.Active,
+    disabled: user.employee?.status !== EmployeeStatusEnum.Active,
     submitConfig: {
       unstable_viewTransition: true,
     },
     defaultValues: {
-      description: user.employee.description ?? '',
+      description: user.employee?.description ?? '',
     },
   });
 

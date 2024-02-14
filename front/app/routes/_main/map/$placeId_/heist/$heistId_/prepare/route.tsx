@@ -466,7 +466,7 @@ export default function Prepare() {
     mode: 'onSubmit',
     resolver: chooseEmployeeResolver,
     submitConfig: {
-      action: `/map/${placeId}/${heistId}/choose_employee`,
+      action: `/map/${placeId}/heist/${heistId}/choose_employee`,
       unstable_viewTransition: true,
     },
     defaultValues: {
