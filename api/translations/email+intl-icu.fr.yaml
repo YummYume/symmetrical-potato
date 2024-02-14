@@ -110,9 +110,9 @@ employee.created.subject: Nouvelle demande d'employé
 employee.created.text: |
     Bonjour {name},
 
-    Une nouvelle demande d'employé a été créée par {request_name} avec la raison suivante :
+    Une nouvelle demande d'employé a été créée par {employee} avec la motivation suivante :
 
-    "{reason}".
+    "{motivation}".
 
     Vous pouvez la consulter à {url}.
 
@@ -122,7 +122,8 @@ employee.accepted.subject: Demande d'employé acceptée
 employee.accepted.text: |
     Bonjour {name},
 
-    Votre demande d'employé a été acceptée. Vous pouvez maintenant commencer à créer des établissements et des braquages.
+    Votre demande d'employé pour {establishment} a été acceptée. Vous allez maintenant commencer à travailler sous le nom de code {code_name}.
+    Vous serez notifié lorsqu'un braquage vous sera assigné.
 
     Merci,
     L'équipe {site}
