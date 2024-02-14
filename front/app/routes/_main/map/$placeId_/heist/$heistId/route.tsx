@@ -1,4 +1,4 @@
-import { PersonIcon, PlusIcon } from '@radix-ui/react-icons';
+import { ArrowLeftIcon, EnterIcon, ExitIcon, PersonIcon } from '@radix-ui/react-icons';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Button, Card, Flex, Heading, IconButton, Section, Table, Text } from '@radix-ui/themes';
 import { redirect } from '@remix-run/node';
@@ -68,26 +68,40 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
 };
 
 export default function MapHeist() {
-  const { heist } = useLoaderData<Loader>();
+  const { heist, placeId } = useLoaderData<Loader>();
 
   const { t } = useTranslation();
 
-  console.log('heist', heist);
+  console.log(heist);
 
   return (
     <>
+      <Link to={`/map/${placeId}`}>
+        <div className="mb-2 flex h-8 w-fit items-center rounded-2 bg-gray-9 px-3 text-[white]">
+          <ArrowLeftIcon />
+        </div>
+      </Link>
       <Link to={heist.establishment.id}>{heist.establishment.name}</Link> -{' '}
       <Link to={heist.establishment.id}>{'{contractor_name}'}</Link>
+      {/* Header */}
       <Section className="space-y-2" size="1">
         <Flex gap="2">
           <Heading as="h3" size="8">
             {heist.name}
           </Heading>
+
           {heist.crewMembers.edges.length < 4 && heist.phase === HeistPhaseEnum.Planning && (
             <IconButton aria-label={t('join')}>
-              <PlusIcon />
+              <EnterIcon />
             </IconButton>
           )}
+
+          {/* TODO : Condition */}
+          <IconButton aria-label={t('leave')} color="ruby">
+            <ExitIcon />
+          </IconButton>
+
+          {/* Crew */}
           <Tooltip.Provider>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
@@ -116,6 +130,7 @@ export default function MapHeist() {
         </Flex>
         <Text as="p">{heist.description}</Text>
       </Section>
+      {/* Information */}
       <Table.Root>
         <Table.Body>
           <Table.Row>
@@ -157,6 +172,7 @@ export default function MapHeist() {
           </Table.Row>
         </Table.Body>
       </Table.Root>
+      {/* Objectives */}
       <Section className="space-y-2" size="1">
         <Heading as="h4" size="6" align="center">
           {t('heist.objective')}
@@ -210,6 +226,7 @@ export default function MapHeist() {
           )}
         </ol>
       </Section>
+      {/* Assets */}
       <Section className="space-y-2" size="1">
         <Link
           className="flex h-8 items-center justify-center rounded-2 bg-accent-9 px-3 !text-[black]"
@@ -218,10 +235,16 @@ export default function MapHeist() {
           {t('asset.type.assets')}
         </Link>
       </Section>
+      {/* Results */}
       <Section className="space-y-2" size="1">
         <Heading as="h4" size="6" align="center">
           {t('results')}
         </Heading>
+        <Text as="p" size="5">
+          {Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+            heist.crewMembers.edges.reduce((total, { node: { payout } }) => total + payout, 0),
+          )}
+        </Text>
 
         <ul className="grid gap-2">
           {heist.crewMembers.edges.map(
