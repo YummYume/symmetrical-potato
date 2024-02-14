@@ -66,6 +66,7 @@ search: Rechercher
 contractor: Contractant
 reviews: Avis
 results: Résultats
+unexpected_error: Une erreur inattendue s'est produite.
 
 # Meta
 meta.dashboard.title: Tableau de bord

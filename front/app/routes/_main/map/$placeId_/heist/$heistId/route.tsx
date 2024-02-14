@@ -74,8 +74,8 @@ export default function MapHeist() {
 
   return (
     <>
-      <Link to={`/map/${placeId}`}>
-        <div className="mb-2 flex h-8 w-fit items-center rounded-2 bg-gray-9 px-3 text-[white]">
+      <Link className="block w-fit" to={`/map/${placeId}`}>
+        <div className="mb-2 flex h-8 items-center rounded-2 bg-gray-9 px-3 text-[white]">
           <ArrowLeftIcon />
         </div>
       </Link>

@@ -47,7 +47,7 @@ export default function Dashboard() {
   const { heists } = useLoaderData<Loader>();
 
   return (
-    <main className="py-10">
+    <main className="px-4 py-10 lg:px-0">
       <Container className="space-y-16">
         <Heading align="center" as="h1" size="9">
           {t('dashboard')}

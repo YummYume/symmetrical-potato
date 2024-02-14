@@ -66,6 +66,7 @@ search: Search
 contractor: Contractor
 reviews: Reviews
 results: Results
+unexpected_error: An unexpected error occurred.
 
 # Meta
 meta.dashboard.title: Dashboard

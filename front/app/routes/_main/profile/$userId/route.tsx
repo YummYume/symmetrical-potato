@@ -68,7 +68,7 @@ export default function Profile() {
   const { user } = useLoaderData<Loader>();
 
   return (
-    <main className="py-10">
+    <main className="px-4 py-10 lg:px-0">
       <Container>
         <Flex gap="9" direction="column">
           <Heading align="center" as="h1" size="9">
@@ -90,7 +90,7 @@ export default function Profile() {
                   {user.profile.description ?? t('user.no_description')}
                 </Text>
               </Flex>
-              {user.globalRating && (
+              {!!user.globalRating && (
                 <Flex direction="column" gap="1" align="end">
                   <Text as="span" weight="bold" size="2">
                     {t('user.global_rating')}
