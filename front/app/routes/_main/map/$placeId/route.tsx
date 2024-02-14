@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Flex, Grid, Heading, Section, Text } from '@radix-ui/themes';
+import { Button, Flex, Grid, Heading, Section, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getHeistsByCrewMember } from '~/lib/api/heist';
 import { Rating } from '~/lib/components/Rating';
+import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
 import { HeistHoverCard } from '~/lib/components/heist/HeistHoverCard';
 import { HeistListItem } from '~/lib/components/heist/HeistListItem';
 import { ReviewListItem } from '~/lib/components/review/ReviewListItem';
@@ -15,7 +16,13 @@ import { getEnv } from '~/lib/utils/env';
 import { getUriId } from '~/lib/utils/path';
 import { ROLES } from '~/lib/utils/roles';
 import { getGoogleLocation, getLocationInfo } from '~api/location';
-import { type Heist, type HeistEdge, type Review, type ReviewEdge } from '~api/types';
+import {
+  HeistVisibilityEnum,
+  type Heist,
+  type HeistEdge,
+  type Review,
+  type ReviewEdge,
+} from '~api/types';
 import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
 import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
@@ -112,7 +119,8 @@ type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
 export default function PlaceId() {
-  const { locationInfo, place, placeId, isContractor, isAdmin } = useLoaderData<Loader>();
+  const { locationInfo, place, placeId, isContractor, isAdmin, isHeister, userCrewHeistsId, user } =
+    useLoaderData<Loader>();
   const { t } = useTranslation();
   const heists =
     locationInfo?.heists?.edges?.filter<HeistEdgeWithNode>(
@@ -200,66 +208,66 @@ export default function PlaceId() {
               <li key={node.id}>
                 <Section className="space-y-3" size="1">
                   <div className="flex items-center justify-between">
-                    {/* {isHeister && (
-                    <div>
-                      {!userCrewHeistsId.includes(node?.id) ? (
-                        <FormConfirmDialog
-                          formId={`heist-join-${getUriId(node?.id)}`}
-                          title={t('join')}
-                          description={t('heist.join.confirm')}
-                          action={`/map/${placeId}/${getUriId(node?.id)}/join`}
-                          actionColor="green"
-                        >
-                          <Button type="button" color="green">
-                            {t('join')}
-                          </Button>
-                        </FormConfirmDialog>
-                      ) : (
-                        <>
-                          <Link
-                            to={`/map/${placeId}/${getUriId(node?.id)}/prepare`}
-                            className="link link--blue"
-                            unstyled
-                          >
-                            {t('prepare_heist')}
-                          </Link>
+                    {isHeister && (
+                      <div>
+                        {!userCrewHeistsId.includes(node?.id) ? (
                           <FormConfirmDialog
-                            formId={`heist-leave-${getUriId(node?.id)}`}
-                            title={t('leave')}
-                            description={t('heist.leave.confirm')}
-                            action={`/map/${placeId}/${getUriId(node?.id)}/leave`}
+                            formId={`heist-join-${getUriId(node?.id)}`}
+                            title={t('join')}
+                            description={t('heist.join.confirm')}
+                            action={`/map/${placeId}/${getUriId(node?.id)}/join`}
+                            actionColor="green"
                           >
-                            <Button type="button" color="red">
-                              {t('leave')}
+                            <Button type="button" color="green">
+                              {t('join')}
                             </Button>
                           </FormConfirmDialog>
-                        </>
-                      )}
-                    </div>
-                  )} */}
-
-                    {/* {isAdmin ||
-                    (isContractor && node.establishment.contractor.id === user?.id && (
-                      <div className="flex items-center gap-2">
-                        {node.visibility === HeistVisibilityEnum.Draft && (
-                          <Link to={`/map/${placeId}/${getUriId(node?.id)}/edit`}>
-                            <div className="flex h-8 items-center rounded-2 bg-accent-9 px-3 text-[black]">
-                              {t('edit')}
-                            </div>
-                          </Link>
+                        ) : (
+                          <>
+                            <Link
+                              to={`/map/${placeId}/${getUriId(node?.id)}/prepare`}
+                              className="link link--blue"
+                              unstyled
+                            >
+                              {t('prepare_heist')}
+                            </Link>
+                            <FormConfirmDialog
+                              formId={`heist-leave-${getUriId(node?.id)}`}
+                              title={t('leave')}
+                              description={t('heist.leave.confirm')}
+                              action={`/map/${placeId}/${getUriId(node?.id)}/leave`}
+                            >
+                              <Button type="button" color="red">
+                                {t('leave')}
+                              </Button>
+                            </FormConfirmDialog>
+                          </>
                         )}
-                        <FormConfirmDialog
-                          formId={`heist-delete-${getUriId(node?.id)}`}
-                          title={t('delete')}
-                          description={t('heist.delete.confirm')}
-                          action={`/map/${placeId}/${getUriId(node?.id)}/delete`}
-                        >
-                          <Button type="button" color="ruby">
-                            {t('delete')}
-                          </Button>
-                        </FormConfirmDialog>
                       </div>
-                    ))} */}
+                    )}
+
+                    {isAdmin ||
+                      (isContractor && node.establishment.contractor.id === user?.id && (
+                        <div className="flex items-center gap-2">
+                          {node.visibility === HeistVisibilityEnum.Draft && (
+                            <Link to={`/map/${placeId}/${getUriId(node?.id)}/edit`}>
+                              <div className="flex h-8 items-center rounded-2 bg-accent-9 px-3 text-[black]">
+                                {t('edit')}
+                              </div>
+                            </Link>
+                          )}
+                          <FormConfirmDialog
+                            formId={`heist-delete-${getUriId(node?.id)}`}
+                            title={t('delete')}
+                            description={t('heist.delete.confirm')}
+                            action={`/map/${placeId}/${getUriId(node?.id)}/delete`}
+                          >
+                            <Button type="button" color="ruby">
+                              {t('delete')}
+                            </Button>
+                          </FormConfirmDialog>
+                        </div>
+                      ))}
                   </div>
 
                   <HeistHoverCard
