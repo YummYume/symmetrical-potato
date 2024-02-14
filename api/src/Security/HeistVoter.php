@@ -61,7 +61,8 @@ final class HeistVoter extends Voter
     /**
      * Check if the employee is available for the heist.
      */
-    private function betweenDates(\DateTime $startAt, \DateTime $shouldEndAt, \DateTime $startAtToCheck, \DateTime $shouldEndAtToCheck): bool
+    // TODO : adapt for planning too
+    private function betweenDates(\DateTimeInterface $startAt, \DateTimeInterface $shouldEndAt, \DateTimeInterface $startAtToCheck, \DateTimeInterface $shouldEndAtToCheck): bool
     {
         return ($startAtToCheck >= $startAt && $startAtToCheck <= $shouldEndAt)
             || ($shouldEndAtToCheck >= $startAt && $shouldEndAtToCheck <= $shouldEndAt);

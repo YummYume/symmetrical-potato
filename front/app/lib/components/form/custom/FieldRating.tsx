@@ -59,7 +59,6 @@ export function FieldRating<T extends Record<string, unknown>>({
                 {...register(name)}
                 {...rest}
                 id={fieldId}
-                // ref={field.ref}
                 aria-describedby={helpId}
                 aria-errormessage={errorId}
                 aria-invalid={!!errorId}
