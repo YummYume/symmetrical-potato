@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { LayersIcon, Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
-import { Button, Flex, Grid, Heading, Section, Text } from '@radix-ui/themes';
+import { PlusIcon } from '@radix-ui/react-icons';
+import { Button, Flex, Grid, Heading, IconButton, Section, Text } from '@radix-ui/themes';
 import { redirect, type LoaderFunctionArgs, type MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -18,13 +18,7 @@ import { getEnv } from '~/lib/utils/env';
 import { getUriId } from '~/lib/utils/path';
 import { ROLES } from '~/lib/utils/roles';
 import { getGoogleLocation, getLocationInfo } from '~api/location';
-import {
-  HeistVisibilityEnum,
-  type Heist,
-  type HeistEdge,
-  type Review,
-  type ReviewEdge,
-} from '~api/types';
+import { type Heist, type HeistEdge, type Review, type ReviewEdge } from '~api/types';
 import { Link } from '~components/Link';
 import { hasPathError } from '~utils/api';
 import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
@@ -189,9 +183,19 @@ export default function PlaceId() {
       </Section>
 
       <Section className="grid gap-2" size="1">
-        <Heading as="h3" size="8">
-          {t('heists')}
-        </Heading>
+        <Flex gap="2" align="center">
+          <Heading as="h3" size="8">
+            {t('heists')}
+          </Heading>
+
+          {(isContractor || isAdmin) && (
+            <IconButton aria-label={t('heist.add')}>
+              <Link to={`/map/${placeId}/heist/add`} unstyled>
+                <PlusIcon />
+              </Link>
+            </IconButton>
+          )}
+        </Flex>
 
         {heists.length === 0 && (
           <Text as="p" color="gray">
@@ -199,123 +203,84 @@ export default function PlaceId() {
           </Text>
         )}
 
-        {(isContractor || isAdmin) && (
-          <Link to={`/map/${placeId}/heist/add`}>
-            <div className="flex h-8 w-fit items-center rounded-2 bg-accent-9 px-3 text-[black]">
-              {t('heist.add')}
-            </div>
-          </Link>
-        )}
-
         {heists.length > 0 && (
           <ul>
             {heists.map(({ node }) => (
               <li key={node.id}>
-                <Section className="space-y-3" size="1">
-                  <HeistHoverCard
-                    name={node.name}
-                    description={node.description}
-                    startAt={node.startAt}
-                    shouldEndAt={node.shouldEndAt}
-                    minimumPayout={node.minimumPayout}
-                    maximumPayout={node.maximumPayout}
-                    objectiveCount={node.objectives.length}
-                    heistersCount={node.crewMembers.totalCount}
-                    phase={node.phase}
-                    preferedTactic={node.preferedTactic}
-                    difficulty={node.difficulty}
-                    location={{
-                      id: locationInfo.location.placeId,
-                      name: locationInfo.location.name,
-                    }}
-                    establishment={{
-                      id: node.establishment.id,
-                      name: node.establishment.name,
-                    }}
-                    align="end"
-                  >
-                    <Link to={`/map/${locationInfo.location.placeId}/heist/${getUriId(node.id)}`}>
-                      <HeistListItem
-                        name={node.name}
-                        crewMembers={node.crewMembers.totalCount}
-                        startAt={node.startAt}
-                        phase={node.phase}
-                      />
-                    </Link>
-                  </HeistHoverCard>
-
-                  <div className="flex items-center justify-between">
-                    {isHeister && (
-                      <div>
-                        {!userCrewHeistsId.includes(node?.id) ? (
-                          <FormConfirmDialog
-                            formId={`heist-join-${getUriId(node?.id)}`}
-                            title={t('join')}
-                            description={t('heist.join.confirm')}
-                            action={`/map/${placeId}/heist/${getUriId(node?.id)}/join`}
-                            actionColor="green"
-                          >
-                            <Button type="button" color="green">
-                              {t('join')}
-                            </Button>
-                          </FormConfirmDialog>
-                        ) : (
-                          <>
-                            <Link
-                              to={`/map/${placeId}/heist/${getUriId(node?.id)}/prepare`}
-                              className="link link--blue"
-                              unstyled
-                            >
-                              <div className="flex h-8 w-fit items-center rounded-2 bg-accent-10 px-3 text-[black]">
-                                {t('prepare_heist')}
-                              </div>
-                            </Link>
-                            <FormConfirmDialog
-                              formId={`heist-leave-${getUriId(node?.id)}`}
-                              title={t('leave')}
-                              description={t('heist.leave.confirm')}
-                              action={`/map/${placeId}/heist/${getUriId(node?.id)}/leave`}
-                            >
-                              <Button type="button" color="red">
-                                {t('leave')}
-                              </Button>
-                            </FormConfirmDialog>
-                          </>
-                        )}
-                      </div>
+                {isHeister && (
+                  <div>
+                    {!userCrewHeistsId.includes(node?.id) ? (
+                      <FormConfirmDialog
+                        formId={`heist-join-${getUriId(node?.id)}`}
+                        title={t('join')}
+                        description={t('heist.join.confirm')}
+                        action={`/map/${placeId}/heist/${getUriId(node?.id)}/join`}
+                        actionColor="green"
+                      >
+                        <Button type="button" color="green">
+                          {t('join')}
+                        </Button>
+                      </FormConfirmDialog>
+                    ) : (
+                      <>
+                        <Link
+                          to={`/map/${placeId}/heist/${getUriId(node?.id)}/prepare`}
+                          className="link link--blue"
+                          unstyled
+                        >
+                          <div className="flex h-8 w-fit items-center rounded-2 bg-accent-10 px-3 text-[black]">
+                            {t('prepare_heist')}
+                          </div>
+                        </Link>
+                        <FormConfirmDialog
+                          formId={`heist-leave-${getUriId(node?.id)}`}
+                          title={t('leave')}
+                          description={t('heist.leave.confirm')}
+                          action={`/map/${placeId}/heist/${getUriId(node?.id)}/leave`}
+                        >
+                          <Button type="button" color="red">
+                            {t('leave')}
+                          </Button>
+                        </FormConfirmDialog>
+                      </>
                     )}
-
-                    {isAdmin ||
-                      (isContractor && node.establishment.contractor.id === user?.id && (
-                        <Flex gap="3">
-                          {node.visibility === HeistVisibilityEnum.Draft && (
-                            <>
-                              <Link to={`/map/${placeId}/heist/${getUriId(node?.id)}/assets`}>
-                                <div className="flex h-8 w-fit items-center rounded-2 bg-green-9 px-3 text-[black]">
-                                  <LayersIcon />
-                                </div>
-                              </Link>
-                              <Link to={`/map/${placeId}/heist/${getUriId(node?.id)}/edit`}>
-                                <div className="flex h-8 w-fit items-center rounded-2 bg-accent-9 px-3 text-[black]">
-                                  <Pencil1Icon />
-                                </div>
-                              </Link>
-                            </>
-                          )}
-                          <FormConfirmDialog
-                            formId={`heist-delete-${getUriId(node?.id)}`}
-                            title={t('delete')}
-                            description={t('heist.delete.confirm')}
-                            action={`/map/${placeId}/heist/${getUriId(node?.id)}/delete`}
-                          >
-                            <Button type="button" color="ruby">
-                              <TrashIcon />
-                            </Button>
-                          </FormConfirmDialog>
-                        </Flex>
-                      ))}
                   </div>
-                </Section>
+                )}
+
+                <HeistHoverCard
+                  name={node.name}
+                  description={node.description}
+                  startAt={node.startAt}
+                  shouldEndAt={node.shouldEndAt}
+                  minimumPayout={node.minimumPayout}
+                  maximumPayout={node.maximumPayout}
+                  objectiveCount={node.objectives.length}
+                  heistersCount={node.crewMembers.totalCount}
+                  phase={node.phase}
+                  preferedTactic={node.preferedTactic}
+                  difficulty={node.difficulty}
+                  location={{
+                    id: locationInfo.location.placeId,
+                    name: locationInfo.location.name,
+                  }}
+                  establishment={{
+                    id: node.establishment.id,
+                    name: node.establishment.name,
+                  }}
+                  align="end"
+                >
+                  <Link
+                    className="grow"
+                    to={`/map/${locationInfo.location.placeId}/heist/${getUriId(node.id)}`}
+                  >
+                    <HeistListItem
+                      name={node.name}
+                      crewMembers={node.crewMembers.totalCount}
+                      startAt={node.startAt}
+                      phase={node.phase}
+                    />
+                  </Link>
+                </HeistHoverCard>
               </li>
             ))}
           </ul>

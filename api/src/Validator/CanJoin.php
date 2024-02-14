@@ -9,7 +9,7 @@ final class CanJoin extends Constraint
 {
     public function __construct(
         public string $message = 'crew_member.cannot_join',
-        ?array $groups = null,
+        array $groups = null,
         mixed $payload = null,
     ) {
         parent::__construct([], $groups, $payload);

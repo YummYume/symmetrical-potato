@@ -1,14 +1,14 @@
-import { Heading, Text, Theme } from '@radix-ui/themes';
+import { Theme } from '@radix-ui/themes';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import { json, type LinksFunction } from '@remix-run/node';
 import {
+  isRouteErrorResponse,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  isRouteErrorResponse,
   useLoaderData,
   useNavigation,
   useRouteError,
@@ -19,12 +19,11 @@ import { clsx } from 'clsx';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChangeLanguage } from 'remix-i18next';
-import { Toaster, toast } from 'sonner';
+import { toast, Toaster } from 'sonner';
 
 import tailwindStylesheet from '~/styles/tailwind.css';
 import themeStylesheet from '~/styles/theme.css';
 import viewTransitionsStylesheet from '~/styles/view-transitions.css';
-import { Link } from '~components/Link';
 import { ProgressBar } from '~components/ProgressBar';
 import { ThemeContext } from '~lib/context/Theme';
 import { darkModeCookie, localeCookie } from '~lib/cookies.server';
@@ -114,6 +113,8 @@ export let handle = {
 export const ErrorBoundary = () => {
   const error = useRouteError();
 
+  const { t } = useTranslation();
+
   if (process.env.NODE_ENV === 'production' && isRouteErrorResponse(error) && error.status >= 500) {
     captureRemixErrorBoundaryError(error);
   } else if (process.env.NODE_ENV === 'development') {
@@ -122,16 +123,60 @@ export const ErrorBoundary = () => {
 
   if (isRouteErrorResponse(error)) {
     return (
-      <div>
-        <Heading as="h1">{error.status}</Heading>
-        <Text as="p">{error.statusText}</Text>
-        <Link to="/">Go home</Link>
-      </div>
+      <html>
+        <head>
+          <title>{error.status}</title>
+          <Meta />
+          <Links />
+        </head>
+        <body>
+          <main className="grid min-h-full place-items-center px-6 py-24 sm:py-32 lg:px-8">
+            <div className="text-center">
+              <p className="font-[600] text-[#4f46e5]">{error.status}</p>
+              <h1 className="mt-4 text-[30px] font-bold text-[#111827] sm:text-[48px]">
+                {error.statusText}
+              </h1>
+              <div className="mt-10 flex items-center justify-center gap-x-6">
+                <a
+                  href="/"
+                  className="text-sm rounded-[6px] bg-[#4f46e5] px-3.5 py-2.5 font-[600] text-[white] shadow-1 hover:bg-[#6366f1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f46e5]"
+                >
+                  {t('homepage')}
+                </a>
+              </div>
+            </div>
+          </main>
+        </body>
+      </html>
     );
   }
 
-  // TODO: Render a custom error page here
-  return <div>Something went wrong</div>;
+  return (
+    <html>
+      <head>
+        <title>{t('unexpected_error')}</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <main className="grid min-h-full place-items-center px-6 py-24 sm:py-32 lg:px-8">
+          <div className="text-center">
+            <h1 className="mt-4 text-[30px] font-bold text-[#111827] sm:text-[48px]">
+              {t('unexpected_error')}
+            </h1>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                href="/"
+                className="text-sm rounded-[6px] bg-[#4f46e5] px-3.5 py-2.5 font-[600] text-[white] shadow-1 hover:bg-[#6366f1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f46e5]"
+              >
+                {t('homepage')}
+              </a>
+            </div>
+          </div>
+        </main>
+      </body>
+    </html>
+  );
 };
 
 export default function App() {

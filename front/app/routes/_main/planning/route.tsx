@@ -45,7 +45,7 @@ export default function Planning() {
   }, [employee]);
 
   return (
-    <main className="py-10">
+    <main className="px-4 py-10 lg:px-0">
       <Container>
         <Flex gap="9" direction="column">
           <Heading align="center" as="h1" size="9">

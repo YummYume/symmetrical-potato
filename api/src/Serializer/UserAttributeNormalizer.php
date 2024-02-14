@@ -33,7 +33,7 @@ final class UserAttributeNormalizer implements NormalizerInterface, NormalizerAw
     /**
      * @param array<string, mixed> $context
      */
-    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
         if (isset($context[self::ALREADY_CALLED])) {
             return false;

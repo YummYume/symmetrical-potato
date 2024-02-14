@@ -204,7 +204,9 @@ export default function Establishment() {
                                 }}
                                 align="end"
                               >
-                                <Link to={`/map/${node.location.placeId}/heist/${getUriId(node.id)}`}>
+                                <Link
+                                  to={`/map/${node.location.placeId}/heist/${getUriId(node.id)}`}
+                                >
                                   <HeistListItem
                                     name={node.name}
                                     crewMembers={node.crewMembers.totalCount}
