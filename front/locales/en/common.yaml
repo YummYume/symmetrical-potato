@@ -93,6 +93,10 @@ meta.establishment_apply.title: Apply for a job
 meta.establishment_apply.description: Apply for a job at {{ name }}.
 meta.employee_edit.title: Edit employee
 meta.employee_edit.description: Edit the employee {{ name }}.
+meta.establishments_new.title: New establishment
+meta.establishments_new.description: Create a new establishment.
+meta.establishment_edit.title: Edit establishment
+meta.establishment_edit.description: Edit the establishment {{ name }}.
 
 # Days
 day.monday: Monday
