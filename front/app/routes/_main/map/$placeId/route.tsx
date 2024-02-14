@@ -78,8 +78,6 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
     languageCode: context.locale,
   });
 
-  throw new Error();
-
   return {
     locale: null,
     locationInfo: null,
