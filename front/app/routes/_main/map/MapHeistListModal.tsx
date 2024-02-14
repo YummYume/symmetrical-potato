@@ -101,7 +101,7 @@ export const MapHeistListModal = ({
                       <NavLink
                         unstyled
                         className="grow"
-                        to={`/map/${heist.location.placeId}/${getUriId(heist.id)}`}
+                        to={`/map/${heist.location.placeId}/heist/${getUriId(heist.id)}`}
                         withCurrentSearchParams
                         onClick={(e) => {
                           if (onHeistClick) {

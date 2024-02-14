@@ -1,13 +1,20 @@
-import { PersonIcon } from '@radix-ui/react-icons';
+import { PersonIcon, PlusIcon } from '@radix-ui/react-icons';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import { Card, Flex, Heading, IconButton, Section, Text } from '@radix-ui/themes';
+import { Button, Card, Flex, Heading, IconButton, Section, Table, Text } from '@radix-ui/themes';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
+import { useTranslation } from 'react-i18next';
 
 import { getHeist } from '~/lib/api/heist';
+import { HeistPhaseEnum } from '~/lib/api/types';
+import { Link } from '~/lib/components/Link';
+import { HeistDifficultyBadge } from '~/lib/components/heist/HeistDifficultyBadge';
+import { HeistPhaseBadge } from '~/lib/components/heist/HeistPhaseBadge';
+import { HeistPreferedTacticBadge } from '~/lib/components/heist/HeistPreferedTacticBadge';
 import { i18next } from '~/lib/i18n/index.server';
 import { hasPathError } from '~/lib/utils/api';
+import dayjs from '~/lib/utils/dayjs';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
@@ -60,36 +67,235 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
   ];
 };
 
-export default function Heist() {
+export default function MapHeist() {
   const { heist } = useLoaderData<Loader>();
+
+  const { t } = useTranslation();
 
   console.log('heist', heist);
 
   return (
     <>
+      <Link to={heist.establishment.id}>{heist.establishment.name}</Link> -{' '}
+      <Link to={heist.establishment.id}>{'{contractor_name}'}</Link>
       <Section className="space-y-2" size="1">
         <Flex gap="2">
           <Heading as="h3" size="8">
             {heist.name}
           </Heading>
+          {heist.crewMembers.edges.length < 4 && heist.phase === HeistPhaseEnum.Planning && (
+            <IconButton aria-label={t('join')}>
+              <PlusIcon />
+            </IconButton>
+          )}
           <Tooltip.Provider>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
-                <IconButton className="items-center">
-                  <span>{heist.crewMembers.edges.length}</span>
-
+                <Button>
+                  <span>{heist.crewMembers.edges.length}/4</span>
                   <PersonIcon />
-                </IconButton>
+                </Button>
               </Tooltip.Trigger>
-              <Tooltip.Content side="bottom" sideOffset={5}>
-                <Card>TEST</Card>
+              <Tooltip.Content className="bg-slate-1" align="end" side="bottom" sideOffset={5}>
+                <Card>
+                  <ul>
+                    {heist.crewMembers.edges.map(
+                      ({
+                        node: {
+                          user: { id, username },
+                        },
+                      }) => (
+                        <li key={id}>{username}</li>
+                      ),
+                    )}
+                  </ul>
+                </Card>
               </Tooltip.Content>
             </Tooltip.Root>
           </Tooltip.Provider>
         </Flex>
         <Text as="p">{heist.description}</Text>
       </Section>
-      <Section className="space-y-2" size="1"></Section>
+      <Table.Root>
+        <Table.Body>
+          <Table.Row>
+            <Table.ColumnHeaderCell>{t('heist.phase')}</Table.ColumnHeaderCell>
+            <Table.Cell align="right">
+              <HeistPhaseBadge phase={heist.phase} />
+            </Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.ColumnHeaderCell>{t('heist.prefered_tactic')}</Table.ColumnHeaderCell>
+            <Table.Cell align="right">
+              <HeistPreferedTacticBadge preferedTactic={heist.preferedTactic} />
+            </Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.ColumnHeaderCell>{t('heist.difficulty')}</Table.ColumnHeaderCell>
+            <Table.Cell align="right">
+              <HeistDifficultyBadge difficulty={heist.difficulty} />
+            </Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.ColumnHeaderCell>{t('heist.payout')}</Table.ColumnHeaderCell>
+            <Table.Cell align="right">
+              {Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+                heist.minimumPayout,
+              )}{' '}
+              -{' '}
+              {Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+                heist.maximumPayout,
+              )}
+            </Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.ColumnHeaderCell>{t('heist.time_slot')}</Table.ColumnHeaderCell>
+            <Table.Cell align="right">
+              {dayjs(heist.startAt).format('DD/MM/YY')} : {dayjs(heist.startAt).format('HH:mm')} -{' '}
+              {dayjs(heist.shouldEndAt).format('HH:mm')}
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table.Root>
+      <Section className="space-y-2" size="1">
+        <Heading as="h4" size="6" align="center">
+          {t('heist.objective')}
+        </Heading>
+
+        <ol>
+          {heist.objectives.map(
+            (
+              {
+                description,
+                name,
+                optional,
+              }: {
+                description: string;
+                name: string;
+                optional: boolean;
+              },
+              index: number,
+            ) => (
+              <li
+                className={`relative ${index < heist.objectives.length - 1 ? 'pb-10' : ''}`}
+                key={name}
+              >
+                {index < heist.objectives.length - 1 && (
+                  <div
+                    className="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-5"
+                    aria-hidden="true"
+                  ></div>
+                )}
+
+                <div className="flex items-start">
+                  <span className="flex h-9 items-center" aria-hidden="true">
+                    <span
+                      className={`z-10 flex size-8 items-center justify-center rounded-6 border-2 bg-[var(--slate-1)] ${index === 0 ? 'border-accent-9' : 'border-gray-5'}`}
+                    >
+                      {index === 0 && <span className="size-2.5 rounded-6 bg-accent-9"></span>}
+                    </span>
+                  </span>
+                  <span className="ml-4 flex grow flex-col">
+                    <span className="flex text-2 font-medium text-gray-12">
+                      {name}{' '}
+                      <span className="ml-auto font-regular text-gray-11">
+                        {optional ? `(${t('optional')})` : ''}
+                      </span>
+                    </span>
+                    <span className="text-2 text-gray-12">{description}</span>
+                  </span>
+                </div>
+              </li>
+            ),
+          )}
+        </ol>
+      </Section>
+      <Section className="space-y-2" size="1">
+        <Link
+          className="flex h-8 items-center justify-center rounded-2 bg-accent-9 px-3 !text-[black]"
+          to=""
+        >
+          {t('asset.type.assets')}
+        </Link>
+      </Section>
+      <Section className="space-y-2" size="1">
+        <Heading as="h4" size="6" align="center">
+          {t('results')}
+        </Heading>
+
+        <ul className="grid gap-2">
+          {heist.crewMembers.edges.map(
+            ({
+              node: {
+                civilianCasualties,
+                kills,
+                objectivesCompleted,
+                payout,
+                status,
+                user: { id, username },
+              },
+            }) => (
+              <li key={id}>
+                <Tooltip.Provider>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger asChild>
+                      <Card>{username}</Card>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content
+                      className="bg-slate-1"
+                      align="end"
+                      side="bottom"
+                      sideOffset={5}
+                    >
+                      <Card>
+                        <Table.Root>
+                          <Table.Body>
+                            <Table.Row>
+                              <Table.ColumnHeaderCell>
+                                {t('crew_member.civilian_casualties')}
+                              </Table.ColumnHeaderCell>
+                              <Table.Cell align="right">{civilianCasualties}</Table.Cell>
+                            </Table.Row>
+                            <Table.Row>
+                              <Table.ColumnHeaderCell>
+                                {t('crew_member.kills')}
+                              </Table.ColumnHeaderCell>
+                              <Table.Cell align="right">{kills}</Table.Cell>
+                            </Table.Row>
+                            <Table.Row>
+                              <Table.ColumnHeaderCell>
+                                {t('crew_member.objectives_completed')}
+                              </Table.ColumnHeaderCell>
+                              <Table.Cell align="right">{objectivesCompleted}</Table.Cell>
+                            </Table.Row>
+                            <Table.Row>
+                              <Table.ColumnHeaderCell>
+                                {t('crew_member.payout')}
+                              </Table.ColumnHeaderCell>
+                              <Table.Cell align="right">
+                                {Intl.NumberFormat('en-US', {
+                                  style: 'currency',
+                                  currency: 'USD',
+                                }).format(payout)}
+                              </Table.Cell>
+                            </Table.Row>
+                            <Table.Row>
+                              <Table.ColumnHeaderCell>
+                                {t('crew_member.status')}
+                              </Table.ColumnHeaderCell>
+                              <Table.Cell align="right">{status}</Table.Cell>
+                            </Table.Row>
+                          </Table.Body>
+                        </Table.Root>
+                      </Card>
+                    </Tooltip.Content>
+                  </Tooltip.Root>
+                </Tooltip.Provider>
+              </li>
+            ),
+          )}
+        </ul>
+      </Section>
     </>
   );
 }

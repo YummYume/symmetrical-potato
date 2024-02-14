@@ -5,14 +5,14 @@ textarea {
 }
 
 #global-progress-bar {
-  @apply fixed inset-0 bottom-auto z-30 h-0.5 w-full;
+  @apply fixed inset-0 bottom-auto z-30 h-1 w-full;
 
   &::-webkit-progress-bar {
     @apply bg-transparent;
   }
 
   &::-webkit-progress-value {
-    @apply rounded-r-6 bg-accent-7 transition-all duration-[inherit] motion-reduce:transition-none;
+    @apply rounded-r-6 bg-accent-9 transition-all duration-[inherit] motion-reduce:transition-none;
   }
 }
 
