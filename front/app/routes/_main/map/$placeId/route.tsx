@@ -28,7 +28,6 @@ import { FormReview } from '../$placeId_/review/FormReview';
 export async function loader({ request, context, params }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
   const isContractor = hasRoles(user, ROLES.CONTRACTOR);
-  const isAdmin = hasRoles(user, ROLES.ADMIN);
   const isHeister = hasRoles(user, ROLES.HEISTER);
 
   // Will be used to check if the current user is already a crew member of the heist
@@ -56,7 +55,6 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
       placeId: params.placeId,
       userCrewHeistsId,
       isContractor,
-      isAdmin,
       isHeister,
       user,
       meta: {
@@ -85,7 +83,6 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
     placeId: params.placeId,
     userCrewHeistsId,
     isContractor,
-    isAdmin,
     isHeister,
     user,
     meta: {
@@ -115,7 +112,7 @@ type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
 export default function PlaceId() {
-  const { locationInfo, place, placeId, isContractor, isAdmin, user } = useLoaderData<Loader>();
+  const { locationInfo, place, placeId, isContractor, user } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const heists =
     locationInfo?.heists?.edges?.filter<HeistEdgeWithNode>(
@@ -187,7 +184,7 @@ export default function PlaceId() {
             {t('heists')}
           </Heading>
 
-          {(isContractor || isAdmin) && (
+          {isContractor && (
             <IconButton aria-label={t('heist.add')}>
               <Link to={`/map/${placeId}/heist/add`} unstyled>
                 <PlusIcon />
