@@ -349,6 +349,7 @@ final class Mailer
             ->htmlTemplate('email/employee/created.html.twig')
             ->locale($user->getLocale()->value)
             ->context([
+                'contractor' => $contractor,
                 'employee' => $employee,
                 'url' => $url,
                 'site' => $this->siteName,
