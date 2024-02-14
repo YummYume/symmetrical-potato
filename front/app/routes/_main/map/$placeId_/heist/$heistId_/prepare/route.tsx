@@ -1,5 +1,10 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { PlusCircledIcon, MinusCircledIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import {
+  PlusCircledIcon,
+  MinusCircledIcon,
+  ExclamationTriangleIcon,
+  ArrowLeftIcon,
+} from '@radix-ui/react-icons';
 import { Box, Button, Callout, Flex, Grid, Heading, Section, Tabs, Text } from '@radix-ui/themes';
 import { json, redirect } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
@@ -72,7 +77,7 @@ type Payloads = {
 };
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
-  const user = denyAccessUnlessGranted(context.user, [ROLES.ADMIN, ROLES.HEISTER]);
+  const user = denyAccessUnlessGranted(context.user, [ROLES.HEISTER]);
 
   if (!params.heistId) {
     throw redirect(`/map/${params.placeId}`);
@@ -111,7 +116,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
         type: 'error',
       } as FlashMessage);
 
-      throw redirect(`/map/${params.placeId}`, {
+      throw redirect(`/map/${params.placeId}/heist/${params.heistId}`, {
         headers: { 'Set-Cookie': await commitSession(session) },
       });
     }
@@ -123,7 +128,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     });
 
     if (!crewMember) {
-      throw redirect(`/map/${params.placeId}`);
+      throw redirect(`/map/${params.placeId}/heist/${params.heistId}`);
     }
 
     // Get all the assets
@@ -203,7 +208,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 export type Loader = typeof loader;
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
-  const user = denyAccessUnlessGranted(context.user, [ROLES.ADMIN, ROLES.HEISTER]);
+  const user = denyAccessUnlessGranted(context.user, [ROLES.HEISTER]);
 
   if (!params.heistId) {
     throw redirect(`/map/${params.placeId}`);
@@ -234,7 +239,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
         type: 'error',
       } as FlashMessage);
 
-      return redirect(`/map/${params.placeId}`, {
+      return redirect(`/map/${params.placeId}/heist/${params.heistId}`, {
         headers: { 'Set-Cookie': await commitSession(session) },
       });
     }
@@ -294,7 +299,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
         type: 'success',
       } as FlashMessage);
 
-      return redirect(`/map/${params.placeId}`, {
+      return redirect(`/map/${params.placeId}/heist/${params.heistId}`, {
         headers: {
           'Set-Cookie': await commitSession(session),
         },
@@ -531,7 +536,12 @@ export default function Prepare() {
         </form>
       </RemixFormProvider>
 
-      <Link to={`/map/${placeId}`}>{t('back')}</Link>
+      <Link className="flex items-center gap-1 pb-1 pl-2" to={`/map/${placeId}/heist/${heistId}`}>
+        <span aria-hidden="true">
+          <ArrowLeftIcon width="20" height="20" />
+        </span>
+        {t('back')}
+      </Link>
 
       <Tabs.Root defaultValue="employee">
         <Tabs.List>

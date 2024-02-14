@@ -33,7 +33,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   const session = await getSession(request.headers.get('Cookie'));
 
   if (errors) {
-    return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+    return redirect(`/map/${params.placeId}/heist/${params.heistId}/prepare`, {
       headers: {
         'Set-Cookie': await commitSession(session),
       },
@@ -52,7 +52,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
         type: 'error',
       } as FlashMessage);
 
-      return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+      return redirect(`/map/${params.placeId}/heist/${params.heistId}/prepare`, {
         headers: {
           'Set-Cookie': await commitSession(session),
         },
@@ -77,7 +77,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
         type: 'error',
       } as FlashMessage);
 
-      return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+      return redirect(`/map/${params.placeId}/heist/${params.heistId}/prepare`, {
         headers: {
           'Set-Cookie': await commitSession(session),
         },
@@ -90,7 +90,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
         type: 'error',
       } as FlashMessage);
 
-      return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+      return redirect(`/map/${params.placeId}/heist/${params.heistId}/prepare`, {
         headers: {
           'Set-Cookie': await commitSession(session),
         },
@@ -107,7 +107,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       type: 'success',
     } as FlashMessage);
 
-    return redirect(`/map/${params.placeId}/${params.heistId}/prepare`, {
+    return redirect(`/map/${params.placeId}/heist/${params.heistId}/prepare`, {
       headers: {
         'Set-Cookie': await commitSession(session),
       },

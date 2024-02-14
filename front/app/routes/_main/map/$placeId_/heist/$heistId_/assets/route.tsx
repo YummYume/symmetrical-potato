@@ -1,5 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import { Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
+import { ArrowLeftIcon, Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
 import { Button, Grid, Heading, Section } from '@radix-ui/themes';
 import { redirect } from '@remix-run/node';
 import { Link } from '@remix-run/react';
@@ -87,7 +87,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     type: 'error',
   } as FlashMessage);
 
-  throw redirect(`/map/${params.placeId}`, {
+  throw redirect(`/map/${params.placeId}/heist/${params.heistId}`, {
     headers: { 'Set-Cookie': await commitSession(session) },
   });
 }
@@ -97,12 +97,19 @@ export type Loader = typeof loader;
 export default function Assets() {
   const { t } = useTranslation();
   const { heist } = useTypedLoaderData<Loader>();
-
   const { assets } = heist;
 
   return (
     <Grid gap="3">
-      <Link to={`/map/${heist.location.placeId}`}>{t('back')}</Link>
+      <Link
+        className="flex items-center gap-1 pb-1 pl-2"
+        to={`/map/${heist.location.placeId}/heist/${getUriId(heist.id)}`}
+      >
+        <span aria-hidden="true">
+          <ArrowLeftIcon width="20" height="20" />
+        </span>
+        {t('back')}
+      </Link>
       <div>
         <Dialog.Title asChild>
           <Heading as="h2" size="8">

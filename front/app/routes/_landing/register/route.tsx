@@ -21,7 +21,7 @@ import { FLASH_MESSAGE_KEY } from '~/root';
 import { SubmitButton } from '~components/form/SubmitButton';
 import { FieldInput } from '~components/form/custom/FieldInput';
 
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import type { RegisterFormData } from '~/lib/validators/register';
 import type { FlashMessage } from '~/root';
 
@@ -30,7 +30,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     throw redirect('/dashboard');
   }
 
-  const t = await i18next.getFixedT(request, 'login');
+  const t = await i18next.getFixedT(request, 'register');
 
   return json({
     locale: convertToLocaleEnum(context.locale),
@@ -108,6 +108,14 @@ export async function action({ request, context }: ActionFunctionArgs) {
 }
 
 export type Action = typeof action;
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [{ title: data.meta.title }, { name: 'description', content: data.meta.description }];
+};
 
 export default function Register() {
   const { locale } = useLoaderData<Loader>();

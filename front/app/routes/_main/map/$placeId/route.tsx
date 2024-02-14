@@ -115,8 +115,7 @@ type HeistEdgeWithNode = HeistEdge & { node: Heist };
 type ReviewEdgeWithNode = ReviewEdge & { node: Review };
 
 export default function PlaceId() {
-  const { locationInfo, place, placeId, isContractor, isAdmin, isHeister, userCrewHeistsId, user } =
-    useLoaderData<Loader>();
+  const { locationInfo, place, placeId, isContractor, isAdmin, user } = useLoaderData<Loader>();
   const { t } = useTranslation();
   const heists =
     locationInfo?.heists?.edges?.filter<HeistEdgeWithNode>(
@@ -204,49 +203,9 @@ export default function PlaceId() {
         )}
 
         {heists.length > 0 && (
-          <ul>
+          <ul className="space-y-2">
             {heists.map(({ node }) => (
               <li key={node.id}>
-                {isHeister && (
-                  <div>
-                    {!userCrewHeistsId.includes(node?.id) ? (
-                      <FormConfirmDialog
-                        formId={`heist-join-${getUriId(node?.id)}`}
-                        title={t('join')}
-                        description={t('heist.join.confirm')}
-                        action={`/map/${placeId}/heist/${getUriId(node?.id)}/join`}
-                        actionColor="green"
-                      >
-                        <Button type="button" color="green">
-                          {t('join')}
-                        </Button>
-                      </FormConfirmDialog>
-                    ) : (
-                      <>
-                        <Link
-                          to={`/map/${placeId}/heist/${getUriId(node?.id)}/prepare`}
-                          className="link link--blue"
-                          unstyled
-                        >
-                          <div className="flex h-8 w-fit items-center rounded-2 bg-accent-10 px-3 text-[black]">
-                            {t('prepare_heist')}
-                          </div>
-                        </Link>
-                        <FormConfirmDialog
-                          formId={`heist-leave-${getUriId(node?.id)}`}
-                          title={t('leave')}
-                          description={t('heist.leave.confirm')}
-                          action={`/map/${placeId}/heist/${getUriId(node?.id)}/leave`}
-                        >
-                          <Button type="button" color="red">
-                            {t('leave')}
-                          </Button>
-                        </FormConfirmDialog>
-                      </>
-                    )}
-                  </div>
-                )}
-
                 <HeistHoverCard
                   name={node.name}
                   description={node.description}
@@ -269,10 +228,7 @@ export default function PlaceId() {
                   }}
                   align="end"
                 >
-                  <Link
-                    className="grow"
-                    to={`/map/${locationInfo.location.placeId}/heist/${getUriId(node.id)}`}
-                  >
+                  <Link to={`/map/${locationInfo.location.placeId}/heist/${getUriId(node.id)}`}>
                     <HeistListItem
                       name={node.name}
                       crewMembers={node.crewMembers.totalCount}
@@ -298,28 +254,24 @@ export default function PlaceId() {
           </Text>
         )}
 
-        {isHeister && (
-          <>
-            <Popover
-              triggerChildren={userReview ? t('review.edit_review') : t('review.add_review')}
+        <Flex direction={{ initial: 'column', sm: 'row' }} gap="2" align="center">
+          <Popover triggerChildren={userReview ? t('review.edit_review') : t('review.add_review')}>
+            <FormReview review={userReview} placeId={placeId} />
+          </Popover>
+          {userReview && (
+            <FormConfirmDialog
+              formId="review-delete"
+              title={t('delete')}
+              description={t('review.delete.confirm')}
+              action={`/map/${placeId}/review/${getUriId(userReview?.node.id)}/delete`}
+              actionColor="green"
             >
-              <FormReview review={userReview} placeId={placeId} />
-            </Popover>
-            {userReview && (
-              <FormConfirmDialog
-                formId="review-delete"
-                title={t('delete')}
-                description={t('review.delete.confirm')}
-                action={`/map/${placeId}/review/${getUriId(userReview?.node.id)}/delete`}
-                actionColor="green"
-              >
-                <Button type="button" color="tomato" variant="soft">
-                  {t('delete')}
-                </Button>
-              </FormConfirmDialog>
-            )}
-          </>
-        )}
+              <Button type="button" color="tomato" variant="soft">
+                {t('delete')}
+              </Button>
+            </FormConfirmDialog>
+          )}
+        </Flex>
 
         {reviews.length > 0 && (
           <ul className="space-y-2">

@@ -35,7 +35,7 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
         type: 'error',
       } as FlashMessage);
 
-      return redirect(`/map/${params.placeId}`, {
+      return redirect(`/map/${params.placeId}/heist/${params.heistId}`, {
         headers: {
           'Set-Cookie': await commitSession(session),
         },
@@ -53,7 +53,7 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
         type: 'error',
       } as FlashMessage);
 
-      return redirect(`/map/${params.placeId}`, {
+      return redirect(`/map/${params.placeId}/heist/${params.heistId}`, {
         headers: {
           'Set-Cookie': await commitSession(session),
         },
@@ -67,7 +67,7 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
       type: 'success',
     } as FlashMessage);
 
-    return redirect(`/map/${params.placeId}`, {
+    return redirect(`/map/${params.placeId}/heist/${params.heistId}`, {
       headers: {
         'Set-Cookie': await commitSession(session),
       },
@@ -87,7 +87,7 @@ export const action = async ({ request, context, params }: ActionFunctionArgs) =
     } as FlashMessage);
   }
 
-  return redirect(`/map/${params.placeId}`, {
+  return redirect(`/map/${params.placeId}/heist/${params.heistId}`, {
     headers: {
       'Set-Cookie': await commitSession(session),
     },

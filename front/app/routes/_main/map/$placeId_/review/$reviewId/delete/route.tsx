@@ -6,7 +6,6 @@ import { deleteReview } from '~/lib/api/review';
 import { i18next } from '~/lib/i18n/index.server';
 import { commitSession, getSession } from '~/lib/session.server';
 import { getMessageForErrorStatusCodes, hasErrorStatusCodes } from '~/lib/utils/api';
-import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted } from '~/lib/utils/security.server';
 import { FLASH_MESSAGE_KEY } from '~/root';
 
@@ -14,7 +13,7 @@ import type { ActionFunctionArgs } from '@remix-run/node';
 import type { FlashMessage } from '~/root';
 
 export async function action({ params, request, context }: ActionFunctionArgs) {
-  denyAccessUnlessGranted(context.user, ROLES.HEISTER);
+  denyAccessUnlessGranted(context.user);
 
   if (!params.placeId) {
     throw redirect('/map');

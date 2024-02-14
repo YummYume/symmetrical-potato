@@ -45,6 +45,7 @@ heist.prepare.not_in_crew: Vous n'êtes pas dans l'équipe de ce heist.
 heist.prepare.assets.invalid: Votre demande contient des assets invalides.
 heist.objectives.too_much: Vous ne pouvez pas avoir plus de 20 objectifs.
 heist.prepare.no_employee_available: Aucun employé disponible.
+heist.asset.cannot_access: Vous ne pouvez pas accéder à cet asset.
 
 # Account
 account.updated: Compte mis à jour avec succès.

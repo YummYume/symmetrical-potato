@@ -51,7 +51,7 @@ export default function AssetForm({ asset, placeId, heistId }: AssetFormProps) {
   const submittingText = asset ? t('saving') : t('creating');
 
   return (
-    <Flex gap="4" direction="column" height="100%">
+    <Flex gap="4" direction="column" height="100%" className="min-w-96 max-w-[100vw]">
       <Flex justify="between">
         <Flex gap="2" justify="center" align="center">
           <Heading as="h2">{title}</Heading>
@@ -62,7 +62,7 @@ export default function AssetForm({ asset, placeId, heistId }: AssetFormProps) {
           <RemixFormProvider {...methods}>
             <form
               method="post"
-              className="panel__content-form"
+              className="mr-3 space-y-2"
               onSubmit={methods.handleSubmit}
               id={`asset-${id}-form`}
             >

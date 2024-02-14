@@ -60,7 +60,7 @@ export function FormReview({ review, placeId }: FormReviewProps) {
 
   return (
     <RemixFormProvider {...methods}>
-      <form id="review-form" onSubmit={methods.handleSubmit}>
+      <form id="review-form" onSubmit={methods.handleSubmit} className="min-w-64 space-y-2">
         <FieldRating style={{ maxWidth: 100 }} label={t('review.rating')} name="rating" />
         <TextAreaInput
           label={t('review.comment')}
