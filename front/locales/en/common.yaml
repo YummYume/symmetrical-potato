@@ -65,6 +65,7 @@ select: Select...
 search: Search
 contractor: Contractor
 reviews: Reviews
+results: Results
 
 # Meta
 meta.dashboard.title: Dashboard
@@ -321,6 +322,8 @@ heist.visibility.public: Public
 heist.visibility.draft: Draft
 heist.asset.add: Add an asset
 heist.asset.no_assets: No assets for this heist.
+heist.payout: Payout
+heist.time_slot: Time slot
 
 # Employee
 employee: Employee
@@ -478,3 +481,10 @@ review.no_review_description_establishment: Be the first to review this establis
 review.create.confirm: Are you sure you want to add this review?
 review.delete.confirm: Are you sure you want to delete your review?
 review.edit.confirm: Are you sure you want to edit your review?
+
+# Crew member
+crew_member.civilian_casualties: Civilian casualties
+crew_member.kills: Kills
+crew_member.objectives_completed: Objectives completed
+crew_member.payout: Payout
+crew_member.status: Status

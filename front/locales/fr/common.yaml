@@ -65,6 +65,7 @@ select: Sélectionner...
 search: Rechercher
 contractor: Contractant
 reviews: Avis
+results: Résultats
 
 # Meta
 meta.dashboard.title: Tableau de bord
@@ -329,6 +330,8 @@ heist.visibility.public: Public
 heist.visibility.draft: Brouillon
 heist.asset.add: Ajouter un asset
 heist.asset.no_assets: Aucun assets pour ce braquage.
+heist.payout: Paiement
+heist.time_slot: Créneau horaire
 
 # Employee
 employee: Employé
@@ -489,3 +492,10 @@ review.no_review_description_establishment: Soyez le premier à donner votre avi
 review.create.confirm: Êtes-vous sûr de vouloir ajouter cet avis ?
 review.delete.confirm: Êtes-vous sûr de vouloir supprimer votre avis ?
 review.edit.confirm: Êtes-vous sûr de vouloir éditer votre avis ?
+
+# Crew member
+crew_member.civilian_casualties: Victimes civiles
+crew_member.kills: Tués
+crew_member.objectives_completed: Objectifs complétés
+crew_member.payout: Paiement
+crew_member.status: Statut

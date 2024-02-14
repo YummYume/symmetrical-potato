@@ -1,7 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { LayersIcon, Pencil1Icon, TrashIcon } from '@radix-ui/react-icons';
 import { Button, Flex, Grid, Heading, Section, Text } from '@radix-ui/themes';
-import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
+import { redirect, type LoaderFunctionArgs, type MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
@@ -30,8 +30,6 @@ import { hasPathError } from '~utils/api';
 import { denyAccessUnlessGranted, hasRoles } from '~utils/security.server';
 
 import { FormReview } from '../$placeId_/review/FormReview';
-
-import type { MetaFunction } from '@remix-run/node';
 
 export async function loader({ request, context, params }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
@@ -173,6 +171,7 @@ export default function PlaceId() {
             {locationInfo.location.name}
           </Heading>
         </Dialog.Title>
+
         <Dialog.Description>{locationInfo.location.address}</Dialog.Description>
 
         {!!locationInfo.location.averageRating && (
@@ -244,6 +243,7 @@ export default function PlaceId() {
                       />
                     </Link>
                   </HeistHoverCard>
+
                   <div className="flex items-center justify-between">
                     {isHeister && (
                       <div>
@@ -290,19 +290,13 @@ export default function PlaceId() {
                         <Flex gap="3">
                           {node.visibility === HeistVisibilityEnum.Draft && (
                             <>
-                              <Link
-                                to={`/map/${placeId}/heist/${getUriId(node?.id)}/assets`}
-                                unstyled
-                              >
-                                <div className="flex h-8 w-fit items-center rounded-2 bg-purple-10 px-3 text-[black]">
+                              <Link to={`/map/${placeId}/heist/${getUriId(node?.id)}/assets`}>
+                                <div className="flex h-8 w-fit items-center rounded-2 bg-green-9 px-3 text-[black]">
                                   <LayersIcon />
                                 </div>
                               </Link>
-                              <Link
-                                to={`/map/${placeId}/heist/${getUriId(node?.id)}/edit`}
-                                unstyled
-                              >
-                                <div className="flex h-8 w-fit items-center rounded-2 bg-blue-10 px-3 text-[black]">
+                              <Link to={`/map/${placeId}/heist/${getUriId(node?.id)}/edit`}>
+                                <div className="flex h-8 w-fit items-center rounded-2 bg-accent-9 px-3 text-[black]">
                                   <Pencil1Icon />
                                 </div>
                               </Link>
@@ -314,7 +308,7 @@ export default function PlaceId() {
                             description={t('heist.delete.confirm')}
                             action={`/map/${placeId}/heist/${getUriId(node?.id)}/delete`}
                           >
-                            <Button type="button" color="red">
+                            <Button type="button" color="ruby">
                               <TrashIcon />
                             </Button>
                           </FormConfirmDialog>

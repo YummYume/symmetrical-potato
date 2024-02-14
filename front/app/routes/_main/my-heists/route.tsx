@@ -91,7 +91,7 @@ export default function MyHeists() {
                         }}
                         align="end"
                       >
-                        <Link to={`/map/${node.location.placeId}/${getUriId(node.id)}`}>
+                        <Link to={`/map/${node.location.placeId}/heist/${getUriId(node.id)}`}>
                           <HeistListItem
                             name={node.name}
                             crewMembers={node.crewMembers.totalCount}
