@@ -72,8 +72,6 @@ export default function MapHeist() {
 
   const { t } = useTranslation();
 
-  console.log(heist);
-
   return (
     <>
       <Link to={`/map/${placeId}`}>

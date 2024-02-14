@@ -134,26 +134,6 @@ export const ErrorBoundary = () => {
   return <div>Something went wrong</div>;
 };
 
-// export function CatchBoundary() {
-//   const caught = useCatch();
-
-//   return (
-//     <html>
-//       <head>
-//         <title>Oops!</title>
-//         <Meta />
-//         <Links />
-//       </head>
-//       <body>
-//         <h1>
-//           {caught.status} {caught.statusText}
-//         </h1>
-//         <Scripts />
-//       </body>
-//     </html>
-//   );
-// }
-
 export default function App() {
   const { flashMessage, locale, useDarkMode } = useLoaderData<Loader>();
   const navigation = useNavigation();
