@@ -466,6 +466,7 @@ establishment.crew_cut: Part de l'équipe
 establishment.average_rating: Note moyenne
 establishment.average_rating.none: Aucune note
 establishment.review_count: Nombre d'avis
+establishment.add: Ajouter un établissement
 establishment.new: Nouvel établissement
 establishment.edit: Modifier l'établissement
 establishment.no_heists: Aucun braquage pour le moment.
@@ -475,6 +476,9 @@ establishment.show_only_owner: Montrer seulement les établissements que je poss
 establishment.apply_to: Postuler à cet établissement
 establishment.apply.minimum_hours: >-
   Cet établissement requiert un minimum de {hours, plural, =0 {0 heures} one {1 heure} other {# heures}} de travail par semaine.
+establishment.create.confirm: Êtes-vous sûr de vouloir créer cet établissement ?
+establishment.edit.confirm: Êtes-vous sûr de vouloir modifier cet établissement ?
+establishment.delete.confirm: Êtes-vous sûr de vouloir supprimer cet établissement ?
 
 # Rating
 rating.star: Noter {rating, number}

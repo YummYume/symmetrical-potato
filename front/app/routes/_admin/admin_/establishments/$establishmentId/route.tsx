@@ -98,10 +98,14 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
   let errorMessage: string | null = null;
 
   try {
-    await updateEstablishment(context.client, {
-      id: `/establishments/${params.establishmentId}`,
-      ...data,
-    });
+    await updateEstablishment(
+      context.client,
+      {
+        id: `/establishments/${params.establishmentId}`,
+        ...data,
+      },
+      true,
+    );
 
     session.flash(FLASH_MESSAGE_KEY, {
       content: t('establishment.updated', { ns: 'flash' }),

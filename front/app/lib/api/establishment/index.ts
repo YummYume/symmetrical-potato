@@ -1,7 +1,9 @@
 import { gql, type GraphQLClient } from 'graphql-request';
 
 import type {
+  CreateEstablishmentInput,
   Mutation,
+  MutationCreateEstablishmentArgs,
   MutationDeleteEstablishmentArgs,
   MutationUpdateEstablishmentArgs,
   Query,
@@ -118,12 +120,66 @@ export const getEstablishment = async (client: GraphQLClient, id: string, asAdmi
 };
 
 /**
+ * Create an establishment.
+ */
+export const createEstablishment = async (
+  client: GraphQLClient,
+  input: Omit<CreateEstablishmentInput, 'clientMutationId'>,
+) => {
+  return client.request<Pick<Mutation, 'createEstablishment'>, MutationCreateEstablishmentArgs>(
+    gql`
+      mutation CreateEstablishment($input: createEstablishmentInput!) {
+        createEstablishment(input: $input) {
+          establishment {
+            id
+            name
+            description
+            minimumWage
+            minimumWorkTimePerWeek
+            contractorCut
+            employeeCut
+            crewCut
+            reviewCount
+            averageRating
+            contractor {
+              id
+              username
+              mainRole
+              profile {
+                description
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      input,
+    },
+  );
+};
+
+/**
  * Update an establishment.
  */
 export const updateEstablishment = async (
   client: GraphQLClient,
   input: Omit<UpdateEstablishmentInput, 'clientMutationId'>,
+  asAdmin = false,
 ) => {
+  const adminFields = gql`
+    createdAt
+    updatedAt
+    createdBy {
+      id
+      username
+    }
+    updatedBy {
+      id
+      username
+    }
+  `;
+
   return client.request<Pick<Mutation, 'updateEstablishment'>, MutationUpdateEstablishmentArgs>(
     gql`
       mutation UpdateEstablishment($input: updateEstablishmentInput!) {
@@ -147,16 +203,7 @@ export const updateEstablishment = async (
                 description
               }
             }
-            createdAt
-            updatedAt
-            createdBy {
-              id
-              username
-            }
-            updatedBy {
-              id
-              username
-            }
+            ${asAdmin ? adminFields : ''}
           }
         }
       }
