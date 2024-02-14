@@ -79,10 +79,6 @@ final class HeistVoter extends Voter
 
     private function canCreate(Heist $heist, User $user): bool
     {
-        if ($this->security->isGranted(User::ROLE_ADMIN)) {
-            return true;
-        }
-
         return $heist->getEstablishment()->getContractor() === $user && $this->security->isGranted(User::ROLE_CONTRACTOR);
     }
 
@@ -126,18 +122,15 @@ final class HeistVoter extends Voter
 
     private function canChooseEmployee(Heist $heist, User $user): bool
     {
-        if ($this->security->isGranted(User::ROLE_ADMIN)) {
-            return true;
-        }
-
         $isEmployeeAvailable = (bool) $heist->getEmployee()->getHeists()->findFirst(static function (int $key, Heist $heistEmployee) use ($heist) {
             return !self::betweenDates($heist->getStartAt(), $heist->getShouldEndAt(), $heistEmployee->getStartAt(), $heistEmployee->getShouldEndAt());
         });
 
         return $this->security->isGranted(User::ROLE_HEISTER)
-        && $isEmployeeAvailable
-        && (bool) $user->getCrewMembers()->findFirst(static fn (int $key, CrewMember $crewMember) => $heist === $crewMember->getHeist() && null === $crewMember->getHeist()->getEmployee())
-        && HeistPhaseEnum::Planning === $heist->getPhase();
+            && $isEmployeeAvailable
+            && (bool) $user->getCrewMembers()->findFirst(static fn (int $key, CrewMember $crewMember) => $heist === $crewMember->getHeist() && null === $crewMember->getHeist()->getEmployee())
+            && HeistPhaseEnum::Planning === $heist->getPhase()
+        ;
     }
 
     private function canDelete(Heist $heist, User $user): bool
@@ -147,7 +140,8 @@ final class HeistVoter extends Voter
         }
 
         return $this->security->isGranted(User::ROLE_CONTRACTOR)
-        && $heist->getEstablishment()->getContractor() === $user
-        && HeistPhaseEnum::Planning === $heist->getPhase();
+            && $heist->getEstablishment()->getContractor() === $user
+            && HeistPhaseEnum::Planning === $heist->getPhase()
+        ;
     }
 }

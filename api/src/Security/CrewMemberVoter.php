@@ -5,6 +5,7 @@ namespace App\Security;
 use App\Entity\CrewMember;
 use App\Entity\User;
 use App\Enum\HeistPhaseEnum;
+use App\Enum\HeistVisibilityEnum;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -59,7 +60,10 @@ final class CrewMemberVoter extends Voter
 
     private function canCreate(CrewMember $crewMember): bool
     {
-        return $this->security->isGranted(User::ROLE_HEISTER) && HeistPhaseEnum::Planning === $crewMember->getHeist()->getPhase();
+        return $this->security->isGranted(User::ROLE_HEISTER)
+            && HeistPhaseEnum::Planning === $crewMember->getHeist()->getPhase()
+            && HeistVisibilityEnum::Public === $crewMember->getHeist()->getVisibility()
+        ;
     }
 
     private function canDelete(CrewMember $crewMember, User $user): bool
