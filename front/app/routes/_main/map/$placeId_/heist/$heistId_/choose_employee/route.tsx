@@ -1,4 +1,3 @@
-import { json } from '@remix-run/node';
 import { redirect, type ActionFunctionArgs } from '@remix-run/node';
 import { ClientError } from 'graphql-request';
 import { getValidatedFormData } from 'remix-hook-form';
@@ -126,9 +125,10 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       } as FlashMessage);
     }
 
-    return json(
-      { errors: {} },
-      { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
-    );
+    return redirect(`/map/${params.placeId}/heist/${params.heistId}/prepare`, {
+      headers: {
+        'Set-Cookie': await commitSession(session),
+      },
+    });
   }
 }
