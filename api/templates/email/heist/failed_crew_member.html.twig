@@ -3,4 +3,4 @@
 {% trans_default_domain 'email' %}
 
 {% set title = 'heist.failed_crew_member.subject'|trans({heist}) %}
-{% set text = 'heist.failed_crew_member.text'|trans({civilian_casualties, heist, kills, name: user.username, objectives_completed, payout, site, status}) %}
+{% set text = 'heist.failed_crew_member.text'|trans({civilian_casualties: crew_member.civilianCasualties, heist: heist.name, kills: crew_member.kills, name: user.username, objectives_completed: crew_member.objectivesCompleted, payout: crew_member.payout, site, status: crew_member.status.value}) %}

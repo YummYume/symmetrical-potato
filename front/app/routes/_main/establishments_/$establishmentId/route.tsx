@@ -1,10 +1,8 @@
 import { ArrowLeftIcon } from '@radix-ui/react-icons';
 import { Box, Button, Card, Container, Flex, Heading, Tabs, Text } from '@radix-ui/themes';
-import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
-import { useTypedActionData } from 'remix-typedjson';
 
 import { getEmployeesEstablishments } from '~/lib/api/employee';
 import { getEstablishment } from '~/lib/api/establishment';
@@ -119,31 +117,6 @@ export default function Establishment() {
                   gap={{ initial: '2', md: '4' }}
                   className="p-2 md:p-0"
                 >
-                  <Flex direction={{ initial: 'column', sm: 'row' }} gap="2" align="center">
-                    <Popover
-                      triggerChildren={
-                        userReview ? t('review.edit_review') : t('review.add_review')
-                      }
-                    >
-                      <FormReview
-                        review={userReview as ReviewEdge | undefined}
-                        establishmentId={establishment.id}
-                      />
-                    </Popover>
-                    {userReview && (
-                      <FormConfirmDialog
-                        formId="review-delete"
-                        title={t('delete')}
-                        description={t('review.delete.confirm')}
-                        action={`/establishments/${getUriId(establishment.id)}/review/${getUriId(userReview?.node.id)}/delete`}
-                        actionColor="green"
-                      >
-                        <Button type="button" color="tomato" variant="soft">
-                          {t('delete')}
-                        </Button>
-                      </FormConfirmDialog>
-                    )}
-                  </Flex>
                   <Flex direction="row" gap={{ initial: '1', md: '2' }} className="grow">
                     <Flex direction="column" gap="2" align="center">
                       <EstablishmentAvatar name={establishment.name} size="6" />
@@ -256,6 +229,32 @@ export default function Establishment() {
                 </Tabs.Content>
 
                 <Tabs.Content value="reviews">
+                  <Flex mb="2" justify="end" gap="2">
+                    <Popover
+                      triggerChildren={
+                        userReview ? t('review.edit_review') : t('review.add_review')
+                      }
+                    >
+                      <FormReview
+                        review={userReview as ReviewEdge | undefined}
+                        establishmentId={establishment.id}
+                      />
+                    </Popover>
+                    {userReview && (
+                      <FormConfirmDialog
+                        formId="review-delete"
+                        title={t('delete')}
+                        description={t('review.delete.confirm')}
+                        action={`/establishments/${getUriId(establishment.id)}/review/${getUriId(userReview?.node.id)}/delete`}
+                        actionColor="green"
+                      >
+                        <Button type="button" color="tomato" variant="soft">
+                          {t('delete')}
+                        </Button>
+                      </FormConfirmDialog>
+                    )}
+                  </Flex>
+
                   {reviews.length === 0 && (
                     <Text as="p" size="2" color="gray">
                       {t('establishment.no_reviews')}

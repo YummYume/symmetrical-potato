@@ -70,8 +70,9 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
     } as FlashMessage);
   }
 
-  return json(
-    { errors: {} },
-    { status: 401, headers: { 'Set-Cookie': await commitSession(session) } },
-  );
+  throw redirect(`/establishments/${params.establishmentId}`, {
+    headers: {
+      'Set-Cookie': await commitSession(session),
+    },
+  });
 }

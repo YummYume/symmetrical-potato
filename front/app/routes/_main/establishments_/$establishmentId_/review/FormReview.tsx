@@ -43,7 +43,7 @@ export function FormReview({ review, establishmentId }: FormReviewProps) {
   const description = review ? t('review.edit.confirm') : t('review.create.confirm');
   const buttonText = review ? t('update') : t('create');
 
-  const action = `/establishements/${getUriId(establishmentId)}/review/${review ? `${getUriId(review.node.id)}/edit` : 'new'}`;
+  const action = `/establishments/${getUriId(establishmentId)}/review/${review ? `${getUriId(review.node.id)}/edit` : 'new'}`;
 
   const methods = useRemixForm<ReviewFormData>({
     mode: 'onSubmit',
@@ -60,7 +60,12 @@ export function FormReview({ review, establishmentId }: FormReviewProps) {
 
   return (
     <RemixFormProvider {...methods}>
-      <form id="review-form" onSubmit={methods.handleSubmit} className="min-w-64 space-y-2">
+      <form
+        method="post"
+        id="review-form"
+        onSubmit={methods.handleSubmit}
+        className="min-w-64 space-y-2"
+      >
         <FieldRating style={{ maxWidth: 100 }} label={t('review.rating')} name="rating" />
         <TextAreaInput
           label={t('review.comment')}

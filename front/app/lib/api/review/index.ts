@@ -73,7 +73,7 @@ export const createReview = async (
     {
       input: {
         ...input,
-        estqablishment: input.establishment ? `/establishments/${input.establishment}` : null,
+        establishment: input.establishment ? `/establishments/${input.establishment}` : null,
         location: input.location ? `/locations/${input.location}` : null,
       },
     },
@@ -139,6 +139,7 @@ export const getReviewsForEstablishment = async (
             node {
               id
               rating
+              ratingNumber
               comment
               createdAt
               user {
