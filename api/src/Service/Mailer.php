@@ -414,8 +414,6 @@ final class Mailer
 
     /**
      * Sends an email to the concerned user to notify them of a heist's cancellation.
-     * TODO : cancelled heists should refund the crew members and stuff (not to do here).
-     * TODO : this email should also be sent when the heist is deleted manually.
      */
     public function sendHeistCancelledEmail(
         Heist $heist,
@@ -481,11 +479,7 @@ final class Mailer
                 'user' => $user,
                 'heist' => $heist,
                 'site' => $this->siteName,
-                'civilian_casualties' => $crewMember->getCivilianCasualties(),
-                'kills' => $crewMember->getKills(),
-                'objectives_completed' => $crewMember->getObjectivesCompleted(),
-                'payout' => $crewMember->getPayout(),
-                'status' => $crewMember->getStatus()->value,
+                'crew_member' => $crewMember,
             ])
         ;
 
@@ -520,10 +514,7 @@ final class Mailer
                 'user' => $user,
                 'heist' => $heist,
                 'site' => $this->siteName,
-                'civilian_casualties' => $crewMember->getCivilianCasualties(),
-                'kills' => $crewMember->getKills(),
-                'status' => $crewMember->getStatus()->value,
-                'payout' => $crewMember->getPayout(),
+                'crew_member' => $crewMember,
             ])
         ;
 

@@ -14,12 +14,12 @@ import type { FlashMessage } from '~/root';
 export async function action({ params, request, context }: ActionFunctionArgs) {
   denyAccessUnlessGranted(context.user);
 
-  if (!params.placeId) {
-    throw redirect('/map');
+  if (!params.establishmentId) {
+    throw redirect('/establishments');
   }
 
   if (!params.reviewId) {
-    throw redirect(`/map/${params.placeId}`);
+    throw redirect(`/establishments/${params.establishmentId}`);
   }
 
   const t = await i18next.getFixedT(request, ['validators', 'flash']);
@@ -35,7 +35,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
       type: 'success',
     } as FlashMessage);
 
-    return redirect(`/map/${params.placeId}`, {
+    return redirect(`/establishments/${params.establishmentId}`, {
       headers: {
         'Set-Cookie': await commitSession(session),
       },
@@ -55,7 +55,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
     } as FlashMessage);
   }
 
-  throw redirect(`/map/${params.placeId}`, {
+  throw redirect(`/establishments/${params.establishmentId}`, {
     headers: {
       'Set-Cookie': await commitSession(session),
     },

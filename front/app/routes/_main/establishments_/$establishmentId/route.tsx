@@ -1,6 +1,5 @@
 import { ArrowLeftIcon } from '@radix-ui/react-icons';
-import { Box, Card, Container, Flex, Heading, Tabs, Text } from '@radix-ui/themes';
-import { json } from '@remix-run/node';
+import { Box, Button, Card, Container, Flex, Heading, Tabs, Text } from '@radix-ui/themes';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +10,9 @@ import { getHeistsForEstablishment } from '~/lib/api/heist';
 import { getReviewsForEstablishment } from '~/lib/api/review';
 import { EmployeeStatusEnum } from '~/lib/api/types';
 import { Link } from '~/lib/components/Link';
+import Popover from '~/lib/components/Popover';
 import { Rating } from '~/lib/components/Rating';
+import { FormConfirmDialog } from '~/lib/components/dialog/FormConfirmDialog';
 import { EmployeeListItem } from '~/lib/components/employee/EmployeeListItem';
 import { EstablishmentAvatar } from '~/lib/components/establishment/EstablishmentAvatar';
 import { HeistHoverCard } from '~/lib/components/heist/HeistHoverCard';
@@ -25,7 +26,10 @@ import { getUriId } from '~/lib/utils/path';
 import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted, hasRoles } from '~/lib/utils/security.server';
 
+import { FormReview } from '../$establishmentId_/review/FormReview';
+
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
+import type { ReviewEdge } from '~/lib/api/types';
 
 export async function loader({ request, context, params }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
@@ -46,7 +50,8 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
     ]);
     const t = await i18next.getFixedT(request, 'common');
 
-    return json({
+    return {
+      userReview: reviews.edges.find((review) => review.node.user.id === user.id),
       canApply: hasRoles(user, [ROLES.HEISTER]) && !user.employee,
       establishment,
       heists: heists.edges,
@@ -58,7 +63,7 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
           name: establishment.name,
         }),
       },
-    });
+    };
   } catch (e) {
     if (!(e instanceof ClientError) || !hasPathError(e, 'user')) {
       throw e;
@@ -87,7 +92,8 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
 
 export default function Establishment() {
   const { t } = useTranslation();
-  const { canApply, establishment, heists, reviews, employees } = useLoaderData<Loader>();
+  const { canApply, establishment, heists, reviews, employees, userReview } =
+    useLoaderData<Loader>();
 
   return (
     <main className="py-10">
@@ -223,6 +229,32 @@ export default function Establishment() {
                 </Tabs.Content>
 
                 <Tabs.Content value="reviews">
+                  <Flex mb="2" justify="end" gap="2">
+                    <Popover
+                      triggerChildren={
+                        userReview ? t('review.edit_review') : t('review.add_review')
+                      }
+                    >
+                      <FormReview
+                        review={userReview as ReviewEdge | undefined}
+                        establishmentId={establishment.id}
+                      />
+                    </Popover>
+                    {userReview && (
+                      <FormConfirmDialog
+                        formId="review-delete"
+                        title={t('delete')}
+                        description={t('review.delete.confirm')}
+                        action={`/establishments/${getUriId(establishment.id)}/review/${getUriId(userReview?.node.id)}/delete`}
+                        actionColor="green"
+                      >
+                        <Button type="button" color="tomato" variant="soft">
+                          {t('delete')}
+                        </Button>
+                      </FormConfirmDialog>
+                    )}
+                  </Flex>
+
                   {reviews.length === 0 && (
                     <Text as="p" size="2" color="gray">
                       {t('establishment.no_reviews')}

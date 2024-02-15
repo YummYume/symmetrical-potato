@@ -13,7 +13,7 @@ import type { ReviewEdge } from '~/lib/api/types';
 
 type FormReviewProps = {
   review?: ReviewEdge;
-  placeId: string;
+  establishmentId: string;
 };
 
 type Ratings = Record<ReviewRatingEnum, number>;
@@ -36,14 +36,14 @@ export const getRatingByValue = (value: number): ReviewRatingEnum => {
   return rating ? (rating[0] as ReviewRatingEnum) : ReviewRatingEnum.One;
 };
 
-export function FormReview({ review, placeId }: FormReviewProps) {
+export function FormReview({ review, establishmentId }: FormReviewProps) {
   const { t } = useTranslation();
 
   const title = review ? t('edit') : t('add');
   const description = review ? t('review.edit.confirm') : t('review.create.confirm');
   const buttonText = review ? t('update') : t('create');
 
-  const action = `/map/${placeId}/review/${review ? `${getUriId(review.node.id)}/edit` : 'new'}`;
+  const action = `/establishments/${getUriId(establishmentId)}/review/${review ? `${getUriId(review.node.id)}/edit` : 'new'}`;
 
   const methods = useRemixForm<ReviewFormData>({
     mode: 'onSubmit',
