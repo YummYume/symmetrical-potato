@@ -1,7 +1,6 @@
 import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Button, Flex, Heading, IconButton, ScrollArea, Text } from '@radix-ui/themes';
-import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import { json, redirect, type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import { useTranslation } from 'react-i18next';
@@ -169,7 +168,7 @@ export default function EditAsset() {
   return (
     <Flex gap="4" direction="column" height="100%">
       <Flex justify="between">
-        <Flex gap="2" justify="center" align="center">
+        <Flex gap="2" justify="center" align="center" wrap="wrap">
           <Heading as="h2">{asset.name}</Heading>
           <AssetTypeBadge type={asset.type} />
         </Flex>

@@ -49,7 +49,7 @@ const Menu = ({
   const { t } = useTranslation();
 
   return (
-    <Flex align="center" gap="4" justify="end">
+    <Flex align="center" gap="4" justify="end" wrap="wrap">
       <Text weight="bold" as="span" size="2">
         {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(
           user.balance,
@@ -188,9 +188,11 @@ export default function Layout() {
                 useDarkMode={useDarkMode}
                 user={user}
               />
-              <Separator className="!w-full" />
+
+              <Separator className="my-2 !w-full" />
+
               <nav aria-label={t('navigation')} className="md:hidden">
-                <ul>
+                <ul className="grid gap-2">
                   {LINKS.map(({ to, label }) => (
                     <li key={to}>
                       <NavLink to={to} className="group">
@@ -221,6 +223,7 @@ export default function Layout() {
             />
           </div>
         </Flex>
+
         <nav className="hidden md:block">
           <ul className="flex gap-4">
             {LINKS.map(({ to, label }) => (

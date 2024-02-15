@@ -1,5 +1,5 @@
 import { HamburgerMenuIcon, PlusIcon } from '@radix-ui/react-icons';
-import { Button, DropdownMenu, Flex, Text } from '@radix-ui/themes';
+import { Button, DropdownMenu, Flex, Separator, Text } from '@radix-ui/themes';
 import { Form, Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 import { useEffect, useState, type ComponentProps, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -52,7 +52,7 @@ const Menu = ({
   const { t } = useTranslation();
 
   return (
-    <Flex align="center" gap="4" justify="end">
+    <Flex align="center" gap="4" justify="end" wrap="wrap">
       <Text weight="bold" as="span" size="2">
         {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(
           user.balance,
@@ -175,6 +175,7 @@ export default function AdminLayout() {
           <Link to="/admin" className="w-fit text-7" unstyled>
             {t('admin')}
           </Link>
+
           <div className="flex items-center gap-x-4 gap-y-2 md:hidden">
             <Drawer
               position="right"
@@ -191,6 +192,29 @@ export default function AdminLayout() {
                 useDarkMode={useDarkMode}
                 user={user}
               />
+
+              <Separator className="my-2 !w-full" />
+
+              <nav aria-label={t('navigation')} className="md:hidden">
+                <ul className="grid gap-2">
+                  {LINKS.map(({ to, label }) => (
+                    <li key={to}>
+                      <NavLink to={to} className="group">
+                        {({ isActive, isPending }) => (
+                          <>
+                            <span>{label}</span>
+                            <NavLinkActiveIndicator
+                              isActive={isActive}
+                              isPending={isPending}
+                              className="transition-colors group-hover:bg-accent-8 group-focus-visible:bg-accent-8 motion-reduce:transition-none"
+                            />
+                          </>
+                        )}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </Drawer>
           </div>
           <div className="hidden items-center gap-4 md:flex md:flex-row-reverse">
@@ -203,6 +227,7 @@ export default function AdminLayout() {
             />
           </div>
         </Flex>
+
         <nav className="hidden md:block">
           <ul className="flex gap-4">
             {LINKS.map(({ to, label }, index) => (
@@ -224,6 +249,7 @@ export default function AdminLayout() {
           </ul>
         </nav>
       </Header>
+
       <div className="px-4 lg:px-0">
         <Outlet />
       </div>

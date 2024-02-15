@@ -94,7 +94,7 @@ export default function Assets() {
                   </nav>
                 </ScrollArea>
               </div>
-              <NavLink className="pb-2 pl-2" to="create">
+              <NavLink className="min-w-max pb-2 pl-2" to="create">
                 {t('asset.create', { ns: 'admin' })}
               </NavLink>
             </div>
