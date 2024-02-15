@@ -158,7 +158,12 @@ export default function MapHeist() {
                       <PersonIcon />
                     </Button>
                   </Tooltip.Trigger>
-                  <Tooltip.Content align="end" side="bottom" sideOffset={5}>
+                  <Tooltip.Content
+                    align="end"
+                    side="bottom"
+                    sideOffset={5}
+                    className="z-50 bg-slate-1"
+                  >
                     <Card>
                       <ul>
                         {heist.employee && (
@@ -358,7 +363,7 @@ export default function MapHeist() {
                         sideOffset={5}
                       >
                         <Card>
-                          <Table.Root>
+                          <Table.Root variant="ghost">
                             <Table.Body>
                               <Table.Row>
                                 <Table.ColumnHeaderCell>
