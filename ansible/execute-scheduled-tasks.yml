@@ -7,7 +7,7 @@
       command:
         cmd: "docker compose -f ./app/compose.prod.yml exec php {{ item }}"
       loop:
+        - php bin/console app:heist:process
         - php bin/console app:review:process
         - php bin/console app:user-rating:compute
-        - php bin/console app:heist:process
         - php bin/console gesdinet:jwt:clear
