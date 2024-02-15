@@ -1,6 +1,16 @@
 import { ArrowLeftIcon, EnterIcon, ExitIcon, PersonIcon, TrashIcon } from '@radix-ui/react-icons';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import { Button, Card, Flex, Heading, IconButton, Section, Table, Text } from '@radix-ui/themes';
+import {
+  Button,
+  Card,
+  Flex,
+  Heading,
+  IconButton,
+  Section,
+  Separator,
+  Table,
+  Text,
+} from '@radix-ui/themes';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
@@ -148,9 +158,20 @@ export default function MapHeist() {
                       <PersonIcon />
                     </Button>
                   </Tooltip.Trigger>
-                  <Tooltip.Content className="bg-slate-1" align="end" side="bottom" sideOffset={5}>
+                  <Tooltip.Content align="end" side="bottom" sideOffset={5}>
                     <Card>
                       <ul>
+                        {heist.employee && (
+                          <>
+                            <li className="font-bold text-accent-9">
+                              {heist.employee.codeName} ({t('employee')})
+                            </li>
+                            <li>
+                              <Separator className="my-2 !w-full" />
+                            </li>
+                          </>
+                        )}
+
                         {heist.crewMembers.edges.map(
                           ({
                             node: {

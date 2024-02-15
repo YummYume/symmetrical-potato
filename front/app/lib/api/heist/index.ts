@@ -4,15 +4,15 @@ import { CrewMemberStatusEnum, HeistPhaseEnum, HeistVisibilityEnum } from '~api/
 import dayjs from '~utils/dayjs';
 
 import type {
-  QueryHeistsArgs,
-  Query,
   CreateHeistInput,
   Mutation,
+  MutationChooseEmployeeHeistArgs,
   MutationCreateHeistArgs,
   MutationUpdateHeistArgs,
-  UpdateHeistInput,
+  Query,
   QueryHeistArgs,
-  MutationChooseEmployeeHeistArgs,
+  QueryHeistsArgs,
+  UpdateHeistInput,
 } from '~api/types';
 
 /**
@@ -132,6 +132,9 @@ export const getHeist = async (client: GraphQLClient, id: string, asAdmin = fals
           difficulty
           visibility
           objectives
+          employee {
+            codeName
+          }
           phase
           forbiddenAssets {
             edges {
