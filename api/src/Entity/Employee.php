@@ -457,6 +457,7 @@ class Employee
                     'heist' => [
                         'id' => $heist->getId(),
                         'name' => $heist->getName(),
+                        'location' => $heist->getLocation()->getPlaceId(),
                     ],
                 ];
             }
