@@ -482,8 +482,9 @@ export default function Prepare() {
     },
     submitHandlers: {
       onInvalid: async (errors) => {
-        //@ts-ignore
+        // @ts-ignore - We know the type of the errors
         const { assetsPurchased } = errors;
+
         if (assetsPurchased?.message) {
           toast.error(assetsPurchased.message, {
             position: 'bottom-right',
