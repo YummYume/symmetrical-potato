@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { ThemeContext } from '~lib/context/Theme';
 
+import { Link } from './Link';
+
 import dayjs from '../utils/dayjs';
 
 const HOURS = [
@@ -62,6 +64,7 @@ export type DayHeistHour = {
   heist: {
     id: string;
     name: string;
+    location: string;
   };
 };
 
@@ -118,25 +121,39 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
                   style={customStyle}
                 >
                   {/* Employee hours */}
-                  {hours.map(({ endAt, startAt }, i) => (
+                  {hours.map((hour, i) => (
                     <Tooltip.Provider key={i}>
                       <Tooltip.Root>
                         <Tooltip.Trigger asChild>
-                          <button
-                            aria-label={t('more_info')}
-                            className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
-                            style={{
-                              gridRowEnd: dayjs(endAt).format('HH:mm'),
-                              gridRowStart: dayjs(startAt).format('HH:mm'),
-                            }}
-                          ></button>
+                          {hour.reason === 'heist' && (
+                            <Link
+                              to={`/map/${hour.heist.location}/heist/${hour.heist.id}`}
+                              aria-label={hour.heist.name}
+                              unstyled
+                              className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
+                              style={{
+                                gridRowEnd: dayjs(hour.endAt).format('HH:mm'),
+                                gridRowStart: dayjs(hour.startAt).format('HH:mm'),
+                              }}
+                            ></Link>
+                          )}
+                          {hour.reason === 'time_off' && (
+                            <button
+                              aria-label={t('more_info')}
+                              className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
+                              style={{
+                                gridRowEnd: dayjs(hour.endAt).format('HH:mm'),
+                                gridRowStart: dayjs(hour.startAt).format('HH:mm'),
+                              }}
+                            ></button>
+                          )}
                         </Tooltip.Trigger>
                         <Tooltip.Portal container={theme?.current}>
                           <Tooltip.Content sideOffset={5}>
                             <Card>
                               <p>{name}</p>
                               <p>
-                                {startAt} - {endAt}
+                                {hour.startAt} - {hour.endAt}
                               </p>
                             </Card>
                           </Tooltip.Content>

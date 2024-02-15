@@ -12,7 +12,12 @@ import { getAssets } from '~/lib/api/asset';
 import { getEmployeesEstablishments } from '~/lib/api/employee';
 import { getEstablishmentsOfContractor } from '~/lib/api/establishment';
 import { createHeist } from '~/lib/api/heist';
-import { HeistDifficultyEnum, HeistPreferedTacticEnum, HeistVisibilityEnum } from '~/lib/api/types';
+import {
+  EmployeeStatusEnum,
+  HeistDifficultyEnum,
+  HeistPreferedTacticEnum,
+  HeistVisibilityEnum,
+} from '~/lib/api/types';
 import { getUsers } from '~/lib/api/user';
 import { Link } from '~/lib/components/Link';
 import { FormAlertDialog } from '~/lib/components/dialog/FormAlertDialog';
@@ -53,7 +58,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     user,
     users,
     assets,
-    employees,
+    employees: employees.edges.filter(({ node }) => node.status === EmployeeStatusEnum.Active),
     establishments,
     placeId: params.placeId,
     locale: context.locale,
@@ -142,7 +147,7 @@ export default function Add() {
   const { placeId, establishments, employees, assets, users, user } = useLoaderData<Loader>();
 
   const usersFormatted = users.edges.reduce<Option[]>((acc, curr) => {
-    if (user.id !== curr.node.id) {
+    if (user.id !== curr.node.id && curr.node.mainRole === ROLES.HEISTER) {
       acc.push({
         label: curr.node.username,
         value: curr.node.id,
@@ -163,11 +168,11 @@ export default function Add() {
     return acc;
   }, []);
 
-  const employeesFormatted: (Option & { establishmentId: string })[] = employees.edges.map(
-    (edge) => ({
-      establishmentId: edge.node.establishment.id,
-      label: edge.node.user.username,
-      value: edge.node.id,
+  const employeesFormatted: (Option & { establishmentId: string })[] = employees.map(
+    ({ node }) => ({
+      establishmentId: node.establishment.id,
+      label: node.user.username,
+      value: node.id,
     }),
   );
 

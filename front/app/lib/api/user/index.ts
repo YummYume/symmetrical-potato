@@ -246,6 +246,7 @@ export const getUsers = async (client: GraphQLClient) => {
             id
             username
             status
+            mainRole
           }
         }
       }
