@@ -470,7 +470,7 @@ export default function Prepare() {
       unstable_viewTransition: true,
     },
     defaultValues: {
-      employee: allowedEmployeesFormatted && allowedEmployeesFormatted[0].value,
+      employee: allowedEmployeesFormatted && allowedEmployeesFormatted.at(0)?.value,
     },
   });
 
