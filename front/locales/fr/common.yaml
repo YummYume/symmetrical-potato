@@ -97,6 +97,8 @@ meta.establishments_new.title: Nouvel établissement
 meta.establishments_new.description: Créez un nouvel établissement.
 meta.establishment_edit.title: Modifier l'établissement
 meta.establishment_edit.description: Modifier l'établissement {{ name }}.
+meta.planning.title: Mon planning
+meta.planning.description: Tous les braquages auxquels vous participez cette semaine.
 
 # Days
 day.monday: Lundi
