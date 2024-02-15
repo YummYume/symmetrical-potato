@@ -161,12 +161,16 @@ export default function MapHeist() {
                   <Tooltip.Content align="end" side="bottom" sideOffset={5}>
                     <Card>
                       <ul>
-                        <li className="font-bold text-accent-9">
-                          {heist.employee.codeName} ({t('employee')})
-                        </li>
-                        <li>
-                          <Separator className="my-2 !w-full" />
-                        </li>
+                        {heist.employee && (
+                          <>
+                            <li className="font-bold text-accent-9">
+                              {heist.employee.codeName} ({t('employee')})
+                            </li>
+                            <li>
+                              <Separator className="my-2 !w-full" />
+                            </li>
+                          </>
+                        )}
 
                         {heist.crewMembers.edges.map(
                           ({
