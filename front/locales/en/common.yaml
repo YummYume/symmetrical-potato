@@ -97,6 +97,8 @@ meta.establishments_new.title: New establishment
 meta.establishments_new.description: Create a new establishment.
 meta.establishment_edit.title: Edit establishment
 meta.establishment_edit.description: Edit the establishment {{ name }}.
+meta.planning.title: My planning
+meta.planning.description: All the heists you are assigned to this week.
 
 # Days
 day.monday: Monday

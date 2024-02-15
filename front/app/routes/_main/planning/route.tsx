@@ -6,24 +6,44 @@ import { useTranslation } from 'react-i18next';
 
 import { getEmployee } from '~/lib/api/employee';
 import Schedule, { DAYS } from '~/lib/components/Schedule';
+import { i18next } from '~/lib/i18n/index.server';
 import { ROLES } from '~/lib/utils/roles';
 import { denyAccessUnlessGranted, hasRoles } from '~/lib/utils/security.server';
 
-export async function loader({ context }: LoaderFunctionArgs) {
+import type { MetaFunction } from '@remix-run/node';
+
+export async function loader({ request, context }: LoaderFunctionArgs) {
   const user = denyAccessUnlessGranted(context.user);
 
   if (!hasRoles(user, [ROLES.EMPLOYEE]) || !user.employee.id) {
     throw redirect('/dashboard');
   }
 
+  const t = await i18next.getFixedT(request, 'common');
   const { employee } = await getEmployee(context.client, user.employee.id);
 
   return {
     employee,
+    meta: {
+      title: t('meta.planning.title'),
+      description: t('meta.planning.description'),
+    },
   };
 }
 
 export type Loader = typeof loader;
+
+export const meta: MetaFunction<Loader> = ({ data }) => {
+  if (!data) {
+    return [];
+  }
+
+  return [
+    { title: data.meta.title },
+    { name: 'description', content: data.meta.description },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ];
+};
 
 export default function Planning() {
   const { employee } = useLoaderData<Loader>();

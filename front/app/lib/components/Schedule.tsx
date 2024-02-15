@@ -7,8 +7,6 @@ import { ThemeContext } from '~lib/context/Theme';
 
 import { Link } from './Link';
 
-import dayjs from '../utils/dayjs';
-
 const HOURS = [
   '0:00',
   '1:00',
@@ -46,7 +44,7 @@ export const DAYS = [
   'sunday',
 ] as const;
 
-const randomColor = (string: string) => {
+const nameToColor = (string: string) => {
   let total = 0;
 
   // Sum up the ASCII values of each character in the string
@@ -54,7 +52,19 @@ const randomColor = (string: string) => {
     total += string.charCodeAt(i);
   }
 
-  return `${(((total % 360) + 360) % 360) + 1}`;
+  const color = `${(((total % 360) + 360) % 360) + 1}`;
+
+  return `oklch(66.6% 0.15 ${color} / 0.75)`;
+};
+
+const hoursToMinutes = (hour: string) => {
+  const parts = hour.split(':');
+
+  if (parts.length !== 2) {
+    return hour;
+  }
+
+  return `${parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10)}`;
 };
 
 export type DayHeistHour = {
@@ -111,7 +121,7 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
               const customStyle: {
                 [key: string]: string;
               } = {
-                '--color': randomColor(name),
+                '--color': nameToColor(name),
               };
 
               return (
@@ -124,30 +134,32 @@ export default function Schedule({ days }: Readonly<{ days: Day[] }>) {
                   {hours.map((hour, i) => (
                     <Tooltip.Provider key={i}>
                       <Tooltip.Root>
-                        <Tooltip.Trigger asChild>
-                          {hour.reason === 'heist' && (
+                        {hour.reason === 'heist' && (
+                          <Tooltip.Trigger asChild>
                             <Link
                               to={`/map/${hour.heist.location}/heist/${hour.heist.id}`}
                               aria-label={hour.heist.name}
                               unstyled
                               className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
                               style={{
-                                gridRowEnd: dayjs(hour.endAt).format('HH:mm'),
-                                gridRowStart: dayjs(hour.startAt).format('HH:mm'),
+                                gridRowEnd: hoursToMinutes(hour.endAt),
+                                gridRowStart: hoursToMinutes(hour.startAt),
                               }}
                             ></Link>
-                          )}
-                          {hour.reason === 'time_off' && (
+                          </Tooltip.Trigger>
+                        )}
+                        {hour.reason === 'time_off' && (
+                          <Tooltip.Trigger asChild>
                             <button
                               aria-label={t('more_info')}
                               className="-mx-px grid grid-rows-subgrid border-2 border-accent-12 bg-[var(--color)]"
                               style={{
-                                gridRowEnd: dayjs(hour.endAt).format('HH:mm'),
-                                gridRowStart: dayjs(hour.startAt).format('HH:mm'),
+                                gridRowEnd: hoursToMinutes(hour.endAt),
+                                gridRowStart: hoursToMinutes(hour.startAt),
                               }}
                             ></button>
-                          )}
-                        </Tooltip.Trigger>
+                          </Tooltip.Trigger>
+                        )}
                         <Tooltip.Portal container={theme?.current}>
                           <Tooltip.Content sideOffset={5}>
                             <Card>

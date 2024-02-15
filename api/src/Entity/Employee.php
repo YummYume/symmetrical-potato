@@ -446,7 +446,7 @@ class Employee
 
         foreach (self::DAYS as $day) {
             $heists = $this->heists->filter(
-                static fn (Heist $heist) => $heist->getStartAt()->format('Y') === (string) $year && $heist->getStartAt()->format('W') === (string) $week && $heist->getStartAt()->format('l') === $day
+                static fn (Heist $heist): bool => (int) $heist->getStartAt()->format('Y') === (int) $year && (int) $heist->getStartAt()->format('W') === (int) $week && strtolower($heist->getStartAt()->format('l')) === $day
             );
 
             foreach ($heists as $heist) {
@@ -463,7 +463,7 @@ class Employee
             }
 
             $timeOffs = $this->timeOffs->filter(
-                static fn (EmployeeTimeOff $timeOff) => $timeOff->getStartAt()->format('Y') === (string) $year && $timeOff->getStartAt()->format('W') === (string) $week && $timeOff->getStartAt()->format('l') === $day
+                static fn (EmployeeTimeOff $timeOff) => (int) $timeOff->getStartAt()->format('Y') === (int) $year && (int) $timeOff->getStartAt()->format('W') === (int) $week && strtolower($timeOff->getStartAt()->format('l')) === $day
             );
 
             foreach ($timeOffs as $timeOff) {
