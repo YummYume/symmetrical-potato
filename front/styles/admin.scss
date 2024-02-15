@@ -1,16 +1,12 @@
 .panel {
-  @apply grid h-[32rem] grid-cols-[25%_75%];
+  @apply grid h-[32rem] grid-cols-[25%_75%] sm:grid-cols-[max-content_auto];
 
   &__sidebar {
     @apply h-[32rem] overflow-clip rounded-l-5 border-2;
   }
 
-  &__sidebar-list {
-    @apply pr-3;
-  }
-
   &__sidebar-item {
-    @apply relative flex items-center justify-between gap-1 p-5;
+    @apply relative flex min-w-max items-center justify-between gap-1 p-5 sm:gap-2;
   }
 
   &__sidebar-item-background {

@@ -1,6 +1,6 @@
-import { Container, Flex, Heading, Section } from '@radix-ui/themes';
+import { Container, Grid, Heading, Section } from '@radix-ui/themes';
 import { useLoaderData } from '@remix-run/react';
-import { Chart as ChartJS, Tooltip, ArcElement, Legend, Title } from 'chart.js';
+import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { useTranslation } from 'react-i18next';
 
@@ -44,17 +44,11 @@ export const meta: MetaFunction<Loader> = ({ data }) => {
 };
 
 const Widget = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <Flex
-    gap="6"
-    direction="column"
-    align="center"
-    className="mx-auto rounded-4 border-2 px-10 py-4 shadow-4"
-    width="min-content"
-  >
+  <Grid gap="6" align="center" className="rounded-4 border-2 px-10 py-4 shadow-4">
     <Heading as="h2">{title}</Heading>
 
-    <div className="sm:h-96 sm:w-96">{children}</div>
-  </Flex>
+    {children}
+  </Grid>
 );
 
 export default function Admin() {
@@ -71,7 +65,7 @@ export default function Admin() {
 
       <Section>
         <Container>
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+          <div className="grid gap-8 md:grid-cols-2">
             <Widget title={t('dashboard.heists.last_90_days', { ns: 'admin' })}>
               <Doughnut
                 data={{

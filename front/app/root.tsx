@@ -139,7 +139,7 @@ export const ErrorBoundary = () => {
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <a
                   href="/"
-                  className="text-sm rounded-[6px] bg-[#4f46e5] px-3.5 py-2.5 font-[600] text-[white] shadow-1 hover:bg-[#6366f1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f46e5]"
+                  className="rounded-[6px] bg-[#4f46e5] px-3.5 py-2.5 text-[14px] font-[600] text-[white] shadow-1 hover:bg-[#6366f1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f46e5]"
                 >
                   {t('homepage')}
                 </a>
@@ -167,7 +167,7 @@ export const ErrorBoundary = () => {
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
                 href="/"
-                className="text-sm rounded-[6px] bg-[#4f46e5] px-3.5 py-2.5 font-[600] text-[white] shadow-1 hover:bg-[#6366f1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f46e5]"
+                className="rounded-[6px] bg-[#4f46e5] px-3.5 py-2.5 text-[14px] font-[600] text-[white] shadow-1 hover:bg-[#6366f1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f46e5]"
               >
                 {t('homepage')}
               </a>
